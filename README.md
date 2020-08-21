@@ -9,18 +9,18 @@
 
 FEATURES:
 
- Switch Support ~~POG~~
+ **Switch Support ~~POG~~
  --------------
  Loads little endian map files, outputs little endian map files, is able to look for tex.sbfres instead of tex1.sbfres
  <br><br>
- Bulk Parameter Editing
+ **Bulk Parameter Editing
  --------------
  Options for editing/replacing/removing lots of entities in bulk. Will also ~~hopefully~~ support editing the prod files that stores tree and plant clusters found in the map files.
  <br><br>
- Rail Editing and Viewing
+ **Rail Editing and Viewing
  --------------
  I know absolutely nothing about this
  <br><br>
- Navmesh viewing as a 3D model
+ **Navmesh viewing as a 3D model
  --------------
  The ability to convert navMesh's to a viewable 3D model
