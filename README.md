@@ -11,7 +11,7 @@ FEATURES:
 
  **Switch Support ~~POG~~
  <br><br>
- ******* Loads little endian map files, outputs little endian map files, is able to look for tex.sbfres instead of tex1.sbfres
+ * Loads little endian map files, outputs little endian map files, is able to look for tex.sbfres instead of tex1.sbfres
  <br><br>
  Bulk Parameter Editing
  --------------
