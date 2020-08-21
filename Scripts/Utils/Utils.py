@@ -1,8 +1,13 @@
+# Import stuff
+import oead
+
+
+
 # Decompress bymls.
-def BymlDecompress():
+def BymlDecompress(Path):
     with open(Path, 'rb') as InputFile:
         ReadInputFile = InputFile.read()
-        DeYaz0 = oead.yaz0.decompress(ReadActorInfoFile)
+        DeYaz0 = oead.yaz0.decompress(ReadInputFile)
         DeBYML = oead.byml.from_binary(DeYaz0)
         output = oead.byml.to_text(DeBYML)
         return(output)
