@@ -26,7 +26,7 @@ Option to view the navmesh in the editor
 
 
 
-
+-------------------------
 How the code works:
 
 1. Data is imported via files in Scripts/Loaders.  
