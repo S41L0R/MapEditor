@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="SelectedActor.css" type="text/css" media="screen" charset="utf-8">
+
+  <title>Actor Editor</title>
+
+</head>
+
+<body>
+
+  <div id="editor">function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+    }</div>
+
+  <script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/javascript");
+  </script>
+</body>
+<aside id=SelectedActorSidebar>
+  <h1>Actor Editor</h1>
+</aside>
+
+</html>

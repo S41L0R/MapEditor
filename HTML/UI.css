@@ -1,0 +1,12 @@
+#sidebar {
+  float: right;
+  background-color: powderblue;
+  height: 100%;
+  width: 15%;
+  text-align: center;
+  font-family: "Noto Sans TC", "sans-serif";
+
+}
+#sidebar h1 {
+  font-weight: 100 !important;
+}
