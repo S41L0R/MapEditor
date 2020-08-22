@@ -25,5 +25,10 @@ except:
 # Load Actor
 import MapEditor.Scripts.Loaders.FromGame.actor as actor
 
-ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Actor/ActorInfo.product.sbyml")
-print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
+#ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Actor/ActorInfo.product.sbyml")
+#print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
+import os
+
+import webview
+webview.create_window('Map Editor', "../../HTML/UI.html")
+webview.start()
