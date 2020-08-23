@@ -4,6 +4,8 @@
 <head>
   <link rel="stylesheet" href="SelectedActor.css" type="text/css" media="screen" charset="utf-8">
 
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
   <title>Actor Editor</title>
 
 </head>
@@ -18,12 +20,14 @@
   <script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
   <script>
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/javascript");
+    editor.setTheme("ace/theme/monokai-custom");
+    editor.session.setMode("ace/mode/yaml");
   </script>
 </body>
 <aside id=SelectedActorSidebar>
   <h1>Actor Editor</h1>
+  <p>More stuff will go here.</p>
+  <button class="button button1" id="abc">Apply</button>
 </aside>
 
 </html>
