@@ -22,6 +22,15 @@ def checkCompression(fileCheck):
         uncompressedFile = fileInRead
     return(uncompressedFile)
 
+# Compares a file extension with a list of valid file extensions to make sure inputted file is the correct file type; Returns a bool
+def extCheck(fileName, extList):
+    fileExt = fileName.split('.')[-1]
+    if fileExt in extList:
+        return(True)
+    else:
+        return(False)
+
+
 def navToObj():
     with open(fileToOpen, "r") as f:
         d = json.load(f)
