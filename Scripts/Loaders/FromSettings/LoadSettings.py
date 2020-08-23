@@ -1,5 +1,6 @@
 import os
 import yaml
+import pathlib
 
 def LoadSettings():
     with open(r'..\..\..\MapEditor\Config\Config.yml', 'r') as config:
