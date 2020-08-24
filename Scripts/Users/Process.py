@@ -32,10 +32,21 @@ except:
 import MapEditor.Scripts.Loaders.FromGame.actor as actor
 
 ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Actor/ActorInfo.product.sbyml")
-print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
+#print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
+
+
+# Find Actor text
+
+# IMPORTANT: Where FindActorText references "ActorInfoText", that will be converted over to map file text later.
+# I'm just testing with ActorInfoText because I had already built up some stuff above for it.
+ActorText = actor.FindActorText(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01")
 
 # Create Window
 
 import webview
-webview.create_window('Map Editor', "../../HTML/UI.html")
-webview.start()
+NewWindow = webview.create_window('Map Editor', "../../HTML/SelectedActor.html")
+def webview_logic(window):
+    JSCompatibleActorText = ActorText.replace('\n', '\\n')
+    NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
+
+webview.start(webview_logic, NewWindow)
