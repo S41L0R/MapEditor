@@ -29,6 +29,7 @@ def FindActorModel(InputText, ActorName):
                 i = i + 1
         except:
             print("Did not find the actor name in actorInfo.")
+            return("Did not find the actor name in map file.")
             SearchingActorInfo = False
     return(InputDict["Actors"][i]["bfres"])
 
@@ -46,13 +47,14 @@ def FindActorText(InputText, ActorName):
     while SearchingActorInfo == True:
         try:
             #print(InputDict["Actors"][i]["name"])
-            if InputDict["Actors"][i]["name"] == ActorName:
+            if InputDict["Objs"][i]["UnitConfigName"] == ActorName:
                 print("yay")
                 SearchingActorInfo = False
             else:
                 i = i + 1
         except:
-            print("Did not find the actor name in actorInfo.")
+            print("Did not find the actor name in map file.")
+            return("Did not find the actor name in map file.")
             SearchingActorInfo = False
-    print(yaml.dump(InputDict["Actors"][i]))
-    return(yaml.dump(InputDict["Actors"][i]))
+    print(yaml.dump(InputDict["Objs"][i]))
+    return(yaml.dump(InputDict["Objs"][i]))

@@ -14,7 +14,7 @@ import MapEditor.Scripts.Writers.ToSettings.WriteSettings as WriteSettings
 
 settings = {
 "Game Dump Path": "oranges",
-"Setting2": "2"
+"TestingMapSection": "C5"
 }
 
 try:
@@ -27,19 +27,39 @@ except:
 
 # CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
 
-# Load Actor
+# Load map file
+
+import MapEditor.Scripts.Loaders.FromGame.smubin as smubin
+
+smubin.validateMapFile(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
+
+smubin.validateMapFile(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Dynamic.smubin")
+
+MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
+
+MapSectionDynamicText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Dynamic.smubin")
+
+
+
+
+
+# Load ActorInfo
 
 import MapEditor.Scripts.Loaders.FromGame.actor as actor
 
 ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Actor/ActorInfo.product.sbyml")
+
+
+
+
+
+
 #print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
 
 
-# Find Actor text
+# Find Actor text from map file
 
-# IMPORTANT: Where FindActorText references "ActorInfoText", that will be converted over to map file text later.
-# I'm just testing with ActorInfoText because I had already built up some stuff above for it.
-ActorText = actor.FindActorText(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01")
+ActorText = smubin.FindActorText(MapSectionStaticText, "0x1bc97cff")
 
 # Create Window
 
