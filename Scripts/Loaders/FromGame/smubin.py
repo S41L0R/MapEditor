@@ -48,6 +48,7 @@ def FindActorText(InputText, ActorHashId):
         except:
             print("Did not find the actor name in map file.")
             print(oead.byml.to_text(InputDict["Objs"][i]))
+            print(InputDict["Objs"][i]["HashId"])
             return("Did not find the actor name in map file.")
             SearchingMapFile = False
     return(oead.byml.to_text(InputDict["Objs"][i]))
