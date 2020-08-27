@@ -14,7 +14,8 @@ def BymlDecompress(Path):
         DeYaz0 = oead.yaz0.decompress(ReadInputFile)
         DeBYML = oead.byml.from_binary(DeYaz0)
         output = oead.byml.to_text(DeBYML)
-        return(output)
+        outDict = DeBYML
+        return(output, outDict)
 
 # A function for checking if a file is yaz0 compressed and then determining whether or not to decompress it based off of that
 def checkCompression(fileCheck):
@@ -27,7 +28,7 @@ def checkCompression(fileCheck):
 
 # Compares a file extension with a list of valid file extensions to make sure inputted file is the correct file type; Returns a bool
 def extCheck(fileName, extList):
-    fileExt = fileName.split('.')[-1]
+    fileExt = str(fileName).split('.')[-1]
     if fileExt in extList:
         return(True)
     else:

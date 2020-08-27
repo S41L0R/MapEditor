@@ -1,5 +1,6 @@
 # Import general stuff
 import Lib.Utils.Util as utils
+import pathlib
 
 
 # Load Settings
@@ -8,8 +9,8 @@ import Loaders.FromSettings.LoadSettings as LoadSettings
 import Writers.ToSettings.WriteSettings as WriteSettings
 
 settings = {
-"Game Dump Path": "oranges",
-"TestingMapSection": "C5"
+"Game Dump Path": "Test/TestResources",
+"TestingMapSection": "C-5"
 }
 
 try:
@@ -25,8 +26,8 @@ except:
 # Load map file
 
 import Loaders.FromGame.smubin as smubin
-
-smubin.validateMapFile(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
+pathStr = (f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin')
+smubin.validateMapFile(pathlib.Path(f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin'))
 
 smubin.validateMapFile(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Dynamic.smubin")
 
@@ -54,6 +55,7 @@ ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Acto
 
 # Find Actor text from map file
 
+useless, MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
 ActorText = smubin.FindActorText(MapSectionStaticText, "0x1bc97cff")
 
 # Create Window
