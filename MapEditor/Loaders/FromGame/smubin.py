@@ -35,7 +35,8 @@ def FindActorText(InputText, ActorHashId):
 
     # Parse then print for debugging
     #InputDict = yaml.load(InputText, Loader = SafeLoaderIgnoreUnknown)
-    InputDict = oead.byml.from_text(InputText)
+    InputDict = InputText
+    print(InputText)
     SearchingMapFile = True
     i = 0
     while SearchingMapFile == True:
@@ -44,11 +45,11 @@ def FindActorText(InputText, ActorHashId):
                 print("yay")
                 SearchingMapFile = False
             else:
-                i = i + 1
+                i += 1
         except:
             print("Did not find the actor name in map file.")
-            print(oead.byml.to_text(InputDict["Objs"][i]))
-            print(InputDict["Objs"][i]["HashId"])
+#            print(oead.byml.to_text(InputDict["Objs"][i]))
+#            print(InputDict["Objs"][i]["HashId"])
             return("Did not find the actor name in map file.")
             SearchingMapFile = False
     return(oead.byml.to_text(InputDict["Objs"][i]))
