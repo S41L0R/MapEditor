@@ -1,12 +1,28 @@
 #sidebar {
+  position: relative;
   float: right;
   background-color: powderblue;
   height: 100%;
   width: 15%;
   text-align: center;
   font-family: "Noto Sans TC", "sans-serif";
+  z-index: 2;
 
 }
 #sidebar h1 {
   font-weight: 100 !important;
+}
+
+
+#editor {
+  float: left;
+  height: 100%;
+  width: 85%;
+}
+#viewport {
+  position: relative;
+  float: left;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
