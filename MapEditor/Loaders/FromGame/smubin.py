@@ -44,7 +44,6 @@ def FindActorText(InputText, ActorHashId):
         print('Found "Objs" Section in map data.')
         for actorEntry in InputDict.get('Objs'):
             actorDict.update(actorEntry)
-            print(actorDict)
             if int(actorDict.get('HashId')) == int(ActorHashId):
                 print('yay!')
                 print(oead.byml.to_text(actorDict))
@@ -58,19 +57,3 @@ def FindActorText(InputText, ActorHashId):
         return
     #print(yaml.dump(InputDict["Objs"][i]))
     #return(yaml.dump(InputDict["Objs"][i]))
-
-"""
-    while SearchingMapFile == True:
-        try:
-            if InputDict["Objs"][i]["HashId"] == ActorHashId:
-                print("yay")
-                SearchingMapFile = False
-            else:
-                i += 1
-        except:
-            print("Did not find the actor name in map file.")
-#            print(oead.byml.to_text(InputDict["Objs"][i]))
-#            print(InputDict["Objs"][i]["HashId"])
-            return("Did not find the actor name in map file.")
-            SearchingMapFile = False
-"""
