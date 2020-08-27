@@ -56,7 +56,7 @@ ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Acto
 # Find Actor text from map file
 
 useless, MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
-ActorText = smubin.FindActorText(MapSectionStaticText, "0x1bc97cff")
+ActorText = smubin.FindActorText(MapSectionStaticText, "466189567")
 
 # Create Window
 

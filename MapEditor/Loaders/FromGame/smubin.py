@@ -36,9 +36,30 @@ def FindActorText(InputText, ActorHashId):
     # Parse then print for debugging
     #InputDict = yaml.load(InputText, Loader = SafeLoaderIgnoreUnknown)
     InputDict = InputText
+    actorDict = {}
     print(InputText)
     SearchingMapFile = True
     i = 0
+    if InputDict.get('Objs') != None:
+        print('Found "Objs" Section in map data.')
+        for actorEntry in InputDict.get('Objs'):
+            actorDict.update(actorEntry)
+            print(actorDict)
+            if int(actorDict.get('HashId')) == int(ActorHashId):
+                print('yay!')
+                print(oead.byml.to_text(actorDict))
+                return(oead.byml.to_text(actorDict))
+                actorDict.clear()
+            else:
+                actorDict.clear()
+                continue
+    else:
+        print('error reading map file')
+        return
+    #print(yaml.dump(InputDict["Objs"][i]))
+    #return(yaml.dump(InputDict["Objs"][i]))
+
+"""
     while SearchingMapFile == True:
         try:
             if InputDict["Objs"][i]["HashId"] == ActorHashId:
@@ -52,6 +73,4 @@ def FindActorText(InputText, ActorHashId):
 #            print(InputDict["Objs"][i]["HashId"])
             return("Did not find the actor name in map file.")
             SearchingMapFile = False
-    return(oead.byml.to_text(InputDict["Objs"][i]))
-    #print(yaml.dump(InputDict["Objs"][i]))
-    #return(yaml.dump(InputDict["Objs"][i]))
+"""
