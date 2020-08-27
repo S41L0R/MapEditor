@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    packages=['Scripts'],
+    packages=['MapEditor'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -23,5 +23,7 @@ setuptools.setup(
         "oead>=1.1.1",
         "open3d>=0.10.0.1"
         "pathlib"
+        "pywebview>=3.2"
+        "blwpprod>=1.1.2"
     ],
 )
