@@ -23,5 +23,7 @@ setuptools.setup(
         "oead>=1.1.1",
         "open3d>=0.10.0.1"
         "pathlib"
+        "pywebview>=3.2"
+        "blwpprod>=1.1.2"
     ],
 )
