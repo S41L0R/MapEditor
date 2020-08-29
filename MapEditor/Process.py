@@ -61,9 +61,9 @@ ActorText = smubin.FindActorText(MapSectionStaticText, "453856506")
 # Create Window
 
 import webview
-NewWindow = webview.create_window('Map Editor', "../../HTML/SelectedActor.html")
-def webview_logic(window):
-    JSCompatibleActorText = ActorText.replace('\n', '\\n')
-    NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
+NewWindow = webview.create_window('Map Editor', "../HTML/Editor.html")
+#def webview_logic(window):
+    #JSCompatibleActorText = ActorText.replace('\n', '\\n')
+    #NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
 
-webview.start(webview_logic, NewWindow)
+webview.start(None, NewWindow)
