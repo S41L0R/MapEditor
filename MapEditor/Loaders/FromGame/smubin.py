@@ -33,27 +33,22 @@ def FindActorText(InputText, ActorHashId):
     # Stuff I need because there are unknown tags
     SafeLoaderIgnoreUnknown.add_constructor(None, SafeLoaderIgnoreUnknown.ignore_unknown)
 
-    # Parse then print for debugging
-    #InputDict = yaml.load(InputText, Loader = SafeLoaderIgnoreUnknown)
-    InputDict = InputText
     actorDict = {}
     print(InputText)
-    SearchingMapFile = True
-    i = 0
-    if InputDict.get('Objs') != None:
-        print('Found "Objs" Section in map data.')
-        for actorEntry in InputDict.get('Objs'):
-            actorDict.update(actorEntry)
-            if int(actorDict.get('HashId')) == int(ActorHashId):
-                print('yay!')
-                print(oead.byml.to_text(actorDict))
-                return(oead.byml.to_text(actorDict))
-                actorDict.clear()
-            else:
-                actorDict.clear()
-                continue
-    else:
-        print('error reading map file')
-        return
-    #print(yaml.dump(InputDict["Objs"][i]))
-    #return(yaml.dump(InputDict["Objs"][i]))
+    for actorEntry in InputText:
+        actorDict.update(actorEntry)
+        if int(actorDict.get('HashId')) == int(ActorHashId):
+            print('Found Actor with matching hashID in inputted map file.')
+            print(oead.byml.to_text(actorDict))
+            return(actorDict)
+            actorDict.clear()
+        else:
+            actorDict.clear()
+            continue
+
+def getActors(mapIn):
+    openFile = open(pathlib.Path(mapIn), 'rb')
+    mapIn = openFile.read()
+    decompressed = Utils.checkCompression(mapIn)
+    binOut = oead.byml.from_binary(decompressed)
+    return(binOut)

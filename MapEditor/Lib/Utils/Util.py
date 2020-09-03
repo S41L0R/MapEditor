@@ -11,11 +11,14 @@ from platform import system
 def BymlDecompress(Path):
     with open(Path, 'rb') as InputFile:
         ReadInputFile = InputFile.read()
-        DeYaz0 = oead.yaz0.decompress(ReadInputFile)
+        DeYaz0 = checkCompression(ReadInputFile)
         DeBYML = oead.byml.from_binary(DeYaz0)
         output = oead.byml.to_text(DeBYML)
-        outDict = DeBYML
-        return(output, outDict)
+        return(output)
+
+# convert oead dict objects to text
+def dict_To_Text(dictIn):
+    oead.byml.to_text(dictIn)
 
 # A function for checking if a file is yaz0 compressed and then determining whether or not to decompress it based off of that
 def checkCompression(fileCheck):
