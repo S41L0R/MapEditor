@@ -1,12 +1,11 @@
-import { _Math } from '../math/Math';
+import { Vector3 } from '../math/Vector3.js';
+import { BufferAttribute } from './BufferAttribute.js';
 
-/**
- * @author benaadams / https://twitter.com/ben_a_adams
- */
+const _vector = new Vector3();
 
 function InterleavedBufferAttribute( interleavedBuffer, itemSize, offset, normalized ) {
 
-	this.uuid = _Math.generateUUID();
+	this.name = '';
 
 	this.data = interleavedBuffer;
 	this.itemSize = itemSize;
@@ -16,22 +15,59 @@ function InterleavedBufferAttribute( interleavedBuffer, itemSize, offset, normal
 
 }
 
+Object.defineProperties( InterleavedBufferAttribute.prototype, {
 
-InterleavedBufferAttribute.prototype = {
+	count: {
 
-	constructor: InterleavedBufferAttribute,
+		get: function () {
 
-	isInterleavedBufferAttribute: true,
+			return this.data.count;
 
-	get count() {
-
-		return this.data.count;
+		}
 
 	},
 
-	get array() {
+	array: {
 
-		return this.data.array;
+		get: function () {
+
+			return this.data.array;
+
+		}
+
+	},
+
+	needsUpdate: {
+
+		set: function ( value ) {
+
+			this.data.needsUpdate = value;
+
+		}
+
+	}
+
+} );
+
+Object.assign( InterleavedBufferAttribute.prototype, {
+
+	isInterleavedBufferAttribute: true,
+
+	applyMatrix4: function ( m ) {
+
+		for ( let i = 0, l = this.data.count; i < l; i ++ ) {
+
+			_vector.x = this.getX( i );
+			_vector.y = this.getY( i );
+			_vector.z = this.getZ( i );
+
+			_vector.applyMatrix4( m );
+
+			this.setXYZ( i, _vector.x, _vector.y, _vector.z );
+
+		}
+
+		return this;
 
 	},
 
@@ -125,9 +161,108 @@ InterleavedBufferAttribute.prototype = {
 
 		return this;
 
+	},
+
+	clone: function ( data ) {
+
+		if ( data === undefined ) {
+
+			console.log( 'THREE.InterleavedBufferAttribute.clone(): Cloning an interlaved buffer attribute will deinterleave buffer data.' );
+
+			const array = [];
+
+			for ( let i = 0; i < this.count; i ++ ) {
+
+				const index = i * this.data.stride + this.offset;
+
+				for ( let j = 0; j < this.itemSize; j ++ ) {
+
+					array.push( this.data.array[ index + j ] );
+
+				}
+
+			}
+
+			return new BufferAttribute( new this.array.constructor( array ), this.itemSize, this.normalized );
+
+		} else {
+
+			if ( data.interleavedBuffers === undefined ) {
+
+				data.interleavedBuffers = {};
+
+			}
+
+			if ( data.interleavedBuffers[ this.data.uuid ] === undefined ) {
+
+				data.interleavedBuffers[ this.data.uuid ] = this.data.clone( data );
+
+			}
+
+			return new InterleavedBufferAttribute( data.interleavedBuffers[ this.data.uuid ], this.itemSize, this.offset, this.normalized );
+
+		}
+
+	},
+
+	toJSON: function ( data ) {
+
+		if ( data === undefined ) {
+
+			console.log( 'THREE.InterleavedBufferAttribute.toJSON(): Serializing an interlaved buffer attribute will deinterleave buffer data.' );
+
+			const array = [];
+
+			for ( let i = 0; i < this.count; i ++ ) {
+
+				const index = i * this.data.stride + this.offset;
+
+				for ( let j = 0; j < this.itemSize; j ++ ) {
+
+					array.push( this.data.array[ index + j ] );
+
+				}
+
+			}
+
+			// deinterleave data and save it as an ordinary buffer attribute for now
+
+			return {
+				itemSize: this.itemSize,
+				type: this.array.constructor.name,
+				array: array,
+				normalized: this.normalized
+			};
+
+		} else {
+
+			// save as true interlaved attribtue
+
+			if ( data.interleavedBuffers === undefined ) {
+
+				data.interleavedBuffers = {};
+
+			}
+
+			if ( data.interleavedBuffers[ this.data.uuid ] === undefined ) {
+
+				data.interleavedBuffers[ this.data.uuid ] = this.data.toJSON( data );
+
+			}
+
+			return {
+				isInterleavedBufferAttribute: true,
+				itemSize: this.itemSize,
+				data: this.data.uuid,
+				offset: this.offset,
+				normalized: this.normalized
+			};
+
+		}
+
 	}
 
-};
+} );
 
 
 export { InterleavedBufferAttribute };

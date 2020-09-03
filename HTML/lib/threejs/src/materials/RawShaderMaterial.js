@@ -1,8 +1,4 @@
-import { ShaderMaterial } from './ShaderMaterial';
-
-/**
- * @author mrdoob / http://mrdoob.com/
- */
+import { ShaderMaterial } from './ShaderMaterial.js';
 
 function RawShaderMaterial( parameters ) {
 

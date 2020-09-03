@@ -1,31 +1,74 @@
-import { _Math } from './Math';
+import { MathUtils } from './MathUtils.js';
 
-/**
- * @author mrdoob / http://mrdoob.com/
- */
+const _colorKeywords = { 'aliceblue': 0xF0F8FF, 'antiquewhite': 0xFAEBD7, 'aqua': 0x00FFFF, 'aquamarine': 0x7FFFD4, 'azure': 0xF0FFFF,
+	'beige': 0xF5F5DC, 'bisque': 0xFFE4C4, 'black': 0x000000, 'blanchedalmond': 0xFFEBCD, 'blue': 0x0000FF, 'blueviolet': 0x8A2BE2,
+	'brown': 0xA52A2A, 'burlywood': 0xDEB887, 'cadetblue': 0x5F9EA0, 'chartreuse': 0x7FFF00, 'chocolate': 0xD2691E, 'coral': 0xFF7F50,
+	'cornflowerblue': 0x6495ED, 'cornsilk': 0xFFF8DC, 'crimson': 0xDC143C, 'cyan': 0x00FFFF, 'darkblue': 0x00008B, 'darkcyan': 0x008B8B,
+	'darkgoldenrod': 0xB8860B, 'darkgray': 0xA9A9A9, 'darkgreen': 0x006400, 'darkgrey': 0xA9A9A9, 'darkkhaki': 0xBDB76B, 'darkmagenta': 0x8B008B,
+	'darkolivegreen': 0x556B2F, 'darkorange': 0xFF8C00, 'darkorchid': 0x9932CC, 'darkred': 0x8B0000, 'darksalmon': 0xE9967A, 'darkseagreen': 0x8FBC8F,
+	'darkslateblue': 0x483D8B, 'darkslategray': 0x2F4F4F, 'darkslategrey': 0x2F4F4F, 'darkturquoise': 0x00CED1, 'darkviolet': 0x9400D3,
+	'deeppink': 0xFF1493, 'deepskyblue': 0x00BFFF, 'dimgray': 0x696969, 'dimgrey': 0x696969, 'dodgerblue': 0x1E90FF, 'firebrick': 0xB22222,
+	'floralwhite': 0xFFFAF0, 'forestgreen': 0x228B22, 'fuchsia': 0xFF00FF, 'gainsboro': 0xDCDCDC, 'ghostwhite': 0xF8F8FF, 'gold': 0xFFD700,
+	'goldenrod': 0xDAA520, 'gray': 0x808080, 'green': 0x008000, 'greenyellow': 0xADFF2F, 'grey': 0x808080, 'honeydew': 0xF0FFF0, 'hotpink': 0xFF69B4,
+	'indianred': 0xCD5C5C, 'indigo': 0x4B0082, 'ivory': 0xFFFFF0, 'khaki': 0xF0E68C, 'lavender': 0xE6E6FA, 'lavenderblush': 0xFFF0F5, 'lawngreen': 0x7CFC00,
+	'lemonchiffon': 0xFFFACD, 'lightblue': 0xADD8E6, 'lightcoral': 0xF08080, 'lightcyan': 0xE0FFFF, 'lightgoldenrodyellow': 0xFAFAD2, 'lightgray': 0xD3D3D3,
+	'lightgreen': 0x90EE90, 'lightgrey': 0xD3D3D3, 'lightpink': 0xFFB6C1, 'lightsalmon': 0xFFA07A, 'lightseagreen': 0x20B2AA, 'lightskyblue': 0x87CEFA,
+	'lightslategray': 0x778899, 'lightslategrey': 0x778899, 'lightsteelblue': 0xB0C4DE, 'lightyellow': 0xFFFFE0, 'lime': 0x00FF00, 'limegreen': 0x32CD32,
+	'linen': 0xFAF0E6, 'magenta': 0xFF00FF, 'maroon': 0x800000, 'mediumaquamarine': 0x66CDAA, 'mediumblue': 0x0000CD, 'mediumorchid': 0xBA55D3,
+	'mediumpurple': 0x9370DB, 'mediumseagreen': 0x3CB371, 'mediumslateblue': 0x7B68EE, 'mediumspringgreen': 0x00FA9A, 'mediumturquoise': 0x48D1CC,
+	'mediumvioletred': 0xC71585, 'midnightblue': 0x191970, 'mintcream': 0xF5FFFA, 'mistyrose': 0xFFE4E1, 'moccasin': 0xFFE4B5, 'navajowhite': 0xFFDEAD,
+	'navy': 0x000080, 'oldlace': 0xFDF5E6, 'olive': 0x808000, 'olivedrab': 0x6B8E23, 'orange': 0xFFA500, 'orangered': 0xFF4500, 'orchid': 0xDA70D6,
+	'palegoldenrod': 0xEEE8AA, 'palegreen': 0x98FB98, 'paleturquoise': 0xAFEEEE, 'palevioletred': 0xDB7093, 'papayawhip': 0xFFEFD5, 'peachpuff': 0xFFDAB9,
+	'peru': 0xCD853F, 'pink': 0xFFC0CB, 'plum': 0xDDA0DD, 'powderblue': 0xB0E0E6, 'purple': 0x800080, 'rebeccapurple': 0x663399, 'red': 0xFF0000, 'rosybrown': 0xBC8F8F,
+	'royalblue': 0x4169E1, 'saddlebrown': 0x8B4513, 'salmon': 0xFA8072, 'sandybrown': 0xF4A460, 'seagreen': 0x2E8B57, 'seashell': 0xFFF5EE,
+	'sienna': 0xA0522D, 'silver': 0xC0C0C0, 'skyblue': 0x87CEEB, 'slateblue': 0x6A5ACD, 'slategray': 0x708090, 'slategrey': 0x708090, 'snow': 0xFFFAFA,
+	'springgreen': 0x00FF7F, 'steelblue': 0x4682B4, 'tan': 0xD2B48C, 'teal': 0x008080, 'thistle': 0xD8BFD8, 'tomato': 0xFF6347, 'turquoise': 0x40E0D0,
+	'violet': 0xEE82EE, 'wheat': 0xF5DEB3, 'white': 0xFFFFFF, 'whitesmoke': 0xF5F5F5, 'yellow': 0xFFFF00, 'yellowgreen': 0x9ACD32 };
 
-function Color( r, g, b ) {
+const _hslA = { h: 0, s: 0, l: 0 };
+const _hslB = { h: 0, s: 0, l: 0 };
 
-	if ( g === undefined && b === undefined ) {
+function hue2rgb( p, q, t ) {
 
-		// r is THREE.Color, hex or string
-		return this.set( r );
-
-	}
-
-	return this.setRGB( r, g, b );
+	if ( t < 0 ) t += 1;
+	if ( t > 1 ) t -= 1;
+	if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+	if ( t < 1 / 2 ) return q;
+	if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
+	return p;
 
 }
 
-Color.prototype = {
+function SRGBToLinear( c ) {
 
-	constructor: Color,
+	return ( c < 0.04045 ) ? c * 0.0773993808 : Math.pow( c * 0.9478672986 + 0.0521327014, 2.4 );
 
-	isColor: true,
+}
 
-	r: 1, g: 1, b: 1,
+function LinearToSRGB( c ) {
 
-	set: function ( value ) {
+	return ( c < 0.0031308 ) ? c * 12.92 : 1.055 * ( Math.pow( c, 0.41666 ) ) - 0.055;
+
+}
+
+class Color {
+
+	constructor( r, g, b ) {
+
+		Object.defineProperty( this, 'isColor', { value: true } );
+
+		if ( g === undefined && b === undefined ) {
+
+			// r is THREE.Color, hex or string
+			return this.set( r );
+
+		}
+
+		return this.setRGB( r, g, b );
+
+	}
+
+	set( value ) {
 
 		if ( value && value.isColor ) {
 
@@ -43,9 +86,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	setScalar: function ( scalar ) {
+	setScalar( scalar ) {
 
 		this.r = scalar;
 		this.g = scalar;
@@ -53,9 +96,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	setHex: function ( hex ) {
+	setHex( hex ) {
 
 		hex = Math.floor( hex );
 
@@ -65,9 +108,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	setRGB: function ( r, g, b ) {
+	setRGB( r, g, b ) {
 
 		this.r = r;
 		this.g = g;
@@ -75,50 +118,35 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	setHSL: function () {
+	setHSL( h, s, l ) {
 
-		function hue2rgb( p, q, t ) {
+		// h,s,l ranges are in 0.0 - 1.0
+		h = MathUtils.euclideanModulo( h, 1 );
+		s = MathUtils.clamp( s, 0, 1 );
+		l = MathUtils.clamp( l, 0, 1 );
 
-			if ( t < 0 ) t += 1;
-			if ( t > 1 ) t -= 1;
-			if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
-			if ( t < 1 / 2 ) return q;
-			if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
-			return p;
+		if ( s === 0 ) {
+
+			this.r = this.g = this.b = l;
+
+		} else {
+
+			const p = l <= 0.5 ? l * ( 1 + s ) : l + s - ( l * s );
+			const q = ( 2 * l ) - p;
+
+			this.r = hue2rgb( q, p, h + 1 / 3 );
+			this.g = hue2rgb( q, p, h );
+			this.b = hue2rgb( q, p, h - 1 / 3 );
 
 		}
 
-		return function setHSL( h, s, l ) {
+		return this;
 
-			// h,s,l ranges are in 0.0 - 1.0
-			h = _Math.euclideanModulo( h, 1 );
-			s = _Math.clamp( s, 0, 1 );
-			l = _Math.clamp( l, 0, 1 );
+	}
 
-			if ( s === 0 ) {
-
-				this.r = this.g = this.b = l;
-
-			} else {
-
-				var p = l <= 0.5 ? l * ( 1 + s ) : l + s - ( l * s );
-				var q = ( 2 * l ) - p;
-
-				this.r = hue2rgb( q, p, h + 1 / 3 );
-				this.g = hue2rgb( q, p, h );
-				this.b = hue2rgb( q, p, h - 1 / 3 );
-
-			}
-
-			return this;
-
-		};
-
-	}(),
-
-	setStyle: function ( style ) {
+	setStyle( style ) {
 
 		function handleAlpha( string ) {
 
@@ -133,15 +161,15 @@ Color.prototype = {
 		}
 
 
-		var m;
+		let m;
 
 		if ( m = /^((?:rgb|hsl)a?)\(\s*([^\)]*)\)/.exec( style ) ) {
 
 			// rgb / hsl
 
-			var color;
-			var name = m[ 1 ];
-			var components = m[ 2 ];
+			let color;
+			const name = m[ 1 ];
+			const components = m[ 2 ];
 
 			switch ( name ) {
 
@@ -182,9 +210,9 @@ Color.prototype = {
 					if ( color = /^([0-9]*\.?[0-9]+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(,\s*([0-9]*\.?[0-9]+)\s*)?$/.exec( components ) ) {
 
 						// hsl(120,50%,50%) hsla(120,50%,50%,0.5)
-						var h = parseFloat( color[ 1 ] ) / 360;
-						var s = parseInt( color[ 2 ], 10 ) / 100;
-						var l = parseInt( color[ 3 ], 10 ) / 100;
+						const h = parseFloat( color[ 1 ] ) / 360;
+						const s = parseInt( color[ 2 ], 10 ) / 100;
+						const l = parseInt( color[ 3 ], 10 ) / 100;
 
 						handleAlpha( color[ 5 ] );
 
@@ -200,8 +228,8 @@ Color.prototype = {
 
 			// hex color
 
-			var hex = m[ 1 ];
-			var size = hex.length;
+			const hex = m[ 1 ];
+			const size = hex.length;
 
 			if ( size === 3 ) {
 
@@ -227,34 +255,42 @@ Color.prototype = {
 
 		if ( style && style.length > 0 ) {
 
-			// color keywords
-			var hex = ColorKeywords[ style ];
-
-			if ( hex !== undefined ) {
-
-				// red
-				this.setHex( hex );
-
-			} else {
-
-				// unknown color
-				console.warn( 'THREE.Color: Unknown color ' + style );
-
-			}
+			return this.setColorName( style );
 
 		}
 
 		return this;
 
-	},
+	}
 
-	clone: function () {
+	setColorName( style ) {
+
+		// color keywords
+		const hex = _colorKeywords[ style ];
+
+		if ( hex !== undefined ) {
+
+			// red
+			this.setHex( hex );
+
+		} else {
+
+			// unknown color
+			console.warn( 'THREE.Color: Unknown color ' + style );
+
+		}
+
+		return this;
+
+	}
+
+	clone() {
 
 		return new this.constructor( this.r, this.g, this.b );
 
-	},
+	}
 
-	copy: function ( color ) {
+	copy( color ) {
 
 		this.r = color.r;
 		this.g = color.g;
@@ -262,9 +298,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	copyGammaToLinear: function ( color, gammaFactor ) {
+	copyGammaToLinear( color, gammaFactor ) {
 
 		if ( gammaFactor === undefined ) gammaFactor = 2.0;
 
@@ -274,13 +310,13 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	copyLinearToGamma: function ( color, gammaFactor ) {
+	copyLinearToGamma( color, gammaFactor ) {
 
 		if ( gammaFactor === undefined ) gammaFactor = 2.0;
 
-		var safeInverse = ( gammaFactor > 0 ) ? ( 1.0 / gammaFactor ) : 1.0;
+		const safeInverse = ( gammaFactor > 0 ) ? ( 1.0 / gammaFactor ) : 1.0;
 
 		this.r = Math.pow( color.r, safeInverse );
 		this.g = Math.pow( color.g, safeInverse );
@@ -288,55 +324,90 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	convertGammaToLinear: function () {
+	convertGammaToLinear( gammaFactor ) {
 
-		var r = this.r, g = this.g, b = this.b;
-
-		this.r = r * r;
-		this.g = g * g;
-		this.b = b * b;
+		this.copyGammaToLinear( this, gammaFactor );
 
 		return this;
 
-	},
+	}
 
-	convertLinearToGamma: function () {
+	convertLinearToGamma( gammaFactor ) {
 
-		this.r = Math.sqrt( this.r );
-		this.g = Math.sqrt( this.g );
-		this.b = Math.sqrt( this.b );
+		this.copyLinearToGamma( this, gammaFactor );
 
 		return this;
 
-	},
+	}
 
-	getHex: function () {
+	copySRGBToLinear( color ) {
+
+		this.r = SRGBToLinear( color.r );
+		this.g = SRGBToLinear( color.g );
+		this.b = SRGBToLinear( color.b );
+
+		return this;
+
+	}
+
+	copyLinearToSRGB( color ) {
+
+		this.r = LinearToSRGB( color.r );
+		this.g = LinearToSRGB( color.g );
+		this.b = LinearToSRGB( color.b );
+
+		return this;
+
+	}
+
+	convertSRGBToLinear() {
+
+		this.copySRGBToLinear( this );
+
+		return this;
+
+	}
+
+	convertLinearToSRGB() {
+
+		this.copyLinearToSRGB( this );
+
+		return this;
+
+	}
+
+	getHex() {
 
 		return ( this.r * 255 ) << 16 ^ ( this.g * 255 ) << 8 ^ ( this.b * 255 ) << 0;
 
-	},
+	}
 
-	getHexString: function () {
+	getHexString() {
 
 		return ( '000000' + this.getHex().toString( 16 ) ).slice( - 6 );
 
-	},
+	}
 
-	getHSL: function ( optionalTarget ) {
+	getHSL( target ) {
 
 		// h,s,l ranges are in 0.0 - 1.0
 
-		var hsl = optionalTarget || { h: 0, s: 0, l: 0 };
+		if ( target === undefined ) {
 
-		var r = this.r, g = this.g, b = this.b;
+			console.warn( 'THREE.Color: .getHSL() target is now required' );
+			target = { h: 0, s: 0, l: 0 };
 
-		var max = Math.max( r, g, b );
-		var min = Math.min( r, g, b );
+		}
 
-		var hue, saturation;
-		var lightness = ( min + max ) / 2.0;
+		const r = this.r, g = this.g, b = this.b;
+
+		const max = Math.max( r, g, b );
+		const min = Math.min( r, g, b );
+
+		let hue, saturation;
+		const lightness = ( min + max ) / 2.0;
 
 		if ( min === max ) {
 
@@ -345,7 +416,7 @@ Color.prototype = {
 
 		} else {
 
-			var delta = max - min;
+			const delta = max - min;
 
 			saturation = lightness <= 0.5 ? delta / ( max + min ) : delta / ( 2 - max - min );
 
@@ -361,33 +432,33 @@ Color.prototype = {
 
 		}
 
-		hsl.h = hue;
-		hsl.s = saturation;
-		hsl.l = lightness;
+		target.h = hue;
+		target.s = saturation;
+		target.l = lightness;
 
-		return hsl;
+		return target;
 
-	},
+	}
 
-	getStyle: function () {
+	getStyle() {
 
 		return 'rgb(' + ( ( this.r * 255 ) | 0 ) + ',' + ( ( this.g * 255 ) | 0 ) + ',' + ( ( this.b * 255 ) | 0 ) + ')';
 
-	},
+	}
 
-	offsetHSL: function ( h, s, l ) {
+	offsetHSL( h, s, l ) {
 
-		var hsl = this.getHSL();
+		this.getHSL( _hslA );
 
-		hsl.h += h; hsl.s += s; hsl.l += l;
+		_hslA.h += h; _hslA.s += s; _hslA.l += l;
 
-		this.setHSL( hsl.h, hsl.s, hsl.l );
+		this.setHSL( _hslA.h, _hslA.s, _hslA.l );
 
 		return this;
 
-	},
+	}
 
-	add: function ( color ) {
+	add( color ) {
 
 		this.r += color.r;
 		this.g += color.g;
@@ -395,9 +466,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	addColors: function ( color1, color2 ) {
+	addColors( color1, color2 ) {
 
 		this.r = color1.r + color2.r;
 		this.g = color1.g + color2.g;
@@ -405,9 +476,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	addScalar: function ( s ) {
+	addScalar( s ) {
 
 		this.r += s;
 		this.g += s;
@@ -415,9 +486,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	sub: function( color ) {
+	sub( color ) {
 
 		this.r = Math.max( 0, this.r - color.r );
 		this.g = Math.max( 0, this.g - color.g );
@@ -425,9 +496,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	multiply: function ( color ) {
+	multiply( color ) {
 
 		this.r *= color.r;
 		this.g *= color.g;
@@ -435,9 +506,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	multiplyScalar: function ( s ) {
+	multiplyScalar( s ) {
 
 		this.r *= s;
 		this.g *= s;
@@ -445,9 +516,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	lerp: function ( color, alpha ) {
+	lerp( color, alpha ) {
 
 		this.r += ( color.r - this.r ) * alpha;
 		this.g += ( color.g - this.g ) * alpha;
@@ -455,15 +526,30 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	equals: function ( c ) {
+	lerpHSL( color, alpha ) {
+
+		this.getHSL( _hslA );
+		color.getHSL( _hslB );
+
+		const h = MathUtils.lerp( _hslA.h, _hslB.h, alpha );
+		const s = MathUtils.lerp( _hslA.s, _hslB.s, alpha );
+		const l = MathUtils.lerp( _hslA.l, _hslB.l, alpha );
+
+		this.setHSL( h, s, l );
+
+		return this;
+
+	}
+
+	equals( c ) {
 
 		return ( c.r === this.r ) && ( c.g === this.g ) && ( c.b === this.b );
 
-	},
+	}
 
-	fromArray: function ( array, offset ) {
+	fromArray( array, offset ) {
 
 		if ( offset === undefined ) offset = 0;
 
@@ -473,9 +559,9 @@ Color.prototype = {
 
 		return this;
 
-	},
+	}
 
-	toArray: function ( array, offset ) {
+	toArray( array, offset ) {
 
 		if ( array === undefined ) array = [];
 		if ( offset === undefined ) offset = 0;
@@ -486,40 +572,40 @@ Color.prototype = {
 
 		return array;
 
-	},
+	}
 
-	toJSON: function () {
+	fromBufferAttribute( attribute, index ) {
+
+		this.r = attribute.getX( index );
+		this.g = attribute.getY( index );
+		this.b = attribute.getZ( index );
+
+		if ( attribute.normalized === true ) {
+
+			// assuming Uint8Array
+
+			this.r /= 255;
+			this.g /= 255;
+			this.b /= 255;
+
+		}
+
+		return this;
+
+	}
+
+	toJSON() {
 
 		return this.getHex();
 
 	}
 
-};
+}
 
-var ColorKeywords = { 'aliceblue': 0xF0F8FF, 'antiquewhite': 0xFAEBD7, 'aqua': 0x00FFFF, 'aquamarine': 0x7FFFD4, 'azure': 0xF0FFFF,
-'beige': 0xF5F5DC, 'bisque': 0xFFE4C4, 'black': 0x000000, 'blanchedalmond': 0xFFEBCD, 'blue': 0x0000FF, 'blueviolet': 0x8A2BE2,
-'brown': 0xA52A2A, 'burlywood': 0xDEB887, 'cadetblue': 0x5F9EA0, 'chartreuse': 0x7FFF00, 'chocolate': 0xD2691E, 'coral': 0xFF7F50,
-'cornflowerblue': 0x6495ED, 'cornsilk': 0xFFF8DC, 'crimson': 0xDC143C, 'cyan': 0x00FFFF, 'darkblue': 0x00008B, 'darkcyan': 0x008B8B,
-'darkgoldenrod': 0xB8860B, 'darkgray': 0xA9A9A9, 'darkgreen': 0x006400, 'darkgrey': 0xA9A9A9, 'darkkhaki': 0xBDB76B, 'darkmagenta': 0x8B008B,
-'darkolivegreen': 0x556B2F, 'darkorange': 0xFF8C00, 'darkorchid': 0x9932CC, 'darkred': 0x8B0000, 'darksalmon': 0xE9967A, 'darkseagreen': 0x8FBC8F,
-'darkslateblue': 0x483D8B, 'darkslategray': 0x2F4F4F, 'darkslategrey': 0x2F4F4F, 'darkturquoise': 0x00CED1, 'darkviolet': 0x9400D3,
-'deeppink': 0xFF1493, 'deepskyblue': 0x00BFFF, 'dimgray': 0x696969, 'dimgrey': 0x696969, 'dodgerblue': 0x1E90FF, 'firebrick': 0xB22222,
-'floralwhite': 0xFFFAF0, 'forestgreen': 0x228B22, 'fuchsia': 0xFF00FF, 'gainsboro': 0xDCDCDC, 'ghostwhite': 0xF8F8FF, 'gold': 0xFFD700,
-'goldenrod': 0xDAA520, 'gray': 0x808080, 'green': 0x008000, 'greenyellow': 0xADFF2F, 'grey': 0x808080, 'honeydew': 0xF0FFF0, 'hotpink': 0xFF69B4,
-'indianred': 0xCD5C5C, 'indigo': 0x4B0082, 'ivory': 0xFFFFF0, 'khaki': 0xF0E68C, 'lavender': 0xE6E6FA, 'lavenderblush': 0xFFF0F5, 'lawngreen': 0x7CFC00,
-'lemonchiffon': 0xFFFACD, 'lightblue': 0xADD8E6, 'lightcoral': 0xF08080, 'lightcyan': 0xE0FFFF, 'lightgoldenrodyellow': 0xFAFAD2, 'lightgray': 0xD3D3D3,
-'lightgreen': 0x90EE90, 'lightgrey': 0xD3D3D3, 'lightpink': 0xFFB6C1, 'lightsalmon': 0xFFA07A, 'lightseagreen': 0x20B2AA, 'lightskyblue': 0x87CEFA,
-'lightslategray': 0x778899, 'lightslategrey': 0x778899, 'lightsteelblue': 0xB0C4DE, 'lightyellow': 0xFFFFE0, 'lime': 0x00FF00, 'limegreen': 0x32CD32,
-'linen': 0xFAF0E6, 'magenta': 0xFF00FF, 'maroon': 0x800000, 'mediumaquamarine': 0x66CDAA, 'mediumblue': 0x0000CD, 'mediumorchid': 0xBA55D3,
-'mediumpurple': 0x9370DB, 'mediumseagreen': 0x3CB371, 'mediumslateblue': 0x7B68EE, 'mediumspringgreen': 0x00FA9A, 'mediumturquoise': 0x48D1CC,
-'mediumvioletred': 0xC71585, 'midnightblue': 0x191970, 'mintcream': 0xF5FFFA, 'mistyrose': 0xFFE4E1, 'moccasin': 0xFFE4B5, 'navajowhite': 0xFFDEAD,
-'navy': 0x000080, 'oldlace': 0xFDF5E6, 'olive': 0x808000, 'olivedrab': 0x6B8E23, 'orange': 0xFFA500, 'orangered': 0xFF4500, 'orchid': 0xDA70D6,
-'palegoldenrod': 0xEEE8AA, 'palegreen': 0x98FB98, 'paleturquoise': 0xAFEEEE, 'palevioletred': 0xDB7093, 'papayawhip': 0xFFEFD5, 'peachpuff': 0xFFDAB9,
-'peru': 0xCD853F, 'pink': 0xFFC0CB, 'plum': 0xDDA0DD, 'powderblue': 0xB0E0E6, 'purple': 0x800080, 'red': 0xFF0000, 'rosybrown': 0xBC8F8F,
-'royalblue': 0x4169E1, 'saddlebrown': 0x8B4513, 'salmon': 0xFA8072, 'sandybrown': 0xF4A460, 'seagreen': 0x2E8B57, 'seashell': 0xFFF5EE,
-'sienna': 0xA0522D, 'silver': 0xC0C0C0, 'skyblue': 0x87CEEB, 'slateblue': 0x6A5ACD, 'slategray': 0x708090, 'slategrey': 0x708090, 'snow': 0xFFFAFA,
-'springgreen': 0x00FF7F, 'steelblue': 0x4682B4, 'tan': 0xD2B48C, 'teal': 0x008080, 'thistle': 0xD8BFD8, 'tomato': 0xFF6347, 'turquoise': 0x40E0D0,
-'violet': 0xEE82EE, 'wheat': 0xF5DEB3, 'white': 0xFFFFFF, 'whitesmoke': 0xF5F5F5, 'yellow': 0xFFFF00, 'yellowgreen': 0x9ACD32 };
+Color.NAMES = _colorKeywords;
+Color.prototype.r = 1;
+Color.prototype.g = 1;
+Color.prototype.b = 1;
 
 
 export { Color };

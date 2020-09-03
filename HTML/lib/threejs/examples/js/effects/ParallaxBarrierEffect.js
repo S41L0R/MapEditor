@@ -1,8 +1,4 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author marklundin / http://mark-lundin.com/
- * @author alteredq / http://alteredqualia.com/
- */
+console.warn( "THREE.ParallaxBarrierEffect: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 
 THREE.ParallaxBarrierEffect = function ( renderer ) {
 
@@ -87,8 +83,15 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 
 		_stereo.update( camera );
 
-		renderer.render( scene, _stereo.cameraL, _renderTargetL, true );
-		renderer.render( scene, _stereo.cameraR, _renderTargetR, true );
+		renderer.setRenderTarget( _renderTargetL );
+		renderer.clear();
+		renderer.render( scene, _stereo.cameraL );
+
+		renderer.setRenderTarget( _renderTargetR );
+		renderer.clear();
+		renderer.render( scene, _stereo.cameraR );
+
+		renderer.setRenderTarget( null );
 		renderer.render( _scene, _camera );
 
 	};

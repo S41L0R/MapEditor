@@ -17,48 +17,44 @@
  *
  * 		http://www.oodesign.com/template-method-pattern.html
  *
- * @author tschw
  */
 
-function Interpolant(
-		parameterPositions, sampleValues, sampleSize, resultBuffer ) {
+function Interpolant( parameterPositions, sampleValues, sampleSize, resultBuffer ) {
 
 	this.parameterPositions = parameterPositions;
 	this._cachedIndex = 0;
 
 	this.resultBuffer = resultBuffer !== undefined ?
-			resultBuffer : new sampleValues.constructor( sampleSize );
+		resultBuffer : new sampleValues.constructor( sampleSize );
 	this.sampleValues = sampleValues;
 	this.valueSize = sampleSize;
 
 }
 
-Interpolant.prototype = {
+Object.assign( Interpolant.prototype, {
 
-	constructor: Interpolant,
+	evaluate: function ( t ) {
 
-	evaluate: function( t ) {
-
-		var pp = this.parameterPositions,
-			i1 = this._cachedIndex,
-
-			t1 = pp[   i1   ],
+		const pp = this.parameterPositions;
+		let i1 = this._cachedIndex,
+			t1 = pp[ i1 ],
 			t0 = pp[ i1 - 1 ];
 
 		validate_interval: {
 
 			seek: {
 
-				var right;
+				let right;
 
 				linear_scan: {
-//- See http://jsperf.com/comparison-to-undefined/3
-//- slower code:
-//-
-//- 				if ( t >= t1 || t1 === undefined ) {
+
+					//- See http://jsperf.com/comparison-to-undefined/3
+					//- slower code:
+					//-
+					//- 				if ( t >= t1 || t1 === undefined ) {
 					forward_scan: if ( ! ( t < t1 ) ) {
 
-						for ( var giveUpAt = i1 + 2; ;) {
+						for ( let giveUpAt = i1 + 2; ; ) {
 
 							if ( t1 === undefined ) {
 
@@ -92,13 +88,13 @@ Interpolant.prototype = {
 
 					}
 
-//- slower code:
-//-					if ( t < t0 || t0 === undefined ) {
+					//- slower code:
+					//-					if ( t < t0 || t0 === undefined ) {
 					if ( ! ( t >= t0 ) ) {
 
 						// looping?
 
-						var t1global = pp[ 1 ];
+						const t1global = pp[ 1 ];
 
 						if ( t < t1global ) {
 
@@ -109,7 +105,7 @@ Interpolant.prototype = {
 
 						// linear reverse scan
 
-						for ( var giveUpAt = i1 - 2; ;) {
+						for ( let giveUpAt = i1 - 2; ; ) {
 
 							if ( t0 === undefined ) {
 
@@ -151,7 +147,7 @@ Interpolant.prototype = {
 
 				while ( i1 < right ) {
 
-					var mid = ( i1 + right ) >>> 1;
+					const mid = ( i1 + right ) >>> 1;
 
 					if ( t < pp[ mid ] ) {
 
@@ -165,7 +161,7 @@ Interpolant.prototype = {
 
 				}
 
-				t1 = pp[   i1   ];
+				t1 = pp[ i1 ];
 				t0 = pp[ i1 - 1 ];
 
 				// check boundary cases, again
@@ -204,22 +200,22 @@ Interpolant.prototype = {
 
 	DefaultSettings_: {},
 
-	getSettings_: function() {
+	getSettings_: function () {
 
 		return this.settings || this.DefaultSettings_;
 
 	},
 
-	copySampleValue_: function( index ) {
+	copySampleValue_: function ( index ) {
 
 		// copies a sample value to the result buffer
 
-		var result = this.resultBuffer,
+		const result = this.resultBuffer,
 			values = this.sampleValues,
 			stride = this.valueSize,
 			offset = index * stride;
 
-		for ( var i = 0; i !== stride; ++ i ) {
+		for ( let i = 0; i !== stride; ++ i ) {
 
 			result[ i ] = values[ offset + i ];
 
@@ -231,28 +227,29 @@ Interpolant.prototype = {
 
 	// Template methods for derived classes:
 
-	interpolate_: function( i1, t0, t, t1 ) {
+	interpolate_: function ( /* i1, t0, t, t1 */ ) {
 
-		throw new Error( "call to abstract method" );
+		throw new Error( 'call to abstract method' );
 		// implementations shall return this.resultBuffer
 
 	},
 
-	intervalChanged_: function( i1, t0, t1 ) {
+	intervalChanged_: function ( /* i1, t0, t1 */ ) {
 
 		// empty
 
 	}
 
-};
+} );
 
+// DECLARE ALIAS AFTER assign prototype
 Object.assign( Interpolant.prototype, {
 
-	beforeStart_: //( 0, t, t0 ), returns this.resultBuffer
-		Interpolant.prototype.copySampleValue_,
+	//( 0, t, t0 ), returns this.resultBuffer
+	beforeStart_: Interpolant.prototype.copySampleValue_,
 
-	afterEnd_: //( N-1, tN-1, t ), returns this.resultBuffer
-		Interpolant.prototype.copySampleValue_
+	//( N-1, tN-1, t ), returns this.resultBuffer
+	afterEnd_: Interpolant.prototype.copySampleValue_,
 
 } );
 

@@ -1,6 +1,5 @@
+console.warn( "THREE.MMDExporter: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 /**
- * @author takahiro / http://github.com/takahirox
- *
  * Dependencies
  *  - mmd-parser https://github.com/takahirox/mmd-parser
  */
@@ -14,7 +13,7 @@ THREE.MMDExporter = function () {
 
 		if ( u2sTable === undefined ) {
 
-			var encoder = new MMDParser.CharsetEncoder();
+			var encoder = new MMDParser.CharsetEncoder(); // eslint-disable-line no-undef
 			var table = encoder.s2uTable;
 			u2sTable = {};
 
@@ -37,7 +36,7 @@ THREE.MMDExporter = function () {
 
 		for ( var i = 0, il = str.length; i < il; i ++ ) {
 
-			var code = str.charCodeAt( i )
+			var code = str.charCodeAt( i );
 
 			var value = u2sTable[ code ];
 
@@ -104,7 +103,7 @@ THREE.MMDExporter = function () {
 
 			var a = num.toString();
 
-			if ( a.indexOf( '.' ) === -1 ) {
+			if ( a.indexOf( '.' ) === - 1 ) {
 
 				a += '.';
 
@@ -180,9 +179,9 @@ THREE.MMDExporter = function () {
 			var qArray = quaternion2.copy( bone2.quaternion ).conjugate().multiply( quaternion ).toArray();
 
 			// right to left
-			pArray[ 2 ] = -pArray[ 2 ];
-			qArray[ 0 ] = -qArray[ 0 ];
-			qArray[ 1 ] = -qArray[ 1 ];
+			pArray[ 2 ] = - pArray[ 2 ];
+			qArray[ 0 ] = - qArray[ 0 ];
+			qArray[ 1 ] = - qArray[ 1 ];
 
 			array.push( 'Bone' + i + '{' + bone.name );
 			array.push( '  ' + toStringsFromArray( pArray ) + ';' );
@@ -208,4 +207,3 @@ THREE.MMDExporter = function () {
 	*/
 
 };
-

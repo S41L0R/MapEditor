@@ -1,10 +1,6 @@
-import { Light } from './Light';
-import { SpotLightShadow } from './SpotLightShadow';
-import { Object3D } from '../core/Object3D';
-
-/**
- * @author alteredq / http://alteredqualia.com/
- */
+import { Light } from './Light.js';
+import { SpotLightShadow } from './SpotLightShadow.js';
+import { Object3D } from '../core/Object3D.js';
 
 function SpotLight( color, intensity, distance, angle, penumbra, decay ) {
 
@@ -19,14 +15,18 @@ function SpotLight( color, intensity, distance, angle, penumbra, decay ) {
 
 	Object.defineProperty( this, 'power', {
 		get: function () {
+
 			// intensity = power per solid angle.
-			// ref: equation (17) from http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+			// ref: equation (17) from https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
 			return this.intensity * Math.PI;
+
 		},
 		set: function ( power ) {
+
 			// intensity = power per solid angle.
-			// ref: equation (17) from http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+			// ref: equation (17) from https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
 			this.intensity = power / Math.PI;
+
 		}
 	} );
 

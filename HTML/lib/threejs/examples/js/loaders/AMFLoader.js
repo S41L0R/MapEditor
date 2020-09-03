@@ -1,6 +1,5 @@
-/*
- * @author tamarintech / https://tamarintech.com
- *
+console.warn( "THREE.AMFLoader: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
+/**
  * Description: Early release of an AMF Loader following the pattern of the
  * example loaders in the three.js project.
  *
@@ -14,18 +13,17 @@
  *
  * Materials now supported, material colors supported
  * Zip support, requires jszip
- * TextDecoder polyfill required by some browsers (particularly IE, Edge)
  * No constellation support (yet)!
  *
  */
 
 THREE.AMFLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+	THREE.Loader.call( this, manager );
 
 };
 
-THREE.AMFLoader.prototype = {
+THREE.AMFLoader.prototype = Object.assign( Object.create( THREE.Loader.prototype ), {
 
 	constructor: THREE.AMFLoader,
 
@@ -34,10 +32,30 @@ THREE.AMFLoader.prototype = {
 		var scope = this;
 
 		var loader = new THREE.FileLoader( scope.manager );
+		loader.setPath( scope.path );
 		loader.setResponseType( 'arraybuffer' );
-		loader.load( url, function( text ) {
+		loader.setRequestHeader( scope.requestHeader );
+		loader.load( url, function ( text ) {
 
-			onLoad( scope.parse( text ) );
+			try {
+
+				onLoad( scope.parse( text ) );
+
+			} catch ( e ) {
+
+				if ( onError ) {
+
+					onError( e );
+
+				} else {
+
+					console.error( e );
+
+				}
+
+				scope.manager.itemError( url );
+
+			}
 
 		}, onProgress, onError );
 
@@ -50,22 +68,22 @@ THREE.AMFLoader.prototype = {
 			var view = new DataView( data );
 			var magic = String.fromCharCode( view.getUint8( 0 ), view.getUint8( 1 ) );
 
-			if ( magic === "PK" ) {
+			if ( magic === 'PK' ) {
 
 				var zip = null;
 				var file = null;
 
-				console.log( "Loading Zip" );
+				console.log( 'THREE.AMFLoader: Loading Zip' );
 
 				try {
 
-					zip = new JSZip( data );
+					zip = new JSZip( data ); // eslint-disable-line no-undef
 
 				} catch ( e ) {
 
 					if ( e instanceof ReferenceError ) {
 
-						console.log( "	jszip missing and file is compressed." );
+						console.log( 'THREE.AMFLoader: jszip missing and file is compressed.' );
 						return null;
 
 					}
@@ -82,24 +100,17 @@ THREE.AMFLoader.prototype = {
 
 				}
 
-				console.log( "	Trying to load file asset: " + file );
+				console.log( 'THREE.AMFLoader: Trying to load file asset: ' + file );
 				view = new DataView( zip.file( file ).asArrayBuffer() );
 
 			}
 
-			if ( TextDecoder === undefined ) {
-
-				console.log( "	TextDecoder not present.	Please use TextDecoder polyfill." );
-				return null;
-
-			}
-
-			var fileText = new TextDecoder( 'utf-8' ).decode( view );
+			var fileText = THREE.LoaderUtils.decodeText( view );
 			var xmlData = new DOMParser().parseFromString( fileText, 'application/xml' );
 
-			if ( xmlData.documentElement.nodeName.toLowerCase() !== "amf" ) {
+			if ( xmlData.documentElement.nodeName.toLowerCase() !== 'amf' ) {
 
-				console.log( "	Error loading AMF - no AMF document found." );
+				console.log( 'THREE.AMFLoader: Error loading AMF - no AMF document found.' );
 				return null;
 
 			}
@@ -113,18 +124,18 @@ THREE.AMFLoader.prototype = {
 			var scale = 1.0;
 			var unit = 'millimeter';
 
-			if ( node.documentElement.attributes[ 'unit' ] !== undefined ) {
+			if ( node.documentElement.attributes.unit !== undefined ) {
 
-				unit = node.documentElement.attributes[ 'unit' ].value.toLowerCase();
+				unit = node.documentElement.attributes.unit.value.toLowerCase();
 
 			}
 
 			var scaleUnits = {
-				'millimeter': 1.0,
-				'inch': 25.4,
-				'feet': 304.8,
-				'meter': 1000.0,
-				'micron': 0.001
+				millimeter: 1.0,
+				inch: 25.4,
+				feet: 304.8,
+				meter: 1000.0,
+				micron: 0.001
 			};
 
 			if ( scaleUnits[ unit ] !== undefined ) {
@@ -133,28 +144,28 @@ THREE.AMFLoader.prototype = {
 
 			}
 
-			console.log( "	Unit scale: " + scale );
+			console.log( 'THREE.AMFLoader: Unit scale: ' + scale );
 			return scale;
 
 		}
 
 		function loadMaterials( node ) {
 
-			var matName = "AMF Material";
-			var matId = node.attributes[ 'id' ].textContent;
+			var matName = 'AMF Material';
+			var matId = node.attributes.id.textContent;
 			var color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
 
 			var loadedMaterial = null;
 
-			for ( var i = 0; i < node.children.length; i ++ ) {
+			for ( var i = 0; i < node.childNodes.length; i ++ ) {
 
-				var matChildEl = node.children[ i ];
+				var matChildEl = node.childNodes[ i ];
 
-				if ( matChildEl.nodeName === "metadata" && matChildEl.attributes[ 'type' ] !== undefined ) {
+				if ( matChildEl.nodeName === 'metadata' && matChildEl.attributes.type !== undefined ) {
 
-					if ( matChildEl.attributes[ 'type' ].value === 'name' ) {
+					if ( matChildEl.attributes.type.value === 'name' ) {
 
-						matname = matChildEl.textContent;
+						matName = matChildEl.textContent;
 
 					}
 
@@ -167,7 +178,7 @@ THREE.AMFLoader.prototype = {
 			}
 
 			loadedMaterial = new THREE.MeshPhongMaterial( {
-				shading: THREE.FlatShading,
+				flatShading: true,
 				color: new THREE.Color( color.r, color.g, color.b ),
 				name: matName
 			} );
@@ -179,17 +190,17 @@ THREE.AMFLoader.prototype = {
 
 			}
 
-			return { 'id': matId, 'material': loadedMaterial };
+			return { id: matId, material: loadedMaterial };
 
 		}
 
 		function loadColor( node ) {
 
-			var color = { 'r': 1.0, 'g': 1.0, 'b': 1.0, 'a': 1.0 };
+			var color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
 
-			for ( var i = 0; i < node.children.length; i ++ ) {
+			for ( var i = 0; i < node.childNodes.length; i ++ ) {
 
-				var matColor = node.children[ i ];
+				var matColor = node.childNodes[ i ];
 
 				if ( matColor.nodeName === 'r' ) {
 
@@ -217,23 +228,23 @@ THREE.AMFLoader.prototype = {
 
 		function loadMeshVolume( node ) {
 
-			var volume = { "name": "", "triangles": [], "materialid": null };
+			var volume = { name: '', triangles: [], materialid: null };
 
 			var currVolumeNode = node.firstElementChild;
 
-			if ( node.attributes[ 'materialid' ] !== undefined ) {
+			if ( node.attributes.materialid !== undefined ) {
 
-				volume.materialId = node.attributes[ 'materialid' ].nodeValue;
+				volume.materialId = node.attributes.materialid.nodeValue;
 
 			}
 
 			while ( currVolumeNode ) {
 
-				if ( currVolumeNode.nodeName === "metadata" ) {
+				if ( currVolumeNode.nodeName === 'metadata' ) {
 
-					if ( currVolumeNode.attributes[ 'type' ] !== undefined ) {
+					if ( currVolumeNode.attributes.type !== undefined ) {
 
-						if ( currVolumeNode.attributes[ 'type' ].value === 'name' ) {
+						if ( currVolumeNode.attributes.type.value === 'name' ) {
 
 							volume.name = currVolumeNode.textContent;
 
@@ -241,15 +252,13 @@ THREE.AMFLoader.prototype = {
 
 					}
 
-				} else if ( currVolumeNode.nodeName === "triangle" ) {
+				} else if ( currVolumeNode.nodeName === 'triangle' ) {
 
-					var v1 = currVolumeNode.getElementsByTagName("v1")[0].textContent;
-					var v2 = currVolumeNode.getElementsByTagName("v2")[0].textContent;
-					var v3 = currVolumeNode.getElementsByTagName("v3")[0].textContent;
+					var v1 = currVolumeNode.getElementsByTagName( 'v1' )[ 0 ].textContent;
+					var v2 = currVolumeNode.getElementsByTagName( 'v2' )[ 0 ].textContent;
+					var v3 = currVolumeNode.getElementsByTagName( 'v3' )[ 0 ].textContent;
 
-					volume.triangles.push( v1 );
-					volume.triangles.push( v2 );
-					volume.triangles.push( v3 );
+					volume.triangles.push( v1, v2, v3 );
 
 				}
 
@@ -269,31 +278,27 @@ THREE.AMFLoader.prototype = {
 
 			while ( currVerticesNode ) {
 
-				if ( currVerticesNode.nodeName === "vertex" ) {
+				if ( currVerticesNode.nodeName === 'vertex' ) {
 
 					var vNode = currVerticesNode.firstElementChild;
 
 					while ( vNode ) {
 
-						if ( vNode.nodeName === "coordinates" ) {
+						if ( vNode.nodeName === 'coordinates' ) {
 
-							var x = vNode.getElementsByTagName("x")[0].textContent;
-							var y = vNode.getElementsByTagName("y")[0].textContent;
-							var z = vNode.getElementsByTagName("z")[0].textContent;
+							var x = vNode.getElementsByTagName( 'x' )[ 0 ].textContent;
+							var y = vNode.getElementsByTagName( 'y' )[ 0 ].textContent;
+							var z = vNode.getElementsByTagName( 'z' )[ 0 ].textContent;
 
-							vertArray.push(x);
-							vertArray.push(y);
-							vertArray.push(z);
+							vertArray.push( x, y, z );
 
-						} else if ( vNode.nodeName === "normal" ) {
+						} else if ( vNode.nodeName === 'normal' ) {
 
-							var nx = vNode.getElementsByTagName("nx")[0].textContent;
-							var ny = vNode.getElementsByTagName("ny")[0].textContent;
-							var nz = vNode.getElementsByTagName("nz")[0].textContent;
+							var nx = vNode.getElementsByTagName( 'nx' )[ 0 ].textContent;
+							var ny = vNode.getElementsByTagName( 'ny' )[ 0 ].textContent;
+							var nz = vNode.getElementsByTagName( 'nz' )[ 0 ].textContent;
 
-							normalArray.push(nx);
-							normalArray.push(ny);
-							normalArray.push(nz);
+							normalArray.push( nx, ny, nz );
 
 						}
 
@@ -302,28 +307,29 @@ THREE.AMFLoader.prototype = {
 					}
 
 				}
+
 				currVerticesNode = currVerticesNode.nextElementSibling;
 
 			}
 
-			return { "vertices": vertArray, "normals": normalArray };
+			return { 'vertices': vertArray, 'normals': normalArray };
 
 		}
 
 		function loadObject( node ) {
 
-			var objId = node.attributes[ 'id' ].textContent;
-			var loadedObject = { "name": "amfobject", "meshes": [] };
+			var objId = node.attributes.id.textContent;
+			var loadedObject = { name: 'amfobject', meshes: [] };
 			var currColor = null;
 			var currObjNode = node.firstElementChild;
 
 			while ( currObjNode ) {
 
-				if ( currObjNode.nodeName === "metadata" ) {
+				if ( currObjNode.nodeName === 'metadata' ) {
 
-					if ( currObjNode.attributes[ 'type' ] !== undefined ) {
+					if ( currObjNode.attributes.type !== undefined ) {
 
-						if ( currObjNode.attributes[ 'type' ].value === 'name' ) {
+						if ( currObjNode.attributes.type.value === 'name' ) {
 
 							loadedObject.name = currObjNode.textContent;
 
@@ -331,25 +337,25 @@ THREE.AMFLoader.prototype = {
 
 					}
 
-				} else if ( currObjNode.nodeName === "color" ) {
+				} else if ( currObjNode.nodeName === 'color' ) {
 
 					currColor = loadColor( currObjNode );
 
-				} else if ( currObjNode.nodeName === "mesh" ) {
+				} else if ( currObjNode.nodeName === 'mesh' ) {
 
 					var currMeshNode = currObjNode.firstElementChild;
-					var mesh = { "vertices": [], "normals": [], "volumes": [], "color": currColor };
+					var mesh = { vertices: [], normals: [], volumes: [], color: currColor };
 
 					while ( currMeshNode ) {
 
-						if ( currMeshNode.nodeName === "vertices" ) {
+						if ( currMeshNode.nodeName === 'vertices' ) {
 
 							var loadedVertices = loadMeshVertices( currMeshNode );
 
 							mesh.normals = mesh.normals.concat( loadedVertices.normals );
 							mesh.vertices = mesh.vertices.concat( loadedVertices.vertices );
 
-						} else if ( currMeshNode.nodeName === "volume" ) {
+						} else if ( currMeshNode.nodeName === 'volume' ) {
 
 							mesh.volumes.push( loadMeshVolume( currMeshNode ) );
 
@@ -372,26 +378,28 @@ THREE.AMFLoader.prototype = {
 		}
 
 		var xmlData = loadDocument( data );
-		var amfName = "";
-		var amfAuthor = "";
+		var amfName = '';
+		var amfAuthor = '';
 		var amfScale = loadDocumentScale( xmlData );
 		var amfMaterials = {};
 		var amfObjects = {};
-		var children = xmlData.documentElement.children;
+		var childNodes = xmlData.documentElement.childNodes;
 
-		for ( var i = 0; i < children.length; i ++ ) {
+		var i, j;
 
-			var child = children[ i ];
+		for ( i = 0; i < childNodes.length; i ++ ) {
+
+			var child = childNodes[ i ];
 
 			if ( child.nodeName === 'metadata' ) {
 
-				if ( child.attributes[ 'type' ] !== undefined ) {
+				if ( child.attributes.type !== undefined ) {
 
-					if ( child.attributes[ 'type' ].value === 'name' ) {
+					if ( child.attributes.type.value === 'name' ) {
 
 						amfName = child.textContent;
 
-					} else if ( child.attributes[ 'type' ].value === 'author' ) {
+					} else if ( child.attributes.type.value === 'author' ) {
 
 						amfAuthor = child.textContent;
 
@@ -416,11 +424,11 @@ THREE.AMFLoader.prototype = {
 		}
 
 		var sceneObject = new THREE.Group();
-		var defaultMaterial = new THREE.MeshPhongMaterial( { color: 0xaaaaff, shading: THREE.FlatShading } );
+		var defaultMaterial = new THREE.MeshPhongMaterial( { color: 0xaaaaff, flatShading: true } );
 
 		sceneObject.name = amfName;
 		sceneObject.userData.author = amfAuthor;
-		sceneObject.userData.loader = "AMF";
+		sceneObject.userData.loader = 'AMF';
 
 		for ( var id in amfObjects ) {
 
@@ -429,16 +437,16 @@ THREE.AMFLoader.prototype = {
 			var newObject = new THREE.Group();
 			newObject.name = part.name || '';
 
-			for ( var i = 0; i < meshes.length; i ++ ) {
+			for ( i = 0; i < meshes.length; i ++ ) {
 
 				var objDefaultMaterial = defaultMaterial;
 				var mesh = meshes[ i ];
-				var vertices = new THREE.BufferAttribute( new Float32Array( mesh.vertices ), 3 );
+				var vertices = new THREE.Float32BufferAttribute( mesh.vertices, 3 );
 				var normals = null;
 
 				if ( mesh.normals.length ) {
 
-					normals = new THREE.BufferAttribute( new Float32Array( mesh.normals ), 3 );
+					normals = new THREE.Float32BufferAttribute( mesh.normals, 3 );
 
 				}
 
@@ -460,19 +468,18 @@ THREE.AMFLoader.prototype = {
 
 				var volumes = mesh.volumes;
 
-				for ( var j = 0; j < volumes.length; j ++ ) {
+				for ( j = 0; j < volumes.length; j ++ ) {
 
 					var volume = volumes[ j ];
 					var newGeometry = new THREE.BufferGeometry();
-					var indexes = new  Uint32Array( volume.triangles );
 					var material = objDefaultMaterial;
 
-					newGeometry.setIndex( new THREE.BufferAttribute( indexes, 1 ) );
-					newGeometry.addAttribute( 'position', vertices.clone() );
+					newGeometry.setIndex( volume.triangles );
+					newGeometry.setAttribute( 'position', vertices.clone() );
 
-					if( normals ) {
+					if ( normals ) {
 
-						newGeometry.addAttribute( 'normal', normals.clone() );
+						newGeometry.setAttribute( 'normal', normals.clone() );
 
 					}
 
@@ -497,4 +504,4 @@ THREE.AMFLoader.prototype = {
 
 	}
 
-};
+} );

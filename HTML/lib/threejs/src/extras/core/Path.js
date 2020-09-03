@@ -1,284 +1,198 @@
-import { PathPrototype } from './PathPrototype';
-import { Shape } from './Shape';
-import { ShapeUtils } from '../ShapeUtils';
-import { Vector2 } from '../../math/Vector2';
-import { CurvePath } from './CurvePath';
-
-/**
- * @author zz85 / http://www.lab4games.net/zz85/blog
- * Creates free form 2d path using series of points, lines or curves.
- *
- **/
+import { Vector2 } from '../../math/Vector2.js';
+import { CurvePath } from './CurvePath.js';
+import { EllipseCurve } from '../curves/EllipseCurve.js';
+import { SplineCurve } from '../curves/SplineCurve.js';
+import { CubicBezierCurve } from '../curves/CubicBezierCurve.js';
+import { QuadraticBezierCurve } from '../curves/QuadraticBezierCurve.js';
+import { LineCurve } from '../curves/LineCurve.js';
 
 function Path( points ) {
 
 	CurvePath.call( this );
+
+	this.type = 'Path';
+
 	this.currentPoint = new Vector2();
 
 	if ( points ) {
 
-		this.fromPoints( points );
+		this.setFromPoints( points );
 
 	}
 
 }
 
-Path.prototype = PathPrototype;
-PathPrototype.constructor = Path;
+Path.prototype = Object.assign( Object.create( CurvePath.prototype ), {
 
+	constructor: Path,
 
-// minimal class for proxing functions to Path. Replaces old "extractSubpaths()"
-function ShapePath() {
-	this.subPaths = [];
-	this.currentPath = null;
-}
+	setFromPoints: function ( points ) {
 
-ShapePath.prototype = {
+		this.moveTo( points[ 0 ].x, points[ 0 ].y );
+
+		for ( let i = 1, l = points.length; i < l; i ++ ) {
+
+			this.lineTo( points[ i ].x, points[ i ].y );
+
+		}
+
+		return this;
+
+	},
+
 	moveTo: function ( x, y ) {
-		this.currentPath = new Path();
-		this.subPaths.push(this.currentPath);
-		this.currentPath.moveTo( x, y );
+
+		this.currentPoint.set( x, y ); // TODO consider referencing vectors instead of copying?
+
+		return this;
+
 	},
+
 	lineTo: function ( x, y ) {
-		this.currentPath.lineTo( x, y );
+
+		const curve = new LineCurve( this.currentPoint.clone(), new Vector2( x, y ) );
+		this.curves.push( curve );
+
+		this.currentPoint.set( x, y );
+
+		return this;
+
 	},
+
 	quadraticCurveTo: function ( aCPx, aCPy, aX, aY ) {
-		this.currentPath.quadraticCurveTo( aCPx, aCPy, aX, aY );
+
+		const curve = new QuadraticBezierCurve(
+			this.currentPoint.clone(),
+			new Vector2( aCPx, aCPy ),
+			new Vector2( aX, aY )
+		);
+
+		this.curves.push( curve );
+
+		this.currentPoint.set( aX, aY );
+
+		return this;
+
 	},
+
 	bezierCurveTo: function ( aCP1x, aCP1y, aCP2x, aCP2y, aX, aY ) {
-		this.currentPath.bezierCurveTo( aCP1x, aCP1y, aCP2x, aCP2y, aX, aY );
+
+		const curve = new CubicBezierCurve(
+			this.currentPoint.clone(),
+			new Vector2( aCP1x, aCP1y ),
+			new Vector2( aCP2x, aCP2y ),
+			new Vector2( aX, aY )
+		);
+
+		this.curves.push( curve );
+
+		this.currentPoint.set( aX, aY );
+
+		return this;
+
 	},
-	splineThru: function ( pts ) {
-		this.currentPath.splineThru( pts );
+
+	splineThru: function ( pts /*Array of Vector*/ ) {
+
+		const npts = [ this.currentPoint.clone() ].concat( pts );
+
+		const curve = new SplineCurve( npts );
+		this.curves.push( curve );
+
+		this.currentPoint.copy( pts[ pts.length - 1 ] );
+
+		return this;
+
 	},
 
-	toShapes: function ( isCCW, noHoles ) {
+	arc: function ( aX, aY, aRadius, aStartAngle, aEndAngle, aClockwise ) {
 
-		function toShapesNoHoles( inSubpaths ) {
+		const x0 = this.currentPoint.x;
+		const y0 = this.currentPoint.y;
 
-			var shapes = [];
+		this.absarc( aX + x0, aY + y0, aRadius,
+			aStartAngle, aEndAngle, aClockwise );
 
-			for ( var i = 0, l = inSubpaths.length; i < l; i ++ ) {
+		return this;
 
-				var tmpPath = inSubpaths[ i ];
+	},
 
-				var tmpShape = new Shape();
-				tmpShape.curves = tmpPath.curves;
+	absarc: function ( aX, aY, aRadius, aStartAngle, aEndAngle, aClockwise ) {
 
-				shapes.push( tmpShape );
+		this.absellipse( aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise );
 
-			}
+		return this;
 
-			return shapes;
+	},
 
-		}
+	ellipse: function ( aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation ) {
 
-		function isPointInsidePolygon( inPt, inPolygon ) {
+		const x0 = this.currentPoint.x;
+		const y0 = this.currentPoint.y;
 
-			var polyLen = inPolygon.length;
+		this.absellipse( aX + x0, aY + y0, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation );
 
-			// inPt on polygon contour => immediate success    or
-			// toggling of inside/outside at every single! intersection point of an edge
-			//  with the horizontal line through inPt, left of inPt
-			//  not counting lowerY endpoints of edges and whole edges on that line
-			var inside = false;
-			for ( var p = polyLen - 1, q = 0; q < polyLen; p = q ++ ) {
+		return this;
 
-				var edgeLowPt  = inPolygon[ p ];
-				var edgeHighPt = inPolygon[ q ];
+	},
 
-				var edgeDx = edgeHighPt.x - edgeLowPt.x;
-				var edgeDy = edgeHighPt.y - edgeLowPt.y;
+	absellipse: function ( aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation ) {
 
-				if ( Math.abs( edgeDy ) > Number.EPSILON ) {
+		const curve = new EllipseCurve( aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation );
 
-					// not parallel
-					if ( edgeDy < 0 ) {
+		if ( this.curves.length > 0 ) {
 
-						edgeLowPt  = inPolygon[ q ]; edgeDx = - edgeDx;
-						edgeHighPt = inPolygon[ p ]; edgeDy = - edgeDy;
+			// if a previous curve is present, attempt to join
+			const firstPoint = curve.getPoint( 0 );
 
-					}
-					if ( ( inPt.y < edgeLowPt.y ) || ( inPt.y > edgeHighPt.y ) ) 		continue;
+			if ( ! firstPoint.equals( this.currentPoint ) ) {
 
-					if ( inPt.y === edgeLowPt.y ) {
-
-						if ( inPt.x === edgeLowPt.x )		return	true;		// inPt is on contour ?
-						// continue;				// no intersection or edgeLowPt => doesn't count !!!
-
-					} else {
-
-						var perpEdge = edgeDy * ( inPt.x - edgeLowPt.x ) - edgeDx * ( inPt.y - edgeLowPt.y );
-						if ( perpEdge === 0 )				return	true;		// inPt is on contour ?
-						if ( perpEdge < 0 ) 				continue;
-						inside = ! inside;		// true intersection left of inPt
-
-					}
-
-				} else {
-
-					// parallel or collinear
-					if ( inPt.y !== edgeLowPt.y ) 		continue;			// parallel
-					// edge lies on the same horizontal line as inPt
-					if ( ( ( edgeHighPt.x <= inPt.x ) && ( inPt.x <= edgeLowPt.x ) ) ||
-						 ( ( edgeLowPt.x <= inPt.x ) && ( inPt.x <= edgeHighPt.x ) ) )		return	true;	// inPt: Point on contour !
-					// continue;
-
-				}
-
-			}
-
-			return	inside;
-
-		}
-
-		var isClockWise = ShapeUtils.isClockWise;
-
-		var subPaths = this.subPaths;
-		if ( subPaths.length === 0 ) return [];
-
-		if ( noHoles === true )	return	toShapesNoHoles( subPaths );
-
-
-		var solid, tmpPath, tmpShape, shapes = [];
-
-		if ( subPaths.length === 1 ) {
-
-			tmpPath = subPaths[ 0 ];
-			tmpShape = new Shape();
-			tmpShape.curves = tmpPath.curves;
-			shapes.push( tmpShape );
-			return shapes;
-
-		}
-
-		var holesFirst = ! isClockWise( subPaths[ 0 ].getPoints() );
-		holesFirst = isCCW ? ! holesFirst : holesFirst;
-
-		// console.log("Holes first", holesFirst);
-
-		var betterShapeHoles = [];
-		var newShapes = [];
-		var newShapeHoles = [];
-		var mainIdx = 0;
-		var tmpPoints;
-
-		newShapes[ mainIdx ] = undefined;
-		newShapeHoles[ mainIdx ] = [];
-
-		for ( var i = 0, l = subPaths.length; i < l; i ++ ) {
-
-			tmpPath = subPaths[ i ];
-			tmpPoints = tmpPath.getPoints();
-			solid = isClockWise( tmpPoints );
-			solid = isCCW ? ! solid : solid;
-
-			if ( solid ) {
-
-				if ( ( ! holesFirst ) && ( newShapes[ mainIdx ] ) )	mainIdx ++;
-
-				newShapes[ mainIdx ] = { s: new Shape(), p: tmpPoints };
-				newShapes[ mainIdx ].s.curves = tmpPath.curves;
-
-				if ( holesFirst )	mainIdx ++;
-				newShapeHoles[ mainIdx ] = [];
-
-				//console.log('cw', i);
-
-			} else {
-
-				newShapeHoles[ mainIdx ].push( { h: tmpPath, p: tmpPoints[ 0 ] } );
-
-				//console.log('ccw', i);
+				this.lineTo( firstPoint.x, firstPoint.y );
 
 			}
 
 		}
 
-		// only Holes? -> probably all Shapes with wrong orientation
-		if ( ! newShapes[ 0 ] )	return	toShapesNoHoles( subPaths );
+		this.curves.push( curve );
 
+		const lastPoint = curve.getPoint( 1 );
+		this.currentPoint.copy( lastPoint );
 
-		if ( newShapes.length > 1 ) {
+		return this;
 
-			var ambiguous = false;
-			var toChange = [];
+	},
 
-			for ( var sIdx = 0, sLen = newShapes.length; sIdx < sLen; sIdx ++ ) {
+	copy: function ( source ) {
 
-				betterShapeHoles[ sIdx ] = [];
+		CurvePath.prototype.copy.call( this, source );
 
-			}
+		this.currentPoint.copy( source.currentPoint );
 
-			for ( var sIdx = 0, sLen = newShapes.length; sIdx < sLen; sIdx ++ ) {
+		return this;
 
-				var sho = newShapeHoles[ sIdx ];
+	},
 
-				for ( var hIdx = 0; hIdx < sho.length; hIdx ++ ) {
+	toJSON: function () {
 
-					var ho = sho[ hIdx ];
-					var hole_unassigned = true;
+		const data = CurvePath.prototype.toJSON.call( this );
 
-					for ( var s2Idx = 0; s2Idx < newShapes.length; s2Idx ++ ) {
+		data.currentPoint = this.currentPoint.toArray();
 
-						if ( isPointInsidePolygon( ho.p, newShapes[ s2Idx ].p ) ) {
+		return data;
 
-							if ( sIdx !== s2Idx )	toChange.push( { froms: sIdx, tos: s2Idx, hole: hIdx } );
-							if ( hole_unassigned ) {
+	},
 
-								hole_unassigned = false;
-								betterShapeHoles[ s2Idx ].push( ho );
+	fromJSON: function ( json ) {
 
-							} else {
+		CurvePath.prototype.fromJSON.call( this, json );
 
-								ambiguous = true;
+		this.currentPoint.fromArray( json.currentPoint );
 
-							}
-
-						}
-
-					}
-					if ( hole_unassigned ) {
-
-						betterShapeHoles[ sIdx ].push( ho );
-
-					}
-
-				}
-
-			}
-			// console.log("ambiguous: ", ambiguous);
-			if ( toChange.length > 0 ) {
-
-				// console.log("to change: ", toChange);
-				if ( ! ambiguous )	newShapeHoles = betterShapeHoles;
-
-			}
-
-		}
-
-		var tmpHoles;
-
-		for ( var i = 0, il = newShapes.length; i < il; i ++ ) {
-
-			tmpShape = newShapes[ i ].s;
-			shapes.push( tmpShape );
-			tmpHoles = newShapeHoles[ i ];
-
-			for ( var j = 0, jl = tmpHoles.length; j < jl; j ++ ) {
-
-				tmpShape.holes.push( tmpHoles[ j ].h );
-
-			}
-
-		}
-
-		//console.log("shape", shapes);
-
-		return shapes;
+		return this;
 
 	}
-}
+
+} );
 
 
-export { ShapePath, Path };
+export { Path };

@@ -1,105 +1,110 @@
-import { BufferGeometry } from '../core/BufferGeometry';
-import { Float32BufferAttribute } from '../core/BufferAttribute';
-import { Geometry } from '../core/Geometry';
-import { _Math } from '../math/Math';
+import { BufferGeometry } from '../core/BufferGeometry.js';
+import { Float32BufferAttribute } from '../core/BufferAttribute.js';
+import { Geometry } from '../core/Geometry.js';
+import { MathUtils } from '../math/MathUtils.js';
 
-/**
- * @author WestLangley / http://github.com/WestLangley
- */
+class EdgesGeometry extends BufferGeometry {
 
-function EdgesGeometry( geometry, thresholdAngle ) {
+	constructor( geometry, thresholdAngle ) {
 
-	BufferGeometry.call( this );
+		super();
 
-	thresholdAngle = ( thresholdAngle !== undefined ) ? thresholdAngle : 1;
+		this.type = 'EdgesGeometry';
 
-	var thresholdDot = Math.cos( _Math.DEG2RAD * thresholdAngle );
+		this.parameters = {
+			thresholdAngle: thresholdAngle
+		};
 
-	var edge = [ 0, 0 ], hash = {};
+		thresholdAngle = ( thresholdAngle !== undefined ) ? thresholdAngle : 1;
 
-	function sortFunction( a, b ) {
+		// buffer
 
-		return a - b;
+		const vertices = [];
 
-	}
+		// helper variables
 
-	var keys = [ 'a', 'b', 'c' ];
+		const thresholdDot = Math.cos( MathUtils.DEG2RAD * thresholdAngle );
+		const edge = [ 0, 0 ], edges = {};
+		let edge1, edge2, key;
+		const keys = [ 'a', 'b', 'c' ];
 
-	var geometry2;
+		// prepare source geometry
 
-	if ( geometry.isBufferGeometry ) {
+		let geometry2;
 
-		geometry2 = new Geometry();
-		geometry2.fromBufferGeometry( geometry );
+		if ( geometry.isBufferGeometry ) {
 
-	} else {
+			geometry2 = new Geometry();
+			geometry2.fromBufferGeometry( geometry );
 
-		geometry2 = geometry.clone();
+		} else {
 
-	}
+			geometry2 = geometry.clone();
 
-	geometry2.mergeVertices();
-	geometry2.computeFaceNormals();
+		}
 
-	var vertices = geometry2.vertices;
-	var faces = geometry2.faces;
+		geometry2.mergeVertices();
+		geometry2.computeFaceNormals();
 
-	for ( var i = 0, l = faces.length; i < l; i ++ ) {
+		const sourceVertices = geometry2.vertices;
+		const faces = geometry2.faces;
 
-		var face = faces[ i ];
+		// now create a data structure where each entry represents an edge with its adjoining faces
 
-		for ( var j = 0; j < 3; j ++ ) {
+		for ( let i = 0, l = faces.length; i < l; i ++ ) {
 
-			edge[ 0 ] = face[ keys[ j ] ];
-			edge[ 1 ] = face[ keys[ ( j + 1 ) % 3 ] ];
-			edge.sort( sortFunction );
+			const face = faces[ i ];
 
-			var key = edge.toString();
+			for ( let j = 0; j < 3; j ++ ) {
 
-			if ( hash[ key ] === undefined ) {
+				edge1 = face[ keys[ j ] ];
+				edge2 = face[ keys[ ( j + 1 ) % 3 ] ];
+				edge[ 0 ] = Math.min( edge1, edge2 );
+				edge[ 1 ] = Math.max( edge1, edge2 );
 
-				hash[ key ] = { vert1: edge[ 0 ], vert2: edge[ 1 ], face1: i, face2: undefined };
+				key = edge[ 0 ] + ',' + edge[ 1 ];
 
-			} else {
+				if ( edges[ key ] === undefined ) {
 
-				hash[ key ].face2 = i;
+					edges[ key ] = { index1: edge[ 0 ], index2: edge[ 1 ], face1: i, face2: undefined };
+
+				} else {
+
+					edges[ key ].face2 = i;
+
+				}
 
 			}
 
 		}
 
-	}
+		// generate vertices
 
-	var coords = [];
+		for ( key in edges ) {
 
-	for ( var key in hash ) {
+			const e = edges[ key ];
 
-		var h = hash[ key ];
+			// an edge is only rendered if the angle (in degrees) between the face normals of the adjoining faces exceeds this value. default = 1 degree.
 
-		// An edge is only rendered if the angle (in degrees) between the face normals of the adjoining faces exceeds this value. default = 1 degree.
+			if ( e.face2 === undefined || faces[ e.face1 ].normal.dot( faces[ e.face2 ].normal ) <= thresholdDot ) {
 
-		if ( h.face2 === undefined || faces[ h.face1 ].normal.dot( faces[ h.face2 ].normal ) <= thresholdDot ) {
+				let vertex = sourceVertices[ e.index1 ];
+				vertices.push( vertex.x, vertex.y, vertex.z );
 
-			var vertex = vertices[ h.vert1 ];
-			coords.push( vertex.x );
-			coords.push( vertex.y );
-			coords.push( vertex.z );
+				vertex = sourceVertices[ e.index2 ];
+				vertices.push( vertex.x, vertex.y, vertex.z );
 
-			vertex = vertices[ h.vert2 ];
-			coords.push( vertex.x );
-			coords.push( vertex.y );
-			coords.push( vertex.z );
+			}
 
 		}
 
+		// build geometry
+
+		this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+
 	}
 
-	this.addAttribute( 'position', new Float32BufferAttribute( coords, 3 ) );
-
 }
-
-EdgesGeometry.prototype = Object.create( BufferGeometry.prototype );
-EdgesGeometry.prototype.constructor = EdgesGeometry;
 
 
 export { EdgesGeometry };

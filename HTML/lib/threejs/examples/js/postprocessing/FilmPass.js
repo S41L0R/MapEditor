@@ -1,6 +1,4 @@
-/**
- * @author alteredq / http://alteredqualia.com/
- */
+console.warn( "THREE.FilmPass: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 
 THREE.FilmPass = function ( noiseIntensity, scanlinesIntensity, scanlinesCount, grayscale ) {
 
@@ -26,11 +24,7 @@ THREE.FilmPass = function ( noiseIntensity, scanlinesIntensity, scanlinesCount, 
 	if ( scanlinesIntensity !== undefined ) this.uniforms.sIntensity.value = scanlinesIntensity;
 	if ( scanlinesCount !== undefined ) this.uniforms.sCount.value = scanlinesCount;
 
-	this.camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-	this.scene  = new THREE.Scene();
-
-	this.quad = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), null );
-	this.scene.add( this.quad );
+	this.fsQuad = new THREE.Pass.FullScreenQuad( this.material );
 
 };
 
@@ -38,20 +32,21 @@ THREE.FilmPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ),
 
 	constructor: THREE.FilmPass,
 
-	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+	render: function ( renderer, writeBuffer, readBuffer, deltaTime /*, maskActive */ ) {
 
 		this.uniforms[ "tDiffuse" ].value = readBuffer.texture;
-		this.uniforms[ "time" ].value += delta;
-
-		this.quad.material = this.material;
+		this.uniforms[ "time" ].value += deltaTime;
 
 		if ( this.renderToScreen ) {
 
-			renderer.render( this.scene, this.camera );
+			renderer.setRenderTarget( null );
+			this.fsQuad.render( renderer );
 
 		} else {
 
-			renderer.render( this.scene, this.camera, writeBuffer, this.clear );
+			renderer.setRenderTarget( writeBuffer );
+			if ( this.clear ) renderer.clear();
+			this.fsQuad.render( renderer );
 
 		}
 

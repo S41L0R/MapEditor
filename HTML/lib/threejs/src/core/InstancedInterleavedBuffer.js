@@ -1,8 +1,4 @@
-import { InterleavedBuffer } from './InterleavedBuffer';
-
-/**
- * @author benaadams / https://twitter.com/ben_a_adams
- */
+import { InterleavedBuffer } from './InterleavedBuffer.js';
 
 function InstancedInterleavedBuffer( array, stride, meshPerAttribute ) {
 
@@ -12,20 +8,43 @@ function InstancedInterleavedBuffer( array, stride, meshPerAttribute ) {
 
 }
 
-InstancedInterleavedBuffer.prototype = Object.create( InterleavedBuffer.prototype );
-InstancedInterleavedBuffer.prototype.constructor = InstancedInterleavedBuffer;
+InstancedInterleavedBuffer.prototype = Object.assign( Object.create( InterleavedBuffer.prototype ), {
 
-InstancedInterleavedBuffer.prototype.isInstancedInterleavedBuffer = true;
+	constructor: InstancedInterleavedBuffer,
 
-InstancedInterleavedBuffer.prototype.copy = function ( source ) {
+	isInstancedInterleavedBuffer: true,
 
-	InterleavedBuffer.prototype.copy.call( this, source );
+	copy: function ( source ) {
 
-	this.meshPerAttribute = source.meshPerAttribute;
+		InterleavedBuffer.prototype.copy.call( this, source );
 
-	return this;
+		this.meshPerAttribute = source.meshPerAttribute;
 
-};
+		return this;
 
+	},
+
+	clone: function ( data ) {
+
+		const ib = InterleavedBuffer.prototype.clone.call( this, data );
+
+		ib.meshPerAttribute = this.meshPerAttribute;
+
+		return ib;
+
+	},
+
+	toJSON: function ( data ) {
+
+		const json = InterleavedBuffer.prototype.toJSON.call( this, data );
+
+		json.isInstancedInterleavedBuffer = true;
+		json.meshPerAttribute = this.meshPerAttribute;
+
+		return json;
+
+	}
+
+} );
 
 export { InstancedInterleavedBuffer };

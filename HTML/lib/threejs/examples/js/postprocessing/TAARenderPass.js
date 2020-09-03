@@ -1,8 +1,7 @@
+console.warn( "THREE.TAARenderPass: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 /**
  *
  * Temporal Anti-Aliasing Render Pass
- *
- * @author bhouston / http://clara.io/
  *
  * When there is no motion in the scene, the TAA render pass accumulates jittered camera samples across frames to create a high quality anti-aliased result.
  *
@@ -12,7 +11,7 @@
  *
  */
 
-THREE.TAARenderPass = function ( scene, camera, params ) {
+THREE.TAARenderPass = function ( scene, camera, clearColor, clearAlpha ) {
 
 	if ( THREE.SSAARenderPass === undefined ) {
 
@@ -20,7 +19,7 @@ THREE.TAARenderPass = function ( scene, camera, params ) {
 
 	}
 
-	THREE.SSAARenderPass.call( this, scene, camera, params );
+	THREE.SSAARenderPass.call( this, scene, camera, clearColor, clearAlpha );
 
 	this.sampleLevel = 0;
 	this.accumulate = false;
@@ -33,14 +32,14 @@ THREE.TAARenderPass.prototype = Object.assign( Object.create( THREE.SSAARenderPa
 
 	constructor: THREE.TAARenderPass,
 
-	render: function ( renderer, writeBuffer, readBuffer, delta ) {
+	render: function ( renderer, writeBuffer, readBuffer, deltaTime ) {
 
-		if( ! this.accumulate ) {
+		if ( ! this.accumulate ) {
 
-				THREE.SSAARenderPass.prototype.render.call( this, renderer, writeBuffer, readBuffer, delta );
+			THREE.SSAARenderPass.prototype.render.call( this, renderer, writeBuffer, readBuffer, deltaTime );
 
-				this.accumulateIndex = -1;
-				return;
+			this.accumulateIndex = - 1;
+			return;
 
 		}
 
@@ -49,20 +48,22 @@ THREE.TAARenderPass.prototype = Object.assign( Object.create( THREE.SSAARenderPa
 		if ( ! this.sampleRenderTarget ) {
 
 			this.sampleRenderTarget = new THREE.WebGLRenderTarget( readBuffer.width, readBuffer.height, this.params );
+			this.sampleRenderTarget.texture.name = "TAARenderPass.sample";
 
 		}
 
 		if ( ! this.holdRenderTarget ) {
 
 			this.holdRenderTarget = new THREE.WebGLRenderTarget( readBuffer.width, readBuffer.height, this.params );
+			this.holdRenderTarget.texture.name = "TAARenderPass.hold";
 
 		}
 
-		if( this.accumulate && this.accumulateIndex === -1 ) {
+		if ( this.accumulate && this.accumulateIndex === - 1 ) {
 
-				THREE.SSAARenderPass.prototype.render.call( this, renderer, this.holdRenderTarget, readBuffer, delta );
+			THREE.SSAARenderPass.prototype.render.call( this, renderer, this.holdRenderTarget, readBuffer, deltaTime );
 
-				this.accumulateIndex = 0;
+			this.accumulateIndex = 0;
 
 		}
 
@@ -71,7 +72,7 @@ THREE.TAARenderPass.prototype = Object.assign( Object.create( THREE.SSAARenderPa
 
 		var sampleWeight = 1.0 / ( jitterOffsets.length );
 
-		if( this.accumulateIndex >= 0 && this.accumulateIndex < jitterOffsets.length ) {
+		if ( this.accumulateIndex >= 0 && this.accumulateIndex < jitterOffsets.length ) {
 
 			this.copyUniforms[ "opacity" ].value = sampleWeight;
 			this.copyUniforms[ "tDiffuse" ].value = writeBuffer.texture;
@@ -81,18 +82,28 @@ THREE.TAARenderPass.prototype = Object.assign( Object.create( THREE.SSAARenderPa
 			for ( var i = 0; i < numSamplesPerFrame; i ++ ) {
 
 				var j = this.accumulateIndex;
-				var jitterOffset = jitterOffsets[j];
+				var jitterOffset = jitterOffsets[ j ];
+
 				if ( this.camera.setViewOffset ) {
+
 					this.camera.setViewOffset( readBuffer.width, readBuffer.height,
-						jitterOffset[ 0 ] * 0.0625, jitterOffset[ 1 ] * 0.0625,   // 0.0625 = 1 / 16
+						jitterOffset[ 0 ] * 0.0625, jitterOffset[ 1 ] * 0.0625, // 0.0625 = 1 / 16
 						readBuffer.width, readBuffer.height );
+
 				}
 
-				renderer.render( this.scene, this.camera, writeBuffer, true );
-				renderer.render( this.scene2, this.camera2, this.sampleRenderTarget, ( this.accumulateIndex === 0 ) );
+				renderer.setRenderTarget( writeBuffer );
+				renderer.clear();
+				renderer.render( this.scene, this.camera );
+
+				renderer.setRenderTarget( this.sampleRenderTarget );
+				if ( this.accumulateIndex === 0 ) renderer.clear();
+				this.fsQuad.render( renderer );
 
 				this.accumulateIndex ++;
-				if( this.accumulateIndex >= jitterOffsets.length ) break;
+
+				if ( this.accumulateIndex >= jitterOffsets.length ) break;
+
 			}
 
 			if ( this.camera.clearViewOffset ) this.camera.clearViewOffset();
@@ -101,19 +112,28 @@ THREE.TAARenderPass.prototype = Object.assign( Object.create( THREE.SSAARenderPa
 
 		var accumulationWeight = this.accumulateIndex * sampleWeight;
 
-		if( accumulationWeight > 0 ) {
+		if ( accumulationWeight > 0 ) {
+
 			this.copyUniforms[ "opacity" ].value = 1.0;
 			this.copyUniforms[ "tDiffuse" ].value = this.sampleRenderTarget.texture;
-			renderer.render( this.scene2, this.camera2, writeBuffer, true );
+			renderer.setRenderTarget( writeBuffer );
+			renderer.clear();
+			this.fsQuad.render( renderer );
+
 		}
-		if( accumulationWeight < 1.0 ) {
+
+		if ( accumulationWeight < 1.0 ) {
+
 			this.copyUniforms[ "opacity" ].value = 1.0 - accumulationWeight;
 			this.copyUniforms[ "tDiffuse" ].value = this.holdRenderTarget.texture;
-			renderer.render( this.scene2, this.camera2, writeBuffer, ( accumulationWeight === 0 ) );
+			renderer.setRenderTarget( writeBuffer );
+			if ( accumulationWeight === 0 ) renderer.clear();
+			this.fsQuad.render( renderer );
+
 		}
 
 		renderer.autoClear = autoClear;
 
 	}
 
-});
+} );
