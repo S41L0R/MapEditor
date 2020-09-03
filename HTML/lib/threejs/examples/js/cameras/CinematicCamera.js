@@ -1,23 +1,27 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author greggman / http://games.greggman.com/
- * @author zz85 / http://www.lab4games.net/zz85/blog
- * @author kaypiKun
- */
+console.warn( "THREE.CinematicCamera: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 
-THREE.CinematicCamera = function( fov, aspect, near, far ) {
+THREE.CinematicCamera = function ( fov, aspect, near, far ) {
 
 	THREE.PerspectiveCamera.call( this, fov, aspect, near, far );
 
-	this.type = "CinematicCamera";
+	this.type = 'CinematicCamera';
 
-	this.postprocessing = { enabled	: true };
+	this.postprocessing = { enabled: true };
 	this.shaderSettings = {
 		rings: 3,
 		samples: 4
 	};
 
-	this.material_depth = new THREE.MeshDepthMaterial();
+	var depthShader = THREE.BokehDepthShader;
+
+	this.materialDepth = new THREE.ShaderMaterial( {
+		uniforms: depthShader.uniforms,
+		vertexShader: depthShader.vertexShader,
+		fragmentShader: depthShader.fragmentShader
+	} );
+
+	this.materialDepth.uniforms[ 'mNear' ].value = near;
+	this.materialDepth.uniforms[ 'mFar' ].value = far;
 
 	// In case of cinematicCamera, having a default lens set is important
 	this.setLens();
@@ -151,7 +155,8 @@ THREE.CinematicCamera.prototype.initPostProcessing = function () {
 			fragmentShader: bokeh_shader.fragmentShader,
 			defines: {
 				RINGS: this.shaderSettings.rings,
-				SAMPLES: this.shaderSettings.samples
+				SAMPLES: this.shaderSettings.samples,
+				DEPTH_PACKING: 1
 			}
 		} );
 
@@ -167,21 +172,30 @@ THREE.CinematicCamera.prototype.renderCinematic = function ( scene, renderer ) {
 
 	if ( this.postprocessing.enabled ) {
 
+		var currentRenderTarget = renderer.getRenderTarget();
+
 		renderer.clear();
 
 		// Render scene into texture
 
 		scene.overrideMaterial = null;
-		renderer.render( scene, camera, this.postprocessing.rtTextureColor, true );
+		renderer.setRenderTarget( this.postprocessing.rtTextureColor );
+		renderer.clear();
+		renderer.render( scene, this );
 
 		// Render depth into texture
 
-		scene.overrideMaterial = this.material_depth;
-		renderer.render( scene, camera, this.postprocessing.rtTextureDepth, true );
+		scene.overrideMaterial = this.materialDepth;
+		renderer.setRenderTarget( this.postprocessing.rtTextureDepth );
+		renderer.clear();
+		renderer.render( scene, this );
 
 		// Render bokeh composite
 
+		renderer.setRenderTarget( null );
 		renderer.render( this.postprocessing.scene, this.postprocessing.camera );
+
+		renderer.setRenderTarget( currentRenderTarget );
 
 	}
 

@@ -1,11 +1,6 @@
-import { Light } from './Light';
-import { DirectionalLightShadow } from './DirectionalLightShadow';
-import { Object3D } from '../core/Object3D';
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author alteredq / http://alteredqualia.com/
- */
+import { Light } from './Light.js';
+import { DirectionalLightShadow } from './DirectionalLightShadow.js';
+import { Object3D } from '../core/Object3D.js';
 
 function DirectionalLight( color, intensity ) {
 

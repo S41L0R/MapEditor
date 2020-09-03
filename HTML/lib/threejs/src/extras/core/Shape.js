@@ -1,34 +1,27 @@
-import { PathPrototype } from './PathPrototype';
-import { Path } from './Path';
+import { Path } from './Path.js';
+import { MathUtils } from '../../math/MathUtils.js';
 
-/**
- * @author zz85 / http://www.lab4games.net/zz85/blog
- * Defines a 2d shape plane using paths.
- **/
+function Shape( points ) {
 
-// STEP 1 Create a path.
-// STEP 2 Turn path into shape.
-// STEP 3 ExtrudeGeometry takes in Shape/Shapes
-// STEP 3a - Extract points from each shape, turn to vertices
-// STEP 3b - Triangulate each shape, add faces.
+	Path.call( this, points );
 
-function Shape() {
+	this.uuid = MathUtils.generateUUID();
 
-	Path.apply( this, arguments );
+	this.type = 'Shape';
 
 	this.holes = [];
 
 }
 
-Shape.prototype = Object.assign( Object.create( PathPrototype ), {
+Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	constructor: Shape,
 
 	getPointsHoles: function ( divisions ) {
 
-		var holesPts = [];
+		const holesPts = [];
 
-		for ( var i = 0, l = this.holes.length; i < l; i ++ ) {
+		for ( let i = 0, l = this.holes.length; i < l; i ++ ) {
 
 			holesPts[ i ] = this.holes[ i ].getPoints( divisions );
 
@@ -38,9 +31,9 @@ Shape.prototype = Object.assign( Object.create( PathPrototype ), {
 
 	},
 
-	// Get points of shape and holes (keypoints based on segments parameter)
+	// get points of shape and holes (keypoints based on segments parameter)
 
-	extractAllPoints: function ( divisions ) {
+	extractPoints: function ( divisions ) {
 
 		return {
 
@@ -51,9 +44,57 @@ Shape.prototype = Object.assign( Object.create( PathPrototype ), {
 
 	},
 
-	extractPoints: function ( divisions ) {
+	copy: function ( source ) {
 
-		return this.extractAllPoints( divisions );
+		Path.prototype.copy.call( this, source );
+
+		this.holes = [];
+
+		for ( let i = 0, l = source.holes.length; i < l; i ++ ) {
+
+			const hole = source.holes[ i ];
+
+			this.holes.push( hole.clone() );
+
+		}
+
+		return this;
+
+	},
+
+	toJSON: function () {
+
+		const data = Path.prototype.toJSON.call( this );
+
+		data.uuid = this.uuid;
+		data.holes = [];
+
+		for ( let i = 0, l = this.holes.length; i < l; i ++ ) {
+
+			const hole = this.holes[ i ];
+			data.holes.push( hole.toJSON() );
+
+		}
+
+		return data;
+
+	},
+
+	fromJSON: function ( json ) {
+
+		Path.prototype.fromJSON.call( this, json );
+
+		this.uuid = json.uuid;
+		this.holes = [];
+
+		for ( let i = 0, l = json.holes.length; i < l; i ++ ) {
+
+			const hole = json.holes[ i ];
+			this.holes.push( new Path().fromJSON( hole ) );
+
+		}
+
+		return this;
 
 	}
 

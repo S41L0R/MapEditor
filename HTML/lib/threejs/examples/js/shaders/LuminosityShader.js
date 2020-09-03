@@ -1,6 +1,5 @@
+console.warn( "THREE.LuminosityShader: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 /**
- * @author alteredq / http://alteredqualia.com/
- *
  * Luminosity
  * http://en.wikipedia.org/wiki/Luminosity
  */
@@ -19,9 +18,9 @@ THREE.LuminosityShader = {
 
 		"void main() {",
 
-			"vUv = uv;",
+		"	vUv = uv;",
 
-			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+		"	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
 		"}"
 
@@ -29,19 +28,19 @@ THREE.LuminosityShader = {
 
 	fragmentShader: [
 
+		"#include <common>",
+
 		"uniform sampler2D tDiffuse;",
 
 		"varying vec2 vUv;",
 
 		"void main() {",
 
-			"vec4 texel = texture2D( tDiffuse, vUv );",
+		"	vec4 texel = texture2D( tDiffuse, vUv );",
 
-			"vec3 luma = vec3( 0.299, 0.587, 0.114 );",
+		"	float l = linearToRelativeLuminance( texel.rgb );",
 
-			"float v = dot( texel.xyz, luma );",
-
-			"gl_FragColor = vec4( v, v, v, texel.w );",
+		"	gl_FragColor = vec4( l, l, l, texel.w );",
 
 		"}"
 

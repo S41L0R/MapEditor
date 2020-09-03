@@ -6,6 +6,19 @@ if ( Number.EPSILON === undefined ) {
 
 }
 
+if ( Number.isInteger === undefined ) {
+
+	// Missing in IE
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+
+	Number.isInteger = function ( value ) {
+
+		return typeof value === 'number' && isFinite( value ) && Math.floor( value ) === value;
+
+	};
+
+}
+
 //
 
 if ( Math.sign === undefined ) {
@@ -20,9 +33,9 @@ if ( Math.sign === undefined ) {
 
 }
 
-if ( Function.prototype.name === undefined ) {
+if ( 'name' in Function.prototype === false ) {
 
-	// Missing in IE9-11.
+	// Missing in IE
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
 
 	Object.defineProperty( Function.prototype, 'name', {
@@ -39,36 +52,32 @@ if ( Function.prototype.name === undefined ) {
 
 if ( Object.assign === undefined ) {
 
-	// Missing in IE.
+	// Missing in IE
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 
-	( function () {
+	Object.assign = function ( target ) {
 
-		Object.assign = function ( target ) {
+		'use strict';
 
-			'use strict';
+		if ( target === undefined || target === null ) {
 
-			if ( target === undefined || target === null ) {
+			throw new TypeError( 'Cannot convert undefined or null to object' );
 
-				throw new TypeError( 'Cannot convert undefined or null to object' );
+		}
 
-			}
+		const output = Object( target );
 
-			var output = Object( target );
+		for ( let index = 1; index < arguments.length; index ++ ) {
 
-			for ( var index = 1; index < arguments.length; index ++ ) {
+			const source = arguments[ index ];
 
-				var source = arguments[ index ];
+			if ( source !== undefined && source !== null ) {
 
-				if ( source !== undefined && source !== null ) {
+				for ( const nextKey in source ) {
 
-					for ( var nextKey in source ) {
+					if ( Object.prototype.hasOwnProperty.call( source, nextKey ) ) {
 
-						if ( Object.prototype.hasOwnProperty.call( source, nextKey ) ) {
-
-							output[ nextKey ] = source[ nextKey ];
-
-						}
+						output[ nextKey ] = source[ nextKey ];
 
 					}
 
@@ -76,10 +85,10 @@ if ( Object.assign === undefined ) {
 
 			}
 
-			return output;
+		}
 
-		};
+		return output;
 
-	} )();
+	};
 
 }

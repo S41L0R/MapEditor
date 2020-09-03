@@ -1,8 +1,4 @@
-import { Light } from './Light';
-
-/**
- * @author mrdoob / http://mrdoob.com/
- */
+import { Light } from './Light.js';
 
 function AmbientLight( color, intensity ) {
 

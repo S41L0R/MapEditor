@@ -1,8 +1,4 @@
-import { Object3D } from '../core/Object3D';
-
-/**
- * @author mrdoob / http://mrdoob.com/
- */
+import { Object3D } from '../core/Object3D.js';
 
 function Group() {
 
@@ -14,7 +10,9 @@ function Group() {
 
 Group.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
-	constructor: Group
+	constructor: Group,
+
+	isGroup: true
 
 } );
 

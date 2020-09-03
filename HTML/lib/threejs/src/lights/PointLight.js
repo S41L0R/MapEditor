@@ -1,11 +1,5 @@
-import { Light } from './Light';
-import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
-import { LightShadow } from './LightShadow';
-
-/**
- * @author mrdoob / http://mrdoob.com/
- */
-
+import { Light } from './Light.js';
+import { PointLightShadow } from './PointLightShadow.js';
 
 function PointLight( color, intensity, distance, decay ) {
 
@@ -15,22 +9,25 @@ function PointLight( color, intensity, distance, decay ) {
 
 	Object.defineProperty( this, 'power', {
 		get: function () {
+
 			// intensity = power per solid angle.
-			// ref: equation (15) from http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+			// ref: equation (15) from https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
 			return this.intensity * 4 * Math.PI;
 
 		},
 		set: function ( power ) {
+
 			// intensity = power per solid angle.
-			// ref: equation (15) from http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+			// ref: equation (15) from https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
 			this.intensity = power / ( 4 * Math.PI );
+
 		}
 	} );
 
 	this.distance = ( distance !== undefined ) ? distance : 0;
 	this.decay = ( decay !== undefined ) ? decay : 1;	// for physically correct lights, should be 2.
 
-	this.shadow = new LightShadow( new PerspectiveCamera( 90, 1, 0.5, 500 ) );
+	this.shadow = new PointLightShadow();
 
 }
 

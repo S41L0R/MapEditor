@@ -1,7 +1,5 @@
-/*
- *	@author zz85 / http://twitter.com/blurspline / http://www.lab4games.net/zz85/blog
- *	@author centerionware / http://www.centerionware.com
- *
+console.warn( "THREE.SubdivisionModifier: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
+/**
  *	Subdivision Geometry Modifier
  *		using Loop Subdivision Scheme
  *
@@ -23,6 +21,18 @@ THREE.SubdivisionModifier = function ( subdivisions ) {
 // Applies the "modify" pattern
 THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
+	if ( geometry.isBufferGeometry ) {
+
+		geometry = new THREE.Geometry().fromBufferGeometry( geometry );
+
+	} else {
+
+		geometry = geometry.clone();
+
+	}
+
+	geometry.mergeVertices();
+
 	var repeats = this.subdivisions;
 
 	while ( repeats -- > 0 ) {
@@ -34,12 +44,13 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 	geometry.computeFaceNormals();
 	geometry.computeVertexNormals();
 
+	return geometry;
+
 };
 
-( function() {
+( function () {
 
 	// Some constants
-	var WARNINGS = ! true; // Set to true for development
 	var ABC = [ 'a', 'b', 'c' ];
 
 
@@ -98,7 +109,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 	function generateLookups( vertices, faces, metaVertices, edges ) {
 
-		var i, il, face, edge;
+		var i, il, face;
 
 		for ( i = 0, il = vertices.length; i < il; i ++ ) {
 
@@ -118,9 +129,9 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 	}
 
-	function newFace( newFaces, a, b, c ) {
+	function newFace( newFaces, a, b, c, materialIndex ) {
 
-		newFaces.push( new THREE.Face3( a, b, c ) );
+		newFaces.push( new THREE.Face3( a, b, c, undefined, undefined, materialIndex ) );
 
 	}
 
@@ -146,7 +157,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 		var oldVertices, oldFaces, oldUvs;
 		var newVertices, newFaces, newUVs = [];
 
-		var n, l, i, il, j, k;
+		var n, i, il, j, k;
 		var metaVertices, sourceEdges;
 
 		// new stuff.
@@ -154,9 +165,19 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 		oldVertices = geometry.vertices; // { x, y, z}
 		oldFaces = geometry.faces; // { a: oldVertex1, b: oldVertex2, c: oldVertex3 }
-		oldUvs = geometry.faceVertexUvs[ 0 ];
+		oldUvs = geometry.faceVertexUvs;
 
-		var hasUvs = oldUvs !== undefined && oldUvs.length > 0;
+		var hasUvs = oldUvs[ 0 ] !== undefined && oldUvs[ 0 ].length > 0;
+
+		if ( hasUvs ) {
+
+			for ( var j = 0; j < oldUvs.length; j ++ ) {
+
+				newUVs.push( [] );
+
+			}
+
+		}
 
 		/******************************************************
 		 *
@@ -201,7 +222,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 				if ( connectedFaces != 1 ) {
 
-					if ( WARNINGS ) console.warn( 'Subdivision Modifier: Number of connected faces != 2, is: ', connectedFaces, currentEdge );
+					// console.warn( 'Subdivision Modifier: Number of connected faces != 2, is: ', connectedFaces, currentEdge );
 
 				}
 
@@ -278,7 +299,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 				if ( n == 2 ) {
 
-					if ( WARNINGS ) console.warn( '2 connecting edges', connectingEdges );
+					// console.warn( '2 connecting edges', connectingEdges );
 					sourceVertexWeight = 3 / 4;
 					connectingVertexWeight = 1 / 8;
 
@@ -287,11 +308,11 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 				} else if ( n == 1 ) {
 
-					if ( WARNINGS ) console.warn( 'only 1 connecting edge' );
+					// console.warn( 'only 1 connecting edge' );
 
 				} else if ( n == 0 ) {
 
-					if ( WARNINGS ) console.warn( '0 connecting edges' );
+					// console.warn( '0 connecting edges' );
 
 				}
 
@@ -346,30 +367,34 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 			// create 4 faces.
 
-			newFace( newFaces, edge1, edge2, edge3 );
-			newFace( newFaces, face.a, edge1, edge3 );
-			newFace( newFaces, face.b, edge2, edge1 );
-			newFace( newFaces, face.c, edge3, edge2 );
+			newFace( newFaces, edge1, edge2, edge3, face.materialIndex );
+			newFace( newFaces, face.a, edge1, edge3, face.materialIndex );
+			newFace( newFaces, face.b, edge2, edge1, face.materialIndex );
+			newFace( newFaces, face.c, edge3, edge2, face.materialIndex );
 
 			// create 4 new uv's
 
 			if ( hasUvs ) {
 
-				uv = oldUvs[ i ];
+				for ( var j = 0; j < oldUvs.length; j ++ ) {
 
-				x0 = uv[ 0 ];
-				x1 = uv[ 1 ];
-				x2 = uv[ 2 ];
+					uv = oldUvs[ j ][ i ];
 
-				x3.set( midpoint( x0.x, x1.x ), midpoint( x0.y, x1.y ) );
-				x4.set( midpoint( x1.x, x2.x ), midpoint( x1.y, x2.y ) );
-				x5.set( midpoint( x0.x, x2.x ), midpoint( x0.y, x2.y ) );
+					x0 = uv[ 0 ];
+					x1 = uv[ 1 ];
+					x2 = uv[ 2 ];
 
-				newUv( newUVs, x3, x4, x5 );
-				newUv( newUVs, x0, x3, x5 );
+					x3.set( midpoint( x0.x, x1.x ), midpoint( x0.y, x1.y ) );
+					x4.set( midpoint( x1.x, x2.x ), midpoint( x1.y, x2.y ) );
+					x5.set( midpoint( x0.x, x2.x ), midpoint( x0.y, x2.y ) );
 
-				newUv( newUVs, x1, x4, x3 );
-				newUv( newUVs, x2, x5, x4 );
+					newUv( newUVs[ j ], x3, x4, x5 );
+					newUv( newUVs[ j ], x0, x3, x5 );
+
+					newUv( newUVs[ j ], x1, x4, x3 );
+					newUv( newUVs[ j ], x2, x5, x4 );
+
+				}
 
 			}
 
@@ -378,7 +403,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 		// Overwrite old arrays
 		geometry.vertices = newVertices;
 		geometry.faces = newFaces;
-		if ( hasUvs ) geometry.faceVertexUvs[ 0 ] = newUVs;
+		if ( hasUvs ) geometry.faceVertexUvs = newUVs;
 
 		// console.log('done');
 

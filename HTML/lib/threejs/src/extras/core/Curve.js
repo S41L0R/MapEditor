@@ -1,54 +1,54 @@
-import { _Math } from '../../math/Math';
-import { Vector3 } from '../../math/Vector3';
-import { Matrix4 } from '../../math/Matrix4';
+import { MathUtils } from '../../math/MathUtils.js';
+import { Vector2 } from '../../math/Vector2.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { Matrix4 } from '../../math/Matrix4.js';
 
 /**
- * @author zz85 / http://www.lab4games.net/zz85/blog
- * Extensible curve object
+ * Extensible curve object.
  *
- * Some common of Curve methods
- * .getPoint(t), getTangent(t)
- * .getPointAt(u), getTangentAt(u)
+ * Some common of curve methods:
+ * .getPoint( t, optionalTarget ), .getTangent( t, optionalTarget )
+ * .getPointAt( u, optionalTarget ), .getTangentAt( u, optionalTarget )
  * .getPoints(), .getSpacedPoints()
  * .getLength()
  * .updateArcLengths()
  *
- * This following classes subclasses THREE.Curve:
+ * This following curves inherit from THREE.Curve:
  *
- * -- 2d classes --
+ * -- 2D curves --
+ * THREE.ArcCurve
+ * THREE.CubicBezierCurve
+ * THREE.EllipseCurve
  * THREE.LineCurve
  * THREE.QuadraticBezierCurve
- * THREE.CubicBezierCurve
  * THREE.SplineCurve
- * THREE.ArcCurve
- * THREE.EllipseCurve
  *
- * -- 3d classes --
+ * -- 3D curves --
+ * THREE.CatmullRomCurve3
+ * THREE.CubicBezierCurve3
  * THREE.LineCurve3
  * THREE.QuadraticBezierCurve3
- * THREE.CubicBezierCurve3
- * THREE.SplineCurve3
  *
- * A series of curves can be represented as a THREE.CurvePath
+ * A series of curves can be represented as a THREE.CurvePath.
  *
  **/
 
-/**************************************************************
- *	Abstract Curve base class
- **************************************************************/
+function Curve() {
 
-function Curve() {}
+	this.type = 'Curve';
 
-Curve.prototype = {
+	this.arcLengthDivisions = 200;
 
-	constructor: Curve,
+}
+
+Object.assign( Curve.prototype, {
 
 	// Virtual base class method to overwrite and implement in subclasses
 	//	- t [0 .. 1]
 
-	getPoint: function ( t ) {
+	getPoint: function ( /* t, optionalTarget */ ) {
 
-		console.warn( "THREE.Curve: Warning, getPoint() not implemented!" );
+		console.warn( 'THREE.Curve: .getPoint() not implemented.' );
 		return null;
 
 	},
@@ -56,10 +56,10 @@ Curve.prototype = {
 	// Get point at relative position in curve according to arc length
 	// - u [0 .. 1]
 
-	getPointAt: function ( u ) {
+	getPointAt: function ( u, optionalTarget ) {
 
-		var t = this.getUtoTmapping( u );
-		return this.getPoint( t );
+		const t = this.getUtoTmapping( u );
+		return this.getPoint( t, optionalTarget );
 
 	},
 
@@ -67,11 +67,11 @@ Curve.prototype = {
 
 	getPoints: function ( divisions ) {
 
-		if ( ! divisions ) divisions = 5;
+		if ( divisions === undefined ) divisions = 5;
 
-		var points = [];
+		const points = [];
 
-		for ( var d = 0; d <= divisions; d ++ ) {
+		for ( let d = 0; d <= divisions; d ++ ) {
 
 			points.push( this.getPoint( d / divisions ) );
 
@@ -85,11 +85,11 @@ Curve.prototype = {
 
 	getSpacedPoints: function ( divisions ) {
 
-		if ( ! divisions ) divisions = 5;
+		if ( divisions === undefined ) divisions = 5;
 
-		var points = [];
+		const points = [];
 
-		for ( var d = 0; d <= divisions; d ++ ) {
+		for ( let d = 0; d <= divisions; d ++ ) {
 
 			points.push( this.getPointAt( d / divisions ) );
 
@@ -103,7 +103,7 @@ Curve.prototype = {
 
 	getLength: function () {
 
-		var lengths = this.getLengths();
+		const lengths = this.getLengths();
 		return lengths[ lengths.length - 1 ];
 
 	},
@@ -112,28 +112,27 @@ Curve.prototype = {
 
 	getLengths: function ( divisions ) {
 
-		if ( ! divisions ) divisions = ( this.__arcLengthDivisions ) ? ( this.__arcLengthDivisions ) : 200;
+		if ( divisions === undefined ) divisions = this.arcLengthDivisions;
 
-		if ( this.cacheArcLengths
-			&& ( this.cacheArcLengths.length === divisions + 1 )
-			&& ! this.needsUpdate ) {
+		if ( this.cacheArcLengths &&
+			( this.cacheArcLengths.length === divisions + 1 ) &&
+			! this.needsUpdate ) {
 
-			//console.log( "cached", this.cacheArcLengths );
 			return this.cacheArcLengths;
 
 		}
 
 		this.needsUpdate = false;
 
-		var cache = [];
-		var current, last = this.getPoint( 0 );
-		var p, sum = 0;
+		const cache = [];
+		let current, last = this.getPoint( 0 );
+		let sum = 0;
 
 		cache.push( 0 );
 
-		for ( p = 1; p <= divisions; p ++ ) {
+		for ( let p = 1; p <= divisions; p ++ ) {
 
-			current = this.getPoint ( p / divisions );
+			current = this.getPoint( p / divisions );
 			sum += current.distanceTo( last );
 			cache.push( sum );
 			last = current;
@@ -142,11 +141,11 @@ Curve.prototype = {
 
 		this.cacheArcLengths = cache;
 
-		return cache; // { sums: cache, sum:sum }; Sum is in the last element.
+		return cache; // { sums: cache, sum: sum }; Sum is in the last element.
 
 	},
 
-	updateArcLengths: function() {
+	updateArcLengths: function () {
 
 		this.needsUpdate = true;
 		this.getLengths();
@@ -157,11 +156,12 @@ Curve.prototype = {
 
 	getUtoTmapping: function ( u, distance ) {
 
-		var arcLengths = this.getLengths();
+		const arcLengths = this.getLengths();
 
-		var i = 0, il = arcLengths.length;
+		let i = 0;
+		const il = arcLengths.length;
 
-		var targetArcLength; // The targeted u distance value to get
+		let targetArcLength; // The targeted u distance value to get
 
 		if ( distance ) {
 
@@ -173,11 +173,9 @@ Curve.prototype = {
 
 		}
 
-		//var time = Date.now();
-
 		// binary search for the index with largest value smaller than target u distance
 
-		var low = 0, high = il - 1, comparison;
+		let low = 0, high = il - 1, comparison;
 
 		while ( low <= high ) {
 
@@ -206,29 +204,26 @@ Curve.prototype = {
 
 		i = high;
 
-		//console.log('b' , i, low, high, Date.now()- time);
-
 		if ( arcLengths[ i ] === targetArcLength ) {
 
-			var t = i / ( il - 1 );
-			return t;
+			return i / ( il - 1 );
 
 		}
 
 		// we could get finer grain at lengths, or use simple interpolation between two points
 
-		var lengthBefore = arcLengths[ i ];
-		var lengthAfter = arcLengths[ i + 1 ];
+		const lengthBefore = arcLengths[ i ];
+		const lengthAfter = arcLengths[ i + 1 ];
 
-		var segmentLength = lengthAfter - lengthBefore;
+		const segmentLength = lengthAfter - lengthBefore;
 
 		// determine where we are between the 'before' and 'after' points
 
-		var segmentFraction = ( targetArcLength - lengthBefore ) / segmentLength;
+		const segmentFraction = ( targetArcLength - lengthBefore ) / segmentLength;
 
 		// add that fractional amount to t
 
-		var t = ( i + segmentFraction ) / ( il - 1 );
+		const t = ( i + segmentFraction ) / ( il - 1 );
 
 		return t;
 
@@ -239,29 +234,32 @@ Curve.prototype = {
 	// 2 points a small delta apart will be used to find its gradient
 	// which seems to give a reasonable approximation
 
-	getTangent: function( t ) {
+	getTangent: function ( t, optionalTarget ) {
 
-		var delta = 0.0001;
-		var t1 = t - delta;
-		var t2 = t + delta;
+		const delta = 0.0001;
+		let t1 = t - delta;
+		let t2 = t + delta;
 
 		// Capping in case of danger
 
 		if ( t1 < 0 ) t1 = 0;
 		if ( t2 > 1 ) t2 = 1;
 
-		var pt1 = this.getPoint( t1 );
-		var pt2 = this.getPoint( t2 );
+		const pt1 = this.getPoint( t1 );
+		const pt2 = this.getPoint( t2 );
 
-		var vec = pt2.clone().sub( pt1 );
-		return vec.normalize();
+		const tangent = optionalTarget || ( ( pt1.isVector2 ) ? new Vector2() : new Vector3() );
+
+		tangent.copy( pt2 ).sub( pt1 ).normalize();
+
+		return tangent;
 
 	},
 
-	getTangentAt: function ( u ) {
+	getTangentAt: function ( u, optionalTarget ) {
 
-		var t = this.getUtoTmapping( u );
-		return this.getTangent( t );
+		const t = this.getUtoTmapping( u );
+		return this.getTangent( t, optionalTarget );
 
 	},
 
@@ -269,24 +267,22 @@ Curve.prototype = {
 
 		// see http://www.cs.indiana.edu/pub/techreports/TR425.pdf
 
-		var normal = new Vector3();
+		const normal = new Vector3();
 
-		var tangents = [];
-		var normals = [];
-		var binormals = [];
+		const tangents = [];
+		const normals = [];
+		const binormals = [];
 
-		var vec = new Vector3();
-		var mat = new Matrix4();
-
-		var i, u, theta;
+		const vec = new Vector3();
+		const mat = new Matrix4();
 
 		// compute the tangent vectors for each segment on the curve
 
-		for ( i = 0; i <= segments; i ++ ) {
+		for ( let i = 0; i <= segments; i ++ ) {
 
-			u = i / segments;
+			const u = i / segments;
 
-			tangents[ i ] = this.getTangentAt( u );
+			tangents[ i ] = this.getTangentAt( u, new Vector3() );
 			tangents[ i ].normalize();
 
 		}
@@ -296,10 +292,10 @@ Curve.prototype = {
 
 		normals[ 0 ] = new Vector3();
 		binormals[ 0 ] = new Vector3();
-		var min = Number.MAX_VALUE;
-		var tx = Math.abs( tangents[ 0 ].x );
-		var ty = Math.abs( tangents[ 0 ].y );
-		var tz = Math.abs( tangents[ 0 ].z );
+		let min = Number.MAX_VALUE;
+		const tx = Math.abs( tangents[ 0 ].x );
+		const ty = Math.abs( tangents[ 0 ].y );
+		const tz = Math.abs( tangents[ 0 ].z );
 
 		if ( tx <= min ) {
 
@@ -329,7 +325,7 @@ Curve.prototype = {
 
 		// compute the slowly-varying normal and binormal vectors for each segment on the curve
 
-		for ( i = 1; i <= segments; i ++ ) {
+		for ( let i = 1; i <= segments; i ++ ) {
 
 			normals[ i ] = normals[ i - 1 ].clone();
 
@@ -341,7 +337,7 @@ Curve.prototype = {
 
 				vec.normalize();
 
-				theta = Math.acos( _Math.clamp( tangents[ i - 1 ].dot( tangents[ i ] ), - 1, 1 ) ); // clamp for floating pt errors
+				const theta = Math.acos( MathUtils.clamp( tangents[ i - 1 ].dot( tangents[ i ] ), - 1, 1 ) ); // clamp for floating pt errors
 
 				normals[ i ].applyMatrix4( mat.makeRotationAxis( vec, theta ) );
 
@@ -355,7 +351,7 @@ Curve.prototype = {
 
 		if ( closed === true ) {
 
-			theta = Math.acos( _Math.clamp( normals[ 0 ].dot( normals[ segments ] ), - 1, 1 ) );
+			let theta = Math.acos( MathUtils.clamp( normals[ 0 ].dot( normals[ segments ] ), - 1, 1 ) );
 			theta /= segments;
 
 			if ( tangents[ 0 ].dot( vec.crossVectors( normals[ 0 ], normals[ segments ] ) ) > 0 ) {
@@ -364,7 +360,7 @@ Curve.prototype = {
 
 			}
 
-			for ( i = 1; i <= segments; i ++ ) {
+			for ( let i = 1; i <= segments; i ++ ) {
 
 				// twist a little...
 				normals[ i ].applyMatrix4( mat.makeRotationAxis( tangents[ i ], theta * i ) );
@@ -380,27 +376,48 @@ Curve.prototype = {
 			binormals: binormals
 		};
 
+	},
+
+	clone: function () {
+
+		return new this.constructor().copy( this );
+
+	},
+
+	copy: function ( source ) {
+
+		this.arcLengthDivisions = source.arcLengthDivisions;
+
+		return this;
+
+	},
+
+	toJSON: function () {
+
+		const data = {
+			metadata: {
+				version: 4.5,
+				type: 'Curve',
+				generator: 'Curve.toJSON'
+			}
+		};
+
+		data.arcLengthDivisions = this.arcLengthDivisions;
+		data.type = this.type;
+
+		return data;
+
+	},
+
+	fromJSON: function ( json ) {
+
+		this.arcLengthDivisions = json.arcLengthDivisions;
+
+		return this;
+
 	}
 
-};
-
-// TODO: Transformation for Curves?
-
-/**************************************************************
- *	3D Curves
- **************************************************************/
-
-// A Factory method for creating new curve subclasses
-
-Curve.create = function ( constructor, getPointFunc ) {
-
-	constructor.prototype = Object.create( Curve.prototype );
-	constructor.prototype.constructor = constructor;
-	constructor.prototype.getPoint = getPointFunc;
-
-	return constructor;
-
-};
+} );
 
 
 export { Curve };

@@ -1,12 +1,5 @@
-import { Curve } from './Curve';
-import { Vector3 } from '../../math/Vector3';
-import { Geometry } from '../../core/Geometry';
-import { LineCurve } from '../curves/LineCurve';
-
-/**
- * @author zz85 / http://www.lab4games.net/zz85/blog
- *
- **/
+import { Curve } from './Curve.js';
+import * as Curves from '../curves/Curves.js';
 
 /**************************************************************
  *	Curved Path - a curve path is simply a array of connected
@@ -15,8 +8,11 @@ import { LineCurve } from '../curves/LineCurve';
 
 function CurvePath() {
 
-	this.curves = [];
+	Curve.call( this );
 
+	this.type = 'CurvePath';
+
+	this.curves = [];
 	this.autoClose = false; // Automatically closes the path
 
 }
@@ -34,12 +30,12 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	closePath: function () {
 
 		// Add a line curve if start and end of lines are not connected
-		var startPoint = this.curves[ 0 ].getPoint( 0 );
-		var endPoint = this.curves[ this.curves.length - 1 ].getPoint( 1 );
+		const startPoint = this.curves[ 0 ].getPoint( 0 );
+		const endPoint = this.curves[ this.curves.length - 1 ].getPoint( 1 );
 
 		if ( ! startPoint.equals( endPoint ) ) {
 
-			this.curves.push( new LineCurve( endPoint, startPoint ) );
+			this.curves.push( new Curves[ 'LineCurve' ]( endPoint, startPoint ) );
 
 		}
 
@@ -56,9 +52,9 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 	getPoint: function ( t ) {
 
-		var d = t * this.getLength();
-		var curveLengths = this.getCurveLengths();
-		var i = 0;
+		const d = t * this.getLength();
+		const curveLengths = this.getCurveLengths();
+		let i = 0;
 
 		// To think about boundaries points.
 
@@ -66,11 +62,11 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 			if ( curveLengths[ i ] >= d ) {
 
-				var diff = curveLengths[ i ] - d;
-				var curve = this.curves[ i ];
+				const diff = curveLengths[ i ] - d;
+				const curve = this.curves[ i ];
 
-				var segmentLength = curve.getLength();
-				var u = segmentLength === 0 ? 0 : 1 - diff / segmentLength;
+				const segmentLength = curve.getLength();
+				const u = segmentLength === 0 ? 0 : 1 - diff / segmentLength;
 
 				return curve.getPointAt( u );
 
@@ -92,7 +88,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 	getLength: function () {
 
-		var lens = this.getCurveLengths();
+		const lens = this.getCurveLengths();
 		return lens[ lens.length - 1 ];
 
 	},
@@ -102,7 +98,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		this.needsUpdate = true;
 		this.cacheLengths = null;
-		this.getLengths();
+		this.getCurveLengths();
 
 	},
 
@@ -122,9 +118,10 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 		// Get length of sub-curve
 		// Push sums into cached array
 
-		var lengths = [], sums = 0;
+		const lengths = [];
+		let sums = 0;
 
-		for ( var i = 0, l = this.curves.length; i < l; i ++ ) {
+		for ( let i = 0, l = this.curves.length; i < l; i ++ ) {
 
 			sums += this.curves[ i ].getLength();
 			lengths.push( sums );
@@ -139,11 +136,11 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 	getSpacedPoints: function ( divisions ) {
 
-		if ( ! divisions ) divisions = 40;
+		if ( divisions === undefined ) divisions = 40;
 
-		var points = [];
+		const points = [];
 
-		for ( var i = 0; i <= divisions; i ++ ) {
+		for ( let i = 0; i <= divisions; i ++ ) {
 
 			points.push( this.getPoint( i / divisions ) );
 
@@ -163,21 +160,22 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		divisions = divisions || 12;
 
-		var points = [], last;
+		const points = [];
+		let last;
 
-		for ( var i = 0, curves = this.curves; i < curves.length; i ++ ) {
+		for ( let i = 0, curves = this.curves; i < curves.length; i ++ ) {
 
-			var curve = curves[ i ];
-			var resolution = (curve && curve.isEllipseCurve) ? divisions * 2
-				: (curve && curve.isLineCurve) ? 1
-				: (curve && curve.isSplineCurve) ? divisions * curve.points.length
-				: divisions;
+			const curve = curves[ i ];
+			const resolution = ( curve && curve.isEllipseCurve ) ? divisions * 2
+				: ( curve && ( curve.isLineCurve || curve.isLineCurve3 ) ) ? 1
+					: ( curve && curve.isSplineCurve ) ? divisions * curve.points.length
+						: divisions;
 
-			var pts = curve.getPoints( resolution );
+			const pts = curve.getPoints( resolution );
 
-			for ( var j = 0; j < pts.length; j++ ) {
+			for ( let j = 0; j < pts.length; j ++ ) {
 
-				var point = pts[ j ];
+				const point = pts[ j ];
 
 				if ( last && last.equals( point ) ) continue; // ensures no consecutive points are duplicates
 
@@ -188,7 +186,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		}
 
-		if ( this.autoClose && points.length > 1 && !points[ points.length - 1 ].equals( points[ 0 ] ) ) {
+		if ( this.autoClose && points.length > 1 && ! points[ points.length - 1 ].equals( points[ 0 ] ) ) {
 
 			points.push( points[ 0 ] );
 
@@ -198,40 +196,59 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 	},
 
-	/**************************************************************
-	 *	Create Geometries Helpers
-	 **************************************************************/
+	copy: function ( source ) {
 
-	/// Generate geometry from path points (for Line or Points objects)
+		Curve.prototype.copy.call( this, source );
 
-	createPointsGeometry: function ( divisions ) {
+		this.curves = [];
 
-		var pts = this.getPoints( divisions );
-		return this.createGeometry( pts );
+		for ( let i = 0, l = source.curves.length; i < l; i ++ ) {
 
-	},
+			const curve = source.curves[ i ];
 
-	// Generate geometry from equidistant sampling along the path
-
-	createSpacedPointsGeometry: function ( divisions ) {
-
-		var pts = this.getSpacedPoints( divisions );
-		return this.createGeometry( pts );
-
-	},
-
-	createGeometry: function ( points ) {
-
-		var geometry = new Geometry();
-
-		for ( var i = 0, l = points.length; i < l; i ++ ) {
-
-			var point = points[ i ];
-			geometry.vertices.push( new Vector3( point.x, point.y, point.z || 0 ) );
+			this.curves.push( curve.clone() );
 
 		}
 
-		return geometry;
+		this.autoClose = source.autoClose;
+
+		return this;
+
+	},
+
+	toJSON: function () {
+
+		const data = Curve.prototype.toJSON.call( this );
+
+		data.autoClose = this.autoClose;
+		data.curves = [];
+
+		for ( let i = 0, l = this.curves.length; i < l; i ++ ) {
+
+			const curve = this.curves[ i ];
+			data.curves.push( curve.toJSON() );
+
+		}
+
+		return data;
+
+	},
+
+	fromJSON: function ( json ) {
+
+		Curve.prototype.fromJSON.call( this, json );
+
+		this.autoClose = json.autoClose;
+		this.curves = [];
+
+		for ( let i = 0, l = json.curves.length; i < l; i ++ ) {
+
+			const curve = json.curves[ i ];
+			this.curves.push( new Curves[ curve.type ]().fromJSON( curve ) );
+
+		}
+
+		return this;
 
 	}
 

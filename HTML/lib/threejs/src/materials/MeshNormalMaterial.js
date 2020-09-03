@@ -1,10 +1,8 @@
-import { Material } from './Material';
-import { Vector2 } from '../math/Vector2';
+import { TangentSpaceNormalMap } from '../constants.js';
+import { Material } from './Material.js';
+import { Vector2 } from '../math/Vector2.js';
 
 /**
- * @author mrdoob / http://mrdoob.com/
- * @author WestLangley / http://github.com/WestLangley
- *
  * parameters = {
  *  opacity: <float>,
  *
@@ -12,6 +10,7 @@ import { Vector2 } from '../math/Vector2';
  *  bumpScale: <float>,
  *
  *  normalMap: new THREE.Texture( <Image> ),
+ *  normalMapType: THREE.TangentSpaceNormalMap,
  *  normalScale: <Vector2>,
  *
  *  displacementMap: new THREE.Texture( <Image> ),
@@ -29,7 +28,7 @@ import { Vector2 } from '../math/Vector2';
 
 function MeshNormalMaterial( parameters ) {
 
-	Material.call( this, parameters );
+	Material.call( this );
 
 	this.type = 'MeshNormalMaterial';
 
@@ -37,6 +36,7 @@ function MeshNormalMaterial( parameters ) {
 	this.bumpScale = 1;
 
 	this.normalMap = null;
+	this.normalMapType = TangentSpaceNormalMap;
 	this.normalScale = new Vector2( 1, 1 );
 
 	this.displacementMap = null;
@@ -47,7 +47,6 @@ function MeshNormalMaterial( parameters ) {
 	this.wireframeLinewidth = 1;
 
 	this.fog = false;
-	this.lights = false;
 
 	this.skinning = false;
 	this.morphTargets = false;
@@ -70,6 +69,7 @@ MeshNormalMaterial.prototype.copy = function ( source ) {
 	this.bumpScale = source.bumpScale;
 
 	this.normalMap = source.normalMap;
+	this.normalMapType = source.normalMapType;
 	this.normalScale.copy( source.normalScale );
 
 	this.displacementMap = source.displacementMap;

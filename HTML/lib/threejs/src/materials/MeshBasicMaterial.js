@@ -1,11 +1,8 @@
-import { Material } from './Material';
-import { MultiplyOperation } from '../constants';
-import { Color } from '../math/Color';
+import { Material } from './Material.js';
+import { MultiplyOperation } from '../constants.js';
+import { Color } from '../math/Color.js';
 
 /**
- * @author mrdoob / http://mrdoob.com/
- * @author alteredq / http://alteredqualia.com/
- *
  * parameters = {
  *  color: <hex>,
  *  opacity: <float>,
@@ -21,12 +18,11 @@ import { Color } from '../math/Color';
  *
  *  alphaMap: new THREE.Texture( <Image> ),
  *
- *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  envMap: new THREE.CubeTexture( [posx, negx, posy, negy, posz, negz] ),
  *  combine: THREE.Multiply,
  *  reflectivity: <float>,
  *  refractionRatio: <float>,
  *
- *  shading: THREE.SmoothShading,
  *  depthTest: <bool>,
  *  depthWrite: <bool>,
  *
@@ -70,8 +66,6 @@ function MeshBasicMaterial( parameters ) {
 
 	this.skinning = false;
 	this.morphTargets = false;
-
-	this.lights = false;
 
 	this.setValues( parameters );
 
