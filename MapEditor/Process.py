@@ -1,6 +1,7 @@
 # Import general stuff
 import Lib.Utils.Util as utils
 import pathlib
+import oead
 
 
 # Load Settings
@@ -21,21 +22,27 @@ except:
 
 
 
-# CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
+
 
 # Load map file
 
 import Loaders.FromGame.smubin as smubin
-pathStr = (f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin')
-smubin.validateMapFile(pathlib.Path(f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin'))
+pathStrStatic = (f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin')
+pathStatic = pathlib.Path(pathStrStatic)
+pathStrDy = (f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Dynamic.smubin')
+pathDy = pathlib.Path(pathStrDy)
 
-smubin.validateMapFile(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Dynamic.smubin")
+smubin.validateMapFile(pathStatic)
+smubin.validateMapFile(pathDy)
 
-MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
+MapSectionStaticText = utils.dict_To_Text(utils.BymlDecompress(pathStatic))
+MapSectionDynamicText = utils.dict_To_Text(utils.BymlDecompress(pathDy))
 
-MapSectionDynamicText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Dynamic.smubin")
-
-
+# CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
+actorList = oead.byml.to_text((smubin.getActors(pathStatic)).get('Objs'))
+binActorList = (smubin.getActors(pathStatic)).get('Objs')
+railList = oead.byml.to_text((smubin.getActors(pathStatic)).get('Rails'))
+binRailList = (smubin.getActors(pathStatic)).get('Rails')
 
 
 
@@ -55,8 +62,8 @@ ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Acto
 
 # Find Actor text from map file
 
-useless, MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
-ActorText = smubin.FindActorText(MapSectionStaticText, "453856506")
+MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
+ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
 
 # Create Window
 
