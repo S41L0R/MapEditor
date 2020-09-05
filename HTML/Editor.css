@@ -28,3 +28,9 @@
   display: block;
   background-color: red;
 }
+
+
+#transformMode {
+  position: absolute;
+  z-index: 10;
+}
