@@ -3,7 +3,7 @@
 
 //import { THREE } from './lib/threejs/build/three.js';
 import { ColladaLoader } from './lib/threejs/examples/jsm/loaders/ColladaLoader.js';
-import { FirstPersonControls } from './lib/threejs/examples/jsm/controls/FirstPersonControls.js'
+import { FirstPersonControls } from './lib/threejs/examples/jsm/controls/EditorControls.js'
 import {TransformControls} from './lib/threejs/examples/jsm/controls/TransformControls.js'
 
 
@@ -52,7 +52,8 @@ var doObjectSelect = true;
 // -----------------------------------------------------------------------------
 
 var customColor = new THREE.Color( 'skyblue' );
-var cameraSpeed = 10;
+var cameraSpeed = 15;
+var cameraLookSpeed = 1;
 
 // Boring code that doesn't matter
 // -----------------------------------------------------------------------------
@@ -151,7 +152,7 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 // -----------------------------------------------------------------------------
 
 var loader = new ColladaLoader();
-var url = '../Test/Bokoblin_Red.dae'
+var url = '../Test/Guardian_A_Perfect.dae'
 loader.load( url, onLoad, onProgress );
 //console.log(daeModel);
 
@@ -161,6 +162,7 @@ loader.load( url, onLoad, onProgress );
 // Controls
 var fpControls = new FirstPersonControls( camera, renderer.domElement );
 fpControls.movementSpeed = cameraSpeed;
+fpControls.loocSpeed = cameraLookSpeed;
 fpControls.lookSpeed = 0.1;
 
 // Transform Controls
@@ -271,22 +273,36 @@ function pointerDown(evt) {
 
 
 
+// Handle TransformControl Mode changes
+document.getElementById("Translate").addEventListener("click", controlSetTranslate);
+document.getElementById("Rotate").addEventListener("click", controlSetRotate);
+document.getElementById("Scale").addEventListener("click", controlSetScale);
+
+
+function controlSetTranslate() {
+  transformControl.setMode("translate");
+}
+function controlSetScale() {
+  transformControl.setMode("scale");
+}
+
+function controlSetRotate() {
+  transformControl.setMode("rotate");
+}
 
 
 
 
-
-
-
-
-
-
-
-
+// More boring stuff
+// -----------------------------------------------------------------------------
 
 function animate() {
 	resizeCanvasToDisplaySize();
-	requestAnimationFrame( animate );
+  setTimeout( function() {
+
+        requestAnimationFrame( animate );
+
+    }, 1000 / 60 );
 
   fpControls.update(clock.getDelta());
 
