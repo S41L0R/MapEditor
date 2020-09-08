@@ -78,6 +78,15 @@ var FirstPersonControls = function ( object, domElement ) {
 
 	//
 
+
+	// Pointerlock compatibility stuff
+
+	domElement.requestPointerLock = domElement.requestPointerLock ||
+                            domElement.mozRequestPointerLock;
+
+
+	//
+
 	if ( this.domElement !== document ) {
 
 		this.domElement.setAttribute( 'tabindex', - 1 );

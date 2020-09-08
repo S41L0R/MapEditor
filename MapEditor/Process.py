@@ -62,15 +62,23 @@ ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Acto
 
 # Find Actor text from map file
 
-MapSectionStaticText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Map/MainField/" + settings["TestingMapSection"] + "/" + settings["TestingMapSection"] + "_Static.smubin")
 ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
 
 # Create Window
 
-import webview
-NewWindow = webview.create_window('Map Editor', "../HTML/Editor.html")
-#def webview_logic(window):
-    #JSCompatibleActorText = ActorText.replace('\n', '\\n')
-    #NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
 
-webview.start(None, NewWindow)
+from webview.platforms.cef import settings as cefSettings
+cefSettings.update({
+    'persist_session_cookies': True
+})
+
+
+
+
+import webview
+NewWindow = webview.create_window('Map Editor', "../Editor.html")
+def webview_logic(window):
+    JSCompatibleActorText = ActorText.replace('\n', '\\n')
+    NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
+
+webview.start(None, NewWindow, gui='edge')
