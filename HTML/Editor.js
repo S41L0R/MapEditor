@@ -152,7 +152,7 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 // -----------------------------------------------------------------------------
 
 var loader = new ColladaLoader();
-var url = '../Test/Guardian_A_Perfect.dae'
+var url = './Test/Guardian_A_Perfect.dae'
 loader.load( url, onLoad, onProgress );
 //console.log(daeModel);
 
@@ -180,6 +180,19 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
 
 } );
 transformControl.setMode('translate');
+
+
+function updatebounds () {
+  console.log("parent:");
+  console.log(transformControl.object.parent);
+  var child;
+  for (child = 1; child < transformControl.object.parent.children.length; child++) {
+    transformControl.object.parent.children[child].geometry.computeBoundingSphere();
+  }
+  render();
+}
+
+
 
 function render() {
 
@@ -248,8 +261,8 @@ function pointerDown(evt) {
           // Grabs the very first intersected object
           selectedObject  = intersects[0].object;
           if ( selectedObject !== null && selectedObject !== scene && selectedObject !== camera && selectedObject.parent.children[0] !== scene.children[1].object) {
-            transformControl.attach( selectedObject.parent.children[0]);
-            console.log(selectedObject.parent.children[0]);
+            transformControl.attach( selectedObject.parent);
+            console.log(selectedObject.parent);
             console.log(selectedObject);
           //selectedObject.parent.remove(selectedObject);
           }
