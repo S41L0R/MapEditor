@@ -55,6 +55,20 @@ var customColor = new THREE.Color( 'skyblue' );
 var cameraSpeed = 15;
 var cameraLookSpeed = 1;
 
+
+
+
+
+
+// Define Map Based variables
+// -----------------------------------------------------------------------------
+
+var testDict = new Object();
+
+
+
+
+
 // Boring code that doesn't matter
 // -----------------------------------------------------------------------------
 
