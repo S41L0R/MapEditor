@@ -56,7 +56,6 @@ ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Acto
 
 
 
-
 #print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
 
 
@@ -67,10 +66,7 @@ ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
 # Create Window
 
 
-from webview.platforms.cef import settings as cefSettings
-cefSettings.update({
-    'persist_session_cookies': True
-})
+
 
 
 
@@ -81,4 +77,12 @@ def webview_logic(window):
     JSCompatibleActorText = ActorText.replace('\n', '\\n')
     NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
 
-webview.start(None, NewWindow, gui='edge')
+def send_stuff(window):
+    testDict = {
+    "abc": "123",
+    "adfsfasf": "2930482394"
+    }
+
+    NewWindow.evaluate_js('testDict = ' + testDict + '; console.log(testDict)')
+
+webview.start("send_stuff", NewWindow, gui='edge')
