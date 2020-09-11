@@ -27,6 +27,8 @@ def readMapFile(fileIn):
 def validateMapFile(fileName):
     if Utils.extCheck(fileName, validMapFileExts) == True:
         return(True)
+    else:
+        return(False)
 
 
 def FindActorText(InputText, ActorHashId):
