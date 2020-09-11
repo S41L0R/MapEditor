@@ -16,7 +16,8 @@ import Writers.ToSettings.WriteSettings as WriteSettings
 settings = {
 "GameDump": "Test/TestResources",
 "TestingMapSection": "C-5",
-"NX": False
+"NX": False,
+"DarkMode": False
 }
 
 try:
