@@ -106,8 +106,6 @@ def checkBymlDataType(valIn):
             except:
                 return(valIn)
     
-
-
 # Completely expands a byml files data returned by oead to a dict
 class mapDict:
 
