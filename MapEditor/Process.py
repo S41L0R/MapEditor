@@ -39,6 +39,8 @@ pathStrStatic = (f'{settings["GameDump"]}/{aoc}/Map/MainField/{settings["Testing
 pathStatic = pathlib.Path(pathStrStatic)
 pathStrDy = (f'{settings["GameDump"]}/{aoc}/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Dynamic.smubin')
 pathDy = pathlib.Path(pathStrDy)
+pathStrTeraTree = (f'{settings["GameDump"]}/{aoc}/Map/Mainfield/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_TeraTree.sblwp')
+pathTeraTree = pathlib.Path(pathStrTeraTree)
 
 smubin.validateMapFile(pathStatic)
 smubin.validateMapFile(pathDy)
@@ -59,6 +61,7 @@ uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
 fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
 jsonActors = json.dumps(fullUniqueActors, indent=2)
 #print(fullUniqueActors)
+#print(utils.loadProd(pathTeraTree))
 print('\n\n\n\n\n\n')
 binActorList = (smubin.getActors(pathStatic)).get('Objs')
 
@@ -66,15 +69,8 @@ binActorList = (smubin.getActors(pathStatic)).get('Objs')
 
 # Load ActorInfo
 
-
-
 ActorInfoText = utils.BymlDecompress(f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml')
 
-
-
-
-
-#print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
 
 
 # Find Actor text from map file
@@ -82,11 +78,6 @@ ActorInfoText = utils.BymlDecompress(f'{settings["GameDump"]}/{content}/Actor/Ac
 ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
 
 # Create Window
-
-
-
-
-
 
 
 NewWindow = webview.create_window('Map Editor', "../Editor.html")
