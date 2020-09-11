@@ -4,6 +4,7 @@ import json
 import pathlib
 import os
 from platform import system
+import yaml
 
 
 
@@ -80,3 +81,63 @@ def get_data_dir():
     if not data_dir.exists():
         data_dir.mkdir(parents=True, exist_ok=True)
     return(data_dir)
+
+def checkBymlDataType(valIn):
+    if isinstance(valIn, oead.U8) or isinstance(valIn, oead.U16) or isinstance(valIn, oead.U32):
+        return(oead.byml.get_uint(valIn))
+    elif isinstance(valIn, oead.U64):
+        return(oead.byml.get_uint64(valIn))
+    elif isinstance(valIn, oead.S8) or isinstance(valIn, oead.S16) or isinstance(valIn, oead.S32):
+        return(oead.byml.get_int(valIn))
+    elif isinstance(valIn, oead.S64):
+        return(oead.byml.get_int64(valIn))
+    elif isinstance(valIn, oead.F32):
+        return(oead.byml.get_float(valIn))
+    elif isinstance(valIn, oead.F64):
+        return(oead.byml.get_double(valIn))
+    else:
+        try:
+            valOut = oead.byml.get_string(valIn)
+            return(valOut)
+        except:
+            try:
+                valOut = oead.byml.get_bool(valIn)
+                return(valOut)
+            except:
+                return(valIn)
+    
+# Completely expands a byml files data returned by oead to a dict
+class mapDict:
+
+    def __init__(self, mapIn):
+        self.mapIn = mapIn
+        self.extractedByml = self.updateFullDict(dict(self.mapIn))
+        self.jsonData = json.dumps(self.extractedByml, indent=2)
+    
+    def updateFullDict(self, dictIn):
+        subList = []
+        subDict = {}
+        dictOut = {}
+        if isinstance(dictIn, oead.byml.Hash) or isinstance(dictIn, dict):
+            for key in dict(dictIn).keys():
+                subDict = self.updateFullDict(dict(dictIn).get(key))
+                dictOut.update({key: subDict})
+            return(dict(dictOut))
+
+        elif isinstance(dictIn, oead.byml.Array) or isinstance(dictIn, list):
+            for item in list(dictIn):
+                newItem = self.updateFullDict(item)
+                subList.append(newItem)
+            return(list(subList))
+        else:
+            return(checkBymlDataType(dictIn))
+
+def findUniqueActors(mapDataIn, listIn=list([])):
+    for actor in mapDataIn.get('Objs'):
+        actorName = actor.get('UnitConfigName')
+        if actorName in listIn:
+            continue
+        else:
+            listIn.append(actorName)
+            continue
+    return(listIn)
