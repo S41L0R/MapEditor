@@ -7,7 +7,7 @@ with open("README.md", "r") as desc:
 
 setuptools.setup(
     name="MapEditor++",
-    version="0.0.0a",
+    version="0.0.1",
     description="Ice spear, but better",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,9 +21,10 @@ setuptools.setup(
     python_requires='>=3.7',
     install_requires=[
         "oead>=1.1.1",
-        "open3d>=0.10.0.1"
-        "pathlib"
-        "pywebview>=3.2"
-        "blwpprod>=1.1.2"
+        "open3d>=0.10.0.1",
+        "pathlib",
+        "pywebview>=3.2",
+        "blwpprod>=1.1.2",
+        "json"
     ],
 )
