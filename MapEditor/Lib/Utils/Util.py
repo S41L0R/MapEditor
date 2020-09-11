@@ -5,6 +5,7 @@ import pathlib
 import os
 from platform import system
 import yaml
+import blwp
 
 
 
@@ -141,3 +142,11 @@ def findUniqueActors(mapDataIn, listIn=list([])):
             listIn.append(actorName)
             continue
     return(listIn)
+
+def loadProd(filePathIn):
+    if str(filePathIn).split('.')[-1] == 'sblwp' or str(filePathIn).split('.')[-1] == '.blwp':
+        dataOut = blwp.prod.decoder(filePathIn)
+        return(dataOut)
+    else:
+        return
+    
