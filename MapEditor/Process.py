@@ -63,6 +63,7 @@ jsonActors = json.dumps(fullUniqueActors, indent=2)
 #print(fullUniqueActors)
 #print(utils.loadProd(pathTeraTree))
 print('\n\n\n\n\n\n')
+print(jsonActors)
 binActorList = (smubin.getActors(pathStatic)).get('Objs')
 
 
@@ -91,6 +92,6 @@ def send_stuff(window):
     "adfsfasf": "2930482394"
     }
 
-    NewWindow.evaluate_js('testDict = ' + testDict + '; console.log(testDict)')
+    NewWindow.evaluate_js('FullData = ' + jsonActors + '; console.log(FullData)')
 
-webview.start("send_stuff", NewWindow, gui='edge')
+webview.start(send_stuff, NewWindow, gui='cef', debug=True, http_server=True)
