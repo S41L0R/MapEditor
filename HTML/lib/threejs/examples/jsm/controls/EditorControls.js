@@ -258,6 +258,7 @@ var FirstPersonControls = function ( object, domElement ) {
 
 					this.object.quaternion.setFromEuler( euler );
 				}
+			}
 				//this.object.rotation._z = 0;
 				//this.object.rotation._x = this.object.rotation._x + mouseDiffX;
 				//this.object.rotateX(mouseDiffX);
@@ -275,7 +276,6 @@ var FirstPersonControls = function ( object, domElement ) {
 
 				// Sets mouseMoving to false. If the mouse is moved, it will be set to true for a frame, until this goes through and clears it.
 				this.mouseMoving = false;
-			}
 		}
 
 
