@@ -183,8 +183,8 @@ var FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = true; break;
 
-			case 82: /*R*/ this.moveUp = true; break;
-			case 70: /*F*/ this.moveDown = true; break;
+			case 69: /*E*/ this.moveUp = true; break;
+			case 81: /*Q*/ this.moveDown = true; break;
 
 		}
 
@@ -206,8 +206,8 @@ var FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = false; break;
 
-			case 82: /*R*/ this.moveUp = false; break;
-			case 70: /*F*/ this.moveDown = false; break;
+			case 69: /*E*/ this.moveUp = false; break;
+			case 81: /*Q*/ this.moveDown = false; break;
 
 		}
 
@@ -258,6 +258,7 @@ var FirstPersonControls = function ( object, domElement ) {
 
 					this.object.quaternion.setFromEuler( euler );
 				}
+			}
 				//this.object.rotation._z = 0;
 				//this.object.rotation._x = this.object.rotation._x + mouseDiffX;
 				//this.object.rotateX(mouseDiffX);
@@ -275,7 +276,6 @@ var FirstPersonControls = function ( object, domElement ) {
 
 				// Sets mouseMoving to false. If the mouse is moved, it will be set to true for a frame, until this goes through and clears it.
 				this.mouseMoving = false;
-			}
 		}
 
 

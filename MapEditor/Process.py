@@ -2,7 +2,11 @@
 import Lib.Utils.Util as utils
 import pathlib
 import oead
-
+import json
+import blwp
+import Loaders.FromGame.smubin as smubin
+import Loaders.FromGame.actor as actor
+import webview
 
 # Load Settings
 
@@ -10,8 +14,10 @@ import Loaders.FromSettings.LoadSettings as LoadSettings
 import Writers.ToSettings.WriteSettings as WriteSettings
 
 settings = {
-"Game Dump Path": "Test/TestResources",
-"TestingMapSection": "C-5"
+"GameDump": "Test/TestResources",
+"TestingMapSection": "C-5",
+"NX": False,
+"DarkMode": False
 }
 
 try:
@@ -20,43 +26,53 @@ except:
     WriteSettings.WriteSettings(settings)
     print("Created and poulated yml file.")
 
-
-
-
+if settings.get('NX') == True:
+    content = '01007EF00011E000/romfs'
+    aoc = '01007EF00011F001/romfs'
+else:
+    content = 'content'
+    aoc = 'aoc'
 
 # Load map file
 
-import Loaders.FromGame.smubin as smubin
-pathStrStatic = (f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin')
+
+pathStrStatic = (f'{settings["GameDump"]}/{aoc}/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin')
 pathStatic = pathlib.Path(pathStrStatic)
-pathStrDy = (f'{settings["Game Dump Path"]}/content/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Dynamic.smubin')
+pathStrDy = (f'{settings["GameDump"]}/{aoc}/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Dynamic.smubin')
 pathDy = pathlib.Path(pathStrDy)
+pathStrTeraTree = (f'{settings["GameDump"]}/{aoc}/Map/Mainfield/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_TeraTree.sblwp')
+pathTeraTree = pathlib.Path(pathStrTeraTree)
 
 smubin.validateMapFile(pathStatic)
 smubin.validateMapFile(pathDy)
 
-MapSectionStaticText = utils.dict_To_Text(utils.BymlDecompress(pathStatic))
-MapSectionDynamicText = utils.dict_To_Text(utils.BymlDecompress(pathDy))
 
 # CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
-actorList = oead.byml.to_text((smubin.getActors(pathStatic)).get('Objs'))
+with open(pathStatic, 'rb') as dataStatic:
+    readFileStatic = oead.byml.from_binary(utils.checkCompression(dataStatic.read()))
+    dataStatic.close()
+with open(pathDy, 'rb') as dataDy:
+    readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
+    dataDy.close()
+
+staticDictOut = utils.mapDict(readFileStatic)
+dyDictOut = utils.mapDict(readFileDy)
+
+uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
+fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
+jsonActors = json.dumps(fullUniqueActors, indent=2)
+#print(fullUniqueActors)
+#print(utils.loadProd(pathTeraTree))
+print('\n\n\n\n\n\n')
+print(jsonActors)
 binActorList = (smubin.getActors(pathStatic)).get('Objs')
-railList = oead.byml.to_text((smubin.getActors(pathStatic)).get('Rails'))
-binRailList = (smubin.getActors(pathStatic)).get('Rails')
 
 
 
 # Load ActorInfo
 
-import Loaders.FromGame.actor as actor
+ActorInfoText = utils.BymlDecompress(f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml')
 
-ActorInfoText = utils.BymlDecompress(settings["Game Dump Path"] + "/content/Actor/ActorInfo.product.sbyml")
-
-
-
-
-
-#print(actor.FindActorModel(ActorInfoText, "TwnObj_Village_HatenoHouseSet_A_M_01"))
 
 
 # Find Actor text from map file
@@ -66,12 +82,6 @@ ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
 # Create Window
 
 
-
-
-
-
-
-import webview
 NewWindow = webview.create_window('Map Editor', "../Editor.html")
 def webview_logic(window):
     JSCompatibleActorText = ActorText.replace('\n', '\\n')
@@ -83,6 +93,6 @@ def send_stuff(window):
     "adfsfasf": "2930482394"
     }
 
-    NewWindow.evaluate_js('testDict = ' + testDict + '; console.log(testDict)')
+    NewWindow.evaluate_js('FullData = ' + jsonActors + '; console.log(FullData)')
 
-webview.start("send_stuff", NewWindow, gui='edge')
+webview.start(send_stuff, NewWindow, gui='cef', debug=True, http_server=True)
