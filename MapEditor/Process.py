@@ -57,8 +57,8 @@ with open(pathDy, 'rb') as dataDy:
 
 staticDictOut = utils.mapDict(readFileStatic)
 dyDictOut = utils.mapDict(readFileDy)
-jsonStaticOut = json.dumps(staticDictOut.extractedByml, indent=2)
-jsonDyOut = json.dumps(dyDictOut.extractedByml, indent=2)
+jsonStaticOut = staticDictOut.jsonData
+jsonDyOut = dyDictOut.jsonData
 
 
 uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
