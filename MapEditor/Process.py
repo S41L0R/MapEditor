@@ -96,6 +96,6 @@ def send_stuff(window):
     "adfsfasf": "2930482394"
     }
 
-    NewWindow.evaluate_js('FullData = ' + jsonActors + '; console.log(FullData)')
+    NewWindow.evaluate_js('UniqueActors = ' + jsonActors + '; console.log(UniqueActors)')
 
 webview.start(send_stuff, NewWindow, gui='cef', debug=True, http_server=True)
