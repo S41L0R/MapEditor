@@ -64,7 +64,7 @@ var cameraLookSpeed = 1;
 // -----------------------------------------------------------------------------
 
 var testDict = new Object();
-
+var UniqueActors = "";
 
 
 
