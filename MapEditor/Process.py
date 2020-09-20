@@ -57,6 +57,9 @@ with open(pathDy, 'rb') as dataDy:
 
 staticDictOut = utils.mapDict(readFileStatic)
 dyDictOut = utils.mapDict(readFileDy)
+jsonStaticOut = json.dumps(staticDictOut)
+jsonDyOut = json.dumps(dyDictOut)
+
 
 uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
 fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
