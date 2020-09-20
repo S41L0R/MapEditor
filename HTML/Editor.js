@@ -64,7 +64,6 @@ var cameraLookSpeed = 1;
 // -----------------------------------------------------------------------------
 
 var testDict = new Object();
-var UniqueActors = "";
 
 
 
@@ -158,6 +157,35 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 
 
 
+// Load from map file.
+function loadActors() {
+  pywebview.api.getStuff();
+  var loader = new THREE.FontLoader();
+
+
+
+
+
+  for (var i = 0; i < StaticActors.Objs.length; i++) {
+    loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+  	 new THREE.TextGeometry( StaticActors.Objs[i].UnitConfigName, {
+  		  font: font,
+  		  size: 80,
+  		  height: 5,
+  		  curveSegments: 12,
+  		  bevelEnabled: true,
+  		    bevelThickness: 10,
+    		bevelSize: 8,
+  		  bevelOffset: 0,
+  		  bevelSegments: 5
+  	 } );
+    } );
+  }
+
+}
+
+loadActors();
 
 
 

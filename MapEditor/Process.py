@@ -90,12 +90,19 @@ def webview_logic(window):
     JSCompatibleActorText = ActorText.replace('\n', '\\n')
     NewWindow.evaluate_js('editor.session.insert(0, "' + JSCompatibleActorText + '")')
 
-def send_stuff(window):
+def getStuff():
+    return jsonActors, jsonStaticOut, JsonDyOut
+
+
+def exposeFunctions(window):
     testDict = {
     "abc": "123",
     "adfsfasf": "2930482394"
     }
+    window.expose(getStuff)
+    #NewWindow.evaluate_js('UniqueActors = ' + jsonActors + '; console.log(UniqueActors)')
+    #NewWindow.evaluate_js('StaticActors = ' + jsonStaticOut + '; console.log(StaticActors)')
+    #NewWindow.evaluate_js('DynamicActors = ' + jsonDyOut + '; console.log(DynamicActors)')
+    #NewWindow.evaluate_js('loadActors()')
 
-    NewWindow.evaluate_js('UniqueActors = ' + jsonActors + '; console.log(UniqueActors)')
-
-webview.start(send_stuff, NewWindow, gui='cef', debug=True, http_server=True)
+webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=True)
