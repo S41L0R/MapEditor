@@ -7,6 +7,20 @@ import blwp
 import Loaders.FromGame.smubin as smubin
 import Loaders.FromGame.actor as actor
 import webview
+from flask import Flask
+import sys
+import json
+import os
+
+
+
+
+#Set CWD
+
+if "HTML" in os.getcwd():
+    os.chdir("../")
+
+
 
 # Load Settings
 
@@ -82,6 +96,40 @@ ActorInfoText = utils.BymlDecompress(f'{settings["GameDump"]}/{content}/Actor/Ac
 
 ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
 
+
+
+# Send data
+
+"""
+app = Flask()
+
+@app.route('/sendData')
+def sendData():
+  return jsonActors
+
+
+app.run(port=8080)
+"""
+
+
+# Keep this at the bottom of the file! This will print out every variable to be sent to js.
+
+#Separate previous stuff:
+#sys.stdout.flush()
+
+#Everything else:
+print(f"!startData{json.dumps(jsonDyOut)}!endData")
+
+print('!startData{ "name":"John" }!endData')
+
+#print("!startData" + json.dumps(jsonActors) + "!endData")
+sys.stdout.flush()
+
+
+
+
+
+"""
 # Create Window
 
 
@@ -106,3 +154,4 @@ def exposeFunctions(window):
     #NewWindow.evaluate_js('loadActors()')
 
 webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=True)
+"""
