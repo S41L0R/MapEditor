@@ -11,6 +11,7 @@ import {TransformControls} from './lib/threejs/examples/jsm/controls/TransformCo
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
 var viewport = document.getElementById("viewport");
+//var viewport = document.body;
 
 
 var scene = new THREE.Scene();
@@ -52,7 +53,7 @@ var doObjectSelect = true;
 // -----------------------------------------------------------------------------
 
 var customColor = new THREE.Color( 'skyblue' );
-var cameraSpeed = 15;
+var cameraSpeed = 150;
 var cameraLookSpeed = 1;
 
 
@@ -64,7 +65,7 @@ var cameraLookSpeed = 1;
 // -----------------------------------------------------------------------------
 
 var testDict = new Object();
-
+var sectionData;
 
 
 
@@ -127,10 +128,12 @@ const onLoad = function (dae)  {
   daeModel.traverse(function(child) {
     if (child instanceof THREE.Mesh) {
         objects.push(child);
+        console.log("Child instanceof THREE.Mesh = true")
 
     }
   });
   objects.push(dae.scene);
+  console.log("objects:");
   console.log(objects);
 
   for (var i = 1; i < daeModel.children.length; i++) {
@@ -153,41 +156,163 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 	console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
 
 };
+function loadPython(callback) {
+  console.log("Got to LoadPython!");
 
 
+
+
+  const { spawn } = require('child_process');
+  const childPython = spawn('python', ['../MapEditor/Process.py']);
+
+  console.log("Process is spawned.");
+  var loadingPython = true;
+  childPython.stdio[1].on('data', (dataBuffer) => {
+        console.log(`stdout as string from buffer: ${dataBuffer}`);
+
+        if (dataBuffer.toString().includes("!startData")) {
+          console.log("true");
+          var data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
+          console.log(data);
+          //callback(data);
+          loadActors(data);
+
+
+
+          sectionData = data;
+          createWindow();
+        }
+
+        else {
+          console.log("false");
+        }
+
+      });
+}
+//loadPython();
+//var data = loadPython();
+var fullData;
+function loadPythonCallback(data) {
+  fullData = data;
+}
+//loadPython(loadPythonCallback);
+console.log("test");
+loadPython(function(s){console.log(s);})
 
 
 // Load from map file.
-function loadActors() {
-  pywebview.api.getStuff();
+async function loadActors(data) {
+
+
+  console.log("Got to loadActors!");
+
+  //pywebview.api.getStuff();
   var loader = new THREE.FontLoader();
 
 
 
 
+  //data.Static.Objs
+  //for (var i = 0; i < data.Static.Objs.length-1001; i++) {
+  //for (const i of data.Static.Objs.slice(0, 5)) {
+  //data.Static.Objs.Length.foreach()
+  for (const i of data.Static.Objs) {
+    //var i = 0;
+    /*
+    loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
 
-  for (var i = 0; i < StaticActors.Objs.length; i++) {
-    loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
-
-  	 new THREE.TextGeometry( StaticActors.Objs[i].UnitConfigName, {
+    //var textGeo = await new THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
+    var textGeo = await new THREE.TextBufferGeometry( i.UnitConfigName, {
+    //var textGeo = new Promise(THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
   		  font: font,
-  		  size: 80,
+  		  size: 800,
   		  height: 5,
   		  curveSegments: 12,
   		  bevelEnabled: true,
-  		    bevelThickness: 10,
+  		  bevelThickness: 10,
     		bevelSize: 8,
   		  bevelOffset: 0,
   		  bevelSegments: 5
   	 } );
-    } );
-  }
+     //textGeo.computeBoundingBox();
+     //textGeo.computeVertexNormals();
+     const textMesh = await new THREE.Mesh(textGeo, material);
+     //textMesh.scale.set(0.001, 0.001, 0.001);
+     textMesh.scale.set(0.1, 0.1, 0.1);
+     textMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2])
+     await scene.add(textMesh);
+     console.log(i);
+     //console.log(data.Static.Objs[i].UnitConfigName);
+     console.log(i.UnitConfigName);
+     console.log(textMesh);
 
+   } );*/
+    console.log(i);
+
+
+    var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
+    var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+    cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2])
+    cubeMesh.HashID = i.HashId;
+    cubeMesh.Type = "Static";
+    await scene.add(cubeMesh);
+    await objects.push(cubeMesh);
+    await console.log("cubeMesh");
+    console.log(cubeMesh);
+    await console.log("No cubeMesh")
+
+  }
+  console.log(scene);
 }
 
-loadActors();
 
 
+
+// Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
+// -----------------------------------------------------------------------------
+function findActorData(hashId, type) {
+  if (type == "Static") {
+    for (const i of sectionData.Static.Objs) {
+      if (i.HashId == hashId) {
+        return i;
+      }
+    }
+  }
+  if (type.equals("Dynamic")) {
+    for (const i of sectionData.Dynamic.Objs) {
+      if (i.HashId == hashId) {
+        return(i);
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+
+// Controls the side bar panel thing, doesn't currently have a system for multi-actor selection, but I'll need to give TransformControls that first.
+// -----------------------------------------------------------------------------
+function showActorData(ActorHashID, ActorType) {
+  var actorDataPanel = document.getElementById("DataEditorTextWindow");
+  console.log(findActorData(ActorHashID, ActorType));
+  console.log(findActorData(ActorHashID, ActorType).UnitConfigName);
+  actorDataPanel.innerHTML = `
+  <p><strong>${findActorData(ActorHashID, ActorType).UnitConfigName}</strong></p>
+  <p>${ActorHashID}</p>
+
+  `;
+}
+// -----------------------------------------------------------------------------
+//loadActors();
+
+
+
+/*function loadPython () {
+    var python = require('child_process').spawn('python', ['./../MapEditor/Process.py']);
+ }*/
+
+
+//loadData();
 
 
 // DAE loader
@@ -269,11 +394,51 @@ scene.add(camera);
 
 // -----------------------------------------------------------------------------
 
+//window.open('./HTML/UI/SelectedActor/SelectedActor.html', 'hi', 'nodeIntegration=no')
+//const electron = require('electron')
+//const BrowserWindow = electron.BrowserWindow;
+
+
+function createWindow() {
+const {BrowserWindow} = require('electron').remote
+
+let editorWin = new BrowserWindow({width: 600, height: 400, webPreferences: {nodeIntegration: true}});
+//win.LoadURL("file://HTML/UI/SelectedActor/SelectedActor.html")
+
+editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`)
+
+
+
+
+
+  editorWin.once('ready-to-show', () => {
+      editorWin.show();
+    });
+
+  editorWin.webContents.on('did-finish-load', () => {
+      //editorWin.webContents.send('toActorEditor', 'Hello second window!');
+      editorWin.webContents.send('toActorEditor', {data: sectionData.Dynamic.Objs[0], windowID: 1});
+  });
+}
+
+
+
+const ipc = require('electron').ipcRenderer;
+
+
+ipc.on('fromActorEditor', (event, message) => {
+  console.warn(message);
+})
+
+document.getElementById("DataEditorTextWindow").innerHTML = `
+
+`;
+
 
 
 // Handle Mouse Movement
 // -----------------------------------------------------------------------------
-document.addEventListener( 'mousemove', onMouseMove, false );
+document.addEventListener( 'mousemove', onMouseMove, true );
 
 function onMouseMove( event ) {
 
@@ -297,13 +462,26 @@ function pointerDown(evt) {
       if (doObjectSelect == true) {
         raycaster.setFromCamera( mouse, camera );
         var intersects = raycaster.intersectObjects( objects, true);
+
+
         // Checks to make sure that something was actually intersected.
         if (intersects.length > 0) {
 
           // Grabs the very first intersected object
           selectedObject  = intersects[0].object;
+          console.log("start");
+          console.log(selectedObject);
+          console.log(selectedObject.parent);
+          console.log("end");
           if ( selectedObject !== null && selectedObject !== scene && selectedObject !== camera && selectedObject.parent.children[0] !== scene.children[1].object) {
-            transformControl.attach( selectedObject.parent);
+            if (selectedObject.parent.type == "Group") {
+              transformControl.attach( selectedObject.parent);
+              showActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
+            }
+            else {
+              transformControl.attach( selectedObject );
+              showActorData(selectedObject.HashID, selectedObject.Type);
+            }
             console.log(selectedObject.parent);
             console.log(selectedObject);
           //selectedObject.parent.remove(selectedObject);

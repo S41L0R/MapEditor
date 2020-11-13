@@ -1,5 +1,6 @@
 #sidebar {
   position: relative;
+  /*position: absolute;*/
   float: right;
   background-color: powderblue;
   height: 100%;
@@ -20,10 +21,12 @@
   width: 85%;
 }
 #viewport {
-  position: relative;
+  /**position: relative;**/
+  position: absolute;
   float: left;
   height: 100%;
-  width: 85%;
+  /*width: 85%;*/
+  width: 100%;
   z-index: 1;
   display: block;
   background-color: #000000;

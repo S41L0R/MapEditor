@@ -1,0 +1,22 @@
+{
+  "name": "MapEditor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Start.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "esm": "^3.2.25",
+    "python-shell": "^0.5.0"
+  },
+  "devDependencies": {
+    "electron": "^10.1.5"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC"
+}
