@@ -44,7 +44,6 @@ camera.position.z = 5;
 // Define pointerDown and pointerUp
 viewport.onpointerdown = pointerDown;
 
-
 var objects = [];
 
 var doObjectSelect = true;
@@ -459,6 +458,7 @@ function pointerDown(evt) {
 
   switch(evt.pointerType) {
     case "mouse":
+      if (evt.buttons === 1) {
       if (doObjectSelect == true) {
         raycaster.setFromCamera( mouse, camera );
         var intersects = raycaster.intersectObjects( objects, true);
@@ -488,10 +488,12 @@ function pointerDown(evt) {
           }
         }
       }
+
       else {
         transformControl.detach();
       }
       break;
+      }
     case "pen":
       action = "tapping";
       break;
@@ -503,7 +505,6 @@ function pointerDown(evt) {
       break;
     }
   }
-
 
 
 // Handle TransformControl Mode changes
