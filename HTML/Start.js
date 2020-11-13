@@ -27,6 +27,11 @@ function createWindow () {
 
 
 
+  win.on('closed', () => app.quit());
+
+
+
+
 
 }
 

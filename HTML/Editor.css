@@ -15,6 +15,10 @@
 }
 
 
+body {
+  margin: 0;
+}
+
 #editor {
   float: left;
   height: 100%;
