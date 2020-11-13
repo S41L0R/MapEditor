@@ -23,7 +23,6 @@ def FindActorModel(InputText, ActorName):
         try:
             #print(InputDict["Actors"][i]["name"])
             if InputDict["Actors"][i]["name"] == ActorName:
-                print("yay")
                 SearchingActorInfo = False
             else:
                 i = i + 1

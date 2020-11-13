@@ -14,11 +14,11 @@
 
   <div id="editor"></div>
 
-  <script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../../lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
   <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai-custom");
-    editor.session.setMode("ace/mode/yaml");
+    editor.session.setMode("ace/mode/json");
 
 
     //var beautify = ace.require("ace/ext/beautify");
@@ -26,6 +26,15 @@
 
 
 
+
+
+    const ipc = require('electron').ipcRenderer;
+
+    ipc.on('toActorEditor', (event, message) => {
+      console.log(message); // logs out "Hello second window!"
+      ipc.send('toMainWindow', `This message goes back to the main window.`);
+      editor.setValue(JSON.stringify(message.data, null, "\t"));
+    })
   </script>
 </body>
 <aside id=SelectedActorSidebar>

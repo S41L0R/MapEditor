@@ -118,9 +118,20 @@ app.run(port=8080)
 #sys.stdout.flush()
 
 #Everything else:
-print(f"!startData{json.dumps(jsonDyOut)}!endData")
+#print(f"!startData{json.dumps(jsonDyOut)[1:-1]}!endData")
 
-print('!startData{ "name":"John" }!endData')
+def createJSON():
+    DataJSON = '{"Dynamic":'+jsonDyOut+', "Static":'+jsonStaticOut+'}'
+    return DataJSON
+
+
+
+
+
+print(f"!startData{createJSON()}!endData")
+
+#print(json.dumps(jsonDyOut)[1:-1])
+
 
 #print("!startData" + json.dumps(jsonActors) + "!endData")
 sys.stdout.flush()
