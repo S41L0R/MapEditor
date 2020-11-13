@@ -180,7 +180,6 @@ function loadPython(callback) {
 
 
           sectionData = data;
-          createWindow();
         }
 
         else {
@@ -294,13 +293,14 @@ function findActorData(hashId, type) {
 // -----------------------------------------------------------------------------
 function showActorData(ActorHashID, ActorType) {
   var actorDataPanel = document.getElementById("DataEditorTextWindow");
-  console.log(findActorData(ActorHashID, ActorType));
-  console.log(findActorData(ActorHashID, ActorType).UnitConfigName);
   actorDataPanel.innerHTML = `
   <p><strong>${findActorData(ActorHashID, ActorType).UnitConfigName}</strong></p>
   <p>${ActorHashID}</p>
+  <button class="button" id="ActorEditButton">Edit BYML</button>
 
   `;
+  document.getElementById("ActorEditButton").addEventListener("click", () => {createEditorWindow(findActorData(ActorHashID, ActorType))});
+  //document.getElementById("ActorEditButton").onclick = findActorData(ActorHashID, ActorType);
 }
 // -----------------------------------------------------------------------------
 //loadActors();
@@ -399,7 +399,7 @@ scene.add(camera);
 //const BrowserWindow = electron.BrowserWindow;
 
 
-function createWindow() {
+function createEditorWindow(obj) {
 const {BrowserWindow} = require('electron').remote
 
 let editorWin = new BrowserWindow({width: 600, height: 400, webPreferences: {nodeIntegration: true}});
@@ -417,7 +417,7 @@ editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`
 
   editorWin.webContents.on('did-finish-load', () => {
       //editorWin.webContents.send('toActorEditor', 'Hello second window!');
-      editorWin.webContents.send('toActorEditor', {data: sectionData.Dynamic.Objs[0], windowID: 1});
+      editorWin.webContents.send('toActorEditor', {data: obj, windowID: 1});
   });
 }
 

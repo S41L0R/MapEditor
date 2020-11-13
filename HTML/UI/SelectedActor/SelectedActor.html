@@ -25,16 +25,23 @@
     //beautify.beautify(editor.session);
 
 
-
-
-
     const ipc = require('electron').ipcRenderer;
+
+    function Apply() {
+      ipc.send('toMainWindow', JSON.parse(editor.session.getValue()));
+    }
+
+
 
     ipc.on('toActorEditor', (event, message) => {
       console.log(message); // logs out "Hello second window!"
-      ipc.send('toMainWindow', `This message goes back to the main window.`);
+      //ipc.send('toMainWindow', `This message goes back to the main window.`);
       editor.setValue(JSON.stringify(message.data, null, "\t"));
     })
+    window.onload = function() {
+      document.getElementById("abc").addEventListener("click", Apply);
+      console.log("loaded")
+    }
   </script>
 </body>
 <aside id=SelectedActorSidebar>
