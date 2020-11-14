@@ -1,0 +1,100 @@
+#sidebar {
+  position: relative;
+  /*position: absolute;*/
+  float: right;
+  background-color: black;
+  height: 100%;
+  width: 15%;
+  text-align: center;
+  font-family: "Noto Sans TC", "sans-serif";
+  z-index: 2;
+
+}
+#sidebar h1 {
+  font-weight: 100 !important;
+}
+
+
+body {
+  margin: 0;
+}
+
+#editor {
+  float: left;
+  height: 100%;
+  width: 85%;
+}
+#viewport {
+  /**position: relative;**/
+  position: absolute;
+  float: left;
+  height: 100%;
+  /*width: 85%;*/
+  width: 100%;
+  z-index: 1;
+  display: block;
+  background-color: #000000;
+}
+
+
+#transformMode {
+  position: absolute;
+  z-index: 10;
+}
+
+
+
+.transformButton {
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px 1px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  min-width: 1px;
+  background-color: #008CBA;
+  height: 35;
+
+}
+
+
+.transformButton:focus {
+    outline: 0;
+
+}
+
+.transformButton:hover {
+  background-color: #FFFFFF;
+  height: auto;
+  color: #000000;
+}
+
+.TransformModeImg {
+  opacity: 0;
+}
+
+.transformButton:hover > .TransformModeImg {
+  opacity: 100;
+}
+
+
+
+
+.transformButton:active {
+
+}
+
+
+
+/*#Scale {
+  background: url("/Assets/UI/Transform Mode Images/MapEditorScale.png");
+}*/
+
+/*#Scale {
+  width:100;
+  height: 25;
+}*/

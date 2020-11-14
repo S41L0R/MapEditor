@@ -263,7 +263,18 @@ async function loadActors(data) {
   console.log(scene);
 }
 
+// Light mode / Dark mode
+// -----------------------------------------------------------------------------
+const darkModeToggle = document.getElementById("darkModeToggle");
+const styleSheet = document.getElementById("styleSheet");
 
+darkModeToggle.addEventListener("click", function() {
+  if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
+    styleSheet.href = "HTML/Dark-Mode.css";
+  } else {
+    styleSheet.href = "HTML/Light-Mode.css";
+  }
+});
 
 
 // Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
