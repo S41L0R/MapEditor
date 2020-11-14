@@ -6,6 +6,8 @@ import os
 from platform import system
 import yaml
 import blwp
+import clr
+from .. import ModelExporter
 
 
 
@@ -150,3 +152,5 @@ def loadProd(filePathIn):
     else:
         return
     
+def bfresToDAE(bfresName):
+    print('bfres To DAE called')
