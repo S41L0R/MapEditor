@@ -271,8 +271,11 @@ const styleSheet = document.getElementById("styleSheet");
 darkModeToggle.addEventListener("click", function() {
   if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
     styleSheet.href = "HTML/Dark-Mode.css";
+    scene.background = new THREE.Color("black");
+
   } else {
     styleSheet.href = "HTML/Light-Mode.css";
+    scene.background = customColor;
   }
 });
 

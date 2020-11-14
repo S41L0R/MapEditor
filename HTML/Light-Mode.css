@@ -42,7 +42,23 @@ body {
   z-index: 10;
 }
 
-
+#darkModeToggle {
+  background-color: #008CBA;
+  color: white;
+  border-style: none;
+  border-radius: 5px;
+  outline: 0;
+  margin: 3px;
+  width: 95%;
+  height: 5%;
+}
+#darkModeToggle:hover {
+  background-color: #002836;
+  font-weight: bold;
+}
+#darkModeToggle:focus {
+  background-color: #2628a3;
+}
 
 .transformButton {
   border: none;
