@@ -16,6 +16,7 @@ function createWindow () {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: '../Assets/UI/Logo/MapEditorIconDarkMode-Alt.png',
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true
