@@ -46,11 +46,12 @@ body {
   background-color: #008CBA;
   color: white;
   border-style: none;
-  border-radius: 5px;
+  border-radius: 10px;
   outline: 0;
   margin: 3px;
-  width: 95%;
-  height: 5%;
+  /*width: 95%;*/
+  /*height: 5%;*/
+  padding: 5px;
 }
 #darkModeToggle:hover {
   background-color: #002836;
@@ -74,7 +75,7 @@ body {
   min-width: 1px;
   background-color: #008CBA;
   height: 35;
-
+  border-radius: 5px;
 }
 
 
@@ -105,6 +106,32 @@ body {
 }
 
 
+.cameraSlideContainer {
+  width: 100%;
+}
+
+#cameraSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 95%;
+  height: 10px;
+  outline: none;
+  background: #008CBA;
+  margin: 2px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+#cameraSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: #2628a3;
+  width: 15px;
+  height: 15px;
+  background: #000000;
+  border-radius:  100%;
+}
+#cameraSlider:hover {
+  background: #2628a3;
+}
 
 /*#Scale {
   background: url("/Assets/UI/Transform Mode Images/MapEditorScale.png");
