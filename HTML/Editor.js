@@ -305,10 +305,12 @@ function findActorData(hashId, type) {
 
 // Controls the side bar panel thing, doesn't currently have a system for multi-actor selection, but I'll need to give TransformControls that first.
 // -----------------------------------------------------------------------------
+// Initializes the camera slider varaibles
 var cameraSlider = document.getElementById('cameraSlider');
 var sliderValue = document.getElementById('sliderValue');
 sliderValue.innerHTML = cameraSlider.value;
 
+// Changes the camera speed when the slider's value changes
 cameraSlider.oninput = function() {
   sliderValue.innerHTML = this.value;
   cameraSpeed = this.value
