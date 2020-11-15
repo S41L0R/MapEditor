@@ -52,6 +52,7 @@ var doObjectSelect = true;
 // -----------------------------------------------------------------------------
 
 var customColor = new THREE.Color( 'skyblue' );
+var customDarkColor = new THREE.Color('#2b2b31');
 var cameraSpeed = 150;
 var cameraLookSpeed = 1;
 
@@ -271,7 +272,7 @@ const styleSheet = document.getElementById("styleSheet");
 darkModeToggle.addEventListener("click", function() {
   if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
     styleSheet.href = "HTML/Dark-Mode.css";
-    scene.background = new THREE.Color("black");
+    scene.background = customDarkColor;
 
   } else {
     styleSheet.href = "HTML/Light-Mode.css";
@@ -304,6 +305,16 @@ function findActorData(hashId, type) {
 
 // Controls the side bar panel thing, doesn't currently have a system for multi-actor selection, but I'll need to give TransformControls that first.
 // -----------------------------------------------------------------------------
+var cameraSlider = document.getElementById('cameraSlider');
+var sliderValue = document.getElementById('sliderValue');
+sliderValue.innerHTML = cameraSlider.value;
+
+cameraSlider.oninput = function() {
+  sliderValue.innerHTML = this.value;
+  cameraSpeed = this.value
+  fpControls.movementSpeed = cameraSpeed
+}
+
 function showActorData(ActorHashID, ActorType) {
   var actorDataPanel = document.getElementById("DataEditorTextWindow");
   actorDataPanel.innerHTML = `
