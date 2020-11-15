@@ -1,5 +1,6 @@
 import os
 import yaml
+import json
 import pathlib
 from Lib.Utils import Util
 
@@ -11,5 +12,5 @@ def WriteSettings(settings):
             configPath.mkdir()
         except:
             print('shrug')
-    with open(configPath / 'Config.yml', 'wt') as config:
-        yaml.dump(settings, config)
+    with open(configPath / 'Config.json', 'wt') as config:
+        config.write(json.dumps(settings, indent=2))

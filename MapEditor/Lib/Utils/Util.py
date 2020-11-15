@@ -7,10 +7,11 @@ from platform import system
 import yaml
 import blwp
 import clr
+"""
 exporterPath = pathlib.Path('../ModelExporters')
 clr.AddReference('..ModelExporter.ModelExporter')
 from ModelExporter import ModelExporter
-
+"""
 
 # Decompress bymls.
 def BymlDecompress(Path):
@@ -152,7 +153,8 @@ def loadProd(filePathIn):
         return(dataOut)
     else:
         return
-    
+"""    
 def bfresToDAE(bfresName):
     #ModelExporter('e')
     print('bfres To DAE called')
+"""

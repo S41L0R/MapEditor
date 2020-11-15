@@ -38,7 +38,7 @@ try:
     settings = LoadSettings.LoadSettings()
 except:
     WriteSettings.WriteSettings(settings)
-    print("Created and poulated yml file.")
+    print("Created and poulated json file.")
 
 if settings.get('NX') == True:
     content = '01007EF00011E000/romfs'
@@ -64,10 +64,8 @@ smubin.validateMapFile(pathDy)
 # CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
 with open(pathStatic, 'rb') as dataStatic:
     readFileStatic = oead.byml.from_binary(utils.checkCompression(dataStatic.read()))
-    dataStatic.close()
 with open(pathDy, 'rb') as dataDy:
     readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
-    dataDy.close()
 
 staticDictOut = utils.mapDict(readFileStatic)
 dyDictOut = utils.mapDict(readFileDy)
