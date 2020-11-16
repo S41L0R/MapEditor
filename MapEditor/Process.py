@@ -26,18 +26,23 @@ if "HTML" in os.getcwd():
 
 # Load Settings
 def getSettings():
-    settings = {
+    defaultSettings = {
     "GameDump": "Test/TestResources",
     "TestingMapSection": "C-5",
     "NX": False,
     "DarkMode": False
     }
-    try:
-        settings = LoadSettings.LoadSettings()
-    except:
-        WriteSettings.WriteSettings(settings)
-        print("Created and poulated json file.")
+    
+    def checkSettings():
+        try:
+            settings = LoadSettings.LoadSettings()
+            return(settings)
+        except:
+            WriteSettings.WriteSettings(defaultSettings)
+            print("Created and poulated json file.")
+            checkSettings()
 
+    settings = checkSettings()
     if settings.get('NX') == True:
         content = '01007EF00011E000/romfs'
         aoc = '01007EF00011F001/romfs'
@@ -45,6 +50,12 @@ def getSettings():
         content = 'content'
         aoc = 'aoc'
     return(settings, content, aoc)
+
+# Formats settings to be shared with the js end of things
+def shareSettings():
+    settings, content, aoc = getSettings()
+    jsonSettings = json.dumps(settings)
+    print(f'!startData{jsonSettings}!endData')
 
 # Load map file
 class mapFile:
