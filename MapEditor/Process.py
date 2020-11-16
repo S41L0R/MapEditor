@@ -180,5 +180,7 @@ webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=Tru
 #if __name__ == "__main__":
     #print('main')
     #main()
-
-exec(f"{sys.argv[1]}()")
+if len(sys.argv) != 2:
+    exec(f"{sys.argv[1]}(\"{sys.argv[2]}\")")
+else:
+    exec(f"{sys.argv[1]}()")
