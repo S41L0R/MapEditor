@@ -178,6 +178,8 @@ def exposeFunctions(window):
 webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=True)
 """
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     #print('main')
-    main()
+    #main()
+
+exec(f"{sys.argv[1]}()")
