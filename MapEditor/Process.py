@@ -11,7 +11,8 @@ from flask import Flask
 import sys
 import json
 import os
-
+import Loaders.FromSettings.LoadSettings as LoadSettings
+import Writers.ToSettings.WriteSettings as WriteSettings
 
 
 
@@ -21,79 +22,73 @@ if "HTML" in os.getcwd():
     os.chdir("../")
 
 
-
 # Load Settings
+def getSettings():
+    settings = {
+    "GameDump": "Test/TestResources",
+    "TestingMapSection": "C-5",
+    "NX": False,
+    "DarkMode": False
+    }
+    try:
+        settings = LoadSettings.LoadSettings()
+    except:
+        WriteSettings.WriteSettings(settings)
+        print("Created and poulated json file.")
 
-import Loaders.FromSettings.LoadSettings as LoadSettings
-import Writers.ToSettings.WriteSettings as WriteSettings
-
-settings = {
-"GameDump": "Test/TestResources",
-"TestingMapSection": "C-5",
-"NX": False,
-"DarkMode": False
-}
-
-try:
-    settings = LoadSettings.LoadSettings()
-except:
-    WriteSettings.WriteSettings(settings)
-    print("Created and poulated json file.")
-
-if settings.get('NX') == True:
-    content = '01007EF00011E000/romfs'
-    aoc = '01007EF00011F001/romfs'
-else:
-    content = 'content'
-    aoc = 'aoc'
+    if settings.get('NX') == True:
+        content = '01007EF00011E000/romfs'
+        aoc = '01007EF00011F001/romfs'
+    else:
+        content = 'content'
+        aoc = 'aoc'
+    return(settings, content, aoc)
 
 # Load map file
+class mapFile:
+    def __init__(self):
+        self.settings, self.content, self.aoc = getSettings()
 
+        pathStrStatic = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{self.settings["TestingMapSection"]}/{self.settings["TestingMapSection"]}_Static.smubin')
+        pathStrDy = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{self.settings["TestingMapSection"]}/{self.settings["TestingMapSection"]}_Dynamic.smubin')
+        pathStrTeraTree = (f'{self.settings["GameDump"]}/{self.aoc}/Map/Mainfield/{self.settings["TestingMapSection"]}/{self.settings["TestingMapSection"]}_TeraTree.sblwp')
 
-pathStrStatic = (f'{settings["GameDump"]}/{aoc}/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Static.smubin')
-pathStatic = pathlib.Path(pathStrStatic)
-pathStrDy = (f'{settings["GameDump"]}/{aoc}/Map/MainField/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_Dynamic.smubin')
-pathDy = pathlib.Path(pathStrDy)
-pathStrTeraTree = (f'{settings["GameDump"]}/{aoc}/Map/Mainfield/{settings["TestingMapSection"]}/{settings["TestingMapSection"]}_TeraTree.sblwp')
-pathTeraTree = pathlib.Path(pathStrTeraTree)
+        self.pathStatic = pathlib.Path(pathStrStatic)
+        self.pathDy = pathlib.Path(pathStrDy)
+        self.pathTeraTree = pathlib.Path(pathStrTeraTree)
 
-smubin.validateMapFile(pathStatic)
-smubin.validateMapFile(pathDy)
+        smubin.validateMapFile(self.pathStatic)
+        smubin.validateMapFile(self.pathDy)
+        self.loadMapActors()
+        self.formattedMapJson = self.createJSON()
 
+    # CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
+    def loadMapActors(self):
+        with open(self.pathStatic, 'rb') as dataStatic:
+            readFileStatic = oead.byml.from_binary(utils.checkCompression(dataStatic.read()))
+        with open(self.pathDy, 'rb') as dataDy:
+            readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
 
-# CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
-with open(pathStatic, 'rb') as dataStatic:
-    readFileStatic = oead.byml.from_binary(utils.checkCompression(dataStatic.read()))
-with open(pathDy, 'rb') as dataDy:
-    readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
+        staticDictOut = utils.mapDict(readFileStatic)
+        dyDictOut = utils.mapDict(readFileDy)
+        self.jsonStaticOut = staticDictOut.jsonData
+        self.jsonDyOut = dyDictOut.jsonData
 
-staticDictOut = utils.mapDict(readFileStatic)
-dyDictOut = utils.mapDict(readFileDy)
-jsonStaticOut = staticDictOut.jsonData
-jsonDyOut = dyDictOut.jsonData
+        uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
+        fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
+        self.jsonActors = json.dumps(fullUniqueActors, indent=2)
 
-
-uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
-fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
-jsonActors = json.dumps(fullUniqueActors, indent=2)
-#print(fullUniqueActors)
-#print(utils.loadProd(pathTeraTree))
-print('\n\n\n\n\n\n')
-print(jsonActors)
-binActorList = (smubin.getActors(pathStatic)).get('Objs')
-
+    # Generates formatted json data from dictionaries
+    def createJSON(self):
+        DataJSON = '{"Dynamic":'+self.jsonDyOut+', "Static":'+self.jsonStaticOut+'}'
+        return DataJSON
 
 
 # Load ActorInfo
-
-ActorInfoText = utils.BymlDecompress(f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml')
-
-
-
-# Find Actor text from map file
-
-ActorText = utils.dict_To_Text(smubin.FindActorText(binActorList, "453856506"))
-
+class actorData:
+    def __init__(self):
+        self.settings, self.content, self.aoc = getSettings()
+        self.ActorInfoText = utils.BymlDecompress(f'{self.settings["GameDump"]}/{self.content}/Actor/ActorInfo.product.sbyml')
 
 
 # Send data
@@ -118,23 +113,28 @@ app.run(port=8080)
 #Everything else:
 #print(f"!startData{json.dumps(jsonDyOut)[1:-1]}!endData")
 
-def createJSON():
-    DataJSON = '{"Dynamic":'+jsonDyOut+', "Static":'+jsonStaticOut+'}'
-    return DataJSON
 
+# Returns whether or not the user has darkMode enabled
+def getDarkMode():
+    settings = LoadSettings.LoadSettings()
+    darkMode = settings.get('DarkMode')
+    print('!startData{"DarkMode":' + str(darkMode) + '}!endData')
+    return(darkMode)
 
+# Sets darkMode to enabled or disabled depending on whether or not the user has it enabled
+def setDarkMode():
+    settings = LoadSettings.LoadSettings()
+    if getDarkMode() == True:
+        darkMode = False
+    else:
+        darkMode = True
+    settings.update({'DarkMode': darkMode})
+    WriteSettings.WriteSettings(settings)
 
-
-
-print(f"!startData{createJSON()}!endData")
-
-#print(json.dumps(jsonDyOut)[1:-1])
-
-
-#print("!startData" + json.dumps(jsonActors) + "!endData")
-sys.stdout.flush()
-
-
+def main():
+    mapFileData = mapFile()
+    print(f"!startData{mapFileData.formattedMapJson}!endData")
+    sys.stdout.flush()
 
 
 
@@ -164,3 +164,6 @@ def exposeFunctions(window):
 
 webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=True)
 """
+
+if __name__ == "__main__":
+    main()

@@ -162,8 +162,9 @@ function loadPython(callback, func) {
 
 
   if (func == null) {
+    func = "main";
     const { spawn } = require('child_process');
-    const childPython = spawn('python', ['../MapEditor/Process.py']);
+    const childPython = spawn('python', ['../MapEditor/Process.py', `-c \'${func()}\'`]);
 
     console.log("Process is spawned.");
     var loadingPython = true;
@@ -299,14 +300,29 @@ darkModeToggle.addEventListener("click", function() {
   if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
     styleSheet.href = "HTML/Dark-Mode.css";
     scene.background = customDarkColor;
-
+    loadPython(function(s){console.log(s);}, 'setDarkMode');
   } else {
     styleSheet.href = "HTML/Light-Mode.css";
     scene.background = customColor;
+    loadPython(function(s){console.log(s);}, 'setDarkMode');
   }
 });
 
-
+//Load settings from config.json
+function loadSettings() {
+  var settings = loadPython(function(s){console.log(s);}, "getDarkMode");
+  if (settings.DarkMode == true) {
+    styleSheet.href = "HTML/Dark-Mode.css";
+    scene.background = customDarkColor;
+  }
+  else {
+    styleSheet.href = "HTML/Light-Mode.css";
+    scene.background = customColor;
+  };
+};
+window.onload = function() {
+  loadSettings();
+};
 // Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
 // -----------------------------------------------------------------------------
 function findActorData(hashId, type) {
