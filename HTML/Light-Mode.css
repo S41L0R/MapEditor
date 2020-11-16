@@ -1,115 +1,27 @@
 #sidebar {
-  position: relative;
-  /*position: absolute;*/
-  float: right;
   background-color: powderblue;
-  height: 100%;
-  width: 15%;
-  text-align: center;
-  font-family: "Noto Sans TC", "sans-serif";
-  z-index: 2;
-
-}
-#sidebar h1 {
-  font-weight: 100 !important;
 }
 
-
-body {
-  margin: 0;
-}
-
-#editor {
-  float: left;
-  height: 100%;
-  width: 85%;
-}
 #viewport {
-  /**position: relative;**/
-  position: absolute;
-  float: left;
-  height: 100%;
-  /*width: 85%;*/
-  width: 100%;
-  z-index: 1;
-  display: block;
   background-color: #000000;
 }
 
-
-#transformMode {
-  position: absolute;
-  z-index: 10;
-}
-
-
 .transformButton {
-  border: none;
   color: white;
-  padding: 8px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 2px 1px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  min-width: 1px;
   background-color: #008CBA;
-  height: 35;
-  border-radius: 5px;
-}
-
-
-.transformButton:focus {
-    outline: 0;
-
 }
 
 .transformButton:hover {
   background-color: #FFFFFF;
-  height: auto;
   color: #000000;
 }
 
-.TransformModeImg {
-  opacity: 0;
-}
-
-.transformButton:hover > .TransformModeImg {
-  opacity: 100;
-}
-
-
-
-
-.transformButton:active {
-
-}
-
-
-.cameraSlideContainer {
-  width: 100%;
-}
-
 #cameraSlider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 95%;
-  height: 10px;
-  outline: none;
   background: #008CBA;
-  margin: 2px;
-  margin-top: 10px;
-  border-radius: 5px;
 }
 #cameraSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
   background: #2628a3;
-  width: 15px;
-  height: 15px;
   background: #000000;
-  border-radius:  100%;
 }
 #cameraSlider:hover {
   background: #005773;
@@ -118,18 +30,10 @@ body {
 .button {
   background-color: #008CBA;
   color: white;
-  border-style: none;
-  border-radius: 10px;
-  outline: 0;
-  margin: 3px;
-  /*width: 95%;*/
-  /*height: 5%;*/
-  padding: 5px;
 }
 
 .button:hover {
   background-color: #002836;
-  font-weight: bold;
 }
 /*#Scale {
   background: url("/Assets/UI/Transform Mode Images/MapEditorScale.png");

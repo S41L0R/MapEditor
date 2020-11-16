@@ -1,126 +1,42 @@
 #sidebar {
-  position: relative;
-  /*position: absolute;*/
-  float: right;
   background-color: #0e0e10;
-  height: 100%;
-  width: 15%;
-  text-align: center;
   color: #FFFFFF;
-  font-family: "Noto Sans TC", "sans-serif";
-  z-index: 2;
-
-}
-#sidebar h1 {
-  font-weight: 100 !important;
-}
-
-body {
-  margin: 0;
-}
-
-#editor {
-  float: left;
-  height: 100%;
-  width: 85%;
 }
 #viewport {
-  /**position: relative;**/
-  position: absolute;
-  float: left;
-  height: 100%;
-  /*width: 85%;*/
-  width: 100%;
-  z-index: 1;
-  display: block;
   background-color: #2b2b31;
-  outline: none;
 }
-
-
-#transformMode {
-  position: absolute;
-  z-index: 10;
-}
-
 
 #darkModeToggle {
   background-color: #9147ff;
   color: white;
-  border-style: none;
-  border-radius: 10px;
-  outline: 0;
-  margin: 3px;
-  padding: 5px;
-  transition-duration: 0.4s;
-  cursor: pointer;
 }
 #darkModeToggle:hover {
   background-color: #6a34bd;
-  font-weight: bold;
 }
 
 
 .transformButton {
-  border: none;
   color: #32353b;
-  padding: 8px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 2px 1px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  min-width: 1px;
   background-color: #7289da;
-  height: 35;
-  border-radius: 5px;
-}
-
-
-.transformButton:focus {
-    outline: 0;
 }
 
 .transformButton:hover {
   color: white;
   background-color: #3c4873;
-  height: auto;
 }
 
 .TransformModeImg {
-  opacity: 0;
   filter: invert(1);
 }
 
-.transformButton:hover > .TransformModeImg {
-  opacity: 100;
-}
-
-
-.cameraSlideContainer {
-  width: 100%;
-}
 
 #cameraSlider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 95%;
-  height: 10px;
-  outline: none;
   background: #9147ff;
-  margin: 2px;
-  margin-top: 10px;
-  border-radius: 5px;
 }
 #cameraSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
   background: #6a34bd;
-  width: 15px;
-  height: 15px;
   background: #FFFFFF;
-  border-radius:  100%;
 }
 #cameraSlider:hover {
   background: #9e5ffc;
@@ -128,18 +44,10 @@ body {
 .button {
   background-color: #008CBA;
   color: white;
-  border-style: none;
-  border-radius: 10px;
-  outline: 0;
-  margin: 3px;
-  /*width: 95%;*/
-  /*height: 5%;*/
-  padding: 5px;
 }
 
 .button:hover {
   background-color: #002836;
-  font-weight: bold;
 }
 /*#Scale {
   background: url("/Assets/UI/Transform Mode Images/MapEditorScale.png");
