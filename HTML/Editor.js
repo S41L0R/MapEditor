@@ -308,21 +308,7 @@ darkModeToggle.addEventListener("click", function() {
   }
 });
 
-//Load settings from config.json
-function loadSettings() {
-  var settings = loadPython(function(s){console.log(s);}, "getDarkMode");
-  if (settings.DarkMode == true) {
-    styleSheet.href = "HTML/Dark-Mode.css";
-    scene.background = customDarkColor;
-  }
-  else {
-    styleSheet.href = "HTML/Light-Mode.css";
-    scene.background = customColor;
-  };
-};
-window.onload = function() {
-  loadSettings();
-};
+
 
 // Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
 // -----------------------------------------------------------------------------
@@ -614,3 +600,19 @@ function animate() {
 	renderer.render( scene, camera );
 }
 animate();
+
+//scene.background = customColor
+//Load settings from config.json
+function loadSettings() {
+  var settings = loadPython(function(s){console.log(s);}, "shareSettings");
+  if (settings.DarkMode == true) {
+    styleSheet.href = "HTML/Dark-Mode.css";
+    scene.background = customDarkColor;
+  }
+  else {
+    styleSheet.href = "HTML/Light-Mode.css";
+    scene.background = customColor;
+  };
+};
+
+loadSettings();
