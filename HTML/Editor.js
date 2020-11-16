@@ -175,7 +175,7 @@ function loadPython(callback, func, arg) {
         var data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
         console.log(data);
         //callback(data);
-        loadActors(data);
+        callback(data);
 
 
 
@@ -201,7 +201,7 @@ function loadPython(callback, func, arg) {
         var data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
         console.log(data);
         //callback(data);
-        loadActors(data);
+        callback(data);
 
 
 
@@ -222,7 +222,7 @@ function loadPythonCallback(data) {
 }
 //loadPython(loadPythonCallback);
 console.log("test");
-loadPython(function(s){console.log(s);}, "main")
+loadPython(function(s){loadActors(s)}, "main")
 
 
 // Load from map file.
@@ -659,6 +659,6 @@ function loadDarkMode() {
   };
 };
 
-window.onload = function() { 
+window.onload = function() {
   loadDarkMode();
 }
