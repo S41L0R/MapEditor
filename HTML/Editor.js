@@ -287,6 +287,52 @@ async function loadActors(data) {
     await console.log("No cubeMesh")
 
   }
+  for (const i of data.Dynamic.Objs) {
+    //var i = 0;
+    /*
+    loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
+
+    //var textGeo = await new THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
+    var textGeo = await new THREE.TextBufferGeometry( i.UnitConfigName, {
+    //var textGeo = new Promise(THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
+  		  font: font,
+  		  size: 800,
+  		  height: 5,
+  		  curveSegments: 12,
+  		  bevelEnabled: true,
+  		  bevelThickness: 10,
+    		bevelSize: 8,
+  		  bevelOffset: 0,
+  		  bevelSegments: 5
+  	 } );
+     //textGeo.computeBoundingBox();
+     //textGeo.computeVertexNormals();
+     const textMesh = await new THREE.Mesh(textGeo, material);
+     //textMesh.scale.set(0.001, 0.001, 0.001);
+     textMesh.scale.set(0.1, 0.1, 0.1);
+     textMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2])
+     await scene.add(textMesh);
+     console.log(i);
+     //console.log(data.Static.Objs[i].UnitConfigName);
+     console.log(i.UnitConfigName);
+     console.log(textMesh);
+
+   } );*/
+    console.log(i);
+
+
+    var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
+    var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+    cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2])
+    cubeMesh.HashID = i.HashId;
+    cubeMesh.Type = "Dynamic";
+    await scene.add(cubeMesh);
+    await objects.push(cubeMesh);
+    await console.log("cubeMesh");
+    console.log(cubeMesh);
+    await console.log("No cubeMesh")
+
+  }
   console.log(scene);
 }
 
@@ -319,7 +365,7 @@ function findActorData(hashId, type) {
       }
     }
   }
-  if (type.equals("Dynamic")) {
+  if (type == "Dynamic") {
     for (const i of sectionData.Dynamic.Objs) {
       if (i.HashId == hashId) {
         return(i);
