@@ -164,7 +164,7 @@ function loadPython(callback, func) {
   if (func == null) {
     func = "main";
     const { spawn } = require('child_process');
-    const childPython = spawn('python', ['../MapEditor/Process.py', `-c \'${func}()\'`]);
+    const childPython = spawn('python', ['../MapEditor/Process.py', `${func}()`]);
 
     console.log("Process is spawned.");
     var loadingPython = true;
@@ -190,7 +190,7 @@ function loadPython(callback, func) {
   }
   else {
     const { spawn } = require('child_process');
-    const childPython = spawn('python', ['../MapEditor/Process.py', `-c \'${func}()\'`]);
+    const childPython = spawn('python', ['../MapEditor/Process.py', `${func}()`]);
 
     console.log("Process is spawned.");
     var loadingPython = true;
