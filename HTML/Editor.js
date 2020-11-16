@@ -156,12 +156,12 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 	console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
 
 };
-function loadPython(callback, function) {
+function loadPython(callback, func) {
   console.log("Got to LoadPython!");
 
 
 
-  if (function = null) {
+  if (func == null) {
     const { spawn } = require('child_process');
     const childPython = spawn('python', ['../MapEditor/Process.py']);
 
@@ -189,7 +189,7 @@ function loadPython(callback, function) {
   }
   else {
     const { spawn } = require('child_process');
-    const childPython = spawn('python', ['../MapEditor/Process.py', `-c \'${function()}\'`]);
+    const childPython = spawn('python', ['../MapEditor/Process.py', `-c \'${func()}\'`]);
 
     console.log("Process is spawned.");
     var loadingPython = true;
