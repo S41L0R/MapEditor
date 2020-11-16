@@ -1,20 +1,22 @@
 # Import general stuff
-import Lib.Utils.Util as utils
+
 import pathlib
 import oead
 import json
 import blwp
-import Loaders.FromGame.smubin as smubin
-import Loaders.FromGame.actor as actor
 import webview
 from flask import Flask
 import sys
 import json
 import os
+
+# Local libraries
+
 import Loaders.FromSettings.LoadSettings as LoadSettings
 import Writers.ToSettings.WriteSettings as WriteSettings
-
-
+import Loaders.FromGame.smubin as smubin
+import Loaders.FromGame.actor as actor
+import Lib.Utils.Util as utils
 
 #Set CWD
 
@@ -166,5 +168,5 @@ webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=Tru
 """
 
 if __name__ == "__main__":
-    print('main')
-    #main()
+    #print('main')
+    main()

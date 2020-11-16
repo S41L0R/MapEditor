@@ -53,6 +53,7 @@ body {
   margin: 3px;
   padding: 5px;
   transition-duration: 0.4s;
+  cursor: pointer;
 }
 #darkModeToggle:hover {
   background-color: #6a34bd;
@@ -62,7 +63,7 @@ body {
 
 .transformButton {
   border: none;
-  color: white;
+  color: #32353b;
   padding: 8px 16px;
   text-align: center;
   text-decoration: none;
@@ -72,7 +73,7 @@ body {
   transition-duration: 0.4s;
   cursor: pointer;
   min-width: 1px;
-  background-color: #9147ff;
+  background-color: #7289da;
   height: 35;
   border-radius: 5px;
 }
@@ -83,13 +84,14 @@ body {
 }
 
 .transformButton:hover {
-  background-color: #6a34bd;
+  color: white;
+  background-color: #3c4873;
   height: auto;
-  color: #000000;
 }
 
 .TransformModeImg {
   opacity: 0;
+  filter: invert(1);
 }
 
 .transformButton:hover > .TransformModeImg {

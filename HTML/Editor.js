@@ -6,7 +6,7 @@ import { ColladaLoader } from './lib/threejs/examples/jsm/loaders/ColladaLoader.
 import { FirstPersonControls } from './lib/threejs/examples/jsm/controls/EditorControls.js'
 import {TransformControls} from './lib/threejs/examples/jsm/controls/TransformControls.js'
 
-
+const fs = require('fs')
 
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
@@ -323,6 +323,7 @@ function loadSettings() {
 window.onload = function() {
   loadSettings();
 };
+
 // Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
 // -----------------------------------------------------------------------------
 function findActorData(hashId, type) {
