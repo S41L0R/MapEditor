@@ -52,7 +52,7 @@ def getSettings():
     return(settings, content, aoc)
 
 # Formats settings to be shared with the js end of things
-def shareSettings(setting=None):
+def shareSettings(setting):
     settings, content, aoc = getSettings()
     if setting == None:
         pass
