@@ -42,24 +42,6 @@ body {
   z-index: 10;
 }
 
-#darkModeToggle {
-  background-color: #008CBA;
-  color: white;
-  border-style: none;
-  border-radius: 10px;
-  outline: 0;
-  margin: 3px;
-  /*width: 95%;*/
-  /*height: 5%;*/
-  padding: 5px;
-}
-#darkModeToggle:hover {
-  background-color: #002836;
-  font-weight: bold;
-}
-#darkModeToggle:focus {
-  background-color: #2628a3;
-}
 
 .transformButton {
   border: none;
@@ -133,6 +115,22 @@ body {
   background: #005773;
 }
 
+.button {
+  background-color: #008CBA;
+  color: white;
+  border-style: none;
+  border-radius: 10px;
+  outline: 0;
+  margin: 3px;
+  /*width: 95%;*/
+  /*height: 5%;*/
+  padding: 5px;
+}
+
+.button:hover {
+  background-color: #002836;
+  font-weight: bold;
+}
 /*#Scale {
   background: url("/Assets/UI/Transform Mode Images/MapEditorScale.png");
 }*/
