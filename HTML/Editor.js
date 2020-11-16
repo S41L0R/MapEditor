@@ -156,37 +156,63 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 	console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
 
 };
-function loadPython(callback) {
+function loadPython(callback, function) {
   console.log("Got to LoadPython!");
 
 
 
+  if (function = null) {
+    const { spawn } = require('child_process');
+    const childPython = spawn('python', ['../MapEditor/Process.py']);
 
-  const { spawn } = require('child_process');
-  const childPython = spawn('python', ['../MapEditor/Process.py']);
+    console.log("Process is spawned.");
+    var loadingPython = true;
+    childPython.stdio[1].on('data', (dataBuffer) => {
+      console.log(`stdout as string from buffer: ${dataBuffer}`);
 
-  console.log("Process is spawned.");
-  var loadingPython = true;
-  childPython.stdio[1].on('data', (dataBuffer) => {
-        console.log(`stdout as string from buffer: ${dataBuffer}`);
-
-        if (dataBuffer.toString().includes("!startData")) {
-          console.log("true");
-          var data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
-          console.log(data);
-          //callback(data);
-          loadActors(data);
+      if (dataBuffer.toString().includes("!startData")) {
+        console.log("true");
+        var data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
+        console.log(data);
+        //callback(data);
+        loadActors(data);
 
 
 
-          sectionData = data;
-        }
+        sectionData = data;
+      }
+      else {
+        console.log("false");
+      }
 
-        else {
-          console.log("false");
-        }
+    });
+  }
+  else {
+    const { spawn } = require('child_process');
+    const childPython = spawn('python', ['../MapEditor/Process.py', `-c \'${function()}\'`]);
 
-      });
+    console.log("Process is spawned.");
+    var loadingPython = true;
+    childPython.stdio[1].on('data', (dataBuffer) => {
+      console.log(`stdout as string from buffer: ${dataBuffer}`);
+
+      if (dataBuffer.toString().includes("!startData")) {
+        console.log("true");
+        var data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
+        console.log(data);
+        //callback(data);
+        loadActors(data);
+
+
+
+        sectionData = data;
+      }
+      else {
+        console.log("false");
+      }
+
+    });
+  }
 }
 //loadPython();
 //var data = loadPython();
@@ -196,7 +222,7 @@ function loadPythonCallback(data) {
 }
 //loadPython(loadPythonCallback);
 console.log("test");
-loadPython(function(s){console.log(s);})
+loadPython(function(s){console.log(s);}, null)
 
 
 // Load from map file.
