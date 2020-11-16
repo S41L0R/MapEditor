@@ -299,11 +299,11 @@ darkModeToggle.addEventListener("click", function() {
   if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
     styleSheet.href = "HTML/Dark-Mode.css";
     scene.background = customDarkColor;
-    loadPython(function(s){console.log(s);}, 'setDarkMode');
+    loadPython(function(s){console.log(s);}, 'setDarkMode', "dark");
   } else {
     styleSheet.href = "HTML/Light-Mode.css";
     scene.background = customColor;
-    loadPython(function(s){console.log(s);}, 'setDarkMode');
+    loadPython(function(s){console.log(s);}, 'setDarkMode', "light");
   }
 });
 
@@ -600,11 +600,10 @@ function animate() {
 }
 animate();
 
-//scene.background = customColor
 //Load settings from config.json
-function loadSettings() {
-  var settings = loadPython(function(s){console.log(s);}, "shareSettings");
-  if (settings.DarkMode == true) {
+function loadDarkMode() {
+  var darkMode = loadPython(function(s){console.log(s);}, "shareSettings", 'DarkMode');
+  if (darkMode == true) {
     styleSheet.href = "HTML/Dark-Mode.css";
     scene.background = customDarkColor;
   }
@@ -614,4 +613,6 @@ function loadSettings() {
   };
 };
 
-loadSettings();
+window.onload = function() { 
+  loadDarkMode();
+}
