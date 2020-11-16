@@ -58,9 +58,6 @@ body {
   background-color: #6a34bd;
   font-weight: bold;
 }
-#darkModeToggle:focus {
-  background-color: #9e5ffc;
-}
 
 
 .transformButton {
@@ -83,7 +80,6 @@ body {
 
 .transformButton:focus {
     outline: 0;
-
 }
 
 .transformButton:hover {
