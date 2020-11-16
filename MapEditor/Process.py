@@ -166,4 +166,5 @@ webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=Tru
 """
 
 if __name__ == "__main__":
-    main()
+    print('main')
+    #main()
