@@ -52,8 +52,12 @@ def getSettings():
     return(settings, content, aoc)
 
 # Formats settings to be shared with the js end of things
-def shareSettings():
+def shareSettings(setting=None):
     settings, content, aoc = getSettings()
+    if setting == None:
+        pass
+    else:
+        settings = settings.get(setting)
     jsonSettings = json.dumps(settings)
     print(f'!startData{jsonSettings}!endData')
 
