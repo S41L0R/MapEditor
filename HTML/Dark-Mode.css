@@ -15,7 +15,6 @@
   font-weight: 100 !important;
 }
 
-
 body {
   margin: 0;
 }
@@ -53,6 +52,7 @@ body {
   outline: 0;
   margin: 3px;
   padding: 5px;
+  transition-duration: 0.4s;
 }
 #darkModeToggle:hover {
   background-color: #6a34bd;
@@ -96,12 +96,6 @@ body {
   opacity: 100;
 }
 
-
-
-
-.transformButton:active {
-
-}
 
 .cameraSlideContainer {
   width: 100%;
