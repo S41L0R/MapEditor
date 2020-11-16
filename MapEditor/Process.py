@@ -138,9 +138,9 @@ def getDarkMode():
     return(darkMode)
 
 # Sets darkMode to enabled or disabled depending on whether or not the user has it enabled
-def setDarkMode():
+def setDarkMode(variant):
     settings = LoadSettings.LoadSettings()
-    if getDarkMode() == True:
+    if variant == "light":
         darkMode = False
     else:
         darkMode = True
