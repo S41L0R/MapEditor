@@ -131,7 +131,6 @@ app.run(port=8080)
 def getDarkMode():
     settings = LoadSettings.LoadSettings()
     darkMode = settings.get('DarkMode')
-    print('!startData{"DarkMode":' + str(darkMode) + '}!endData')
     return(darkMode)
 
 # Sets darkMode to enabled or disabled depending on whether or not the user has it enabled
