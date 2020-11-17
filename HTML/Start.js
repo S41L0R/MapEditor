@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 
 
 const ipc = require('electron').ipcMain;
@@ -25,9 +25,6 @@ function createWindow () {
 
   // and load the index.html of the app.
   win.loadFile('../editor.html')
-
-
-
   win.on('closed', () => app.quit());
 
 
