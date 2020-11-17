@@ -87,6 +87,7 @@ def get_data_dir():
         data_dir.mkdir(parents=True, exist_ok=True)
     return(data_dir)
 
+
 def checkBymlDataType(valIn):
     if isinstance(valIn, oead.U8) or isinstance(valIn, oead.U16) or isinstance(valIn, oead.U32):
         return(oead.byml.get_uint(valIn))
