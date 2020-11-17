@@ -16,7 +16,7 @@
 
 
   #SelectedActorName {
-    font-size: calc(10px + (16 - 10) * ((100vw - 300px) / (1600 - 300)));
+    font-size: calc(1px + (16 - 1) * ((100vw - 300px) / (1600 - 300)));
   }
   
   
