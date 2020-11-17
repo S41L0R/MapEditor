@@ -40,6 +40,12 @@
     outline: none;
   }
   
+  #sectionName {
+    height: 18px;
+    width: auto;
+    margin: 5px;
+    margin-top: 10px;
+  }
   
   #transformMode {
     position: absolute;

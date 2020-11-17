@@ -23,12 +23,12 @@ import Lib.Utils.Util as utils
 if "HTML" in os.getcwd():
     os.chdir("../")
 
+currentSection = 'C-5'
 
 # Load Settings
 def getSettings():
     defaultSettings = {
     "GameDump": "Test/TestResources",
-    "TestingMapSection": "C-5",
     "NX": False,
     "DarkMode": False
     }
@@ -61,14 +61,19 @@ def shareSettings(setting):
     jsonSettings = json.dumps(settings)
     print(f'!startData{jsonSettings}!endData')
 
+# this exists so js can not be stupid
+def getCurrentSection():
+    print(f'!startData{json.dumps(currentSection)}!endData')
+    return
+
 # Load map file
 class mapFile:
     def __init__(self):
         self.settings, self.content, self.aoc = getSettings()
 
-        pathStrStatic = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{self.settings["TestingMapSection"]}/{self.settings["TestingMapSection"]}_Static.smubin')
-        pathStrDy = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{self.settings["TestingMapSection"]}/{self.settings["TestingMapSection"]}_Dynamic.smubin')
-        pathStrTeraTree = (f'{self.settings["GameDump"]}/{self.aoc}/Map/Mainfield/{self.settings["TestingMapSection"]}/{self.settings["TestingMapSection"]}_TeraTree.sblwp')
+        pathStrStatic = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Static.smubin')
+        pathStrDy = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Dynamic.smubin')
+        pathStrTeraTree = (f'{self.settings["GameDump"]}/{self.aoc}/Map/Mainfield/{currentSection}/{currentSection}_TeraTree.sblwp')
 
         self.pathStatic = pathlib.Path(pathStrStatic)
         self.pathDy = pathlib.Path(pathStrDy)

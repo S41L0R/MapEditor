@@ -659,9 +659,17 @@ function loadDarkMode(darkMode) {
   };
 };
 
+// function to get the current section name
+function getSectionName(section) {
+  var sectionName = document.getElementById('sectionName');
+  console.warn(sectionName);
+  console.warn(section);
+  sectionName.innerHTML = section;
+}
 
 
 //loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", 'DarkMode');
 window.onload = function() {
   loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", "DarkMode");
+  loadPython(function(s){console.warn('setting section Name'); getSectionName(s);}, "getCurrentSection")
 }
