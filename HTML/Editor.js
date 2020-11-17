@@ -156,16 +156,16 @@ const onProgress = function ( url, itemsLoaded, itemsTotal ) {
 	console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
 
 };
-function loadPython(callback, func, arg) {
+async function loadPython(callback, func, arg) {
   console.log("Got to LoadPython!");
 
 
 
   if (arg == null) {
     const { spawn } = require('child_process');
-    const childPython = spawn('python', ['../MapEditor/Process.py', `${func}()`]);
+    const childPython = spawn('python', ['../MapEditor/Process.py', `${func}`]);
 
-    console.log("Process is spawned.");
+    console.log(`Process is spawned - With func ${func}.`);
     var loadingPython = true;
     childPython.stdio[1].on('data', (dataBuffer) => {
       console.log(`stdout as string from buffer: ${dataBuffer}`);
@@ -176,6 +176,7 @@ function loadPython(callback, func, arg) {
         console.log(data);
         //callback(data);
         callback(data);
+        //return(data);
 
 
 
@@ -189,9 +190,9 @@ function loadPython(callback, func, arg) {
   }
   else {
     const { spawn } = require('child_process');
-    const childPython = spawn('python', ['../MapEditor/Process.py', `${func}(${arg})`]);
+    const childPython = spawn('python', ['../MapEditor/Process.py', `${func}`, `${arg}`]);
 
-    console.log("Process is spawned.");
+    console.log(`Process is spawned - With func ${func} and arg ${arg}.`);
     var loadingPython = true;
     childPython.stdio[1].on('data', (dataBuffer) => {
       console.log(`stdout as string from buffer: ${dataBuffer}`);
@@ -202,6 +203,7 @@ function loadPython(callback, func, arg) {
         console.log(data);
         //callback(data);
         callback(data);
+        //return(data);
 
 
 
@@ -222,7 +224,7 @@ function loadPythonCallback(data) {
 }
 //loadPython(loadPythonCallback);
 console.log("test");
-loadPython(function(s){loadActors(s)}, "main")
+loadPython(function(s){loadActors(s)}, "main");
 
 
 // Load from map file.
@@ -647,8 +649,8 @@ function animate() {
 animate();
 
 //Load settings from config.json
-function loadDarkMode() {
-  var darkMode = loadPython(function(s){console.log(s);}, "shareSettings", 'DarkMode');
+function loadDarkMode(darkMode) {
+  console.warn("darkmode:" + darkMode);
   if (darkMode == true) {
     styleSheet.href = "HTML/Dark-Mode.css";
     scene.background = customDarkColor;
@@ -659,6 +661,10 @@ function loadDarkMode() {
   };
 };
 
+
+
+//loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", 'DarkMode');
 window.onload = function() {
-  loadDarkMode();
+
+  loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", "DarkMode");
 }
