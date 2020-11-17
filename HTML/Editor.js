@@ -60,7 +60,6 @@ var cameraLookSpeed = 1;
 
 
 
-
 // Define Map Based variables
 // -----------------------------------------------------------------------------
 
@@ -354,7 +353,6 @@ darkModeToggle.addEventListener("click", function() {
     loadPython(function(s){console.log(s);}, 'setDarkMode', "light");
   }
 });
-
 
 
 // Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
@@ -665,6 +663,5 @@ function loadDarkMode(darkMode) {
 
 //loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", 'DarkMode');
 window.onload = function() {
-
   loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", "DarkMode");
 }
