@@ -22,7 +22,10 @@ var renderer = new THREE.WebGLRenderer({canvas: viewport});
 document.body.appendChild( renderer.domElement );
 
 var geometry = new THREE.BoxGeometry();
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+const cubeTexLoader = new THREE.TextureLoader();
+const cubeTexture = cubeTexLoader.load(
+	'./Assets/Textures/CubeTexture.png');
+var material = new THREE.MeshStandardMaterial( { emissiveMap: cubeTexture, emissive: new THREE.Color("#FFFFFF") } );
 
 var clock = new THREE.Clock();
 
@@ -482,7 +485,7 @@ scene.background = customColor
 
 // Lighting
 // -----------------------------------------------------------------------------
-var cameraPointLight = new THREE.PointLight( 0xffffff, 100, 100, 2 );
+var cameraPointLight = new THREE.PointLight( 0xffffff, 1, 100, 2 );
 cameraPointLight.position.set( 0, 0, 0 );
 camera.add( cameraPointLight );
 
