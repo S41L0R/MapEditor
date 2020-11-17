@@ -7,10 +7,15 @@
     text-align: center;
     font-family: "Noto Sans TC", "sans-serif";
     z-index: 2;
-  
+    
   }
   #sidebar h1 {
     font-weight: 100 !important;
+  }
+
+
+  #SelectedActorName {
+    font-size: calc(10px + (16 - 10) * ((100vw - 300px) / (1600 - 300)));
   }
   
   

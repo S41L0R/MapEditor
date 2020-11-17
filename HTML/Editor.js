@@ -394,7 +394,7 @@ cameraSlider.oninput = function() {
 function showActorData(ActorHashID, ActorType) {
   var actorDataPanel = document.getElementById("DataEditorTextWindow");
   actorDataPanel.innerHTML = `
-  <p><strong>${findActorData(ActorHashID, ActorType).UnitConfigName}</strong></p>
+  <p id="SelectedActorName"><strong>${findActorData(ActorHashID, ActorType).UnitConfigName}</strong></p>
   <p>${ActorHashID}</p>
   <button class="button" id="ActorEditButton">Edit BYML</button>
 
