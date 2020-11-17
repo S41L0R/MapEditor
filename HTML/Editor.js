@@ -336,8 +336,13 @@ async function loadActors(data) {
     console.log(cubeMesh);
     await console.log("No cubeMesh")
 
+
+
   }
   console.log(scene);
+  camera.position.x = data.Dynamic.Objs[data.Dynamic.Objs.length - 1].Translate[0]
+  camera.position.y = data.Dynamic.Objs[data.Dynamic.Objs.length - 1].Translate[1]
+  camera.position.z = data.Dynamic.Objs[data.Dynamic.Objs.length - 1].Translate[2]
 }
 
 // Light mode / Dark mode
