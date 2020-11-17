@@ -504,9 +504,7 @@ const {BrowserWindow} = require('electron').remote
 
 let editorWin = new BrowserWindow({width: 600, height: 400, webPreferences: {nodeIntegration: true}});
 //win.LoadURL("file://HTML/UI/SelectedActor/SelectedActor.html")
-
 editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`)
-
 
 
 
