@@ -3,36 +3,106 @@ const fs = require('fs')
 const isMac = process.platform === 'darwin'
 
 const ipc = require('electron').ipcMain;
-const mainMenuTemplate = [
-  {
-    label: 'File',
+
+const template = [
+  // { role: 'appMenu' }
+  ...(isMac ? [{
+    label: app.name,
     submenu: [
-      {role: 'Save'},
-      {type: 'Separator'},
-      {role: 'Exit'}
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideothers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }] : []),
+  // { role: 'fileMenu' }
+  {
+    label: 'Ffiel',
+    submenu: [
+      isMac ? { role: 'close' } : { role: 'quit' }
+    ]
+  },
+  // { role: 'editMenu' }
+  {
+    label: 'Eddit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      ...(isMac ? [
+        { role: 'pasteAndMatchStyle' },
+        { role: 'delete' },
+        { role: 'selectAll' },
+        { type: 'separator' },
+        {
+          label: 'Speech',
+          submenu: [
+            { role: 'startSpeaking' },
+            { role: 'stopSpeaking' }
+          ]
+        }
+      ] : [
+        { role: 'delete' },
+        { type: 'separator' },
+        { role: 'selectAll' }
+      ])
+    ]
+  },
+  // { role: 'viewMenu' }
+  {
+    label: 'Veiwf',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+  // { role: 'windowMenu' }
+  {
+    label: 'Widnow',
+    submenu: [
+      { role: 'minimize' },
+      { role: 'zoom' },
+      ...(isMac ? [
+        { type: 'separator' },
+        { role: 'front' },
+        { type: 'separator' },
+        { role: 'window' }
+      ] : [
+        { role: 'close' }
+      ])
     ]
   },
   {
-    label: 'Edit',
+    role: 'help',
     submenu: [
-      {role: 'Undo'},
-      {type: 'Separator'},
-      {role: 'Redo'},
-      {type: 'Separator'},
-      {role: 'Copy JSON'},
-      {type: 'Separator'},
-      {role: 'Paste JSON'},
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      {role: 'Reload'},
-      {role: 'Force Reload'},
-      {role: "Dev-tools"}
+      {
+        label: "I am so bad at this software and I need help. Please help me I don't know how to read docs because I am bad at stuff.",
+        click: async () => {
+          const { shell } = require('electron')
+          await shell.openExternal('https://electronjs.org')
+        }
+      }
     ]
   }
-];
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
 
 let win
 
@@ -54,17 +124,9 @@ function createWindow () {
   })
   // and load the index.html of the app.
   win.loadFile('../editor.html')
-  var menu = createMenu()
-  Menu.setApplicationMenu(menu)
   win.on('closed', () => app.quit());
 
 }
-
-function createMenu() {
-  console.warn(mainMenuTemplate)
-  const menu = Menu.buildFromTemplate(mainMenuTemplate)
-  return menu
-  }
 
 
 app.whenReady().then(createWindow)
