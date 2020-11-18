@@ -427,7 +427,7 @@ function showActorData(ActorHashID, ActorType) {
 // -----------------------------------------------------------------------------
 
 var loader = new ColladaLoader();
-var url = './Test/Guardian_A_Perfect.dae'
+var url = './Test/TestToolboxGuardian/Guardian_A_Perfect.dae'
 loader.load( url, onLoad, onProgress );
 //console.log(daeModel);
 
