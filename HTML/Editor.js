@@ -668,7 +668,7 @@ function loadDarkMode(darkMode) {
 // Calls the function to save current data in process.py
 const saveButton = document.getElementById('saveButton')
 saveButton.addEventListener('click', function() {
-  loadPython(function(s){console.warn('Saving...');}, "save", sectionData);
+  loadPython(function(s){console.warn('Saving...');console.warn(s); console.warn(sectionData)}, "save", sectionData);
 })
 
 

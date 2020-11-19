@@ -154,10 +154,13 @@ def setDarkMode(variant):
     WriteSettings.WriteSettings(settings)
 
 def save(dataToSave):
+    print(dataToSave)
     loadedData = json.loads(dataToSave)
     updatedData = loadedData.update({'Section': currentSection})
+    print(updatedData)
     dataToSave = json.dumps(updatedData)
     smubinWriter.writeMapFile(dataToSave)
+    return
 
 def main():
     mapFileData = mapFile()
