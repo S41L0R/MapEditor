@@ -382,6 +382,23 @@ function findActorData(hashId, type) {
   }
 }
 
+function setActorData(hashId, type, data) {
+  if (type == "Static") {
+    for (const i of sectionData.Static.Objs) {
+      if (i.HashId == hashId) {
+        sectionData.type.Objs[i] = data;
+      }
+    }
+  }
+  if (type == "Dynamic") {
+    for (const i of sectionData.Dynamic.Objs) {
+      if (i.HashId == hashId) {
+        sectionData.type.Objs[i] = data;
+      }
+    }
+  }
+}
+
 // -----------------------------------------------------------------------------
 
 
@@ -407,7 +424,7 @@ function showActorData(ActorHashID, ActorType) {
   <button class="button" id="ActorEditButton">Edit BYML</button>
 
   `;
-  document.getElementById("ActorEditButton").addEventListener("click", () => {createEditorWindow(findActorData(ActorHashID, ActorType))});
+  document.getElementById("ActorEditButton").addEventListener("click", () => {createEditorWindow(findActorData(ActorHashID, ActorType), ActorType)});
   //document.getElementById("ActorEditButton").onclick = findActorData(ActorHashID, ActorType);
 }
 // -----------------------------------------------------------------------------
@@ -507,7 +524,7 @@ scene.add(camera);
 //const BrowserWindow = electron.BrowserWindow;
 
 
-function createEditorWindow(obj) {
+function createEditorWindow(obj, actorType) {
 const {BrowserWindow} = require('electron').remote
 
 let editorWin = new BrowserWindow({width: 600, height: 400, webPreferences: {nodeIntegration: true}});
@@ -523,7 +540,7 @@ editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`
 
   editorWin.webContents.on('did-finish-load', () => {
       //editorWin.webContents.send('toActorEditor', 'Hello second window!');
-      editorWin.webContents.send('toActorEditor', {data: obj, windowID: 1});
+      editorWin.webContents.send('toActorEditor', {data: obj, type: actorType, HashID: obj.HashId, windowID: 1});
   });
 }
 
@@ -532,8 +549,11 @@ editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`
 const ipc = require('electron').ipcRenderer;
 
 
-ipc.on('fromActorEditor', (event, message) => {
-  console.warn(message);
+ipc.on('fromActorEditor', (event, message, actorHashID, type) => {
+	setActorData(actorHashID, type, message);
+	console.warn(message);
+	console.warn(actorHashID);
+	console.warn(type);
 })
 
 document.getElementById("DataEditorTextWindow").innerHTML = `
