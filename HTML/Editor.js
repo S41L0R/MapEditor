@@ -666,13 +666,11 @@ function loadDarkMode(darkMode) {
 };
 
 // Calls the function to save current data in process.py
-function save() {
-  const saveButton = document.getElementById('saveButton')
-  saveButton.addEventListener('click', function() {
-    console.warn('Saving...')
-		saveButton.innerText = `Saving...`;
-  })
-}
+const saveButton = document.getElementById('saveButton')
+saveButton.addEventListener('click', function() {
+  console.warn('Saving...')
+  //loadPython
+})
 
 
 // function to get the current section name

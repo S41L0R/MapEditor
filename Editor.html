@@ -33,12 +33,12 @@
   <canvas id="viewport">3D stuff goes here but apparently not because either me, SDarkMagic(ow), or you did something dumb.</canvas>
   <script src="HTML/lib/threejs/build/three.js" type="module"></script>
   <script src="HTML/Editor.js" rel = "script" type = "module"></script>
-  <section id="cardButtons">
+  <section id="cardButtonContainer">
     <button id="Translate" class="cardButton">Translate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorTranslateMono.png" alt="Translate" class="cardButtonsImg" width="30" height="30"></img></button>
     <button id="Rotate" class="cardButton">Rotate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorRotateMono.png" alt="Rotate" class="cardButtonsImg" width="30" height="30"></img></button>
     <button id="Scale" class="cardButton">Scale<br></br><img src="Assets/UI/Transform Mode Images/MapEditorScaleMono.png" alt="Scale" class="cardButtonsImg" width="30" height="30"></img></button>
     <div style="float: right; text-align: right;">
-      <button id="saveButton" class="cardButton" style="position: absolute; left:200%; direction: rtl;" >Save<br></br></button>
+      <button id="saveButton" class="cardButton">Save</button>
     </div>
   </section>
 
@@ -58,7 +58,6 @@
       <input type="range" min="1" max="200" value=100 id="cameraSlider">
       <div id='sliderValue'></div>
     </div>
-    <button id='saveButton' class='button'>Save</button>
   </section>
 
   </aside>
