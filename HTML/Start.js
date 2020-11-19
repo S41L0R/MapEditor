@@ -158,7 +158,7 @@ Menu.setApplicationMenu(menu)
 
 let win
 
-ipc.on('toMainWindow', (event, message) => {
+ipc.on('toMainWindow', (event, message, hashID, actorType) => {
 	console.log(event, message);
 	win.webContents.send('fromActorEditor', message);
 })
