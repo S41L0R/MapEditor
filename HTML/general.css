@@ -65,11 +65,7 @@
   #cardButtonContainer {
     position: absolute;
     z-index: 10;
-    width: 84.75%;
-  }
-
-  #saveButton {
-    height: auto;
+    width: 84.95%;
   }
 
   .cardButton {
@@ -91,6 +87,7 @@
   .cardButton:hover {
     height: auto;
   }
+
 
   .cardButtonsImg {
     opacity: 0;

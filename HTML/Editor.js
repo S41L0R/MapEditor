@@ -536,6 +536,10 @@ ipc.on('fromActorEditor', (event, message) => {
   console.warn(message);
 })
 
+ipc.on('Save', (event) => {
+  console.warn("Run whatever function you want to save stuff with here.");
+})
+
 document.getElementById("DataEditorTextWindow").innerHTML = `
 
 `;

@@ -30,6 +30,7 @@ const template = [
         click: () => {
           //editor.save()
           console.warn('Saved!')
+	win.webContents.send('Save');
         }        
       },
       {type: 'separator'},
@@ -107,7 +108,7 @@ const template = [
 ]
 
 const menu = Menu.buildFromTemplate(template)
-//Menu.setApplicationMenu(menu)
+Menu.setApplicationMenu(menu)
 
 let win
 
