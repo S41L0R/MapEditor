@@ -6,12 +6,12 @@
   background-color: #000000;
 }
 
-.transformButton {
+.cardButton {
   color: white;
   background-color: #008CBA;
 }
 
-.transformButton:hover {
+.cardButton:hover {
   background-color: #FFFFFF;
   color: #000000;
 }

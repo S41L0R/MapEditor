@@ -670,6 +670,7 @@ function save() {
   const saveButton = document.getElementById('saveButton')
   saveButton.addEventListener('click', function() {
     console.warn('Saving...')
+		saveButton.innerText = `Saving...`;
   })
 }
 

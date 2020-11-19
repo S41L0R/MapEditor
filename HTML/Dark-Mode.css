@@ -15,17 +15,17 @@
 }
 
 
-.transformButton {
+.cardButton {
   color: #32353b;
   background-color: #7289da;
 }
 
-.transformButton:hover {
+.cardButton:hover {
   color: white;
   background-color: #3c4873;
 }
 
-.TransformModeImg {
+.cardButtonsImg {
   filter: invert(1);
 }
 

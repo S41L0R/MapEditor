@@ -33,11 +33,15 @@
   <canvas id="viewport">3D stuff goes here but apparently not because either me, SDarkMagic(ow), or you did something dumb.</canvas>
   <script src="HTML/lib/threejs/build/three.js" type="module"></script>
   <script src="HTML/Editor.js" rel = "script" type = "module"></script>
-  <section id="transformMode">
-    <button id="Translate" class="transformButton">Translate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorTranslateMono.png" alt="Translate" class="TransformModeImg" width="30" height="30"></img></button>
-    <button id="Rotate" class="transformButton">Rotate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorRotateMono.png" alt="Rotate" class="TransformModeImg" width="30" height="30"></img></button>
-    <button id="Scale" class="transformButton">Scale<br></br><img src="Assets/UI/Transform Mode Images/MapEditorScaleMono.png" alt="Scale" class="TransformModeImg" width="30" height="30"></img></button>
+  <section id="cardButtons">
+    <button id="Translate" class="cardButton">Translate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorTranslateMono.png" alt="Translate" class="cardButtonsImg" width="30" height="30"></img></button>
+    <button id="Rotate" class="cardButton">Rotate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorRotateMono.png" alt="Rotate" class="cardButtonsImg" width="30" height="30"></img></button>
+    <button id="Scale" class="cardButton">Scale<br></br><img src="Assets/UI/Transform Mode Images/MapEditorScaleMono.png" alt="Scale" class="cardButtonsImg" width="30" height="30"></img></button>
+    <div style="float: right; text-align: right;">
+      <button id="saveButton" class="cardButton" style="position: absolute; left:200%; direction: rtl;" >Save<br></br></button>
+    </div>
   </section>
+
   <aside id="sidebar">
   <section id="DataEditor">
     <h1 id='sectionName'></h1>
