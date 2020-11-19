@@ -536,10 +536,6 @@ ipc.on('fromActorEditor', (event, message) => {
   console.warn(message);
 })
 
-ipc.on('Save', (event) => {
-  console.warn("Run whatever function you want to save stuff with here.");
-})
-
 document.getElementById("DataEditorTextWindow").innerHTML = `
 
 `;
@@ -671,14 +667,13 @@ function loadDarkMode(darkMode) {
 
 // Calls the function to save current data in process.py
 const saveButton = document.getElementById('saveButton')
-sectionData.Section = currentSection;
 saveButton.addEventListener('click', function() {
-  loadPython(function(s){console.warn('Saving...');}, "save", sectionData)
+  loadPython(function(s){console.warn('Saving...');}, "save");
 })
 
 
 // function to get the current section name
-function setSectionName(section) {
+function getSectionName(section) {
   var sectionName = document.getElementById('sectionName');
   console.warn(sectionName);
   console.warn(section);
@@ -688,7 +683,6 @@ function setSectionName(section) {
 
 //loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", 'DarkMode');
 window.onload = function() {
-  var currentSection =   loadPython(function(s){console.log(s)}, "getCurrentSection");
   loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", "DarkMode");
-  setSectionName(currentSection)
+  loadPython(function(s){console.warn('setting section Name'); getSectionName(s);}, "getCurrentSection")
 }
