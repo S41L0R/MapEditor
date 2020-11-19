@@ -1,10 +1,11 @@
-const { app, BrowserWindow, Menu } = require('electron')
-const fs = require('fs')
+const { app, BrowserWindow, Menu } = require('electron');
+const fs = require('fs');
 const isMac = process.platform === 'darwin'
 
 const ipc = require('electron').ipcMain;
 
 const template = [
+  //These menu names are beginning to physically hurt
   // { role: 'appMenu' }
   ...(isMac ? [{
     label: app.name,
@@ -24,6 +25,14 @@ const template = [
   {
     label: 'Ffiel',
     submenu: [
+      {label: 'Save',
+        id: 'save',
+        click: () => {
+          //editor.save()
+          console.warn('Saved!')
+        }        
+      },
+      {type: 'separator'},
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },
@@ -64,10 +73,6 @@ const template = [
       { role: 'forceReload' },
       { role: 'toggleDevTools' },
       { type: 'separator' },
-      { role: 'resetZoom' },
-      { role: 'zoomIn' },
-      { role: 'zoomOut' },
-      { type: 'separator' },
       { role: 'togglefullscreen' }
     ]
   },
@@ -88,13 +93,13 @@ const template = [
     ]
   },
   {
-    role: 'help',
+    label: 'hlalp',
     submenu: [
       {
         label: "I am so bad at this software and I need help. Please help me I don't know how to read docs because I am bad at stuff.",
         click: async () => {
           const { shell } = require('electron')
-          await shell.openExternal('https://electronjs.org')
+          await shell.openExternal('https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiR9sq88YztAhWhF1kFHTumA6UQyCkwAnoECAcQAw&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdQw4w9WgXcQ%26list%3DPLahKLy8pQdCM0SiXNn3EfGIXX19QGzUG3&usg=AOvVaw1ejI_XgrR-IkInfsCFoNfB')
         }
       }
     ]
@@ -102,7 +107,7 @@ const template = [
 ]
 
 const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+//Menu.setApplicationMenu(menu)
 
 let win
 

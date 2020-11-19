@@ -665,6 +665,15 @@ function loadDarkMode(darkMode) {
   };
 };
 
+// Calls the function to save current data in process.py
+function save() {
+  const saveButton = document.getElementById('saveButton')
+  saveButton.addEventListener('click', function() {
+    console.warn('Saving...')
+  })
+}
+
+
 // function to get the current section name
 function getSectionName(section) {
   var sectionName = document.getElementById('sectionName');
@@ -678,4 +687,5 @@ function getSectionName(section) {
 window.onload = function() {
   loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", "DarkMode");
   loadPython(function(s){console.warn('setting section Name'); getSectionName(s);}, "getCurrentSection")
+  save()
 }
