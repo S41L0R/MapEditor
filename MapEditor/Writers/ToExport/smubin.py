@@ -23,10 +23,11 @@ def writeMapFile(jsonData):
     sectionName = jsonData.get('Section')
     staticMapData = jsonData.get('StaticMap')
     dynamicMapData = jsonData.get('DynamicMap')
+    bigEndian = findBigEndian()
     filePath = saveDir / sectionName
     with open(pathlib.Path(f'{filePath}/{sectionName}_Static.smubin'), 'wb') as writeStatic:
-        writeStatic.write(oead.yaz0.compress(oead.byml.to_binary(staticMapData)))
+        writeStatic.write(oead.yaz0.compress(oead.byml.to_binary(staticMapData, big_endian=bigEndian)))
     with open(pathlib.Path(f'{filePath}/{sectionName}_Dynamic.smubin'), 'wb') as writeDynamic:
-        writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(dynamicMapData)))
+        writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(dynamicMapData, big_endian=bigEndian)))
     return
 
