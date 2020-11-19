@@ -11,11 +11,11 @@ import json
 import os
 
 # Local libraries
-
 import Loaders.FromSettings.LoadSettings as LoadSettings
 import Writers.ToSettings.WriteSettings as WriteSettings
-import Loaders.FromGame.smubin as smubin
+import Loaders.FromGame.smubin as smubinLoader
 import Loaders.FromGame.actor as actor
+import Writers.ToExport.smubin as smubinWriter
 import Lib.Utils.Util as utils
 
 #Set CWD
@@ -79,8 +79,8 @@ class mapFile:
         self.pathDy = pathlib.Path(pathStrDy)
         self.pathTeraTree = pathlib.Path(pathStrTeraTree)
 
-        smubin.validateMapFile(self.pathStatic)
-        smubin.validateMapFile(self.pathDy)
+        smubinLoader.validateMapFile(self.pathStatic)
+        smubinLoader.validateMapFile(self.pathDy)
         self.loadMapActors()
         self.formattedMapJson = self.createJSON()
 
@@ -152,6 +152,9 @@ def setDarkMode(variant):
         darkMode = True
     settings.update({'DarkMode': darkMode})
     WriteSettings.WriteSettings(settings)
+
+def save(dataToSave):
+    smubinWriter.writeMapFile(dataToSave)
 
 def main():
     mapFileData = mapFile()
