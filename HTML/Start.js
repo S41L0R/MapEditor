@@ -25,28 +25,47 @@ const template = [
   {
     label: 'Ffiel',
     submenu: [
-      {label: 'Save',
+      {label: 'Svvave',
         id: 'save',
         click: () => {
           //editor.save()
           console.warn('Saved!')
 	win.webContents.send('Save');
-        }        
+        }
       },
       {type: 'separator'},
-      isMac ? { role: 'close' } : { role: 'quit' }
+      isMac ? { role: 'close' } :
+      {
+        label: 'Clsoe byei bye',
+        role: 'quit'
+      }
     ]
   },
   // { role: 'editMenu' }
   {
     label: 'Eddit',
     submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
+      {
+        label: 'Un',
+        role: 'undo'
+      },
+      {
+        label: 'Re',
+        role: 'redo'
+      },
       { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
+      {
+        label: 'Choppe',
+        role: 'cut'
+      },
+      {
+        label: 'Duplii',
+        role: 'copy'
+      },
+      {
+        label: 'Paist',
+        role: 'paste'
+      },
       ...(isMac ? [
         { role: 'pasteAndMatchStyle' },
         { role: 'delete' },
@@ -60,9 +79,15 @@ const template = [
           ]
         }
       ] : [
-        { role: 'delete' },
+        {
+          label: 'Byie',
+          role: 'delete'
+        },
         { type: 'separator' },
-        { role: 'selectAll' }
+        {
+          label:'Sdelect allel',
+          role: 'selectAll'
+        }
       ])
     ]
   },
@@ -70,26 +95,47 @@ const template = [
   {
     label: 'Veiwf',
     submenu: [
-      { role: 'reload' },
-      { role: 'forceReload' },
-      { role: 'toggleDevTools' },
+      {
+        label: 'Relaod',
+        role: 'reload'
+      },
+      {
+        label: 'Foorce Rleoad',
+        role: 'forceReload'
+      },
+      {
+        label: 'Togglges dve tols',
+        role: 'toggleDevTools'
+      },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
+      {
+        label: 'Togell Bieag',
+        role: 'togglefullscreen'
+      }
     ]
   },
   // { role: 'windowMenu' }
   {
     label: 'Widnow',
     submenu: [
-      { role: 'minimize' },
-      { role: 'zoom' },
+      {
+        label: 'Minsimize',
+        role: 'minimize'
+      },
+      {
+        label: 'Zoome',
+        role: 'zoom'
+      },
       ...(isMac ? [
         { type: 'separator' },
         { role: 'front' },
         { type: 'separator' },
         { role: 'window' }
       ] : [
-        { role: 'close' }
+        {
+          label: 'Clos',
+          role: 'close'
+        }
       ])
     ]
   },
@@ -136,6 +182,3 @@ function createWindow () {
 
 
 app.whenReady().then(createWindow)
-
-
-
