@@ -81,7 +81,7 @@ const template = [
         },
         { type: 'separator' },
         {
-          label:'Sdelect allel'
+          label:'Sdelect allel',
           role: 'selectAll'
         }
       ])
