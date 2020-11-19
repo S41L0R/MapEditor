@@ -68,10 +68,6 @@
     width: 84.75%;
   }
 
-  #saveButton {
-    height: auto;
-  }
-
   .cardButton {
     border: none;
     padding: 8px 16px;
@@ -91,6 +87,7 @@
   .cardButton:hover {
     height: auto;
   }
+
 
   .cardButtonsImg {
     opacity: 0;
