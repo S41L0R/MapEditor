@@ -49,6 +49,12 @@
     padding: 2px;
   }
 
+  #saveButton {
+    position: relative;
+    float: right;
+    direction: rtl;
+  }
+
   .lineBreak {
     height: 2px;
     border-width: 0;
@@ -62,9 +68,10 @@
     position: relative;
   }
 
-  #cardButtons {
+  #cardButtonContainer {
     position: absolute;
     z-index: 10;
+    width: 84.75%;
   }
 
 
