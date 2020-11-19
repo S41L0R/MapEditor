@@ -25,7 +25,7 @@ const template = [
   {
     label: 'Ffiel',
     submenu: [
-      {label: 'Save',
+      {label: 'Svvave',
         id: 'save',
         click: () => {
           //editor.save()
@@ -34,7 +34,11 @@ const template = [
         }
       },
       {type: 'separator'},
-      isMac ? { role: 'close' } : { role: 'quit' }
+      isMac ? { role: 'close' } :
+      {
+        label: 'Clsoe byei bye',
+        role: 'quit'
+      }
     ]
   },
   // { role: 'editMenu' }
