@@ -87,6 +87,21 @@ def get_data_dir():
         data_dir.mkdir(parents=True, exist_ok=True)
     return(data_dir)
 
+# Checks if a directory exists and makes it if not
+def findMKDir(checkDir):
+    if isinstance(checkDir, pathlib.Path):
+        checkDir = checkDir
+    else:
+        try:
+            checkDir = pathlib.Path(checkDir)
+        except:
+            print('Failed to make the pathlib instance :(')
+            return
+    if checkDir.exists():
+        return checkDir
+    else:
+        checkDir.mkdir(parents=True, exist_ok=True)
+        return checkDir
 
 def checkBymlDataType(valIn):
     if isinstance(valIn, oead.U8) or isinstance(valIn, oead.U16) or isinstance(valIn, oead.U32):
@@ -137,6 +152,28 @@ class mapDict:
             return(list(subList))
         else:
             return(checkBymlDataType(dictIn))
+
+class compressMap:
+    def __init__(self, mapDictIn):
+        self.compressedData = self.compressAll(mapDictIn)
+
+    def compressAll(self, dictIn):
+        subList = []
+        subDict = {}
+        dictOut = {}
+        if isinstance(dictIn, dict):
+            for key in dict(dictIn).keys():
+                subDict = self.compressAll(dict(dictIn).get(key))
+                dictOut.update({key: subDict})
+            return(oead.byml.Hash(dictOut))
+
+        elif isinstance(dictIn, list):
+            for item in list(dictIn):
+                newItem = self.compressAll(item)
+                subList.append(newItem)
+            return(oead.byml.Array(subList))
+        else:
+            return(dictIn)
 
 def findUniqueActors(mapDataIn, listIn=list([])):
     for actor in mapDataIn.get('Objs'):
