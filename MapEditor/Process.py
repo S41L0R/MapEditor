@@ -154,17 +154,17 @@ def setDarkMode(variant):
     WriteSettings.WriteSettings(settings)
 
 def save(dataToSave):
-    print(dataToSave)
+    #print(dataToSave)
     loadedData = json.loads(dataToSave)
-    updatedData = loadedData.update({'Section': currentSection})
-    print(updatedData)
-    dataToSave = json.dumps(updatedData)
-    smubinWriter.writeMapFile(dataToSave)
+    loadedData.update({'Section': currentSection})
+    smubinWriter.writeMapFile(loadedData)
+    print('Saved!')
     return
 
 def main():
     mapFileData = mapFile()
-    print(f"!startData{mapFileData.formattedMapJson}!endData")
+    #print(f"!startData{mapFileData.formattedMapJson}!endData")
+    save(mapFileData.formattedMapJson)
     sys.stdout.flush()
 
 
@@ -196,9 +196,9 @@ def exposeFunctions(window):
 webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=True)
 """
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
     #print('main')
-    #main()
+    main()
 if len(sys.argv) != 2:
     exec(f"{sys.argv[1]}(\"{sys.argv[2]}\")")
 else:
