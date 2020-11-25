@@ -161,19 +161,52 @@ class compressMap:
         subList = []
         subDict = {}
         dictOut = {}
+        #print(dictIn)
         if isinstance(dictIn, dict):
-            for key in dict(dictIn).keys():
-                subDict = self.compressAll(dict(dictIn).get(key))
+            for key in dictIn.keys():
+                print(f'dictType {key}')
+                subDict = self.compressAll(dictIn.get(key))
                 dictOut.update({key: subDict})
-            return(oead.byml.Hash(dictOut))
-
+                print(dictOut)
+            return(oead.byml.Array(dictOut))
         elif isinstance(dictIn, list):
-            for item in list(dictIn):
+            for item in dictIn:
+                print(f'listType {dictIn}')
                 newItem = self.compressAll(item)
                 subList.append(newItem)
-            return(oead.byml.Array(subList))
+                print(f'subList {subList}')
+            return(oead.byml.Hash(subList))
         else:
             return(dictIn)
+
+    def convertDataType(self, dataIn):
+        if isinstance(dataIn, bool):
+            return(dataIn)
+        elif isinstance(dataIn, int):
+            if dataIn < 0:
+                if dataIn >= -127:
+                    return oead.S8(dataIn)
+                elif dataIn >= -32768:
+                    return oead.S16(dataIn)
+                elif dataIn >= -2147483648:
+                    return oead.S32(dataIn)
+                elif dataIn >= -2147483648:
+                    return oead.S64(dataIn)
+                else:
+                    return dataIn
+            else:
+                if dataIn <= 255:
+                    return oead.S8(dataIn)
+                elif dataIn >= 65535:
+                    return oead.S16(dataIn)
+                elif dataIn >= 4294967295:
+                    return oead.S32(dataIn)
+                elif dataIn >= 4294967295:
+                    return oead.S64(dataIn)
+                else:
+                    return dataIn
+        else:
+            return(dataIn)
 
 def findUniqueActors(mapDataIn, listIn=list([])):
     for actor in mapDataIn.get('Objs'):

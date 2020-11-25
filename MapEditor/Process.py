@@ -91,8 +91,10 @@ class mapFile:
         with open(self.pathDy, 'rb') as dataDy:
             readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
 
-        staticDictOut = utils.mapDict(readFileStatic)
-        dyDictOut = utils.mapDict(readFileDy)
+        self.staticDictOut = utils.mapDict(readFileStatic)
+        self.dyDictOut = utils.mapDict(readFileDy)
+        staticDictOut = self.staticDictOut
+        dyDictOut = self.dyDictOut
         self.jsonStaticOut = staticDictOut.jsonData
         self.jsonDyOut = dyDictOut.jsonData
 
@@ -102,8 +104,10 @@ class mapFile:
 
     # Generates formatted json data from dictionaries
     def createJSON(self):
-        DataJSON = '{"Dynamic":'+self.jsonDyOut+', "Static":'+self.jsonStaticOut+'}'
-        return DataJSON
+        DataJSON = {}
+        DataJSON.update({"Dynamic": self.dyDictOut.extractedByml, "Static": self.staticDictOut.extractedByml})
+        jsonData = json.dumps(DataJSON)
+        return jsonData
 
 
 # Load ActorInfo
@@ -163,7 +167,7 @@ def save(dataToSave):
 
 def main():
     mapFileData = mapFile()
-    #print(f"!startData{mapFileData.formattedMapJson}!endData")
+    print(f"!startData{mapFileData.formattedMapJson}!endData")
     save(mapFileData.formattedMapJson)
     sys.stdout.flush()
 
