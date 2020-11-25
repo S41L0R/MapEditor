@@ -24,6 +24,8 @@ def writeMapFile(jsonData):
     staticMapData = util.compressMap(dict(jsonData.get('Static'))).compressedData
     dynamicMapData = util.compressMap(dict(jsonData.get('Dynamic'))).compressedData
     print(staticMapData)
+    x = list(staticMapData)
+    print(x)
     bigEndian = findBigEndian()
     filePath = util.findMKDir(f'{saveDir}/{sectionName}')
     with open(pathlib.Path(f'{filePath}/{sectionName}_Static.smubin'), 'wb') as writeStatic:

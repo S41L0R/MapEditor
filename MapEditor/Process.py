@@ -167,7 +167,7 @@ def save(dataToSave):
 
 def main():
     mapFileData = mapFile()
-    print(f"!startData{mapFileData.formattedMapJson}!endData")
+    #print(f"!startData{mapFileData.formattedMapJson}!endData")
     save(mapFileData.formattedMapJson)
     sys.stdout.flush()
 

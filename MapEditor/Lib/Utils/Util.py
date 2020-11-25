@@ -161,21 +161,25 @@ class compressMap:
         subList = []
         subDict = {}
         dictOut = {}
-        #print(dictIn)
         if isinstance(dictIn, dict):
             for key in dictIn.keys():
-                print(f'dictType {key}')
+                #print(f'dictType {key}')
                 subDict = self.compressAll(dictIn.get(key))
                 dictOut.update({key: subDict})
-                print(dictOut)
-            return(oead.byml.Array(dictOut))
+                #print(dictOut)
+            return((dictOut))
+
         elif isinstance(dictIn, list):
             for item in dictIn:
-                print(f'listType {dictIn}')
+                #print(f'listType {dictIn}')
                 newItem = self.compressAll(item)
                 subList.append(newItem)
-                print(f'subList {subList}')
-            return(oead.byml.Hash(subList))
+                #print(f'subList {subList}')
+            try:
+                return(oead.byml.Hash(subList))
+            except:
+                return(subList)
+       
         else:
             return(dictIn)
 
