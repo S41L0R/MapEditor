@@ -495,13 +495,12 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
 
 		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type)
 
-		tempActorData.Rotate[0] = selectedObject.parent.rotation.x * 180/Math.PI
-		tempActorData.Rotate[1] = selectedObject.parent.rotation.y * 180/Math.PI
-		tempActorData.Rotate[2] = selectedObject.parent.rotation.z * 180/Math.PI
+		tempActorData.Scale = [selectedObject.parent.scale.x, selectedObject.parent.scale.y, selectedObject.parent.scale.z];
 
-		tempActorData.Translate[0] = selectedObject.parent.position.x;
-		tempActorData.Translate[1] = selectedObject.parent.position.y;
-		tempActorData.Translate[2] = selectedObject.parent.position.z;
+		tempActorData.Rotate = [selectedObject.parent.rotation.x * 180/Math.PI, selectedObject.parent.rotation.y * 180/Math.PI, selectedObject.parent.rotation.z * 180/Math.PI];
+
+		tempActorData.Translate = [selectedObject.parent.position.x, selectedObject.parent.position.y, selectedObject.parent.position.z];
+
 		setActorData(selectedObject.parent.HashID, selectedObject.parent.Type, tempActorData)
 	}
 	else {
@@ -509,13 +508,13 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
 
 		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type)
 
-		tempActorData.Rotate[0] = selectedObject.rotation.x * 180/Math.PI
-		tempActorData.Rotate[1] = selectedObject.rotation.y * 180/Math.PI
-		tempActorData.Rotate[2] = selectedObject.rotation.z * 180/Math.PI
+		tempActorData.Scale = [selectedObject.scale.x, selectedObject.scale.y, selectedObject.scale.z];
 
-		tempActorData.Translate[0] = selectedObject.position.x;
-		tempActorData.Translate[1] = selectedObject.position.y;
-		tempActorData.Translate[2] = selectedObject.position.z;
+		tempActorData.Rotate = [selectedObject.rotation.x * 180/Math.PI, selectedObject.rotation.y * 180/Math.PI, selectedObject.rotation.z * 180/Math.PI];
+
+		tempActorData.Translate = [selectedObject.position.x, selectedObject.position.y, selectedObject.position.z];
+
+
 		setActorData(selectedObject.HashID, selectedObject.Type, tempActorData)
 	}
 
