@@ -494,6 +494,11 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
 		transformControl.attach( selectedObject.parent);
 
 		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type)
+
+		tempActorData.Rotate[0] = selectedObject.parent.rotation.x * 180/Math.PI
+		tempActorData.Rotate[1] = selectedObject.parent.rotation.y * 180/Math.PI
+		tempActorData.Rotate[2] = selectedObject.parent.rotation.z * 180/Math.PI
+
 		tempActorData.Translate[0] = selectedObject.parent.position.x;
 		tempActorData.Translate[1] = selectedObject.parent.position.y;
 		tempActorData.Translate[2] = selectedObject.parent.position.z;
@@ -503,6 +508,11 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
 		transformControl.attach( selectedObject );
 
 		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type)
+
+		tempActorData.Rotate[0] = selectedObject.rotation.x * 180/Math.PI
+		tempActorData.Rotate[1] = selectedObject.rotation.y * 180/Math.PI
+		tempActorData.Rotate[2] = selectedObject.rotation.z * 180/Math.PI
+
 		tempActorData.Translate[0] = selectedObject.position.x;
 		tempActorData.Translate[1] = selectedObject.position.y;
 		tempActorData.Translate[2] = selectedObject.position.z;
