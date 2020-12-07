@@ -160,7 +160,7 @@ let win
 
 ipc.on('toMainWindow', (event, message, hashID, actorType) => {
 	console.log(event, message);
-	win.webContents.send('fromActorEditor', message);
+	win.webContents.send('fromActorEditor', message, hashID, actorType);
 })
 
 function createWindow () {

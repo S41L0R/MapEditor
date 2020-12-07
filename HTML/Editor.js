@@ -368,35 +368,56 @@ darkModeToggle.addEventListener("click", function() {
 function findActorData(hashId, type) {
   if (type == "Static") {
     for (const i of sectionData.Static.Objs) {
-      if (i.HashId == hashId) {
-        return i;
-      }
+			//if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+      	if (i.HashId == hashId) {
+        	return i;
+      	}
+			//}
     }
   }
   if (type == "Dynamic") {
     for (const i of sectionData.Dynamic.Objs) {
-      if (i.HashId == hashId) {
-        return(i);
-      }
+			//if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+      	if (i.HashId == hashId) {
+        	return(i);
+      	}
+			//}
     }
   }
 }
 
 function setActorData(hashId, type, data) {
   if (type == "Static") {
-    for (const i of sectionData.Static.Objs) {
-      if (i.HashId == hashId) {
-        sectionData.type.Objs[i] = data;
-      }
+		var index = 0;
+    for (var i of sectionData.Static.Objs) {
+			//if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+      	if (i.HashId == hashId) {
+        	sectionData.Dynamic.Objs[index] = data;
+					console.warn(i)
+      	}
+			//}
+			index = index + 1;
     }
   }
   if (type == "Dynamic") {
-    for (const i of sectionData.Dynamic.Objs) {
-      if (i.HashId == hashId) {
-        sectionData.type.Objs[i] = data;
-      }
+		var index = 0;
+    for (var i of sectionData.Dynamic.Objs) {
+			//if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+      	if (i.HashId == hashId) {
+        	sectionData.Dynamic.Objs[index] = data;
+					console.warn(i)
+      	}
+			//}
+			index = index + 1;
     }
   }
+	else {
+		console.warn(type)
+	}
+	console.warn(findActorData(hashId, type))
+	console.warn(data)
+	console.warn(type)
+	console.warn(sectionData)
 }
 
 // -----------------------------------------------------------------------------
@@ -469,6 +490,24 @@ transformControl.addEventListener( 'change', render);
 transformControl.addEventListener( 'dragging-changed', function ( event ) {
   fpControls.enabled = ! event.value;
   doObjectSelect = ! event.value;
+	if (selectedObject.parent.type == "Group") {
+		transformControl.attach( selectedObject.parent);
+
+		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type)
+		tempActorData.Translate[0] = selectedObject.parent.position.x;
+		tempActorData.Translate[1] = selectedObject.parent.position.y;
+		tempActorData.Translate[2] = selectedObject.parent.position.z;
+		setActorData(selectedObject.parent.HashID, selectedObject.parent.Type, tempActorData)
+	}
+	else {
+		transformControl.attach( selectedObject );
+
+		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type)
+		tempActorData.Translate[0] = selectedObject.position.x;
+		tempActorData.Translate[1] = selectedObject.position.y;
+		tempActorData.Translate[2] = selectedObject.position.z;
+		setActorData(selectedObject.HashID, selectedObject.Type, tempActorData)
+	}
 
 } );
 transformControl.setMode('translate');
