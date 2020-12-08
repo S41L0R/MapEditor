@@ -418,6 +418,28 @@ function setActorData(hashId, type, data) {
 	console.warn(data)
 	console.warn(type)
 	console.warn(sectionData)
+
+
+	var index = 0;
+	for (var i of scene.children) {
+		//if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+			if (i.HashID == hashId) {
+				scene.children[index].position.x = data.Translate[0]
+				scene.children[index].position.y = data.Translate[1]
+				scene.children[index].position.z = data.Translate[2]
+
+				scene.children[index].rotation.x = data.Rotate[0] * Math.PI/180
+				scene.children[index].rotation.y = data.Rotate[1] * Math.PI/180
+				scene.children[index].rotation.z = data.Rotate[2] * Math.PI/180
+
+				scene.children[index].scale.x = data.Scale[0]
+				scene.children[index].scale.y = data.Scale[1]
+				scene.children[index].scale.z = data.Scale[2]
+			}
+		//}
+		index = index + 1;
+	}
+
 }
 
 // -----------------------------------------------------------------------------
