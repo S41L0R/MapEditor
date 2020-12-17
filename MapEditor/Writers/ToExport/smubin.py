@@ -33,4 +33,3 @@ def writeMapFile(jsonData):
     with open(pathlib.Path(f'{filePath}/{sectionName}_Dynamic.smubin'), 'wb') as writeDynamic:
         writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(dynamicMapData, big_endian=bool(bigEndian))))
     return
-
