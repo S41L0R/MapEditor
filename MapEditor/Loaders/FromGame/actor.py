@@ -30,7 +30,7 @@ def FindActorModel(InputText, ActorName):
             print("Did not find the actor name in actorInfo.")
             return("Did not find the actor name in map file.")
             SearchingActorInfo = False
-    return(InputDict["Actors"][i]["bfres"])
+    return(InputDict["Actors"][i]["bfres"], InputDict["Actors"][i]["mainModel"])
 
 
 def FindActorText(InputText, ActorName):
