@@ -505,6 +505,8 @@ fpControls.lookSpeed = 0.1;
 
 // Initialize transformControl
 var transformControl = new TransformControls( camera, renderer.domElement );
+objects.push(transformControl);
+var transformControlAttached = false;
 
 // Do some junk that matters but doesn't matter.
 transformControl.addEventListener( 'change', render);
@@ -514,6 +516,7 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
   doObjectSelect = ! event.value;
 	if (selectedObject.parent.type == "Group") {
 		transformControl.attach( selectedObject.parent);
+		transformControlAttached = true;
 
 		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type)
 
@@ -527,6 +530,7 @@ transformControl.addEventListener( 'dragging-changed', function ( event ) {
 	}
 	else {
 		transformControl.attach( selectedObject );
+		transformControlAttached = true;
 
 		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type)
 
@@ -665,29 +669,109 @@ function pointerDown(evt) {
         if (intersects.length > 0) {
 
           // Grabs the very first intersected object
-          selectedObject  = intersects[0].object;
           console.log("start");
-          console.log(selectedObject);
-          console.log(selectedObject.parent);
+					try {
+          	console.log(intersects[0].object);
+					}
+					catch {
+						console.log("could not find selected object.")
+					}
+					try {
+          	console.log(intersects[0].object.parent);
+					}
+					catch {
+						console.log("could not find next parent.")
+					}
+					try {
+						console.log(intersects[0].object.parent.parent);
+					}
+					catch {
+						console.log("could not find next parent.")
+					}
+					try {
+						console.log(intersects[0].object.parent.parent.parent);
+					}
+					catch {
+						console.log("could not find next parent.")
+					}
+					try {
+						console.log(intersects[0].object.parent.parent.parent.parent);
+					}
+					catch {
+						console.log("could not find next parent.")
+					}
           console.log("end");
-          if ( selectedObject !== null && selectedObject !== scene && selectedObject !== camera && selectedObject.parent.children[0] !== scene.children[1].object) {
-            if (selectedObject.parent.type == "Group") {
-              transformControl.attach( selectedObject.parent);
-              showActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
-            }
-            else {
-              transformControl.attach( selectedObject );
-              showActorData(selectedObject.HashID, selectedObject.Type);
-            }
-            console.log(selectedObject.parent);
-            console.log(selectedObject);
-          //selectedObject.parent.remove(selectedObject);
+          if ( intersects[0].object !== null && intersects[0].object !== scene && intersects[0].object !== camera) {
+							var foundTransformControls = false;
+							intersects.forEach((intersect, i) => {
+								console.warn(intersect)
+								console.warn(intersect.parent)
+								//console.warn(intersect.parent.parent)
+								try {
+									console.log("trying")
+									if (((intersect.object.parent.parent.parent !== scene.children[1] && transformControlAttached == true) && (intersect.object.parent.parent !== scene.children[1] && transformControlAttached == true) && (intersect.object.parent !== scene.children[1] && transformControlAttached == true)) || intersect.object.type == "TransformControlsPlane" || (transformControlAttached == false)) {
+									//if ((intersect.object.parent.parent.parent !== scene.children[1] && transformControlAttached == true) || (transformControlAttached == false)) {
+			            	console.log(intersect.object.parent);
+			            	console.log(intersect.object);
+			          		//intersect.object.parent.remove(intersect.object);
+									}
+									else {
+										console.log("found transformcontrols.")
+										foundTransformControls = true;
+									}
+								}
+								catch {
+									console.log("had to catch")
+									console.warn("could not find next parent.")
+									console.log(intersect.object.parent);
+									console.log(intersect.object);
+									//intersect.object.parent.remove(intersect.object);
+									console.log("trying with two less parents.")
+
+
+									if ((intersect.object.parent !== scene.children[1] && transformControlAttached == true) || intersect.object.type == "TransformControlsPlane" || (transformControlAttached == false)) {
+			            	console.log(intersect.object.parent);
+			            	console.log(intersect.object);
+			          		//intersect.object.parent.remove(intersect.object);
+									}
+									else {
+										console.log("found transformcontrols.")
+										foundTransformControls = true;
+									}
+
+								}
+							});
+							if (intersects[0].object.type == "TransformControlsPlane") {
+								intersects.shift();
+							}
+							console.log("foundTransformControls: " + foundTransformControls)
+							if (foundTransformControls == false) {
+								selectedObject = intersects[0].object;
+								console.log(selectedObject)
+
+								if (selectedObject.parent.type == "Group") {
+									transformControl.attach( selectedObject.parent);
+									transformControlAttached = true;
+									showActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
+								}
+								else {
+									transformControl.attach( selectedObject );
+									transformControlAttached = true;
+									showActorData(selectedObject.HashID, selectedObject.Type);
+								}
+							}
+							else {
+								console.log(selectedObject)
+							}
+
+
           }
         }
       }
 
       else {
         transformControl.detach();
+				transformControlAttached = false;
       }
       break;
       }

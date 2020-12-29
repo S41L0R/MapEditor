@@ -241,7 +241,9 @@ var FirstPersonControls = function ( object, domElement ) {
 				var mouseDiffY = 1;
 				//mouseDiffX = this.mouseX - this.prevMouseX;
 				//mouseDiffY = this.mouseY - this.prevMouseY;
-				console.warn(this.object.rotation);
+
+				//console.warn(this.object.rotation);
+
 				//this.object.rotation._x = this.object.rotation._x + mouseDiffX;
 				if (this.mouseMoving == true) {
 					//this.object.rotateX(-this.movementY/4 * this.lookSpeed);
