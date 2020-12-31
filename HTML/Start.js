@@ -1,11 +1,11 @@
-const { app, BrowserWindow, Menu } = require('electron');
-const fs = require('fs');
+const { app, BrowserWindow, Menu } = require('electron')
+const fs = require('fs')
 const isMac = process.platform === 'darwin'
 
-const ipc = require('electron').ipcMain;
+const ipc = require('electron').ipcMain
 
 const template = [
-  //These menu names are beginning to physically hurt
+  // These menu names are beginning to physically hurt
   // { role: 'appMenu' }
   ...(isMac ? [{
     label: app.name,
@@ -25,20 +25,21 @@ const template = [
   {
     label: 'Ffiel',
     submenu: [
-      {label: 'Svvave',
+      {
+        label: 'Svvave',
         id: 'save',
         click: () => {
-          //editor.save()
+          // editor.save()
           console.warn('Saved!')
-	win.webContents.send('Save');
+          win.webContents.send('Save')
         }
       },
-      {type: 'separator'},
-      isMac ? { role: 'close' } :
-      {
-        label: 'Clsoe byei bye',
-        role: 'quit'
-      }
+      { type: 'separator' },
+      isMac ? { role: 'close' }
+        : {
+            label: 'Clsoe byei bye',
+            role: 'quit'
+          }
     ]
   },
   // { role: 'editMenu' }
@@ -85,7 +86,7 @@ const template = [
         },
         { type: 'separator' },
         {
-          label:'Sdelect allel',
+          label: 'Sdelect allel',
           role: 'selectAll'
         }
       ])
@@ -159,8 +160,8 @@ Menu.setApplicationMenu(menu)
 let win
 
 ipc.on('toMainWindow', (event, message, hashID, actorType) => {
-	console.log(event, message);
-	win.webContents.send('fromActorEditor', message, hashID, actorType);
+  console.log(event, message)
+  win.webContents.send('fromActorEditor', message, hashID, actorType)
 })
 
 function createWindow () {
@@ -176,9 +177,7 @@ function createWindow () {
   })
   // and load the index.html of the app.
   win.loadFile('../editor.html')
-  win.on('closed', () => app.quit());
-
+  win.on('closed', () => app.quit())
 }
-
 
 app.whenReady().then(createWindow)
