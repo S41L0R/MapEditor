@@ -4,6 +4,7 @@
 import { ColladaLoader } from "./lib/threejs/examples/jsm/loaders/ColladaLoader.js";
 import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorControls.js";
 import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js";
+import {SkeletonUtils} from "./lib/threejs/examples/jsm/utils/SkeletonUtils.js";
 
 //const fs = require("fs");
 
@@ -52,11 +53,26 @@ const customDarkColor = new THREE.Color("#2b2b31");
 let cameraSpeed = 150;
 const cameraLookSpeed = 1;
 
+// Amount of instances for each model before it creates a new instanced mesh object.
+const instNum = 50;
+
+// Determines whether models should be loaded. Currently this is equivelent to badFramerate.
+const loadModels = false;
+
 // Define Map Based variables
 // -----------------------------------------------------------------------------
 
 const testDict = new Object();
 let sectionData;
+
+
+
+
+
+
+var calledNum = 0;
+
+
 
 // Boring code that doesn't matter
 // -----------------------------------------------------------------------------
@@ -129,6 +145,88 @@ const onLoad = function (dae) {
 	console.log(daeModel);
 };
 
+
+
+
+
+
+
+var currentModelDataForLoad;
+var instancedMeshIndex = [];
+
+
+
+const daeOnLoad = function (dae) {
+	console.log("Loading complete!");
+	daeModel = dae.scene;
+	daeModel.traverse(function (child) {
+		if (child instanceof THREE.Mesh) {
+			objects.push(child);
+			console.log("Child instanceof THREE.Mesh = true");
+		}
+	});
+	objects.push(dae.scene);
+	console.log("objects:");
+	console.log(objects);
+
+	for (let i = 1; i < daeModel.children.length; i++) {
+		daeModel.children[i].geometry.computeBoundingSphere();
+		console.log(daeModel.children[i].geometry);
+	}
+
+	//scene.add(daeModel);
+	//daeModel.parent.remove(daeModel.children[0]);
+	console.log(daeModel);
+
+
+
+
+
+	instancedMeshIndex[url] = daeModel;
+
+	console.warn(instancedMeshIndex);
+
+	console.warn("Loaded Model");
+
+	console.warn(instancedMeshIndex);
+
+
+	if (instancedMeshIndex["doneNum"] != undefined) {
+
+		console.warn("1");
+		instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1;
+	}
+	else {
+		instancedMeshIndex["doneNum"] = 1;
+	}
+	if (instancedMeshIndex["doneNum"] == calledNum) {
+
+		console.warn("loadActors time");
+		loadActors();
+	}
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const onProgress = function (url, itemsLoaded, itemsTotal) {
 	console.log("Loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.");
 };
@@ -189,20 +287,66 @@ function loadPythonCallback (data) {
 }
 // loadPython(loadPythonCallback);
 console.log("test");
-loadPython(function (s) { loadActors(s); }, "main");
+loadPython(function (s) { loadInstanceModels(s); }, "main");
 
 // Load from map file.
-async function loadActors (data) {
+
+
+
+
+
+
+
+async function loadInstanceModels() {
+
+	let urlArray = ["./Test/TestToolboxGuardian/Guardian_A_Perfect.dae"];
+
+
+	for (const i of urlArray) {
+
+		loader.load(i, daeOnLoad, onProgress);
+		calledNum = calledNum + 1;
+	}
+
+
+
+
+
+
+}
+
+
+
+
+
+async function loadActors () {
 	console.log("Got to loadActors!");
 
 	// pywebview.api.getStuff();
-	const loader = new THREE.FontLoader();
+	//const loader = new THREE.FontLoader();
 
 	// data.Static.Objs
 	// for (var i = 0; i < data.Static.Objs.length-1001; i++) {
 	// for (const i of data.Static.Objs.slice(0, 5)) {
 	// data.Static.Objs.Length.foreach()
-	for (const i of data.Static.Objs) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+	for (const i of sectionData.Static.Objs) {
+
+
+
+		currentModelDataForLoad = i;
 		// var i = 0;
 		/*
     loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
@@ -233,20 +377,66 @@ async function loadActors (data) {
      console.log(textMesh);
 
    } ); */
-		console.log(i);
 
-		var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
-		var cubeMesh = await new THREE.Mesh(cubeGeo, material);
-		cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
-		cubeMesh.HashID = i.HashId;
-		cubeMesh.Type = "Static";
-		await scene.add(cubeMesh);
-		await objects.push(cubeMesh);
-		await console.log("cubeMesh");
-		console.log(cubeMesh);
-		await console.log("No cubeMesh");
+	 		//loader.load(url, daeOnLoadStatic, onProgress);
+
+
+
+		if (instancedMeshIndex[url] != undefined && loadModels == true) {
+
+
+			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[url]);
+
+
+
+
+
+
+			await scene.add(duplicateMesh);
+
+			objects.push(duplicateMesh);
+
+
+			await duplicateMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
+			duplicateMesh.HashID = i.HashId;
+			duplicateMesh.Type = "Static";
+
+
+			console.warn(i);
+
+			console.warn(duplicateMesh);
+
+			console.warn(i.Translate[0]);
+
+			console.warn("instancedMeshBase:");
+
+			console.log(instancedMeshIndex[url]);
+
+		}
+
+
+		else {
+
+			console.log(i);
+
+			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
+			var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+			cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
+			cubeMesh.HashID = i.HashId;
+			cubeMesh.Type = "Static";
+			await scene.add(cubeMesh);
+			await objects.push(cubeMesh);
+			await console.log("cubeMesh");
+			console.log(cubeMesh);
+			await console.log("No cubeMesh");
+
+		}
+
 	}
-	for (const i of data.Dynamic.Objs) {
+	for (const i of sectionData.Dynamic.Objs) {
+
+
+		currentModelDataForLoad = i;
 		// var i = 0;
 		/*
     loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
@@ -277,23 +467,64 @@ async function loadActors (data) {
      console.log(textMesh);
 
    } ); */
-		console.log(i);
 
-		var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
-		var cubeMesh = await new THREE.Mesh(cubeGeo, material);
-		cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
-		cubeMesh.HashID = i.HashId;
-		cubeMesh.Type = "Dynamic";
-		await scene.add(cubeMesh);
-		await objects.push(cubeMesh);
-		await console.log("cubeMesh");
-		console.log(cubeMesh);
-		await console.log("No cubeMesh");
+
+	 	if (instancedMeshIndex[url] != undefined && loadModels == true) {
+
+			//loader.load(url, daeOnLoadDynamic, onProgress);
+
+			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[url]);
+
+			//console.warn(instancedMeshIndex[url])
+
+
+
+
+			scene.add(duplicateMesh);
+
+			objects.push(duplicateMesh);
+
+			duplicateMesh.children[0].position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
+			duplicateMesh.HashID = i.HashId;
+			duplicateMesh.Type = "Dynamic";
+
+
+
+			for (let i = 1; i < duplicateMesh.children.length; i++) {
+				duplicateMesh.children[i].geometry.computeBoundingSphere();
+				console.log(duplicateMesh.children[i].geometry);
+			}
+
+		}
+
+		else {
+
+
+			console.log(i);
+
+			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
+			var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+			cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
+			cubeMesh.HashID = i.HashId;
+			cubeMesh.Type = "Dynamic";
+			await scene.add(cubeMesh);
+			await objects.push(cubeMesh);
+			await console.log("cubeMesh");
+			console.log(cubeMesh);
+			await console.log("No cubeMesh");
+
+		}
+
 	}
 	console.log(scene);
-	camera.position.x = data.Dynamic.Objs[data.Dynamic.Objs.length - 1].Translate[0];
-	camera.position.y = data.Dynamic.Objs[data.Dynamic.Objs.length - 1].Translate[1];
-	camera.position.z = data.Dynamic.Objs[data.Dynamic.Objs.length - 1].Translate[2];
+	camera.position.x = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[0];
+	camera.position.y = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[1];
+	camera.position.z = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[2];
+
+
+	//camera.position.x = scene.children[66].position.x;
+	//camera.position.y = scene.children[66].position.y;
+	//camera.position.z = scene.children[66].position.z;
 }
 
 // Light mode / Dark mode
