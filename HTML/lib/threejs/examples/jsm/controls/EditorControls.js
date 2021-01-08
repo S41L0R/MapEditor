@@ -186,6 +186,9 @@ var FirstPersonControls = function ( object, domElement ) {
 			case 69: /*E*/ this.moveUp = true; break;
 			case 81: /*Q*/ this.moveDown = true; break;
 
+			case 32: /*space*/ this.moveGlobalUp = true; break;
+			case 16: /*shift*/ this.moveGlobalDown = true; break;
+
 		}
 
 	};
@@ -208,6 +211,9 @@ var FirstPersonControls = function ( object, domElement ) {
 
 			case 69: /*E*/ this.moveUp = false; break;
 			case 81: /*Q*/ this.moveDown = false; break;
+
+			case 32: /*space*/ this.moveGlobalUp = false; break;
+			case 16: /*shift*/ this.moveGlobalDown = false; break;
 
 		}
 
@@ -275,6 +281,9 @@ var FirstPersonControls = function ( object, domElement ) {
 
 				if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
 				if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
+
+				if ( this.moveGlobalUp ) this.object.position.y = this.object.position.y + actualMoveSpeed;
+				if ( this.moveGlobalDown ) this.object.position.y = this.object.position.y - actualMoveSpeed;
 
 				// Sets mouseMoving to false. If the mouse is moved, it will be set to true for a frame, until this goes through and clears it.
 				this.mouseMoving = false;

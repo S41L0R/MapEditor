@@ -489,11 +489,12 @@ async function loadActors () {
 			duplicateMesh.Type = "Dynamic";
 
 
-
+			/*
 			for (let i = 1; i < duplicateMesh.children.length; i++) {
 				duplicateMesh.children[i].geometry.computeBoundingSphere();
 				console.log(duplicateMesh.children[i].geometry);
 			}
+			*/
 
 		}
 
