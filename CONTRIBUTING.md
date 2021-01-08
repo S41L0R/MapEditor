@@ -1,1 +1,0 @@
-# For now, uh don't create a pull request without talking to us first. Since this is still a work in progress, there's a lot of stuff about the structure of how things will work that only us team members know.
