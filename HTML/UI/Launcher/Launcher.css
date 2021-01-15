@@ -1,0 +1,22 @@
+.LauncherButton {
+  background-color: skyblue;
+  height:100%;
+  text-align:center;
+  font-weight:bold;
+  font-family: "Noto Sans TC", "sans-serif";
+  font-size: xxx-large;
+  vertical-align: middle;
+  position: absolute;
+
+}
+
+.LauncherButton p {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+#Title {
+  position:relative;
+}

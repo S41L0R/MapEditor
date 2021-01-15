@@ -24,7 +24,12 @@ const geometry = new THREE.BoxGeometry();
 const cubeTexLoader = new THREE.TextureLoader();
 const cubeTexture = cubeTexLoader.load(
 	"./Assets/Textures/CubeTexture.png");
-const material = new THREE.MeshStandardMaterial({ emissiveMap: cubeTexture, emissive: new THREE.Color("#FFFFFF") });
+const material = new THREE.MeshStandardMaterial({
+	emissiveMap: cubeTexture,
+	emissive: new THREE.Color("#FFFFFF"),
+	transparent: true,
+	opacity: 0.75
+});
 
 const clock = new THREE.Clock();
 
@@ -351,9 +356,9 @@ async function loadActors () {
 		/*
     loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
 
-    //var textGeo = await new THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
-    var textGeo = await new THREE.TextBufferGeometry( i.UnitConfigName, {
-    //var textGeo = new Promise(THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
+    //var textGeo = await new THREE.TextGeometry( data.Static.Objs[i].UnitConfigName.value, {
+    var textGeo = await new THREE.TextBufferGeometry( i.UnitConfigName.value, {
+    //var textGeo = new Promise(THREE.TextGeometry( data.Static.Objs[i].UnitConfigName.value, {
   		  font: font,
   		  size: 800,
   		  height: 5,
@@ -369,11 +374,11 @@ async function loadActors () {
      const textMesh = await new THREE.Mesh(textGeo, material);
      //textMesh.scale.set(0.001, 0.001, 0.001);
      textMesh.scale.set(0.1, 0.1, 0.1);
-     textMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2])
+     textMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value)
      await scene.add(textMesh);
      console.log(i);
-     //console.log(data.Static.Objs[i].UnitConfigName);
-     console.log(i.UnitConfigName);
+     //console.log(data.Static.Objs[i].UnitConfigName.value);
+     console.log(i.UnitConfigName.value);
      console.log(textMesh);
 
    } ); */
@@ -397,8 +402,8 @@ async function loadActors () {
 			objects.push(duplicateMesh);
 
 
-			await duplicateMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
-			duplicateMesh.HashID = i.HashId;
+			await duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			duplicateMesh.HashID = i.HashId.value;
 			duplicateMesh.Type = "Static";
 
 
@@ -406,7 +411,7 @@ async function loadActors () {
 
 			console.warn(duplicateMesh);
 
-			console.warn(i.Translate[0]);
+			console.warn(i.Translate[0].value);
 
 			console.warn("instancedMeshBase:");
 
@@ -421,8 +426,39 @@ async function loadActors () {
 
 			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
 			var cubeMesh = await new THREE.Mesh(cubeGeo, material);
-			cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
-			cubeMesh.HashID = i.HashId;
+			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+
+			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
+			try {
+				cubeMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+			}
+			catch {
+
+				// Just in case it's 1D rotation
+				try {
+					cubeMesh.rotation.set(0, i.Rotate.value * Math.PI / 180, 0)
+				}
+
+				// In case there is no rotation.
+				catch {
+					cubeMesh.rotation.set(0, 0, 0)
+				}
+			}
+
+			// Try to apply scale, if it doesn't exist add some.
+			try {
+				cubeMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+			}
+			catch {
+				// This could also mean that there's only 1 scale value, try that first.
+				try {
+					cubeMesh.scale.set(i.Scale.value, i.Scale.value, i.Scale.value)
+				}
+				catch {
+					cubeMesh.scale.set(1, 1, 1)
+				}
+			}
+			cubeMesh.HashID = i.HashId.value;
 			cubeMesh.Type = "Static";
 			await scene.add(cubeMesh);
 			await objects.push(cubeMesh);
@@ -441,9 +477,9 @@ async function loadActors () {
 		/*
     loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
 
-    //var textGeo = await new THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
-    var textGeo = await new THREE.TextBufferGeometry( i.UnitConfigName, {
-    //var textGeo = new Promise(THREE.TextGeometry( data.Static.Objs[i].UnitConfigName, {
+    //var textGeo = await new THREE.TextGeometry( data.Static.Objs[i].UnitConfigName.value, {
+    var textGeo = await new THREE.TextBufferGeometry( i.UnitConfigName.value, {
+    //var textGeo = new Promise(THREE.TextGeometry( data.Static.Objs[i].UnitConfigName.value, {
   		  font: font,
   		  size: 800,
   		  height: 5,
@@ -459,11 +495,11 @@ async function loadActors () {
      const textMesh = await new THREE.Mesh(textGeo, material);
      //textMesh.scale.set(0.001, 0.001, 0.001);
      textMesh.scale.set(0.1, 0.1, 0.1);
-     textMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2])
+     textMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value)
      await scene.add(textMesh);
      console.log(i);
-     //console.log(data.Static.Objs[i].UnitConfigName);
-     console.log(i.UnitConfigName);
+     //console.log(data.Static.Objs[i].UnitConfigName.value);
+     console.log(i.UnitConfigName.value);
      console.log(textMesh);
 
    } ); */
@@ -484,8 +520,8 @@ async function loadActors () {
 
 			objects.push(duplicateMesh);
 
-			duplicateMesh.children[0].position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
-			duplicateMesh.HashID = i.HashId;
+			duplicateMesh.children[0].position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			duplicateMesh.HashID = i.HashId.value;
 			duplicateMesh.Type = "Dynamic";
 
 
@@ -505,8 +541,38 @@ async function loadActors () {
 
 			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
 			var cubeMesh = await new THREE.Mesh(cubeGeo, material);
-			cubeMesh.position.set(i.Translate[0], i.Translate[1], i.Translate[2]);
-			cubeMesh.HashID = i.HashId;
+			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
+			try {
+				cubeMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+			}
+			catch {
+
+				// Just in case it's 1D rotation
+				try {
+					cubeMesh.rotation.set(0, i.Rotate.value * Math.PI / 180, 0)
+				}
+
+				// In case there is no rotation.
+				catch {
+					cubeMesh.rotation.set(0, 0, 0)
+				}
+			}
+
+			// Try to apply scale, if it doesn't exist add some.
+			try {
+				cubeMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+			}
+			catch {
+				// This could also mean that there's only 1 scale value, try that first.
+				try {
+					cubeMesh.scale.set(i.Scale.value, i.Scale.value, i.Scale.value)
+				}
+				catch {
+					cubeMesh.scale.set(1, 1, 1)
+				}
+			}
+			cubeMesh.HashID = i.HashId.value;
 			cubeMesh.Type = "Dynamic";
 			await scene.add(cubeMesh);
 			await objects.push(cubeMesh);
@@ -518,9 +584,9 @@ async function loadActors () {
 
 	}
 	console.log(scene);
-	camera.position.x = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[0];
-	camera.position.y = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[1];
-	camera.position.z = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[2];
+	camera.position.x = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[0].value;
+	camera.position.y = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[1].value;
+	camera.position.z = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[2].value;
 
 
 	//camera.position.x = scene.children[66].position.x;
@@ -551,7 +617,7 @@ function findActorData (hashId, type) {
 	if (type == "Static") {
 		for (const i of sectionData.Static.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
-      	if (i.HashId == hashId) {
+      	if (i.HashId.value == hashId) {
         	return i;
       	}
 			// }
@@ -560,7 +626,7 @@ function findActorData (hashId, type) {
 	if (type == "Dynamic") {
 		for (const i of sectionData.Dynamic.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
-      	if (i.HashId == hashId) {
+      	if (i.HashId.value == hashId) {
         	return (i);
       	}
 			// }
@@ -573,7 +639,7 @@ function setActorData (hashId, type, data) {
 		var index = 0;
 		for (var i of sectionData.Static.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
-      	if (i.HashId == hashId) {
+      	if (i.HashId.value == hashId) {
         	sectionData.Dynamic.Objs[index] = data;
 				console.warn(i);
       	}
@@ -585,7 +651,7 @@ function setActorData (hashId, type, data) {
 		var index = 0;
 		for (var i of sectionData.Dynamic.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
-      	if (i.HashId == hashId) {
+      	if (i.HashId.value == hashId) {
         	sectionData.Dynamic.Objs[index] = data;
 				console.warn(i);
       	}
@@ -604,6 +670,8 @@ function setActorData (hashId, type, data) {
 	for (var i of scene.children) {
 		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
 		if (i.HashID == hashId) {
+			console.warn(data)
+			console.warn(scene)
 			scene.children[index].position.x = data.Translate[0].value;
 			scene.children[index].position.y = data.Translate[1].value;
 			scene.children[index].position.z = data.Translate[2].value;
@@ -640,7 +708,7 @@ cameraSlider.oninput = function () {
 function showActorData (ActorHashID, ActorType) {
 	const actorDataPanel = document.getElementById("DataEditorTextWindow");
 	actorDataPanel.innerHTML = `
-  <p id="SelectedActorName"><strong>${findActorData(ActorHashID, ActorType).UnitConfigName}</strong></p>
+  <p id="SelectedActorName"><strong>${findActorData(ActorHashID, ActorType).UnitConfigName.value}</strong></p>
   <p>${ActorHashID}</p>
   <button class="button" id="ActorEditButton">Edit BYML</button>
 
@@ -687,17 +755,42 @@ transformControl.addEventListener("change", render);
 transformControl.addEventListener("dragging-changed", function (event) {
 	fpControls.enabled = !event.value;
 	doObjectSelect = !event.value;
+
 	if (selectedObject.parent.type == "Group") {
 		transformControl.attach(selectedObject.parent);
 		transformControlAttached = true;
-
 		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
+		console.warn(tempActorData);
+		console.warn("asdf")
 
-		tempActorData.Scale = [selectedObject.parent.scale.x, selectedObject.parent.scale.y, selectedObject.parent.scale.z];
 
-		tempActorData.Rotate = [selectedObject.parent.rotation.x * 180 / Math.PI, selectedObject.parent.rotation.y * 180 / Math.PI, selectedObject.parent.rotation.z * 180 / Math.PI];
+		try {
+			tempActorData.Scale = [{"type":300, "value": selectedObject.parent.scale.x}, {"type":300, "value": selectedObject.parent.scale.y}, {"type":300, "value": selectedObject.parent.scale.z}];
+		}
+		catch {
+			console.log("Scale doesn't exist. Correcting.")
 
-		tempActorData.Translate = [selectedObject.parent.position.x, selectedObject.parent.position.y, selectedObject.parent.position.z];
+			tempActorData.Scale = [{"type":300, "value": 1}, {"type":300, "value": 1}, {"type":300, "value": 1}]
+		}
+
+		try {
+			tempActorData.Rotate = [{"type":300, "value": selectedObject.parent.rotation.x * 180 / Math.PI}, {"type":300, "value": selectedObject.parent.rotation.y * 180 / Math.PI}, {"type":300, "value": selectedObject.parent.rotation.z * 180 / Math.PI}];
+		}
+		catch {
+			console.log("Rotation doesn't exist. Correcting.")
+			tempActorData.Rotate = [{"type":300, "value": 0}, {"type":300, "value": 0}, {"type":300, "value": 0}]
+		}
+
+		try {
+			tempActorData.Translate = [{"type":300,"value":selectedObject.parent.position.x}, {"type":300,"value":selectedObject.parent.position.y}, {"type":300,"value":selectedObject.parent.position.z}];
+		}
+		catch {
+			console.log("Translation... doesn't exist? Correcting I guess.")
+			tempActorData.Translate = [{"type":300, "value": 0}, {"type":300, "value": 0}, {"type":300, "value": 0}]
+		}
+
+
+
 
 		setActorData(selectedObject.parent.HashID, selectedObject.parent.Type, tempActorData);
 	} else {
@@ -705,12 +798,66 @@ transformControl.addEventListener("dragging-changed", function (event) {
 		transformControlAttached = true;
 
 		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type);
+		console.warn(tempActorData);
+		console.warn("asdf")
 
-		tempActorData.Scale = [selectedObject.scale.x, selectedObject.scale.y, selectedObject.scale.z];
+		//tempActorData.Scale = [selectedObject.scale.x, selectedObject.scale.y, selectedObject.scale.z];
 
-		tempActorData.Rotate = [selectedObject.rotation.x * 180 / Math.PI, selectedObject.rotation.y * 180 / Math.PI, selectedObject.rotation.z * 180 / Math.PI];
+		//tempActorData.Rotate = [selectedObject.rotation.x * 180 / Math.PI, selectedObject.rotation.y * 180 / Math.PI, selectedObject.rotation.z * 180 / Math.PI];
 
-		tempActorData.Translate = [selectedObject.position.x, selectedObject.position.y, selectedObject.position.z];
+		//tempActorData.Translate = [selectedObject.position.x, selectedObject.position.y, selectedObject.position.z];
+
+
+
+
+		try {
+			tempActorData.Scale = [{"type":300, "value": selectedObject.scale.x}, {"type":300, "value": selectedObject.scale.y}, {"type":300, "value": selectedObject.scale.z}];
+		}
+		catch {
+			console.log("Scale doesn't exist.")
+		}
+
+		try {
+			tempActorData.Rotate = [{"type":300, "value": selectedObject.rotation.x * 180 / Math.PI}, {"type":300, "value": selectedObject.rotation.y * 180 / Math.PI}, {"type":300, "value": selectedObject.rotation.z * 180 / Math.PI}];
+		}
+		catch {
+			console.log("Rotation doesn't exist.")
+		}
+
+		try {
+			tempActorData.Translate = [{"type":300,"value":selectedObject.position.x}, {"type":300,"value":selectedObject.position.y}, {"type":300,"value":selectedObject.position.z}];
+		}
+		catch {
+			console.log("Translation... doesn't exist?")
+		}
+
+		/*
+		tempActorData.Translate[0].type = 300;
+		tempActorData.Translate[1].type = 300;
+		tempActorData.Translate[2].type = 300;
+
+		tempActorData.Rotate[0].type = 300;
+		tempActorData.Rotate[1].type = 300;
+		tempActorData.Rotate[2].type = 300;
+
+		tempActorData.Scale[0].type = 300;
+		tempActorData.Scale[1].type = 300;
+		tempActorData.Scale[2].type = 300;
+
+
+		tempActorData.Translate[0].value = selectedObject.position.x;
+		tempActorData.Translate[1].value = selectedObject.position.y;
+		tempActorData.Translate[2].value = selectedObject.position.z;
+
+		tempActorData.Rotate[0].value = selectedObject.rotation.x * 180 / Math.PI;
+		tempActorData.Rotate[1].value = selectedObject.rotation.y * 180 / Math.PI;
+		tempActorData.Rotate[2].value = selectedObject.rotation.z * 180 / Math.PI;
+
+		tempActorData.Scale[0].value = selectedObject.scale.x;
+		tempActorData.Scale[1].value = selectedObject.scale.y;
+		tempActorData.Scale[2].value = selectedObject.scale.z;
+
+		*/
 
 		setActorData(selectedObject.HashID, selectedObject.Type, tempActorData);
 	}
@@ -768,7 +915,7 @@ function createEditorWindow (obj, actorType) {
 
 	editorWin.webContents.on("did-finish-load", () => {
 		// editorWin.webContents.send('toActorEditor', 'Hello second window!');
-		editorWin.webContents.send("toActorEditor", { data: obj, type: actorType, HashID: obj.HashId, windowID: 1 });
+		editorWin.webContents.send("toActorEditor", { data: obj, type: actorType, HashID: obj.HashId.value, windowID: 1 });
 	});
 }
 
@@ -807,6 +954,8 @@ function pointerDown (evt) {
 
 	switch (evt.pointerType) {
 	case "mouse":
+		console.log(scene)
+		console.log(sectionData)
 		if (evt.buttons === 1) {
 			if (doObjectSelect == true) {
 				raycaster.setFromCamera(mouse, camera);
@@ -874,8 +1023,10 @@ function pointerDown (evt) {
 						}
 						console.log("foundTransformControls: " + foundTransformControls);
 						if (foundTransformControls == false) {
-							selectedObject = intersects[0].object;
-							console.log(selectedObject);
+							try {
+								selectedObject = intersects[0].object;
+								console.log(selectedObject);
+
 
 							if (selectedObject.parent.type == "Group") {
 								transformControl.attach(selectedObject.parent);
@@ -886,6 +1037,10 @@ function pointerDown (evt) {
 								transformControlAttached = true;
 								showActorData(selectedObject.HashID, selectedObject.Type);
 							}
+						}
+						catch {
+							console.log("Nothing To Select")
+						}
 						} else {
 							console.log(selectedObject);
 						}
