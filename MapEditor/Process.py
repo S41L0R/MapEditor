@@ -18,7 +18,6 @@ import Loaders.FromGame.actor as actor
 import Writers.ToExport.smubin as smubinWriter
 import Lib.Utils.Util as utils
 import Loaders.FromGame.sbfres as sbfres
-import Loaders.FromGame.sbfresTex1 as sbfresTex1
 
 #Set CWD
 
