@@ -17,6 +17,8 @@ import Loaders.FromGame.smubin as smubinLoader
 import Loaders.FromGame.actor as actor
 import Writers.ToExport.smubin as smubinWriter
 import Lib.Utils.Util as utils
+import Loaders.FromGame.sbfres as sbfres
+import Loaders.FromGame.sbfresTex1 as sbfresTex1
 
 #Set CWD
 
@@ -108,6 +110,26 @@ class mapFile:
         DataJSON.update({"Dynamic": self.dyDictOut.extractedByml, "Static": self.staticDictOut.extractedByml})
         jsonData = json.dumps(DataJSON)
         return jsonData
+
+
+
+
+
+def cacheModels(modelList, cachedModels):
+
+    #modelList = list(set(modelList)^set(cachedModels))
+    #print(modelList)
+
+    #sbfresTex1.cacheTextures(modelList)
+
+    for i in modelList[:]:
+      if i in cachedModels:
+          modelList.remove(i)
+    sbfres.cacheModels(modelList)
+
+
+def TESTRunCacheModels():
+    cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"], [2, 3, 4])
 
 
 # Load ActorInfo
