@@ -604,17 +604,17 @@ function setActorData (hashId, type, data) {
 	for (var i of scene.children) {
 		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
 		if (i.HashID == hashId) {
-			scene.children[index].position.x = data.Translate[0];
-			scene.children[index].position.y = data.Translate[1];
-			scene.children[index].position.z = data.Translate[2];
+			scene.children[index].position.x = data.Translate[0].value;
+			scene.children[index].position.y = data.Translate[1].value;
+			scene.children[index].position.z = data.Translate[2].value;
 
-			scene.children[index].rotation.x = data.Rotate[0] * Math.PI / 180;
-			scene.children[index].rotation.y = data.Rotate[1] * Math.PI / 180;
-			scene.children[index].rotation.z = data.Rotate[2] * Math.PI / 180;
+			scene.children[index].rotation.x = data.Rotate[0].value * Math.PI / 180;
+			scene.children[index].rotation.y = data.Rotate[1].value * Math.PI / 180;
+			scene.children[index].rotation.z = data.Rotate[2].value * Math.PI / 180;
 
-			scene.children[index].scale.x = data.Scale[0];
-			scene.children[index].scale.y = data.Scale[1];
-			scene.children[index].scale.z = data.Scale[2];
+			scene.children[index].scale.x = data.Scale[0].value;
+			scene.children[index].scale.y = data.Scale[1].value;
+			scene.children[index].scale.z = data.Scale[2].value;
 		}
 		// }
 		index = index + 1;

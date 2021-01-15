@@ -92,8 +92,8 @@ class mapFile:
         with open(self.pathDy, 'rb') as dataDy:
             readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
 
-        self.staticDictOut = utils.mapDict(readFileStatic)
-        self.dyDictOut = utils.mapDict(readFileDy)
+        self.staticDictOut = utils.expandByml(readFileStatic)
+        self.dyDictOut = utils.expandByml(readFileDy)
         staticDictOut = self.staticDictOut
         dyDictOut = self.dyDictOut
         self.jsonStaticOut = staticDictOut.jsonData
@@ -135,8 +135,15 @@ def TESTRunCacheModels():
 class actorData:
     def __init__(self):
         self.settings, self.content, self.aoc = getSettings()
-        self.ActorInfoText = utils.BymlDecompress(f'{self.settings["GameDump"]}/{self.content}/Actor/ActorInfo.product.sbyml')
+        self.path = pathlib.Path(f'{self.settings["GameDump"]}/{self.content}/Actor/ActorInfo.product.sbyml')
+        self.ActorInfoText = utils.BymlDecompress(self.path)
+        with open(self.path, 'rb') as readData:
+            self.ActorInfo = oead.byml.from_binary(utils.checkCompression(readData.read()))
 
+def showActorInfo():
+    actorinfo = actorData()
+    with open('./actorinfo.json', 'wt') as writeActorInfo_Test:
+        writeActorInfo_Test.write(utils.expandByml(actorinfo.ActorInfo).jsonData)
 
 # Send data
 

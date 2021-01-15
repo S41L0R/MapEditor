@@ -104,37 +104,53 @@ def findMKDir(checkDir):
         return checkDir
 
 def checkBymlDataType(valIn):
-    if isinstance(valIn, oead.U8) or isinstance(valIn, oead.U16) or isinstance(valIn, oead.U32):
-        return(oead.byml.get_uint(valIn))
+    # Unsigned Integers
+    if isinstance(valIn, oead.U8):
+        return({"type": 100, "value": oead.byml.get_uint(valIn)})
+    elif isinstance(valIn, oead.U16):
+        return({"type": 101, "value": oead.byml.get_uint(valIn)})
+    elif isinstance(valIn, oead.U32):
+        return({"type": 102, "value": oead.byml.get_uint(valIn)})
     elif isinstance(valIn, oead.U64):
-        return(oead.byml.get_uint64(valIn))
-    elif isinstance(valIn, oead.S8) or isinstance(valIn, oead.S16) or isinstance(valIn, oead.S32):
-        return(oead.byml.get_int(valIn))
+        return({"type": 103, "value": oead.byml.get_uint64(valIn)})
+
+    # Signed Integers
+    elif isinstance(valIn, oead.S8):
+        return({"type": 200, "value": oead.byml.get_int(valIn)})
+    elif isinstance(valIn, oead.S16):
+        return({"type": 201, "value": oead.byml.get_int(valIn)})
+    elif isinstance(valIn, oead.S32):
+        return({"type": 202, "value": oead.byml.get_int(valIn)})
     elif isinstance(valIn, oead.S64):
-        return(oead.byml.get_int64(valIn))
+        return({"type": 203, "value": oead.byml.get_int64(valIn)})
+
+    # Floats
     elif isinstance(valIn, oead.F32):
-        return(oead.byml.get_float(valIn))
+        return({"type": 300, "value": oead.byml.get_float(valIn)})
     elif isinstance(valIn, oead.F64):
-        return(oead.byml.get_double(valIn))
+        return({"type": 301, "value": oead.byml.get_double(valIn)})
+
+    # Other (Strings and Booleans)
     else:
         try:
             valOut = oead.byml.get_string(valIn)
-            return(valOut)
+            return({"type": 400, "value": valOut})
         except:
             try:
                 valOut = oead.byml.get_bool(valIn)
-                return(valOut)
+                return({"type": 500, "value": valOut})
             except:
-                return(valIn)
-    
-# Completely expands a byml files data returned by oead to a dict
-class mapDict:
+                # This is only if the data type cannot be asserted; type 600 maps to unknown
+                return({"type": 600, "value": valIn})
 
-    def __init__(self, mapIn):
-        self.mapIn = mapIn
-        self.extractedByml = self.updateFullDict(dict(self.mapIn))
+# Completely expands a byml files data returned by oead to a dict
+class expandByml:
+
+    def __init__(self, bymlDataIn):
+        self.dataIn = bymlDataIn
+        self.extractedByml = self.updateFullDict(dict(self.dataIn))
         self.jsonData = json.dumps(self.extractedByml, indent=2)
-    
+
     def updateFullDict(self, dictIn):
         subList = []
         subDict = {}
@@ -179,7 +195,7 @@ class compressMap:
                 return(oead.byml.Hash(subList))
             except:
                 return(subList)
-       
+
         else:
             return(dictIn)
 
@@ -228,7 +244,7 @@ def loadProd(filePathIn):
         return(dataOut)
     else:
         return
-"""    
+"""
 def bfresToDAE(bfresName):
     #ModelExporter('e')
     print('bfres To DAE called')
