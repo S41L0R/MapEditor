@@ -403,6 +403,37 @@ async function loadActors () {
 
 
 			await duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+
+			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
+			try {
+				duplicateMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+			}
+			catch {
+
+				// Just in case it's 1D rotation
+				try {
+					duplicateMesh.rotation.set(0, i.Rotate.value * Math.PI / 180, 0)
+				}
+
+				// In case there is no rotation.
+				catch {
+					duplicateMesh.rotation.set(0, 0, 0)
+				}
+			}
+
+			// Try to apply scale, if it doesn't exist add some.
+			try {
+				duplicateMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+			}
+			catch {
+				// This could also mean that there's only 1 scale value, try that first.
+				try {
+					duplicateMesh.scale.set(i.Scale.value, i.Scale.value, i.Scale.value)
+				}
+				catch {
+					duplicateMesh.scale.set(1, 1, 1)
+				}
+			}
 			duplicateMesh.HashID = i.HashId.value;
 			duplicateMesh.Type = "Static";
 
@@ -521,6 +552,37 @@ async function loadActors () {
 			objects.push(duplicateMesh);
 
 			duplicateMesh.children[0].position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+
+			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
+			try {
+				duplicateMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+			}
+			catch {
+
+				// Just in case it's 1D rotation
+				try {
+					duplicateMesh.rotation.set(0, i.Rotate.value * Math.PI / 180, 0)
+				}
+
+				// In case there is no rotation.
+				catch {
+					duplicateMesh.rotation.set(0, 0, 0)
+				}
+			}
+
+			// Try to apply scale, if it doesn't exist add some.
+			try {
+				duplicateMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+			}
+			catch {
+				// This could also mean that there's only 1 scale value, try that first.
+				try {
+					duplicateMesh.scale.set(i.Scale.value, i.Scale.value, i.Scale.value)
+				}
+				catch {
+					duplicateMesh.scale.set(1, 1, 1)
+				}
+			}
 			duplicateMesh.HashID = i.HashId.value;
 			duplicateMesh.Type = "Dynamic";
 
