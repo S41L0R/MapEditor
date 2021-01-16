@@ -169,7 +169,7 @@ class expandByml:
         else:
             return(checkBymlDataType(dictIn))
 
-class compressMap:
+class compressByml:
     def __init__(self, mapDictIn):
         self.compressedData = self.compressAll(mapDictIn)
 

@@ -100,8 +100,8 @@ class mapFile:
         self.jsonDyOut = dyDictOut.jsonData
 
         uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
-        fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
-        self.jsonActors = json.dumps(fullUniqueActors, indent=2)
+        self.fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
+        self.jsonActors = json.dumps(self.fullUniqueActors, indent=2)
 
     # Generates formatted json data from dictionaries
     def createJSON(self):
