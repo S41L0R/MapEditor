@@ -114,17 +114,37 @@ class mapFile:
 
 
 
-def cacheModels(modelList, cachedModels):
+def oldCacheModels(modelList, cachedModels):
 
     #modelList = list(set(modelList)^set(cachedModels))
     #print(modelList)
 
     #sbfresTex1.cacheTextures(modelList)
 
+    actorinfo = actorData()
+
     for i in modelList[:]:
       if i in cachedModels:
           modelList.remove(i)
-    sbfres.cacheModels(modelList)
+    #sbfres.cacheModels(modelList)
+
+
+
+
+def cacheModels(sectionData, cachedModels):
+
+    #modelList = list(set(modelList)^set(cachedModels))
+    #print(modelList)
+
+    #sbfresTex1.cacheTextures(modelList)
+
+    actorinfo = actorData()
+    modelList = []
+    for i in sectionData["Dynamic"][:]:
+      if actorinfo[i["UnitConfigName"]]["bfres"] not in cachedModels:
+          modelList.append(actorinfo[i["UnitConfigName"]]["bfres"])
+    #sbfres.cacheModels(modelList)
+    print(modelList)
 
 
 def TESTRunCacheModels():
@@ -196,8 +216,9 @@ def save(dataToSave):
 def main():
     mapFileData = mapFile()
     print(f"!startData{mapFileData.formattedMapJson}!endData")
-    save(mapFileData.formattedMapJson)
+    #save(mapFileData.formattedMapJson)
     sys.stdout.flush()
+    cacheModels(mapFileData, [])
 
 
 
