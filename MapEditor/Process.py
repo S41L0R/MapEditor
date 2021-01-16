@@ -98,7 +98,6 @@ class mapFile:
         dyDictOut = self.dyDictOut
         self.jsonStaticOut = staticDictOut.jsonData
         self.jsonDyOut = dyDictOut.jsonData
-
         uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
         self.fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
         self.jsonActors = json.dumps(self.fullUniqueActors, indent=2)
@@ -159,6 +158,7 @@ class actorData:
         self.ActorInfoText = utils.BymlDecompress(self.path)
         with open(self.path, 'rb') as readData:
             self.ActorInfo = oead.byml.from_binary(utils.checkCompression(readData.read()))
+        self.data = utils.expandByml(self.ActorInfo)
 
 def showActorInfo():
     actorinfo = actorData()
