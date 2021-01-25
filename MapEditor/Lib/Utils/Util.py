@@ -103,7 +103,7 @@ def findMKDir(checkDir):
         checkDir.mkdir(parents=True, exist_ok=True)
         return checkDir
 
-def checkBymlDataType(valIn):
+def checkBymlDataType_and_Type(valIn):
     # Unsigned Integers
     if isinstance(valIn, oead.U8):
         return({"type": 100, "value": oead.byml.get_uint(valIn)})
@@ -143,11 +143,52 @@ def checkBymlDataType(valIn):
                 # This is only if the data type cannot be asserted; type 600 maps to unknown
                 return({"type": 600, "value": valIn})
 
+def checkBymlDataType(valIn):
+    # Unsigned Integers
+    if isinstance(valIn, oead.U8):
+        return(oead.byml.get_uint(valIn))
+    elif isinstance(valIn, oead.U16):
+        return(oead.byml.get_uint(valIn))
+    elif isinstance(valIn, oead.U32):
+        return(oead.byml.get_uint(valIn))
+    elif isinstance(valIn, oead.U64):
+        return(oead.byml.get_uint64(valIn))
+
+    # Signed Integers
+    elif isinstance(valIn, oead.S8):
+        return(oead.byml.get_int(valIn))
+    elif isinstance(valIn, oead.S16):
+        return(oead.byml.get_int(valIn))
+    elif isinstance(valIn, oead.S32):
+        return(oead.byml.get_int(valIn))
+    elif isinstance(valIn, oead.S64):
+        return(oead.byml.get_int64(valIn))
+
+    # Floats
+    elif isinstance(valIn, oead.F32):
+        return(oead.byml.get_float(valIn))
+    elif isinstance(valIn, oead.F64):
+        return(oead.byml.get_double(valIn))
+
+    # Other (Strings and Booleans)
+    else:
+        try:
+            valOut = oead.byml.get_string(valIn)
+            return(valOut)
+        except:
+            try:
+                valOut = oead.byml.get_bool(valIn)
+                return(valOut)
+            except:
+                # This is only if the data type cannot be asserted; type 600 maps to unknown
+                return(valIn)
+
 # Completely expands a byml files data returned by oead to a dict
 class expandByml:
 
-    def __init__(self, bymlDataIn):
+    def __init__(self, bymlDataIn, unTypedData=False):
         self.dataIn = bymlDataIn
+        self.unTypedData = unTypedData
         self.extractedByml = self.updateFullDict(dict(self.dataIn))
         self.jsonData = json.dumps(self.extractedByml, indent=2)
 
@@ -167,7 +208,10 @@ class expandByml:
                 subList.append(newItem)
             return(list(subList))
         else:
-            return(checkBymlDataType(dictIn))
+            if self.unTypedData == True:
+                return checkBymlDataType(dictIn)
+            else:
+                return(checkBymlDataType_and_Type(dictIn))
 
 class compressByml:
     def __init__(self, mapDictIn):
