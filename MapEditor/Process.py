@@ -158,7 +158,7 @@ class actorData:
         self.ActorInfoText = utils.BymlDecompress(self.path)
         with open(self.path, 'rb') as readData:
             self.ActorInfo = oead.byml.from_binary(utils.checkCompression(readData.read()))
-        self.data = utils.expandByml(self.ActorInfo)
+        self.data = utils.expandByml(self.ActorInfo).extractedByml
 
 def showActorInfo():
     actorinfo = actorData()
