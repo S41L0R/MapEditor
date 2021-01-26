@@ -3,16 +3,16 @@ import Loaders.FromGame.actorinfo as LoadActorInfo
 import json
 import pathlib
 
-def cacheActorInfo():
+def cacheActorInfo(pathToActorInfo):
     cacheExists, cachePath = check_exists_cache()
     actorModel_Dict = {}
     if cacheExists == True:
         pass
     else:
-        actorinfo = LoadActorInfo.actorData(cachePath)
+        actorinfo = LoadActorInfo.actorData(pathToActorInfo)
         for actor in actorinfo.actors:
             if 'bfres' in actor.keys():
-                actorModel_Dict.update({actor['UnitConfigName']: actor['bfres']})
+                actorModel_Dict.update({actor['name']: actor['bfres']})
             else:
                 continue
         with open(cachePath, 'wt') as writeCacheData:

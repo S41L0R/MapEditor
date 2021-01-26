@@ -136,9 +136,10 @@ def cacheModels(sectionData, cachedModels):
 
     #modelList = list(set(modelList)^set(cachedModels))
     #print(modelList)
-
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
     #sbfresTex1.cacheTextures(modelList)
-    actorinfoCache = cacheActorInfo()
+    actorinfoCache = cacheActorInfo(actorinfoPath)
     with open(actorinfoCache, 'rt') as readActorCache:
         actorModelData = json.loads(readActorCache.read())
     modelList = []
