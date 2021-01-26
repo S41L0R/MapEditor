@@ -20,7 +20,26 @@ namespace ModelExporter
                 if (arg.Contains("Tex1") || arg.Contains("Tex2"))
                     continue;
 
+                if (arg.Contains("Tex"))
+                    continue;
+
                 string fileName = arg.Replace(".sbfres", ".Tex1.sbfres");
+                if (File.Exists(fileName))
+                {
+                    var texfile = STFileLoader.OpenFileFormat(fileName);
+                    var texscene = ((IModelSceneFormat)texfile).ToGeneric();
+                    string folder = Path.GetFileNameWithoutExtension(fileName);
+                    foreach (var tex in texscene.Textures)
+                    {
+                        tex.Export($"{args[args.Length - 1]}{tex.Name}.png",
+                            new TextureExportSettings()
+                            {
+                                ExportArrays = false,
+                                ExportMipmaps = false,
+                            });
+                    }
+                }
+                fileName = arg.Replace(".sbfres", ".Tex.sbfres");
                 if (File.Exists(fileName))
                 {
                     var texfile = STFileLoader.OpenFileFormat(fileName);

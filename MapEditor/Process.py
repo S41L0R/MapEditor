@@ -149,7 +149,7 @@ def cacheModels(sectionData, cachedModels):
           modelList.append(actorModelData[i['value']])
       else:
           continue
-    #sbfres.cacheModels(modelList)
+    sbfres.cacheModels(modelList, f'{settings["GameDump"]}/{content}/Model')
     print(modelList)
 
 
