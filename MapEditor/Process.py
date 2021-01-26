@@ -18,6 +18,8 @@ import Loaders.FromGame.actor as actor
 import Writers.ToExport.smubin as smubinWriter
 import Lib.Utils.Util as utils
 import Loaders.FromGame.sbfres as sbfres
+import Loaders.FromGame.actorinfo as ActorInfo
+from Writers.ToCache.actorinfo import cacheActorInfo
 
 #Set CWD
 
@@ -120,7 +122,7 @@ def oldCacheModels(modelList, cachedModels):
 
     #sbfresTex1.cacheTextures(modelList)
 
-    actorinfo = actorData()
+    actorinfo = ActorInfo.actorData()
 
     for i in modelList[:]:
       if i in cachedModels:
@@ -134,16 +136,19 @@ def cacheModels(sectionData, cachedModels):
 
     #modelList = list(set(modelList)^set(cachedModels))
     #print(modelList)
-
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
     #sbfresTex1.cacheTextures(modelList)
-
-    actorinfo = actorData()
+    actorinfoCache = cacheActorInfo(actorinfoPath)
+    with open(actorinfoCache, 'rt') as readActorCache:
+        actorModelData = json.loads(readActorCache.read())
     modelList = []
-    x = 0
-    for i in sectionData.fullUniqueActors[:]:
-      if actorinfo.data[x]["bfres"] not in cachedModels:
-          modelList.append(actorinfo.data[x["UnitConfigName"]]["bfres"])
-      x = x+ 1
+    for i in sectionData.fullUniqueActors:
+      print(i['value'])
+      if actorModelData.get(i['value']) not in cachedModels:
+          continue
+      else:
+          modelList.append(actorModelData[i['value']])
     #sbfres.cacheModels(modelList)
     print(modelList)
 
@@ -152,18 +157,8 @@ def TESTRunCacheModels():
     cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"], [2, 3, 4])
 
 
-# Load ActorInfo
-class actorData:
-    def __init__(self):
-        self.settings, self.content, self.aoc = getSettings()
-        self.path = pathlib.Path(f'{self.settings["GameDump"]}/{self.content}/Actor/ActorInfo.product.sbyml')
-        self.ActorInfoText = utils.BymlDecompress(self.path)
-        with open(self.path, 'rb') as readData:
-            self.ActorInfo = oead.byml.from_binary(utils.checkCompression(readData.read()))
-        self.data = utils.expandByml(self.ActorInfo).extractedByml
-
 def showActorInfo():
-    actorinfo = actorData()
+    actorinfo = ActorInfo.actorData()
     with open('./actorinfo.json', 'wt') as writeActorInfo_Test:
         writeActorInfo_Test.write(utils.expandByml(actorinfo.ActorInfo).jsonData)
 
