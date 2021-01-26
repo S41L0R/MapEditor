@@ -139,9 +139,11 @@ def cacheModels(sectionData, cachedModels):
 
     actorinfo = actorData()
     modelList = []
+    x = 0
     for i in sectionData.fullUniqueActors[:]:
-      if actorinfo.data.extractedByml[i]["bfres"] not in cachedModels:
-          modelList.append(actorinfo.data[i["UnitConfigName"]]["bfres"])
+      if actorinfo.data[x]["bfres"] not in cachedModels:
+          modelList.append(actorinfo.data[x["UnitConfigName"]]["bfres"])
+      x = x+ 1
     #sbfres.cacheModels(modelList)
     print(modelList)
 
