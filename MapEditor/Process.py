@@ -147,6 +147,7 @@ def cacheModels(sectionData, cachedModels):
       print(i['value'])
       if actorModelData.get(i['value']) not in cachedModels:
           modelList.append(actorModelData[i['value']])
+          print(actorModelData[i['value']])
       else:
           continue
     sbfres.cacheModels(modelList, f'{settings["GameDump"]}/{content}/Model')
