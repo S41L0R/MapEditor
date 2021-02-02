@@ -14,9 +14,9 @@ def cacheActorInfo(pathToActorInfo):
             if 'bfres' in actor.keys() and 'mainModel' in actor.keys():
                 actorModel_Dict.update({actor['name']: {'bfres': actor['bfres'], 'mainmodel': actor['mainModel']}})
             elif 'bfres' in actor.keys():
-                actorModel_Dict.update({actor['name']: {'bfres': actor['bfres'], 'MainModel': None}})
+                actorModel_Dict.update({actor['name']: {'bfres': actor['bfres'], 'mainmodel': None}})
             else:
-                actorModel_Dict.update({actor['name']: {'bfres': None, 'MainModel': None}})
+                actorModel_Dict.update({actor['name']: {'bfres': None, 'mainmodel': None}})
                 continue
         with open(cachePath, 'wt') as writeCacheData:
             writeCacheData.write(json.dumps(actorModel_Dict, indent=2))

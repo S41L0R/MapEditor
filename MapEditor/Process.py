@@ -19,6 +19,7 @@ import Writers.ToExport.smubin as smubinWriter
 import Lib.Utils.Util as utils
 import Loaders.FromGame.sbfres as sbfres
 import Loaders.FromGame.actorinfo as ActorInfo
+import Loaders.FromGame.sarc as sarc
 from Writers.ToCache.actorinfo import cacheActorInfo
 
 #Set CWD
@@ -137,6 +138,10 @@ def cacheModels(sectionData, cachedModels):
     #modelList = list(set(modelList)^set(cachedModels))
     #print(modelList)
     settings, content, aoc = getSettings()
+
+    sarc.sarc_extract(f'{settings["GameDump"]}/{content}/Pack/TitleBG.pack', 'Cache/TitleBG')
+
+
     actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
     #sbfresTex1.cacheTextures(modelList)
     actorinfoCache = cacheActorInfo(actorinfoPath)
@@ -151,8 +156,30 @@ def cacheModels(sectionData, cachedModels):
       else:
           continue
     sbfres.cacheModels(modelList, f'{settings["GameDump"]}/{content}/Model')
+
+    for i in sectionData.fullUniqueActors:
+        cachedModels.append(actorModelData.get(i['value']))
+    cachedModelsJSON = json.dumps(cachedModels)
+    with open("Cache/CachedModels.json") as cachedModelsJSONFile:
+        cachedModelsJSONFile.write(cachedModelsJSON)
+
     print(modelList)
 
+
+def getActorModelPaths():
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
+    actorinfoCache = cacheActorInfo(actorinfoPath)
+    with open(actorinfoCache, 'rt') as readActorCache:
+        actorModelData = json.loads(readActorCache.read())
+
+    outputDict = {}
+    print(actorModelData)
+    for i in actorModelData:
+        print(i)
+        outputDict[i] = f'Cache/Model/{actorModelData[i]["bfres"]}/{actorModelData[i]["mainmodel"]}.dae'
+    print("!startData"+json.dumps(outputDict)+"!endData")
+    sys.stdout.flush()
 
 def TESTRunCacheModels():
     cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"], [2, 3, 4])

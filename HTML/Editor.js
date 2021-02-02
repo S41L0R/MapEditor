@@ -6,7 +6,8 @@ import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorC
 import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js";
 import {SkeletonUtils} from "./lib/threejs/examples/jsm/utils/SkeletonUtils.js";
 
-//const fs = require("fs");
+const fs = require("fs");
+const path = require("path")
 
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
@@ -162,6 +163,7 @@ var instancedMeshIndex = [];
 
 
 const daeOnLoad = function (dae) {
+	console.error("callednum: " + calledNum)
 	console.log("Loading complete!");
 	daeModel = dae.scene;
 	daeModel.traverse(function (child) {
@@ -194,15 +196,17 @@ const daeOnLoad = function (dae) {
 	console.warn("Loaded Model");
 
 	console.warn(instancedMeshIndex);
-
+	console.warn(calledNum)
+	console.warn(instancedMeshIndex["doneNum"])
 
 	if (instancedMeshIndex["doneNum"] != undefined) {
 
-		console.warn("1");
+		console.warn("doneNum was not null.");
 		instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1;
 	}
 	else {
 		instancedMeshIndex["doneNum"] = 1;
+		console.warn("doneNum was null.");
 	}
 	if (instancedMeshIndex["doneNum"] == calledNum) {
 
@@ -233,7 +237,7 @@ const daeOnLoad = function (dae) {
 
 
 const onProgress = function (url, itemsLoaded, itemsTotal) {
-	console.log("Loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.");
+	console.warn("Loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.");
 };
 async function loadPython (callback, func, arg) {
 	console.log("Got to LoadPython!");
@@ -254,8 +258,9 @@ async function loadPython (callback, func, arg) {
 				// callback(data);
 				callback(data);
 				// return(data);
-
-				sectionData = data;
+				if (func == "main") {
+					sectionData = data;
+				}
 			} else {
 				console.log("false");
 			}
@@ -292,7 +297,8 @@ function loadPythonCallback (data) {
 }
 // loadPython(loadPythonCallback);
 console.log("test");
-loadPython(function (s) { loadInstanceModels(s); }, "main");
+loadPython(function (s) { loadInstanceModels(null)}, "main");
+
 
 // Load from map file.
 
@@ -300,19 +306,55 @@ loadPython(function (s) { loadInstanceModels(s); }, "main");
 
 
 
+let globUrlDict;
+function daeOnError() {
+	console.warn("Issue loading. Probably can't find path.")
+	if (instancedMeshIndex["doneNum"] == undefined) {
+			instancedMeshIndex["doneNum"] = 1;
+			console.warn("doneNum was null.");
+	}
+	//calledNum = calledNum - 1
+	console.warn(calledNum)
+	instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1;
+}
+async function loadInstanceModels(urlDict) {
+	console.warn(urlDict)
+	globUrlDict = urlDict;
 
-
-async function loadInstanceModels() {
-
-	let urlArray = ["./Test/TestToolboxGuardian/Guardian_A_Perfect.dae"];
-
-
-	for (const i of urlArray) {
-
-		loader.load(i, daeOnLoad, onProgress);
-		calledNum = calledNum + 1;
+	if (urlDict == null) {
+		loadPython(function (s) { loadInstanceModels(s) }, "getActorModelPaths");
+		return;
 	}
 
+	let urlArray = ["./Cache/Model/Enemy_Moriblin_Bone/Moriblin_Bone.dae"];
+
+
+	for (const i in urlDict) {
+			console.warn(i)
+			console.warn(urlDict[i])
+			//loader.load(urlArray[i], daeOnLoad, onProgress);
+			loader.load(urlDict[i], daeOnLoad, onProgress, daeOnError);
+			calledNum = calledNum + 1;
+			console.warn("Loaded DaeModel")
+		console.warn(urlDict[i])
+/*		fs.access(urlDict[i], fs.F_OK, (err) => {
+			if (err) {
+				calledNum = calledNum - 1
+				console.warn(path.join(__dirname, urlDict[i]))
+				console.warn("calledNum decreased due to inability to access file.")
+			}
+		});
+*/
+		console.warn(calledNum)
+	}
+
+/*
+	Object.keys(urlDict).forEach(function(k){
+		console.warn(k)
+		console.warn(urlArray[k])
+		loader.load(urlArray[k], daeOnLoad, onProgress);
+	});
+*/
 
 
 
@@ -342,7 +384,7 @@ async function loadActors () {
 
 
 
-
+	/*
 	for (const i of sectionData.Static.Rails) {
 		//Create a closed wavey loop
 		const curve = new THREE.CatmullRomCurve3( [
@@ -364,7 +406,7 @@ async function loadActors () {
 		scene.add(curveObject)
 		console.warn(curveObject)
 	}
-
+	*/
 
 
 	for (const i of sectionData.Static.Objs) {
@@ -405,8 +447,8 @@ async function loadActors () {
 
 	 		//loader.load(url, daeOnLoadStatic, onProgress);
 
-
-
+		console.warn("instancedMeshIndex:")
+		console.warn(instancedMeshIndex[url])
 		if (instancedMeshIndex[url] != undefined && loadModels == true) {
 
 
