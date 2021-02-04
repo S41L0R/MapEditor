@@ -31,6 +31,17 @@ const material = new THREE.MeshStandardMaterial({
 	transparent: true,
 	opacity: 0.75
 });
+const areaTexture = cubeTexLoader.load(
+	"./Assets/Textures/AreaTexture.png");
+const areaMaterial = new THREE.MeshStandardMaterial({
+	emissiveMap: areaTexture,
+	map: areaTexture,
+	emissive: new THREE.Color("#FFFFFF"),
+	transparent: true,
+	alphaTest: 0.35,
+	opacity: 0.5,
+	side: THREE.DoubleSide
+});
 
 const clock = new THREE.Clock();
 
@@ -524,7 +535,12 @@ async function loadActors () {
 			console.log(i);
 
 			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
-			var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+			if (i.UnitConfigName.value == "Area") {
+				var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+			}
+			else {
+				var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+			}
 			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
 
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
@@ -670,7 +686,12 @@ async function loadActors () {
 			console.log(i);
 
 			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
-			var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+			if (i.UnitConfigName.value == "Area") {
+				var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+			}
+			else {
+				var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+			}
 			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
