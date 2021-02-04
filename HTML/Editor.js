@@ -63,7 +63,7 @@ const cameraLookSpeed = 1;
 const instNum = 50;
 
 // Determines whether models should be loaded. Currently this is equivelent to badFramerate.
-const loadModels = false;
+const loadModels = true;
 
 // Define Map Based variables
 // -----------------------------------------------------------------------------
@@ -162,7 +162,7 @@ var instancedMeshIndex = [];
 
 
 
-const daeOnLoad = function (dae) {
+const daeOnLoad = function (dae, currentUrl) {
 	console.error("callednum: " + calledNum)
 	console.log("Loading complete!");
 	daeModel = dae.scene;
@@ -189,7 +189,7 @@ const daeOnLoad = function (dae) {
 
 
 
-	instancedMeshIndex[url] = daeModel;
+	instancedMeshIndex[currentUrl] = daeModel;
 
 	console.warn(instancedMeshIndex);
 
@@ -333,7 +333,9 @@ async function loadInstanceModels(urlDict) {
 			console.warn(i)
 			console.warn(urlDict[i])
 			//loader.load(urlArray[i], daeOnLoad, onProgress);
-			loader.load(urlDict[i], daeOnLoad, onProgress, daeOnError);
+			loader.load(urlDict[i], function (collada) {
+  daeOnLoad(collada, urlDict[i]);
+}, onProgress, daeOnError);
 			calledNum = calledNum + 1;
 			console.warn("Loaded DaeModel")
 		console.warn(urlDict[i])
@@ -448,11 +450,15 @@ async function loadActors () {
 	 		//loader.load(url, daeOnLoadStatic, onProgress);
 
 		console.warn("instancedMeshIndex:")
-		console.warn(instancedMeshIndex[url])
-		if (instancedMeshIndex[url] != undefined && loadModels == true) {
+		console.warn(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
+		console.warn(i.UnitConfigName.value)
+		console.warn(globUrlDict[i.UnitConfigName.value])
+		console.warn(globUrlDict)
+		console.warn(instancedMeshIndex)
+		if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]] != undefined && loadModels == true && globUrlDict[i.UnitConfigName.value] != undefined) {
 
 
-			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[url]);
+			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
 
 
 
@@ -508,7 +514,7 @@ async function loadActors () {
 
 			console.warn("instancedMeshBase:");
 
-			console.log(instancedMeshIndex[url]);
+			console.log(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
 
 		}
 
@@ -598,13 +604,13 @@ async function loadActors () {
    } ); */
 
 
-	 	if (instancedMeshIndex[url] != undefined && loadModels == true) {
+	 	if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]] != undefined && loadModels == true && globUrlDict[i.UnitConfigName.value] != undefined) {
 
 			//loader.load(url, daeOnLoadDynamic, onProgress);
 
-			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[url]);
+			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
 
-			//console.warn(instancedMeshIndex[url])
+			//console.warn(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
 
 
 
