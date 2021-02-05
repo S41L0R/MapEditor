@@ -91,6 +91,13 @@ var calledNum = 0;
 
 
 
+// Define basic eventListeners
+// -----------------------------------------------------------------------------
+
+document.getElementById("openVisibilityPanelButton").addEventListener("click", () => { createVisibilityWindow(); });
+
+
+
 // Boring code that doesn't matter
 // -----------------------------------------------------------------------------
 
@@ -1070,6 +1077,37 @@ function createEditorWindow (obj, actorType) {
 	});
 }
 
+
+function createVisibilityWindow () {
+	const { BrowserWindow } = require("electron").remote;
+
+	const visiblityWin = new BrowserWindow({ width: 600, height: 400, webPreferences: { nodeIntegration: true } });
+	visiblityWin.loadURL(`file://${__dirname}/HTML/UI/VisibilityEditor/VisibilityEditor.html`);
+
+	visiblityWin.once("ready-to-show", () => {
+		visiblityWin.show();
+	});
+	console.error(sectionData)
+	let fullActorDict = {HashIDs: [], ActorNames: []}
+	for (const i of sectionData.Static.Objs) {
+		fullActorDict.HashIDs.push({HashID: i.HashId.value, Name: i.UnitConfigName.value})
+		//fullActorDict.HashIDs.HashID.push(i.HashId.value);
+		//fullActorDict.HashIDs.Name.push(i.UnitConfigName.value);
+		fullActorDict.ActorNames.push(i.UnitConfigName.value);
+	}
+	for (const i of sectionData.Dynamic.Objs) {
+		fullActorDict.HashIDs.push({HashID: i.HashId.value, Name: i.UnitConfigName.value})
+		//fullActorDict.HashIDs.HashID.push(i.HashId.value);
+		//fullActorDict.HashIDs.Name.push(i.UnitConfigName.value);
+		fullActorDict.ActorNames.push(i.UnitConfigName.value);
+	}
+	fullActorDict.ActorNames = [...new Set(fullActorDict.ActorNames)]
+	console.warn(fullActorDict)
+	visiblityWin.webContents.on("did-finish-load", () => {
+		visiblityWin.webContents.send("toVisibilityWindow", fullActorDict);
+	});
+}
+
 const ipc = require("electron").ipcRenderer;
 
 ipc.on("fromActorEditor", (event, message, actorHashID, type) => {
@@ -1077,6 +1115,50 @@ ipc.on("fromActorEditor", (event, message, actorHashID, type) => {
 	console.warn(message);
 	console.warn(actorHashID);
 	console.warn(type);
+});
+
+ipc.on("fromVisibilityEditor", (event, message) => {
+	console.warn(message);
+	console.warn(scene)
+	for (const i of message.HashIDs) {
+		for (const x of scene.children) {
+			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+      	if (x.HashID == i) {
+        	console.warn(x)
+					if (x.visible == true) {
+						x.visible = false;
+					}
+					else {
+						x.visible = true;
+					}
+      	}
+			// }
+		}
+	}
+	for (const i of message.ActorNames) {
+		for (const x of scene.children) {
+			try {
+				//console.warn (i)
+				//console.warn (x)
+				//console.warn(findActorData(x.HashID, x.Type).UnitConfigName)
+				if (findActorData(x.HashID, x.Type).UnitConfigName.value == i) {
+					console.warn("i")
+					if (x.visible == true) {
+						x.visible = false;
+					}
+					else {
+						x.visible = true;
+					}
+				}
+			}
+			catch {
+				console.warn("Couldn't find actor data.")
+			}
+		}
+
+
+		console.warn(i)
+	}
 });
 
 document.getElementById("DataEditorTextWindow").innerHTML = `
@@ -1140,7 +1222,11 @@ function pointerDown (evt) {
 						console.log("could not find next parent.");
 					}
 					console.log("end");
-					if (intersects[0].object !== null && intersects[0].object !== scene && intersects[0].object !== camera) {
+					console.warn(intersects.length)
+					//for (const ri in intersects.length) {
+					for (let ri = 0; ri < intersects.length; ri++) {
+					console.warn(ri)
+					if (intersects[ri].object !== null && intersects[ri].object !== scene && intersects[ri].object !== camera && intersects[ri].object.visible == true) {
 						let foundTransformControls = false;
 						intersects.forEach((intersect, i) => {
 							console.warn(intersect);
@@ -1169,13 +1255,13 @@ function pointerDown (evt) {
 								}
 							}
 						});
-						if (intersects[0].object.type == "TransformControlsPlane") {
+						if (intersects[ri].object.type == "TransformControlsPlane") {
 							intersects.shift();
 						}
 						console.log("foundTransformControls: " + foundTransformControls);
 						if (foundTransformControls == false) {
 							try {
-								selectedObject = intersects[0].object;
+								selectedObject = intersects[ri].object;
 								console.log(selectedObject);
 
 
@@ -1195,7 +1281,9 @@ function pointerDown (evt) {
 						} else {
 							console.log(selectedObject);
 						}
+						break;
 					}
+				}
 				}
 			} else {
 				transformControl.detach();

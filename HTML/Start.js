@@ -159,9 +159,14 @@ Menu.setApplicationMenu(menu)
 
 let win
 
-ipc.on('toMainWindow', (event, message, hashID, actorType) => {
+ipc.on('toMainWindowFromActorEditor', (event, message, hashID, actorType) => {
   console.log(event, message)
   win.webContents.send('fromActorEditor', message, hashID, actorType)
+})
+
+ipc.on('toMainWindowFromVisibilityEditor', (event, message) => {
+  console.log(event, message)
+  win.webContents.send('fromVisibilityEditor', message)
 })
 
 function createWindow () {

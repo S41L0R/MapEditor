@@ -31,7 +31,7 @@
     var ActorHashID;
     function Apply() {
       console.log(editor.session.getValue())
-      ipc.send('toMainWindow', JSON.parse(editor.session.getValue()), ActorHashID, actorType);
+      ipc.send('toMainWindowFromActorEditor', JSON.parse(editor.session.getValue()), ActorHashID, actorType);
 
       console.warn(ActorHashID)
 
@@ -44,7 +44,7 @@
       actorType = message.type;
       console.log(message);
       ActorHashID = message.HashID;
-      //ipc.send('toMainWindow', `This message goes back to the main window.`);
+      //ipc.send('toMainWindowFromActorEditor', `This message goes back to the main window.`);
       editor.setValue(JSON.stringify(message.data, null, "\t"));
     })
     window.onload = function() {

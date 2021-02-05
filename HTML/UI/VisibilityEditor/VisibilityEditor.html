@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="VisibilityEditor.css" type="text/css" media="screen" charset="utf-8">
+  <link rel="stylesheet" href="../../general.css" type="css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <title>Visibility Editor</title>
+
+</head>
+
+<body>
+
+  <div class="searchContainer">
+    <h1>Search</h1>
+    <input onkeyup="filter()" id="searchBox" type="text" placeholder="Search...">
+
+    <div class="tab">
+      <button class="tablinks" onclick="showActorTypes()">Filter by Actor Type</button>
+      <button class="tablinks" onclick="showActorHashIDs()">Filter by HashID</button>
+    </div>
+
+    <ul id="menu">
+      <li><button>Test</button></li>
+      <li><button>Test 2</button></li>
+      <li><button>Test 3</button></li>
+      <li><button>Test 4</button></li>
+      <li><button>Test 5</button></li>
+      <li><button>Test 6</button></li>
+  </div>
+
+  <div id="ActorType" class="tabcontent">
+  </div>
+
+  <div id="HashID" class="tabcontent">
+  </div>
+
+
+  <div id="editor"></div>
+
+  <script src="../../lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+
+
+  var invisibleActorDict = {HashIDs: [], ActorNames: []}
+  var fullActorDict = {HashIDs: [1, 2, 3, 500, 343, 3262, 5], ActorNames: ["One", "Two", "Three", "Four"]}
+
+  function filter(){
+    var filterValue, input, ul,li,a,i;
+    input = document.getElementById("searchBox");
+    filterValue = input.value.toUpperCase();
+    ul = document.getElementById("menu");
+    li = ul.getElementsByTagName("li");
+    for (i = 0 ; i < li.length ; i++) {
+      a = li[i].getElementsByTagName("button")[0];
+      if(a.innerHTML.toUpperCase().indexOf(filterValue) > -1) {
+        li[i].style.display = "";
+      }
+      else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  function showActorHashIDs() {
+    ul = document.getElementById("menu");
+    htmlToInject = ""
+    for (const i of fullActorDict.HashIDs) {
+      htmlToInject = htmlToInject.concat(`<li class="li"><div class = "buttonContainer"><button class="selectionButton"><strong>${i.Name}</strong><br>${i.HashID}</button><button onclick="ToggleVisibilityByHashID(${i.HashID})" class="visibleButton"><img src="../../../Assets/UI/Visible/Visible.png" alt="Visible" width="60" height="60"></img></button></div></li>`)
+    }
+    ul.innerHTML = htmlToInject;
+  }
+
+  function showActorTypes() {
+    ul = document.getElementById("menu");
+    htmlToInject = ""
+    for (const i of fullActorDict.ActorNames) {
+      htmlToInject = htmlToInject.concat(`<li class ="li"><button class="selectionButton">${i}</button><button onclick="ToggleVisibilityByActorName('${i}')" class="visibleButton"><img src="../../../Assets/UI/Visible/Visible.png" alt="Visible" width="60" height="60"></img></button></li>`)
+    }
+    ul.innerHTML = htmlToInject;
+  }
+
+  function ToggleVisibilityByHashID (hashID) {
+    invisibleActorDict.HashIDs = []
+    invisibleActorDict.ActorNames = []
+    invisibleActorDict.HashIDs.push(hashID)
+    Apply()
+  }
+
+  function ToggleVisibilityByActorName (actorName) {
+    invisibleActorDict.HashIDs = []
+    invisibleActorDict.ActorNames = []
+    invisibleActorDict.ActorNames.push(actorName)
+    Apply()
+  }
+
+
+
+    //var editor = ace.edit("editor");
+    //editor.setTheme("ace/theme/monokai-custom");
+    //editor.session.setMode("ace/mode/json");
+
+    //var beautify = ace.require("ace/ext/beautify");
+    //beautify.beautify(editor.session);
+
+
+    const ipc = require('electron').ipcRenderer;
+
+    function Apply() {
+      //console.log(editor.session.getValue())
+      ipc.send('toMainWindowFromVisibilityEditor', invisibleActorDict);
+
+
+    }
+
+
+
+    ipc.on('toVisibilityWindow', (event, message) => {
+      fullActorDict = message;
+      //ipc.send('toMainWindowFromActorEditor', `This message goes back to the main window.`);
+      //editor.setValue(JSON.stringify(message.data, null, "\t"));
+    })
+    window.onload = function() {
+      //document.getElementById("abc").addEventListener("click", Apply);
+      console.log("loaded")
+    }
+  </script>
+</body>
+
+</html>
