@@ -23,6 +23,17 @@ Somehow add some
 Option to view the navmesh in the editor
 
 
+# Github Support
+----------------------------------
+I hope?
+
+# Improved But Compatible Template System
+----------------------------------
+Sometime, at least
+
+# YOU CAN ACTUALLY MOVE ACTORS WITH A GIZMO FINALLY
+----------------------------------
+The one thing that we currently have that Ice-Spear doesn't.
 
 
 
