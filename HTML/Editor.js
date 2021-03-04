@@ -62,6 +62,8 @@ const objects = [];
 
 let doObjectSelect = true;
 
+const selectedObjectGroup = new THREE.Group();
+
 // User-Defined Variables
 // -----------------------------------------------------------------------------
 
@@ -135,6 +137,20 @@ geo.computeBoundingSphere();
 const tri = new THREE.Mesh(geo, material);
 scene.add(tri);
 tri.position.set(50, 50, 50);
+
+
+
+// Some stuff for stats to show
+// -----------------------------------------------------------------------------
+
+
+var stats = new Stats();
+stats.showPanel(0);
+stats.domElement.style.top = 50;
+document.body.appendChild( stats.dom );
+stats.begin();
+
+
 
 // Actual code goes here:
 // -----------------------------------------------------------------------------
@@ -1121,39 +1137,48 @@ ipc.on("fromVisibilityEditor", (event, message) => {
 	console.warn(message);
 	console.warn(scene)
 	for (const i of message.HashIDs) {
+		let num = 0;
 		for (const x of scene.children) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (x.HashID == i) {
         	console.warn(x)
 					if (x.visible == true) {
 						x.visible = false;
+						objects[num].visible = false;
 					}
 					else {
 						x.visible = true;
+						objects[num].visible = true;
 					}
       	}
 			// }
+			num = num + 1;
 		}
 	}
 	for (const i of message.ActorNames) {
+		let num = 0;
 		for (const x of scene.children) {
 			try {
 				//console.warn (i)
 				//console.warn (x)
 				//console.warn(findActorData(x.HashID, x.Type).UnitConfigName)
 				if (findActorData(x.HashID, x.Type).UnitConfigName.value == i) {
+					console.warn(objects)
 					console.warn("i")
 					if (x.visible == true) {
 						x.visible = false;
+						objects[num].visible = false;
 					}
 					else {
 						x.visible = true;
+						objects[num].visible = true;
 					}
 				}
 			}
 			catch {
 				console.warn("Couldn't find actor data.")
 			}
+			num = num + 1;
 		}
 
 
@@ -1182,6 +1207,26 @@ console.log(scene.children);
 
 // Handle Actor Selection
 // -----------------------------------------------------------------------------
+
+
+
+function clearActorSelectionGroup() {
+	for (const i of selectedObjectGroup) {
+		i.position.x = i.position.x + selectedObjectGroup.position.x;
+		i.position.y = i.position.y + selectedObjectGroup.position.y;
+		i.position.z = i.position.z + selectedObjectGroup.position.z;
+		scene.add(i)
+		selectedObjectGroup.remove(i)
+	}
+}
+
+
+
+
+
+
+
+
 function pointerDown (evt) {
 	let action;
 
@@ -1193,6 +1238,7 @@ function pointerDown (evt) {
 			if (doObjectSelect == true) {
 				raycaster.setFromCamera(mouse, camera);
 				const intersects = raycaster.intersectObjects(objects, true);
+				console.warn(objects)
 
 				if (intersects.length > 0) {
 					console.log("start");
@@ -1323,6 +1369,7 @@ function controlSetRotate () {
 // -----------------------------------------------------------------------------
 
 function animate () {
+	stats.update();
 	resizeCanvasToDisplaySize();
 	setTimeout(function () {
 		requestAnimationFrame(animate);

@@ -25,6 +25,7 @@ setuptools.setup(
         "pathlib",
         "pywebview>=3.2",
         "blwpprod>=1.1.2",
-        "json"
+        "json",
+	"pycollada"
     ],
 )

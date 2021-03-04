@@ -68,7 +68,7 @@ namespace ModelExporter
                         DAE.Export($"{args[args.Length - 1]}{model.Name}.dae", new DAE.ExportSettings()
                         {
                             ExportTextures = true,
-                        }, model, model.GetMappedTextures(), model.Skeleton);
+                        }, model, model.GetMappedTextures(), new STSkeleton());
                     }
                 }
                 catch
