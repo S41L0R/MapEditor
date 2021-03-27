@@ -1,7 +1,196 @@
 <head>
+  <link rel="stylesheet" href="SectionSelection.css" type="text/css" media="screen" charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&amp;display=swap" rel="stylesheet">
   <title>Section Selection</title>
+
 </head>
 
 <body>
-  <img src="mapimg.png" alt="Oops! It looks like you can't see the map image. That makes me wonder how you're going to select the section.">
+  <!--<img src="mapimg.png" alt="Oops! It looks like you can't see the map image. That makes me wonder how you're going to select the section.">-->
+  <div id="FloatingButtonGroup">
+    <div id="FloatingButtonFlexbox">
+      <div class="FloatingButton" id="OpenSection" onclick="openSection()"><p>Open Section</p></div>
+      <div class="FloatingButton" id="OpenSection" onclick="openSection()"><p>Open Section</p></div>
+    </div>
+  </div>
+  <div class="grid" id="scene">
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-1/MapTex_A-1.png" class="sectionImg" id="A-1" onclick="selectSection('A-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-1/MapTex_B-1.png" class="sectionImg" id="B-1" onclick="selectSection('B-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-1/MapTex_C-1.png" class="sectionImg" id="C-1" onclick="selectSection('C-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-1/MapTex_D-1.png" class="sectionImg" id="D-1" onclick="selectSection('D-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-1/MapTex_E-1.png" class="sectionImg" id="E-1" onclick="selectSection('E-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-1/MapTex_F-1.png" class="sectionImg" id="F-1" onclick="selectSection('F-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-1/MapTex_G-1.png" class="sectionImg" id="G-1" onclick="selectSection('G-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-1/MapTex_H-1.png" class="sectionImg" id="H-1" onclick="selectSection('H-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-1/MapTex_I-1.png" class="sectionImg" id="I-1" onclick="selectSection('I-1')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-1/MapTex_J-1.png" class="sectionImg" id="J-1" onclick="selectSection('J-1')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-1-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-1-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-2/MapTex_A-2.png" class="sectionImg" id="A-2" onclick="selectSection('A-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-2/MapTex_B-2.png" class="sectionImg" id="B-2" onclick="selectSection('B-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-2/MapTex_C-2.png" class="sectionImg" id="C-2" onclick="selectSection('C-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-2/MapTex_D-2.png" class="sectionImg" id="D-2" onclick="selectSection('D-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-2/MapTex_E-2.png" class="sectionImg" id="E-2" onclick="selectSection('E-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-2/MapTex_F-2.png" class="sectionImg" id="F-2" onclick="selectSection('F-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-2/MapTex_G-2.png" class="sectionImg" id="G-2" onclick="selectSection('G-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-2/MapTex_H-2.png" class="sectionImg" id="H-2" onclick="selectSection('H-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-2/MapTex_I-2.png" class="sectionImg" id="I-2" onclick="selectSection('I-2')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-2/MapTex_J-2.png" class="sectionImg" id="J-2" onclick="selectSection('J-2')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-2-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-2-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-3/MapTex_A-3.png" class="sectionImg" id="A-3" onclick="selectSection('A-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-3/MapTex_B-3.png" class="sectionImg" id="B-3" onclick="selectSection('B-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-3/MapTex_C-3.png" class="sectionImg" id="C-3" onclick="selectSection('C-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-3/MapTex_D-3.png" class="sectionImg" id="D-3" onclick="selectSection('D-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-3/MapTex_E-3.png" class="sectionImg" id="E-3" onclick="selectSection('E-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-3/MapTex_F-3.png" class="sectionImg" id="F-3" onclick="selectSection('F-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-3/MapTex_G-3.png" class="sectionImg" id="G-3" onclick="selectSection('G-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-3/MapTex_H-3.png" class="sectionImg" id="H-3" onclick="selectSection('H-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-3/MapTex_I-3.png" class="sectionImg" id="I-3" onclick="selectSection('I-3')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-3/MapTex_J-3.png" class="sectionImg" id="J-3" onclick="selectSection('J-3')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-3-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-3-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-4/MapTex_A-4.png" class="sectionImg" id="A-4" onclick="selectSection('A-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-4/MapTex_B-4.png" class="sectionImg" id="B-4" onclick="selectSection('B-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-4/MapTex_C-4.png" class="sectionImg" id="C-4" onclick="selectSection('C-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-4/MapTex_D-4.png" class="sectionImg" id="D-4" onclick="selectSection('D-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-4/MapTex_E-4.png" class="sectionImg" id="E-4" onclick="selectSection('E-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-4/MapTex_F-4.png" class="sectionImg" id="F-4" onclick="selectSection('F-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-4/MapTex_G-4.png" class="sectionImg" id="G-4" onclick="selectSection('G-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-4/MapTex_H-4.png" class="sectionImg" id="H-4" onclick="selectSection('H-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-4/MapTex_I-4.png" class="sectionImg" id="I-4" onclick="selectSection('I-4')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-4/MapTex_J-4.png" class="sectionImg" id="J-4" onclick="selectSection('J-4')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-4-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-4-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-5/MapTex_A-5.png" class="sectionImg" id="A-5" onclick="selectSection('A-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-5/MapTex_B-5.png" class="sectionImg" id="B-5" onclick="selectSection('B-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-5/MapTex_C-5.png" class="sectionImg" id="C-5" onclick="selectSection('C-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-5/MapTex_D-5.png" class="sectionImg" id="D-5" onclick="selectSection('D-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-5/MapTex_E-5.png" class="sectionImg" id="E-5" onclick="selectSection('E-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-5/MapTex_F-5.png" class="sectionImg" id="F-5" onclick="selectSection('F-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-5/MapTex_G-5.png" class="sectionImg" id="G-5" onclick="selectSection('G-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-5/MapTex_H-5.png" class="sectionImg" id="H-5" onclick="selectSection('H-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-5/MapTex_I-5.png" class="sectionImg" id="I-5" onclick="selectSection('I-5')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-5/MapTex_J-5.png" class="sectionImg" id="J-5" onclick="selectSection('J-5')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-5-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-5-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-6/MapTex_A-6.png" class="sectionImg" id="A-6" onclick="selectSection('A-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-6/MapTex_B-6.png" class="sectionImg" id="B-6" onclick="selectSection('B-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-6/MapTex_C-6.png" class="sectionImg" id="C-6" onclick="selectSection('C-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-6/MapTex_D-6.png" class="sectionImg" id="D-6" onclick="selectSection('D-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-6/MapTex_E-6.png" class="sectionImg" id="E-6" onclick="selectSection('E-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-6/MapTex_F-6.png" class="sectionImg" id="F-6" onclick="selectSection('F-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-6/MapTex_G-6.png" class="sectionImg" id="G-6" onclick="selectSection('G-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-6/MapTex_H-6.png" class="sectionImg" id="H-6" onclick="selectSection('H-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-6/MapTex_I-6.png" class="sectionImg" id="I-6" onclick="selectSection('I-6')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-6/MapTex_J-6.png" class="sectionImg" id="J-6" onclick="selectSection('J-6')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-6-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-6-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-7/MapTex_A-7.png" class="sectionImg" id="A-7" onclick="selectSection('A-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-7/MapTex_B-7.png" class="sectionImg" id="B-7" onclick="selectSection('B-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-7/MapTex_C-7.png" class="sectionImg" id="C-7" onclick="selectSection('C-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-7/MapTex_D-7.png" class="sectionImg" id="D-7" onclick="selectSection('D-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-7/MapTex_E-7.png" class="sectionImg" id="E-7" onclick="selectSection('E-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-7/MapTex_F-7.png" class="sectionImg" id="F-7" onclick="selectSection('F-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-7/MapTex_G-7.png" class="sectionImg" id="G-7" onclick="selectSection('G-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-7/MapTex_H-7.png" class="sectionImg" id="H-7" onclick="selectSection('H-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-7/MapTex_I-7.png" class="sectionImg" id="I-7" onclick="selectSection('I-7')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-7/MapTex_J-7.png" class="sectionImg" id="J-7" onclick="selectSection('J-7')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-7-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-7-Box"></img>
+    <div class="row"></div>
+    <img src="../../../Cache/MapTex/MapTex_A-8/MapTex_A-8.png" class="sectionImg" id="A-8" onclick="selectSection('A-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_B-8/MapTex_B-8.png" class="sectionImg" id="B-8" onclick="selectSection('B-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_C-8/MapTex_C-8.png" class="sectionImg" id="C-8" onclick="selectSection('C-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_D-8/MapTex_D-8.png" class="sectionImg" id="D-8" onclick="selectSection('D-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_E-8/MapTex_E-8.png" class="sectionImg" id="E-8" onclick="selectSection('E-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_F-8/MapTex_F-8.png" class="sectionImg" id="F-8" onclick="selectSection('F-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_G-8/MapTex_G-8.png" class="sectionImg" id="G-8" onclick="selectSection('G-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_H-8/MapTex_H-8.png" class="sectionImg" id="H-8" onclick="selectSection('H-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_I-8/MapTex_I-8.png" class="sectionImg" id="I-8" onclick="selectSection('I-8')"></img>
+    <img src="../../../Cache/MapTex/MapTex_J-8/MapTex_J-8.png" class="sectionImg" id="J-8" onclick="selectSection('J-8')"></img>
+
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="A-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="B-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="C-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="D-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="E-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="F-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="G-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="H-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="I-8-Box"></img>
+    <img src="../../../Assets/UI/SectionSelection/SelectionBox.png" class="selectionBox" id="J-8-Box"></img>
+  </div>
+  <script src='../../lib/panzoom/panzoom.min.js'></script>
+  <script src="SectionSelection.js"></script>
 </body>

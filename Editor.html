@@ -32,7 +32,8 @@
 <body>
   <canvas id="viewport">3D stuff goes here but apparently not because either me, SDarkMagic(ow), or you did something dumb.</canvas>
   <script src="HTML/lib/stats/stats.min.js"></script>
-  <script src="HTML/lib/threejs/build/three.js" type="module"></script>
+  <script src="HTML/lib/threejs/build/three.js"></script>
+  <script src="HTML/lib/capsuleGeo/three-js-capsule-geometry.js"></script>
   <script src="HTML/Editor.js" rel = "script" type = "module"></script>
   <section id="cardButtonContainer">
     <button id="Translate" class="cardButton">Translate<br></br><img src="Assets/UI/Transform Mode Images/MapEditorTranslateMono.png" alt="Translate" class="cardButtonsImg" width="30" height="30"></img></button>
@@ -60,6 +61,7 @@
       <div id='sliderValue'></div>
     </div>
     <button id="openVisibilityPanelButton" class="button">Actor Search</button>
+    <button id="addActorButton" class="button">Add Actor</button>
   </section>
 
   </aside>

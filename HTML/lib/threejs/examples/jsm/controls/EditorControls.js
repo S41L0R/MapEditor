@@ -63,6 +63,7 @@ var FirstPersonControls = function ( object, domElement ) {
 	var lookDirection = new Vector3();
 	var spherical = new Spherical();
 	var target = new Vector3();
+	var lastFrameTime;
 
 
 	//
@@ -242,6 +243,9 @@ var FirstPersonControls = function ( object, domElement ) {
 	this.update = function () {
 
 		return function update( delta ) {
+			let frameTime = performance.now() - lastFrameTime;
+			//console.warn(frameTime);
+
 			if (this.rMouseDown == true) {
 				var mouseDiffX = 1;
 				var mouseDiffY = 1;
@@ -259,8 +263,8 @@ var FirstPersonControls = function ( object, domElement ) {
 					var euler = new Euler( 0, 0, 0, 'YXZ' );
 					euler.setFromQuaternion( this.object.quaternion );
 					var PI_2 = Math.PI / 2;
-					euler.y -= this.movementX/30 * this.lookSpeed;
-					euler.x -= this.movementY/30 * this.lookSpeed;
+					euler.y -= this.movementX/frameTime * this.lookSpeed;
+					euler.x -= this.movementY/frameTime * this.lookSpeed;
 
 					euler.x = Math.max( PI_2 - maxPolarAngle, Math.min( PI_2 - minPolarAngle, euler.x ) );
 
@@ -287,6 +291,8 @@ var FirstPersonControls = function ( object, domElement ) {
 
 				// Sets mouseMoving to false. If the mouse is moved, it will be set to true for a frame, until this goes through and clears it.
 				this.mouseMoving = false;
+				lastFrameTime = performance.now();
+
 		}
 
 

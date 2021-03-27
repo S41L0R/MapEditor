@@ -254,6 +254,7 @@ THREE.TransformControls = function ( camera, domElement ) {
 		} else {
 
 			this.axis = null;
+			this.hoveringControls = false;
 
 		}
 

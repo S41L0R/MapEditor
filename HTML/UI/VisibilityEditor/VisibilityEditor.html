@@ -68,7 +68,7 @@
     ul = document.getElementById("menu");
     htmlToInject = ""
     for (const i of fullActorDict.HashIDs) {
-      htmlToInject = htmlToInject.concat(`<li class="li"><div class = "buttonContainer"><button class="selectionButton"><strong>${i.Name}</strong><br>${i.HashID}</button><button onclick="ToggleVisibilityByHashID(${i.HashID})" class="visibleButton"><img src="../../../Assets/UI/Visible/Visible.png" alt="Visible" width="60" height="60"></img></button></div></li>`)
+      htmlToInject = htmlToInject.concat(`<li class="li"><div class = "buttonContainer"><button class="selectionButton"><strong>${i.Name}</strong><br>${i.HashID}</button><button onclick="ToggleVisibilityByHashID(${i.HashID})" class="visibleButton"><img src="../../../Assets/UI/Visible/Invisible 2.png" alt="Visible" width="60" height="60"></img></button></div></li>`)
     }
     ul.innerHTML = htmlToInject;
   }
@@ -83,9 +83,15 @@
   }
 
   function ToggleVisibilityByHashID (hashID) {
-    invisibleActorDict.HashIDs = []
-    invisibleActorDict.ActorNames = []
-    invisibleActorDict.HashIDs.push(hashID)
+    //invisibleActorDict.HashIDs = []
+    //invisibleActorDict.ActorNames = []
+    const index = invisibleActorDict.HashIDs.indexOf(hashID);
+    if (index > -1) {
+      invisibleActorDict.HashIDs.splice(index, 1);
+    }
+    else {
+      invisibleActorDict.HashIDs.push(hashID)
+    }
     Apply()
   }
 

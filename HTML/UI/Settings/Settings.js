@@ -27,7 +27,7 @@ document.getElementById("MapEditorButton").addEventListener("click", function() 
           }
         }
 
-        setTimeout(() => {ipc.send("loadHTML", ["./HTML/UI/SectionSelection/SectionSelection.html", null])}, 3500);
+        setTimeout(() => {ipc.send("loadHTML", "../Editor.html")}, 3500);
 
       }, 500);
     }
@@ -66,7 +66,7 @@ document.getElementById("SettingsButton").addEventListener("click", function() {
             document.getElementById("SettingsButton").childNodes[i].parentNode.removeChild(document.getElementById("SettingsButton").childNodes[i])
           }
         }
-        setTimeout(() => {ipc.send("loadHTML", ["./HTML/UI/Settings/Settings.html", null])}, 3500);
+
 
 
       }, 500);

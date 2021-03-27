@@ -1,6 +1,7 @@
 .vscode/
-HTML/node_modules
+node_modules/
 /__pycache__/
 *.pyc
 Cache/
 Test/
+build/

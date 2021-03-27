@@ -28,6 +28,7 @@
 
   align-items: center;
 
+
 }
 
 .LauncherButton p {
@@ -36,11 +37,14 @@
     flex-direction: column;
     /*height: 100%;*/
     vertical-align: middle;
+    visibility: hidden;
+
 }
 
 .LauncherButtonIcon {
   width: 50%;
   height: auto;
+  visibility: hidden;
 
 }
 
@@ -105,6 +109,7 @@
   flex-basis: 0;
 
   transition: all 4s ease;
+  flex-grow: 0.0001;
 }
 
 #LauncherButtonContainer {

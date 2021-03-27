@@ -169,20 +169,41 @@ ipc.on('toMainWindowFromVisibilityEditor', (event, message) => {
   win.webContents.send('fromVisibilityEditor', message)
 })
 
+
+ipc.on('loadHTML', (event, message) => {
+  if (message[1] == null) {
+    win.loadFile(message[0]);
+  }
+  else {
+    win.loadFile(message[0]);
+    win.webContents.once('dom-ready', () => {
+      win.webContents.send('loadSection', message[1]);
+      win.webContents.send('appDataPath', app.getPath('userData'));
+    });
+    
+  }
+})
+
 function createWindow () {
   // Create the browser window and menu
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: '../Assets/UI/Logo/MapEditorIconDarkMode-Alt.png',
+    icon: 'Assets/UI/Logo/MapEditorIconDarkMode-Alt.png',
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true
     }
   })
   // and load the index.html of the app.
-  win.loadFile('../editor.html')
+  win.loadFile('HTML/UI/Launcher/Launcher.html')
+
+  //win.loadFile('editor.html')
   win.on('closed', () => app.quit())
 }
 
+
+
 app.whenReady().then(createWindow)
+
+

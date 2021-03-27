@@ -1,13 +1,19 @@
 // Imports
+// -----------------------------------------------------------------------------
 
 // import { THREE } from './lib/threejs/build/three.js';
 import { ColladaLoader } from "./lib/threejs/examples/jsm/loaders/ColladaLoader.js";
 import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorControls.js";
 import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js";
 import {SkeletonUtils} from "./lib/threejs/examples/jsm/utils/SkeletonUtils.js";
+import {BufferGeometryUtils} from "./lib/threejs/examples/jsm/utils/BufferGeometryUtils.js";
 
 const fs = require("fs");
-const path = require("path")
+const path = require("path");
+
+// Get friends
+
+const ActorTools = require("./HTML/utils/ActorTools.js")
 
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
@@ -92,11 +98,37 @@ let sectionData;
 var calledNum = 0;
 
 
+// Define Global models
+// -----------------------------------------------------------------------------
+
+var cubeGeo = new THREE.BoxBufferGeometry();
+var sphereGeo = new THREE.SphereBufferGeometry();
+var cylinderGeo = new THREE.CylinderBufferGeometry();
+var capsuleGeo = new THREE.CapsuleBufferGeometry();
+
+//var capsuleGeo = new THREE.BufferGeometry();
+
+//const capsuleGeoVerticies = new Float32Array([
+	 0.981239, -0.600000, -0.600000, 0.600000, -0.600000, -0.981239, 0.600000, -1.000000, -0.981239, 0.981239, -1.000000, -0.600000, 0.566616, -0.600000, -1.000000, 0.566616, -1.000000, -1.000000, 0.200000, -0.600000, -1.133311, 0.200000, -1.000000, -1.133311, -0.200000, -0.600000, -1.133311, -0.200000, -1.000000, -1.133311, -0.566616, -0.600000, -1.000000, -0.566616, -1.000000, -1.000000, -0.402604, -1.400000, -1.000000, -0.200000, -1.400000, -1.060113, -0.600000, -1.000000, -0.981239, -0.600000, -1.400000, -0.895717, -0.981238, -1.000000, -0.600000, -0.895717, -1.400000, -0.600000, -1.000000, -1.000000, -0.566616, -1.000000, -1.400000, -0.402605, -1.133311, -1.000000, -0.200000, -1.060113, -1.400000, -0.200000, -1.133311, -1.000000, 0.200000, -1.060113, -1.400000, 0.200000, -1.000000, -1.000000, 0.566616, -1.000000, -1.400000, 0.402605, -0.981238, -1.000000, 0.600000, -0.895717, -1.400000, 0.600000, -0.600000, -1.775880, 0.600000, -0.600000, -1.800000, 0.566616, -0.801421, -1.800000, 0.200000, -1.000000, -1.530196, 0.200000, -0.566616, -1.800000, 0.600000, -0.402604, -1.400000, 1.000000, -0.200000, -1.530196, 1.000000, -0.200000, -1.800000, 0.801421, -0.600000, -1.400000, 0.895717, 0.200000, -1.530196, 1.000000, 0.200000, -1.800000, 0.801421, 0.402605, -1.400000, 1.000000, 0.600000, -1.400000, 0.895717, 0.600000, -1.775880, 0.600000, 0.566616, -1.800000, 0.600000, 0.895717, -1.400000, 0.600000, 1.000000, -1.400000, 0.402605, 1.000000, -1.530196, 0.200000, 0.801421, -1.800000, 0.200000, 0.600000, -1.800000, 0.566616, 1.060113, -1.400000, 0.200000, 1.060113, -1.400000, -0.200000, 1.000000, -1.530196, -0.200000, 1.000000, -1.400000, -0.402605, 0.895717, -1.400000, -0.600000, 0.600000, -1.775880, -0.600000, 0.600000, -1.800000, -0.566616, 0.801421, -1.800000, -0.200000, 0.566616, -1.800000, -0.600000, 0.402605, -1.400000, -1.000000, 0.200000, -1.530196, -1.000000, 0.200000, -1.800000, -0.801421, 0.600000, -1.400000, -0.895717, -0.200000, -1.800000, -0.801421, -0.200000, -1.530196, -1.000000, 0.200000, -1.400000, -1.060113, -0.200000, -1.960788, -0.600000, 0.200000, -1.960788, -0.600000, -0.566616, -1.800000, -0.600000, -0.600000, -1.800000, -0.566616, -0.600000, -1.960788, -0.200000, -0.200000, -2.115109, -0.200000, -0.801421, -1.800000, -0.200000, -0.600000, -1.960788, 0.200000, -0.200000, -2.115109, 0.200000, 0.200000, -2.115109, 0.200000, 0.200000, -2.115109, -0.200000, 0.600000, -1.960788, 0.200000, 0.600000, -1.960788, -0.200000, 0.200000, -1.960788, 0.600000, -0.200000, -1.960788, 0.600000, -0.600000, -1.775880, -0.600000, 1.000000, -1.000000, -0.566616, 1.133311, -1.000000, 0.200000, 1.133311, -1.000000, -0.200000, 1.133311, -0.600000, 0.200000, 1.133311, -0.600000, -0.200000, 1.000000, -0.600000, -0.566616, 1.000000, -1.000000, 0.566616, 1.000000, -0.600000, 0.566616, 1.133311, -0.200000, 0.200000, 1.000000, -0.200000, 0.566616, 1.133311, 0.200000, 0.200000, 1.000000, 0.200000, 0.566616, 0.981239, 0.200000, 0.600000, 0.981239, -0.200000, 0.600000, 0.600000, -0.200000, 0.981239, 0.600000, 0.200000, 0.981239, 0.566616, 0.200000, 1.000000, 0.566616, -0.200000, 1.000000, 0.200000, -0.200000, 1.133311, 0.200000, 0.200000, 1.133311, -0.200000, 0.200000, 1.133311, -0.200000, -0.200000, 1.133311, -0.566616, 0.200000, 1.000000, -0.566616, -0.200000, 1.000000, -0.600000, -0.200000, 0.981239, -0.600000, 0.200000, 0.981239, -0.981239, 0.200000, 0.600000, -0.981239, -0.200000, 0.600000, -1.000000, -0.200000, 0.566616, -1.000000, 0.200000, 0.566616, -1.133311, 0.200000, 0.200000, -1.133311, -0.200000, 0.200000, -1.133311, -0.200000, -0.200000, -1.133311, 0.200000, -0.200000, -1.000000, -0.200000, -0.566616, -1.000000, 0.200000, -0.566616, -0.981239, 0.200000, -0.600000, -0.981239, -0.200000, -0.600000, -0.600000, -0.200000, -0.981239, -0.600000, 0.200000, -0.981239, -0.566616, 0.200000, -1.000000, -0.566616, -0.200000, -1.000000, -0.200000, -0.200000, -1.133311, -0.200000, 0.200000, -1.133311, 0.200000, -0.200000, -1.133311, 0.200000, 0.200000, -1.133311, 0.566616, 0.200000, -1.000000, 0.566616, -0.200000, -1.000000, 0.600000, -0.200000, -0.981239, 0.600000, 0.200000, -0.981239, 0.981239, 0.200000, -0.600000, 0.981239, -0.200000, -0.600000, 1.000000, -0.200000, -0.566616, 1.000000, 0.200000, -0.566616, 1.133311, 0.200000, -0.200000, 1.133311, -0.200000, -0.200000, 1.133311, 0.600000, -0.200000, 1.000000, 0.600000, -0.566616, 1.133311, 0.600000, 0.200000, 1.133311, 1.000000, 0.200000, 1.133311, 1.000000, -0.200000, 1.000000, 0.600000, 0.566616, 1.000000, 1.000000, 0.566616, 0.981238, 1.000000, 0.600000, 0.981238, 0.600000, 0.600000, 0.600000, 0.600000, 0.981239, 0.600000, 1.000000, 0.981239, 0.566616, 1.000000, 1.000000, 0.566616, 0.600000, 1.000000, 0.200000, 0.600000, 1.133311, 0.200000, 1.000000, 1.133311, -0.200000, 1.000000, 1.133311, -0.200000, 0.600000, 1.133311, -0.566616, 1.000000, 1.000000, -0.566616, 0.600000, 1.000000, -0.600000, 0.600000, 0.981239, -0.600000, 1.000000, 0.981239, -0.402605, 1.400000, 1.000000, -0.600000, 1.400000, 0.895717, -0.895717, 1.400000, 0.600000, -0.981239, 1.000000, 0.600000, -1.000000, 1.000000, 0.566616, -1.000000, 1.400000, 0.402605, -1.060113, 1.400000, 0.200000, -1.133311, 1.000000, 0.200000, -1.133311, 1.000000, -0.200000, -1.060113, 1.400000, -0.200000, -1.133311, 0.600000, 0.200000, -1.133311, 0.600000, -0.200000, -1.000000, 0.600000, -0.566616, -1.000000, 1.000000, -0.566616, -0.981239, 1.000000, -0.600000, -0.981239, 0.600000, -0.600000, -0.600000, 0.600000, -0.981239, -0.600000, 1.000000, -0.981239, -0.566616, 1.000000, -1.000000, -0.566616, 0.600000, -1.000000, -0.200000, 0.600000, -1.133311, -0.200000, 1.000000, -1.133311, 0.200000, 0.600000, -1.133311, 0.200000, 1.000000, -1.133311, -0.200000, 1.400000, -1.060113, 0.200000, 1.400000, -1.060113, 0.402604, 1.400000, -1.000000, 0.566616, 1.000000, -1.000000, 0.600000, 1.000000, -0.981239, 0.600000, 1.400000, -0.895717, 0.895717, 1.400000, -0.600000, 0.981238, 1.000000, -0.600000, 1.000000, 1.000000, -0.566616, 1.000000, 1.400000, -0.402605, 1.060113, 1.400000, -0.200000, 1.000000, 1.530196, -0.200000, 1.060113, 1.400000, 0.200000, 1.000000, 1.530196, 0.200000, 0.801421, 1.800000, 0.200000, 0.801421, 1.800000, -0.200000, 1.000000, 1.400000, 0.402605, 0.895717, 1.400000, 0.600000, 0.600000, 1.775880, 0.600000, 0.600000, 1.800000, 0.566616, 0.566616, 1.800000, 0.600000, 0.600000, 1.400000, 0.895717, 0.402604, 1.400000, 1.000000, 0.200000, 1.530196, 1.000000, 0.200000, 1.800000, 0.801421, -0.200000, 1.800000, 0.801421, -0.200000, 1.530196, 1.000000, -0.200000, 1.400000, 1.060113, 0.200000, 1.400000, 1.060113, -0.200000, 1.960788, 0.600000, 0.200000, 1.960788, 0.600000, -0.566616, 1.800000, 0.600000, -0.600000, 1.800000, 0.566616, -0.600000, 1.960788, 0.200000, -0.200000, 2.115109, 0.200000, -0.801421, 1.800000, 0.200000, -0.801421, 1.800000, -0.200000, -0.600000, 1.960788, -0.200000, -0.600000, 1.800000, -0.566616, -0.566616, 1.800000, -0.600000, -0.200000, 1.960788, -0.600000, -0.200000, 2.115109, -0.200000, 0.200000, 1.960788, -0.600000, 0.200000, 2.115109, -0.200000, -0.200000, 1.800000, -0.801421, 0.200000, 1.800000, -0.801421, 0.566616, 1.800000, -0.600000, -0.200000, 1.530196, -1.000000, 0.200000, 1.530196, -1.000000, -0.600000, 1.775880, -0.600000, -0.600000, 1.400000, -0.895717, -0.402605, 1.400000, -1.000000, -0.895717, 1.400000, -0.600000, 0.200000, 2.115109, 0.200000, 0.600000, 1.960788, -0.200000, 0.600000, 1.960788, 0.200000, -1.000000, 1.530196, -0.200000, -1.000000, 1.400000, -0.402605, -1.000000, 1.530196, 0.200000, -0.600000, 1.775880, 0.600000, 0.600000, 1.800000, -0.566616, 0.981238, 0.600000, -0.600000, 0.600000, 1.775880, -0.600000, 0.600000, 0.600000, -0.981239, 0.566616, 0.600000, -1.000000, -1.000000, 0.600000, 0.566616, -0.981239, 0.600000, 0.600000, -0.981238, -0.600000, -0.600000, -0.600000, -0.600000, -0.981239, -1.000000, -0.600000, -0.566616, -1.133311, -0.600000, 0.200000, -1.133311, -0.600000, -0.200000, -1.000000, -0.600000, 0.566616, -0.981238, -0.600000, 0.600000, -0.566616, -0.600000, 1.000000, -0.600000, -0.600000, 0.981239, -0.566616, -1.000000, 1.000000, -0.600000, -1.000000, 0.981239, -0.200000, -0.600000, 1.133311, -0.200000, -1.000000, 1.133311, 0.200000, -0.600000, 1.133311, 0.200000, -1.000000, 1.133311, 0.566616, -0.600000, 1.000000, 0.566616, -1.000000, 1.000000, 0.600000, -0.600000, 0.981239, 0.600000, -1.000000, 0.981239, 0.981239, -0.600000, 0.600000, 0.981239, -1.000000, 0.600000, 0.200000, -1.400000, 1.060113, -0.200000, -1.400000, 1.060113, -1.000000, -1.530196, -0.200000
+//	])
+
+//const capsuleGeoIndices = new Float32Array ([
+	  4, 1, 3, 2, 2, 3, 1, 4, 2, 3, 3, 2, 6, 5, 5, 6, 6, 5, 8, 7, 7, 8, 5, 6, 7, 8, 8, 7, 10, 9, 9, 10, 9, 10, 10, 9, 12, 11, 11, 12, 10, 9, 14, 13, 13, 14, 12, 11, 13, 14, 16, 15, 15, 16, 12, 11, 15, 16, 16, 15, 18, 17, 17, 18, 18, 17, 20, 19, 19, 20, 17, 18, 19, 20, 20, 19, 22, 21, 21, 22, 21, 22, 22, 21, 24, 23, 23, 24, 24, 23, 26, 25, 25, 26, 23, 24, 25, 26, 26, 25, 28, 27, 27, 28, 31, 29, 30, 30, 29, 31, 28, 27, 26, 25, 32, 32, 31, 29, 28, 27, 29, 31, 30, 30, 33, 33, 33, 33, 36, 34, 35, 35, 34, 36, 37, 37, 29, 31, 33, 33, 34, 36, 39, 38, 38, 39, 35, 35, 36, 34, 43, 40, 42, 41, 41, 42, 40, 43, 38, 39, 39, 38, 43, 40, 40, 43, 41, 42, 42, 41, 44, 44, 47, 45, 46, 46, 45, 47, 44, 44, 42, 41, 48, 48, 47, 45, 44, 44, 45, 47, 46, 46, 49, 49, 46, 46, 51, 50, 50, 51, 49, 49, 51, 50, 52, 52, 50, 51, 56, 53, 55, 54, 54, 55, 53, 56, 52, 52, 51, 50, 56, 53, 53, 56, 54, 55, 55, 54, 57, 57, 57, 57, 60, 58, 59, 59, 58, 60, 61, 61, 54, 55, 57, 57, 58, 60, 63, 62, 59, 59, 60, 58, 62, 63, 64, 64, 59, 59, 63, 62, 14, 13, 60, 58, 66, 65, 65, 66, 62, 63, 62, 63, 65, 66, 67, 67, 70, 68, 69, 69, 68, 70, 67, 67, 65, 66, 70, 68, 67, 67, 68, 70, 69, 69, 71, 71, 71, 71, 69, 69, 72, 72, 31, 29, 69, 69, 70, 68, 73, 73, 72, 72, 70, 68, 75, 74, 74, 75, 73, 73, 75, 74, 77, 76, 76, 77, 74, 75, 76, 77, 77, 76, 56, 53, 47, 45, 74, 75, 76, 77, 48, 48, 43, 40, 78, 78, 74, 75, 43, 40, 73, 73, 74, 75, 78, 78, 79, 79, 68, 70, 80, 80, 67, 67, 65, 66, 66, 65, 75, 74, 70, 68, 59, 59, 64, 64, 58, 60, 66, 65, 60, 58, 57, 57, 54, 55, 61, 61, 53, 56, 77, 76, 55, 54, 56, 53, 81, 81, 52, 52, 53, 56, 4, 1, 49, 49, 50, 51, 83, 82, 82, 83, 82, 83, 83, 82, 85, 84, 84, 85, 83, 82, 81, 81, 86, 86, 85, 84, 88, 87, 87, 88, 82, 83, 84, 85, 90, 87, 88, 87, 84, 85, 89, 85, 92, 87, 90, 87, 89, 85, 91, 85, 94, 89, 90, 87, 92, 87, 93, 89, 96, 90, 95, 90, 94, 89, 93, 89, 98, 91, 95, 90, 96, 90, 97, 91, 100, 92, 99, 92, 98, 91, 97, 91, 102, 93, 99, 92, 100, 92, 101, 93, 104, 94, 102, 93, 101, 93, 103, 94, 106, 95, 105, 95, 104, 94, 103, 94, 108, 96, 105, 95, 106, 95, 107, 96, 110, 97, 109, 97, 108, 96, 107, 96, 112, 98, 109, 97, 110, 97, 111, 98, 114, 99, 113, 99, 112, 98, 111, 98, 116, 100, 115, 100, 113, 99, 114, 99, 118, 101, 115, 100, 116, 100, 117, 101, 120, 102, 119, 102, 118, 101, 117, 101, 122, 12, 119, 102, 120, 102, 121, 12, 124, 10, 123, 10, 122, 12, 121, 12, 126, 8, 125, 8, 123, 10, 124, 10, 128, 6, 125, 8, 126, 8, 127, 6, 130, 3, 129, 3, 128, 6, 127, 6, 132, 4, 129, 3, 130, 3, 131, 4, 134, 86, 133, 86, 132, 4, 131, 4, 136, 84, 133, 86, 134, 86, 135, 84, 135, 84, 134, 86, 138, 86, 137, 84, 91, 85, 135, 84, 137, 84, 139, 85, 139, 85, 137, 84, 141, 103, 140, 104, 143, 105, 142, 87, 139, 85, 140, 104, 145, 89, 142, 87, 143, 105, 144, 106, 147, 107, 146, 90, 145, 89, 144, 106, 149, 91, 146, 90, 147, 107, 148, 108, 151, 109, 150, 92, 149, 91, 148, 108, 153, 93, 150, 92, 151, 109, 152, 110, 155, 94, 153, 93, 152, 110, 154, 111, 157, 112, 156, 95, 155, 94, 154, 111, 159, 113, 157, 112, 154, 111, 158, 114, 161, 115, 157, 112, 159, 113, 160, 116, 163, 117, 162, 118, 161, 115, 160, 116, 165, 119, 162, 118, 163, 117, 164, 120, 167, 121, 166, 122, 165, 119, 164, 120, 166, 122, 169, 99, 168, 98, 165, 119, 171, 123, 170, 100, 169, 99, 166, 122, 173, 101, 170, 100, 171, 123, 172, 124, 175, 125, 174, 102, 173, 101, 172, 124, 177, 12, 174, 102, 175, 125, 176, 126, 179, 127, 178, 10, 177, 12, 176, 126, 181, 128, 180, 8, 178, 10, 179, 127, 183, 129, 181, 128, 179, 127, 182, 130, 185, 131, 181, 128, 183, 129, 184, 132, 187, 133, 186, 134, 185, 131, 184, 132, 189, 135, 186, 134, 187, 133, 188, 136, 191, 137, 190, 138, 189, 135, 188, 136, 141, 103, 190, 138, 191, 137, 192, 139, 191, 137, 193, 140, 192, 139, 192, 139, 193, 140, 195, 141, 194, 142, 195, 141, 193, 140, 197, 143, 196, 144, 199, 145, 198, 146, 195, 141, 196, 144, 201, 147, 200, 148, 199, 145, 196, 144, 200, 148, 201, 147, 202, 149, 204, 150, 203, 151, 200, 148, 202, 149, 206, 152, 205, 153, 204, 150, 202, 149, 208, 154, 205, 153, 206, 152, 207, 155, 210, 156, 205, 153, 208, 154, 209, 157, 209, 157, 208, 154, 158, 114, 206, 152, 212, 158, 211, 159, 207, 155, 207, 155, 211, 159, 213, 160, 216, 161, 215, 162, 214, 163, 213, 160, 211, 159, 216, 161, 213, 160, 214, 163, 215, 162, 217, 164, 215, 162, 219, 165, 218, 166, 217, 164, 219, 165, 220, 167, 218, 166, 219, 165, 223, 168, 222, 169, 221, 170, 220, 167, 219, 165, 221, 170, 225, 171, 224, 172, 222, 169, 223, 168, 222, 169, 224, 172, 227, 173, 226, 174, 227, 173, 224, 172, 228, 175, 227, 173, 230, 176, 229, 177, 226, 174, 233, 178, 232, 179, 231, 180, 221, 170, 226, 174, 229, 177, 233, 178, 221, 170, 231, 180, 232, 179, 234, 181, 229, 177, 182, 130, 233, 178, 235, 182, 225, 171, 223, 168, 216, 161, 237, 183, 236, 184, 225, 171, 235, 182, 222, 169, 226, 174, 221, 170, 231, 180, 220, 167, 221, 170, 234, 181, 239, 185, 238, 186, 218, 166, 220, 167, 231, 180, 234, 181, 218, 166, 238, 186, 239, 185, 167, 121, 218, 166, 238, 186, 240, 187, 217, 164, 216, 161, 223, 168, 219, 165, 215, 162, 214, 163, 241, 188, 213, 160, 212, 158, 235, 182, 216, 161, 211, 159, 205, 153, 210, 156, 204, 150, 212, 158, 206, 152, 202, 149, 237, 183, 235, 182, 212, 158, 202, 149, 201, 147, 237, 183, 202, 149, 200, 148, 203, 151, 199, 145, 237, 183, 201, 147, 196, 144, 197, 143, 236, 184, 237, 183, 196, 144, 242, 189, 236, 184, 197, 143, 195, 141, 198, 146, 194, 142, 190, 138, 138, 86, 243, 4, 189, 135, 188, 136, 244, 190, 242, 189, 197, 143, 193, 140, 191, 137, 188, 136, 197, 143, 242, 189, 244, 190, 228, 175, 243, 4, 245, 3, 186, 134, 189, 135, 187, 133, 244, 190, 188, 136, 186, 134, 245, 3, 246, 6, 185, 131, 184, 132, 230, 176, 227, 173, 228, 175, 244, 190, 187, 133, 184, 132, 228, 175, 183, 129, 230, 176, 184, 132, 229, 177, 230, 176, 183, 129, 182, 130, 182, 130, 179, 127, 176, 126, 233, 178, 176, 126, 175, 125, 232, 179, 233, 178, 232, 179, 175, 125, 172, 124, 234, 181, 172, 124, 171, 123, 239, 185, 234, 181, 240, 187, 238, 186, 167, 121, 164, 120, 168, 98, 247, 97, 162, 118, 165, 119, 163, 117, 240, 187, 164, 120, 162, 118, 247, 97, 248, 96, 161, 115, 160, 116, 241, 188, 214, 163, 217, 164, 240, 187, 163, 117, 160, 116, 217, 164, 159, 113, 241, 188, 160, 116, 158, 114, 208, 154, 207, 155, 213, 160, 241, 188, 159, 113, 158, 114, 213, 160, 154, 111, 152, 110, 209, 157, 158, 114, 152, 110, 151, 109, 210, 156, 209, 157, 148, 108, 147, 107, 203, 151, 204, 150, 203, 151, 147, 107, 144, 106, 199, 145, 144, 106, 143, 105, 198, 146, 199, 145, 198, 146, 143, 105, 140, 104, 194, 142, 140, 104, 141, 103, 192, 139, 194, 142, 133, 86, 86, 86, 1, 4, 132, 4, 138, 86, 134, 86, 131, 4, 243, 4, 245, 3, 130, 3, 127, 6, 246, 6, 127, 6, 126, 8, 180, 8, 246, 6, 180, 8, 126, 8, 124, 10, 178, 10, 178, 10, 124, 10, 121, 12, 177, 12, 119, 102, 250, 102, 249, 101, 118, 101, 174, 102, 120, 102, 117, 101, 173, 101, 249, 101, 251, 100, 115, 100, 118, 101, 117, 101, 116, 100, 170, 100, 173, 101, 170, 100, 116, 100, 114, 99, 169, 99, 113, 99, 253, 99, 252, 98, 112, 98, 169, 99, 114, 99, 111, 98, 168, 98, 252, 98, 254, 97, 109, 97, 112, 98, 111, 98, 110, 97, 247, 97, 168, 98, 109, 97, 254, 97, 255, 96, 108, 96, 247, 97, 110, 97, 107, 96, 248, 96, 107, 96, 106, 95, 156, 95, 248, 96, 105, 95, 257, 95, 256, 94, 104, 94, 257, 95, 259, 191, 258, 192, 256, 94, 27, 28, 259, 191, 257, 95, 255, 96, 258, 192, 261, 193, 260, 93, 256, 94, 261, 193, 263, 194, 262, 92, 260, 93, 262, 92, 263, 194, 265, 195, 264, 91, 265, 195, 267, 196, 266, 90, 264, 91, 266, 90, 267, 196, 269, 197, 268, 89, 263, 194, 270, 198, 40, 43, 265, 195, 271, 199, 270, 198, 263, 194, 261, 193, 34, 36, 271, 199, 261, 193, 258, 192, 156, 95, 106, 95, 103, 94, 155, 94, 256, 94, 260, 93, 102, 93, 104, 94, 103, 94, 101, 93, 153, 93, 155, 94, 260, 93, 262, 92, 99, 92, 102, 93, 101, 93, 100, 92, 150, 92, 153, 93, 150, 92, 100, 92, 97, 91, 149, 91, 264, 91, 266, 90, 95, 90, 98, 91, 97, 91, 96, 90, 146, 90, 149, 91, 95, 90, 266, 90, 268, 89, 94, 89, 146, 90, 96, 90, 93, 89, 145, 89, 89, 85, 136, 84, 135, 84, 91, 85, 142, 87, 92, 87, 91, 85, 139, 85, 84, 85, 85, 84, 136, 84, 89, 85, 87, 88, 45, 47, 49, 49, 82, 83, 56, 53, 51, 50, 46, 46, 47, 45, 48, 48, 76, 77, 47, 45, 44, 44, 45, 47, 87, 88, 269, 197, 267, 196, 41, 42, 44, 44, 269, 197, 48, 48, 42, 41, 43, 40, 39, 38, 78, 78, 43, 40, 40, 43, 41, 42, 267, 196, 265, 195, 35, 35, 38, 39, 270, 198, 271, 199, 79, 79, 78, 78, 39, 38, 36, 34, 35, 35, 271, 199, 34, 36, 79, 79, 36, 34, 33, 33, 259, 191, 37, 37, 34, 36, 258, 192, 72, 72, 73, 73, 79, 79, 33, 33, 30, 30, 72, 72, 33, 33, 32, 32, 272, 200, 71, 71, 31, 29, 29, 31, 37, 37, 28, 27, 72, 72, 30, 30, 31, 29, 254, 97, 25, 26, 27, 28, 255, 96, 32, 32, 26, 25, 24, 23, 23, 24, 25, 26, 254, 97, 252, 98, 22, 21, 272, 200, 32, 32, 24, 23, 253, 99, 21, 22, 23, 24, 252, 98, 251, 100, 19, 20, 21, 22, 253, 99, 71, 71, 272, 200, 20, 19, 18, 17, 80, 80, 68, 70, 71, 71, 18, 17, 17, 18, 19, 20, 251, 100, 249, 101, 16, 15, 80, 80, 18, 17, 250, 102, 15, 16, 17, 18, 249, 101, 67, 67, 80, 80, 16, 15, 13, 14, 63, 62, 62, 63, 67, 67, 13, 14, 14, 13, 63, 62, 13, 14, 123, 10, 9, 10, 11, 12, 122, 12, 8, 7, 64, 64, 14, 13, 10, 9, 125, 8, 7, 8, 9, 10, 123, 10, 3, 2, 61, 61, 58, 60, 6, 5, 129, 3, 2, 3, 5, 6, 128, 6, 86, 86, 81, 81, 4, 1, 1, 4, 53, 56, 61, 61, 3, 2, 4, 1, 58, 60, 64, 64, 8, 7, 6, 5, 12, 11, 15, 16, 250, 102, 11, 12, 50, 51, 52, 52, 81, 81, 83, 82, 77, 76, 75, 74, 66, 65, 57, 57, 55, 54, 77, 76, 57, 57, 20, 19, 272, 200, 22, 21, 269, 197, 87, 88, 88, 87, 268, 89, 270, 198, 38, 39, 40, 43, 28, 27, 37, 37, 259, 191, 27, 28, 1, 4, 2, 3, 129, 3, 132, 4, 5, 6, 7, 8, 125, 8, 128, 6, 11, 12, 250, 102, 119, 102, 122, 12, 85, 84, 86, 86, 133, 86, 136, 84, 115, 100, 251, 100, 253, 99, 113, 99, 268, 89, 88, 87, 90, 87, 94, 89, 99, 92, 262, 92, 264, 91, 98, 91, 255, 96, 257, 95, 105, 95, 108, 96, 131, 4, 130, 3, 245, 3, 243, 4, 246, 6, 180, 8, 181, 128, 185, 131, 121, 12, 120, 102, 174, 102, 177, 12, 137, 84, 138, 86, 190, 138, 141, 103, 225, 171, 236, 184, 242, 189, 228, 175, 224, 172, 225, 171, 228, 175, 239, 185, 171, 123, 166, 122, 167, 121, 93, 89, 92, 87, 142, 87, 145, 89, 210, 156, 151, 109, 148, 108, 204, 150, 248, 96, 156, 95, 157, 112, 161, 115
+//])
+
+//capsuleGeo.setIndex( capsuleGeoIndices );
+//capsuleGeo.setAttribute( 'position', new THREE.BufferAttribute( capsuleGeoVerticies ) );
+
+
+
+
 
 // Define basic eventListeners
 // -----------------------------------------------------------------------------
 
 document.getElementById("openVisibilityPanelButton").addEventListener("click", () => { createVisibilityWindow(); });
+
+document.getElementById("addActorButton").addEventListener("click", () => { addActor(); });
 
 
 
@@ -197,7 +229,7 @@ var instancedMeshIndex = [];
 
 
 const daeOnLoad = function (dae, currentUrl) {
-	console.error("callednum: " + calledNum)
+	//console.error("callednum: " + calledNum)
 	console.log("Loading complete!");
 	daeModel = dae.scene;
 	daeModel.traverse(function (child) {
@@ -206,6 +238,11 @@ const daeOnLoad = function (dae, currentUrl) {
 			console.log("Child instanceof THREE.Mesh = true");
 		}
 	});
+	//console.error(dae)
+	//let daeGeometry = dae.geometry.clone();
+	//let daeMaterial = dae.material;
+
+	//daeModel = new THREE.Mesh(daeGeometry, daeMaterial)
 	objects.push(dae.scene);
 	console.log("objects:");
 	console.log(objects);
@@ -245,15 +282,16 @@ const daeOnLoad = function (dae, currentUrl) {
 	if (instancedMeshIndex["doneNum"] == calledNum) {
 
 		console.warn("loadActors time");
-		loadActors();
+		loadActors(sectionData, true);
 	}
 
 };
 
 
 
-
-
+function daeCapsuleOnLoad(dae) {
+	capsuleGeo = dae.scene.geometry;
+}
 
 
 
@@ -278,7 +316,7 @@ async function loadPython (callback, func, arg) {
 
 	if (arg == null) {
 		const { spawn } = require("child_process");
-		const childPython = spawn("python", ["../MapEditor/Process.py", `${func}`]);
+		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), `${func}`], {cwd:__dirname});
 
 		console.log(`Process is spawned - With func ${func}.`);
 		var loadingPython = true;
@@ -295,13 +333,17 @@ async function loadPython (callback, func, arg) {
 				if (func == "main") {
 					sectionData = data;
 				}
+			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
+				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
+			} else if (dataBuffer.toString().includes("!startProgressData")) {
+				modelsToCacheDone = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressData") + 18, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
 			} else {
 				console.log("false");
 			}
 		});
 	} else {
 		const { spawn } = require("child_process");
-		const childPython = spawn("python", ["../MapEditor/Process.py", `${func}`, `${arg}`]);
+		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), `${func}`, `${arg}`], {cwd:__dirname});
 
 		console.log(`Process is spawned - With func ${func} and arg ${arg}.`);
 		var loadingPython = true;
@@ -316,7 +358,9 @@ async function loadPython (callback, func, arg) {
 				callback(data);
 				// return(data);
 
-				sectionData = data;
+				if (func == "main") {
+					sectionData = data;
+				}
 			} else {
 				console.log("false");
 			}
@@ -331,7 +375,7 @@ function loadPythonCallback (data) {
 }
 // loadPython(loadPythonCallback);
 console.log("test");
-loadPython(function (s) { loadInstanceModels(null)}, "main");
+
 
 
 // Load from map file.
@@ -360,7 +404,7 @@ async function loadInstanceModels(urlDict) {
 		return;
 	}
 
-	let urlArray = ["./Cache/Model/Enemy_Moriblin_Bone/Moriblin_Bone.dae"];
+	let urlArray = [path.join(__dirname, "./Cache/Model/Enemy_Moriblin_Bone/Moriblin_Bone.dae")];
 
 
 	for (const i in urlDict) {
@@ -372,7 +416,7 @@ async function loadInstanceModels(urlDict) {
 }, onProgress, daeOnError);
 			calledNum = calledNum + 1;
 			console.warn("Loaded DaeModel")
-		console.warn(urlDict[i])
+		console.warn(path.join(__dirname, urlDict[i]))
 /*		fs.access(urlDict[i], fs.F_OK, (err) => {
 			if (err) {
 				calledNum = calledNum - 1
@@ -401,8 +445,7 @@ async function loadInstanceModels(urlDict) {
 
 
 
-
-async function loadActors () {
+async function loadActors (actorsData, isMainLoad) {
 	console.log("Got to loadActors!");
 
 	// pywebview.api.getStuff();
@@ -421,7 +464,7 @@ async function loadActors () {
 
 
 	/*
-	for (const i of sectionData.Static.Rails) {
+	for (const i of actorsData.Static.Rails) {
 		//Create a closed wavey loop
 		const curve = new THREE.CatmullRomCurve3( [
 			new THREE.Vector3( -10, 0, 10 ),
@@ -445,7 +488,7 @@ async function loadActors () {
 	*/
 
 
-	for (const i of sectionData.Static.Objs) {
+	for (const i of actorsData.Static.Objs) {
 
 
 
@@ -557,9 +600,25 @@ async function loadActors () {
 
 			console.log(i);
 
-			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
+
+			await loader.load("./Assets/Models/Capsule.dae", function (collada) {
+				daeCapsuleOnLoad(collada);
+			});
+			//console.error(capsuleGeo)
+			//var capsuleGeo = await new THREE.CapsuleBufferGeometry()
 			if (i.UnitConfigName.value == "Area") {
-				var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+				if (i["!Parameters"].Shape.value == "Sphere") {
+					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial);
+				}
+				else if (i["!Parameters"].Shape.value == "Cylinder") {
+					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial);
+				}
+				else if (i["!Parameters"].Shape.value == "Capsule") {
+					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial);
+				}
+				else {
+					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+				}
 			}
 			else {
 				var cubeMesh = await new THREE.Mesh(cubeGeo, material);
@@ -607,7 +666,7 @@ async function loadActors () {
 		}
 
 	}
-	for (const i of sectionData.Dynamic.Objs) {
+	for (const i of actorsData.Dynamic.Objs) {
 
 
 		currentModelDataForLoad = i;
@@ -707,10 +766,19 @@ async function loadActors () {
 
 
 			console.log(i);
-
-			var cubeGeo = await new THREE.BoxBufferGeometry(10, 10, 10);
 			if (i.UnitConfigName.value == "Area") {
-				var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+				if (i["!Parameters"].Shape.value == "Sphere") {
+					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial);
+				}
+				else if (i["!Parameters"].Shape.value == "Cylinder") {
+					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial);
+				}
+				else if (i["!Parameters"].Shape.value == "Capsule") {
+					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial);
+				}
+				else {
+					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+				}
 			}
 			else {
 				var cubeMesh = await new THREE.Mesh(cubeGeo, material);
@@ -758,14 +826,23 @@ async function loadActors () {
 
 	}
 	console.log(scene);
-	camera.position.x = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[0].value;
-	camera.position.y = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[1].value;
-	camera.position.z = sectionData.Dynamic.Objs[sectionData.Dynamic.Objs.length - 1].Translate[2].value;
+
+	if (isMainLoad) {
+		/* Kinda bad code tbh, so I'll use a bad method for commenting out a comment.
+		camera.position.x = actorsData.Dynamic.Objs[actorsData.Dynamic.Objs.length - 1].Translate[0].value;
+		camera.position.y = actorsData.Dynamic.Objs[actorsData.Dynamic.Objs.length - 1].Translate[1].value;
+		camera.position.z = actorsData.Dynamic.Objs[actorsData.Dynamic.Objs.length - 1].Translate[2].value;
+		*/
+
+		camera.position.x = actorsData.Static.LocationPosX.value;
+		camera.position.y = 50;
+		camera.position.z = actorsData.Static.LocationPosX.value;
 
 
-	//camera.position.x = scene.children[66].position.x;
-	//camera.position.y = scene.children[66].position.y;
-	//camera.position.z = scene.children[66].position.z;
+		//camera.position.x = scene.children[66].position.x;
+		//camera.position.y = scene.children[66].position.y;
+		//camera.position.z = scene.children[66].position.z;
+	}
 }
 
 // Light mode / Dark mode
@@ -894,7 +971,7 @@ function showActorData (ActorHashID, ActorType) {
 // loadActors();
 
 /* function loadPython () {
-    var python = require('child_process').spawn('python', ['./../MapEditor/Process.py']);
+    var python = require('child_process').spawn('python', ['./MapEditor/Process.py']);
  } */
 
 // loadData();
@@ -904,9 +981,12 @@ function showActorData (ActorHashID, ActorType) {
 
 const loader = new ColladaLoader();
 const url = "./Test/TestToolboxGuardian/Guardian_A_Perfect.dae";
-loader.load(url, onLoad, onProgress);
+loader.load(url, onLoad, onProgress, onDaeError);
 // console.log(daeModel);
 
+function onDaeError(collada) {
+	console.error(collada)
+}
 // -----------------------------------------------------------------------------
 
 // Controls
@@ -1103,7 +1183,7 @@ function createVisibilityWindow () {
 	visiblityWin.once("ready-to-show", () => {
 		visiblityWin.show();
 	});
-	console.error(sectionData)
+	//console.error(sectionData)
 	let fullActorDict = {HashIDs: [], ActorNames: []}
 	for (const i of sectionData.Static.Objs) {
 		fullActorDict.HashIDs.push({HashID: i.HashId.value, Name: i.UnitConfigName.value})
@@ -1131,30 +1211,73 @@ ipc.on("fromActorEditor", (event, message, actorHashID, type) => {
 	console.warn(message);
 	console.warn(actorHashID);
 	console.warn(type);
+	ActorTools.removeObjectActors([actorHashID], scene, transformControl);
+	console.warn(sectionData)
+	let actorsData = {
+		"Dynamic": {
+			"Objs": []
+		},
+		"Static": {
+			"Objs": [],
+			"LocationPosX": sectionData.Static.LocationPosX,
+			"LocationPosZ": sectionData.Static.LocationPosZ
+		}
+	};
+	actorsData[type].Objs.push(message);
+	console.warn(actorsData);
+	loadActors(actorsData, false)
+	console.warn(scene);
+});
+
+
+ipc.on("loadSection", (event, message) => {
+	displaySectionName(message);
+	//console.error("hi")
+	loadPython(function (s) { loadInstanceModels(null)}, "main", message);
+});
+
+ipc.on("appDataPath", (event, message) => {
+	//console.error(message)
 });
 
 ipc.on("fromVisibilityEditor", (event, message) => {
 	console.warn(message);
 	console.warn(scene)
+	let num = 0
+	for (const x of scene.children) {
+		if (message.HashIDs.includes(x.HashID)) {
+			x.visible = false;
+		}
+		else {
+			x.visible = true;
+		}
+		num = num + 1;
+	}
+	/*
 	for (const i of message.HashIDs) {
 		let num = 0;
 		for (const x of scene.children) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (x.HashID == i) {
-        	console.warn(x)
-					if (x.visible == true) {
-						x.visible = false;
-						objects[num].visible = false;
-					}
-					else {
-						x.visible = true;
-						objects[num].visible = true;
-					}
+
+					x.visible = false;
+					objects[num].visible = false;
+
+        	//console.warn(x)
+					//if (x.visible == true) {
+						//x.visible = false;
+						//objects[num].visible = false;
+					//}
+					//else {
+						//x.visible = true;
+						//objects[num].visible = true;
+					//}
       	}
 			// }
 			num = num + 1;
 		}
 	}
+	*/
 	for (const i of message.ActorNames) {
 		let num = 0;
 		for (const x of scene.children) {
@@ -1189,6 +1312,70 @@ ipc.on("fromVisibilityEditor", (event, message) => {
 document.getElementById("DataEditorTextWindow").innerHTML = `
 
 `;
+
+// Handle Adding Actors
+// -----------------------------------------------------------------------------
+
+function addActor() {
+	let position = new THREE.Vector3();
+	position.setFromMatrixPosition(camera.matrixWorld);
+
+	//Generate new HashID
+	let highestIntHashID
+	sectionData.Static.Objs.forEach((data) => {
+		let intHashID = data.HashId.value;
+		if (intHashID > highestIntHashID || highestIntHashID == undefined) {
+			highestIntHashID = intHashID;
+		}
+	})
+	sectionData.Dynamic.Objs.forEach((data) => {
+		let intHashID = data.HashId.value;
+		if (intHashID > highestIntHashID || highestIntHashID == undefined) {
+			highestIntHashID = intHashID;
+		}
+	})
+
+	let highestInGameHashID = 4294961892;
+
+	highestIntHashID = highestInGameHashID;
+	let addedActorData =
+	{
+		"HashId": {
+			"type": 102,
+			"value": highestIntHashID + 1
+		},
+		"Rotate": [
+			{"type": 300, "value": camera.rotation.x},
+			{"type": 300, "value": camera.rotation.x},
+			{"type": 300, "value": camera.rotation.x}
+		],
+		"Translate": [
+				{"type": 300, "value": camera.position.x},
+				{"type": 300, "value": camera.position.y},
+				{"type": 300, "value": camera.position.z}
+		],
+		"UnitConfigName": {"type": 400, "value": "Test"}
+	}
+
+	sectionData.Dynamic.Objs.push(addedActorData)
+
+	let actorsData = {
+		"Dynamic": {
+			"Objs": []
+		},
+		"Static": {
+			"Objs": [],
+			"LocationPosX": sectionData.Static.LocationPosX,
+			"LocationPosZ": sectionData.Static.LocationPosZ
+		}
+	};
+	actorsData.Dynamic.Objs.push(addedActorData);
+	loadActors(actorsData, false);
+
+	console.error(sectionData.Dynamic.Objs[0])
+	console.error(highestIntHashID);
+	console.error(sectionData)
+}
 
 // Handle Mouse Movement
 // -----------------------------------------------------------------------------
@@ -1226,7 +1413,7 @@ function clearActorSelectionGroup() {
 
 
 
-
+/*
 function pointerDown (evt) {
 	let action;
 
@@ -1348,6 +1535,238 @@ function pointerDown (evt) {
 		break;
 	}
 }
+*/
+
+
+function pointerDown (evt) {
+	let action;
+	let breakException = {};
+
+	switch (evt.pointerType) {
+	case "mouse":
+		if (evt.buttons === 1) {
+			if (doObjectSelect == true) {
+				raycaster.setFromCamera(mouse, camera);
+				const intersects = raycaster.intersectObjects(objects, true);
+				console.warn(objects)
+				console.warn(intersects)
+				let transformControlsPass = false;
+				let unconfirmedSelectedObject = null;
+				if (intersects.length > 0) {
+					intersects.forEach((intersect, i) => {
+
+						//Check if the object is even visible. This is really important as we don't want the user to select stuff they can't even see.
+						if (intersect.object.visible) {
+						//console.error("i")
+
+						let foundTransformBreak = false;
+						let foundTransformReturn = false;
+
+						try {
+							if (intersect.object instanceof TransformControls) {
+									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
+										if (unconfirmedSelectedObject != null) {
+											//Workaround to break from the forEach.
+											foundTransformBreak = true;
+											throw breakException;
+										}
+										//Workaround to get past the catch statement
+										foundTransformReturn = true;
+										return;
+									}
+
+									unconfirmedSelectedObject = null;
+
+									//Workaround to break from the forEach.
+									foundTransformBreak = true;
+									throw breakException;
+
+							    }
+						}
+						catch {
+							//console.error("hi")
+							if (transformControlsPass) {
+								return;
+							}
+							if (foundTransformBreak) {
+								throw breakException;
+							}
+							if (foundTransformReturn) {
+								return;
+							}
+							console.error("This shouldn't be here...")
+							// I guess I'll add the object as the intersect anyway...
+
+
+							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+							unconfirmedSelectedObject = intersect.object;
+							transformControlsPass = true;
+							return;
+						}
+						try {
+							if (intersect.object.parent instanceof TransformControls) {
+									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
+										if (unconfirmedSelectedObject != null) {
+											//Workaround to break from the forEach.
+											foundTransformBreak = true;
+											throw breakException;
+										}
+										//Workaround to get past the catch statement
+										foundTransformReturn = true;
+										return;
+									}
+
+									unconfirmedSelectedObject = null;
+
+									//Workaround to break from the forEach.
+									foundTransformBreak = true;
+									throw breakException;
+
+								}
+						}
+						catch {
+							//console.error("hi")
+							if (transformControlsPass) {
+								return;
+							}
+							if (foundTransformBreak) {
+								throw breakException;
+							}
+							if (foundTransformReturn) {
+								return;
+							}
+							console.error("Couldn't find object parent... this shouldn't be here, unless you're selecting the scene.")
+
+							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+							unconfirmedSelectedObject = intersect.object;
+							transformControlsPass = true;
+							return;
+
+						}
+						try {
+							if (intersect.object.parent.parent instanceof TransformControls) {
+
+									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
+										if (unconfirmedSelectedObject != null) {
+											//Workaround to break from the forEach.
+											foundTransformBreak = true;
+											throw breakException;
+										}
+										//Workaround to get past the catch statement
+										foundTransformReturn = true;
+										return;
+									}
+
+									unconfirmedSelectedObject = null;
+
+									//Workaround to break from the forEach.
+									foundTransformBreak = true;
+									throw breakException;
+								}
+						}
+						catch {
+							//console.error("hi")
+							if (transformControlsPass) {
+								return;
+							}
+							if (foundTransformBreak) {
+								throw breakException;
+							}
+							if (foundTransformReturn) {
+								return;
+							}
+							//console.error("Couldn't find next parent.")
+
+							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+							unconfirmedSelectedObject = intersect.object;
+							transformControlsPass = true;
+							return;
+
+						}
+						try {
+							if (intersect.object.parent.parent.parent instanceof TransformControls) {
+									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
+										if (unconfirmedSelectedObject != null) {
+											//Workaround to break from the forEach.
+											foundTransformBreak = true;
+											throw breakException;
+										}
+										//Workaround to get past the catch statement
+										foundTransformReturn = true;
+										return;
+									}
+
+									unconfirmedSelectedObject = null;
+
+									//Workaround to break from the forEach.
+									foundTransformBreak = true;
+									throw breakException;
+
+								}
+						}
+						catch {
+							//console.error("hi")
+							if (transformControlsPass) {
+								return;
+							}
+							if (foundTransformBreak) {
+								throw breakException;
+							}
+							if (foundTransformReturn) {
+								return;
+							}
+
+							//console.error("Couldn't find next parent.")
+
+							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+							unconfirmedSelectedObject = intersect.object;
+							transformControlsPass = true;
+							return;s
+
+						}
+						if (transformControlsPass) {
+							return;
+						}
+
+						console.warn("Object has too many parents, but that's fine.")
+
+						//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+						unconfirmedSelectedObject = intersect.object;
+						transformControlsPass = true;
+						return;
+					}
+					})
+				}
+				if (unconfirmedSelectedObject != null) {
+					selectedObject = unconfirmedSelectedObject;
+					if (selectedObject.parent.type == "Group") {
+						transformControl.attach(selectedObject.parent);
+						transformControlAttached = true;
+						showActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
+					} else {
+						transformControl.attach(selectedObject);
+						transformControlAttached = true;
+						showActorData(selectedObject.HashID, selectedObject.Type);
+					}
+				}
+				console.warn(unconfirmedSelectedObject)
+			}
+
+
+
+			break;
+		}
+	case "pen":
+		action = "tapping";
+		break;
+	case "touch":
+		action = "touching";
+		break;
+	default:
+		action = "interacting with";
+		break;
+	}
+}
 
 // Handle TransformControl Mode changes
 document.getElementById("Translate").addEventListener("click", controlSetTranslate);
@@ -1369,6 +1788,26 @@ function controlSetRotate () {
 // -----------------------------------------------------------------------------
 
 function animate () {
+	/*
+	let geoArray = [];
+	if (scene.children != undefined) {
+		//console.error("HIII")
+		scene.children.forEach((object) => {
+			if (object.visible && object.geometry != undefined) {
+				geoArray.push(object.geometry)
+				object.visible = false;
+			}
+		})
+		console.warn(geoArray)
+		if (geoArray.length > 1) {
+			//console.error("YAY")
+			BufferGeometryUtils.mergeBufferGeometries(geoArray, false);
+		}
+	}
+	*/
+	var position = new THREE.Vector3();
+  position.setFromMatrixPosition( camera.matrixWorld );
+	//console.error(position)
 	stats.update();
 	resizeCanvasToDisplaySize();
 	setTimeout(function () {
@@ -1379,6 +1818,7 @@ function animate () {
 
 	camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
 	renderer.render(scene, camera);
+	//console.error(scene)
 }
 animate();
 
@@ -1401,8 +1841,8 @@ saveButton.addEventListener("click", function () {
 	console.warn("e");
 });
 
-// function to get the current section name
-function getSectionName (section) {
+// function to get the current section name ahd display it.
+function displaySectionName (section) {
 	const sectionName = document.getElementById("sectionName");
 	console.warn(sectionName);
 	console.warn(section);
@@ -1412,5 +1852,5 @@ function getSectionName (section) {
 // loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", 'DarkMode');
 window.onload = function () {
 	loadPython(function (s) { console.warn("ugh what is it this time"); loadDarkMode(s); }, "shareSettings", "DarkMode");
-	loadPython(function (s) { console.warn("setting section Name"); getSectionName(s); }, "getCurrentSection");
+
 };

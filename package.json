@@ -13,10 +13,12 @@
   },
   "devDependencies": {
     "electron": "^10.1.5",
+    "electron-packager": "^15.2.0",
     "eslint": "^7.16.0"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager ./ SilentPrincess --platform=win32 --arch=x64 --out=build --icon=./Assets/UI/Icon/MapEditorIconDarkMode-Alt.ico --ignore='^/Cache$'"
   },
   "author": "",
   "license": "ISC",
