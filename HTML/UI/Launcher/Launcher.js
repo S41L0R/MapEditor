@@ -1,5 +1,6 @@
 const fs = require("fs");
 const ipc = require('electron').ipcRenderer;
+const path = require('path');
 
 document.getElementById("MapEditorButton").addEventListener("click", function() {
   console.log("hi")
@@ -77,4 +78,14 @@ document.getElementById("SettingsButton").addEventListener("click", function() {
 
   setTimeout(() => {document.getElementById("MapEditorButton").innerHTML = ""}, 500);
 
+});
+
+
+console.error(__dirname)
+console.error(path.join(__dirname, "../../../MapEditor/Process.py"))
+const { spawn } = require("child_process");
+const childPython = spawn("python", [path.join(__dirname, "../../../MapEditor/Process.py"), "cacheMapTex"], {cwd:path.join(__dirname, "../../../")})
+
+childPython.stdio[1].on("data", (dataBuffer) => {
+  console.error(dataBuffer.toString())
 });

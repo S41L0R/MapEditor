@@ -100,6 +100,12 @@ def findMKDir(checkDir):
     if checkDir.exists():
         return checkDir
     else:
+        if ("." in pathlib.PurePath(checkDir).name):
+            checkFile = checkDir
+            checkDir = checkDir.parents[0]
+            checkDir.mkdir(parents=True, exist_ok=True)
+            checkFile.touch()
+            return checkFile
         checkDir.mkdir(parents=True, exist_ok=True)
         return checkDir
 

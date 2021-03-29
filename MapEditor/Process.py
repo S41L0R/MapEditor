@@ -32,9 +32,20 @@ currentSection = ''
 # Load Settings
 def getSettings():
     defaultSettings = {
-    "GameDump": "Test/TestResources",
-    "NX": False,
-    "DarkMode": False
+        "GameDump": "Test/TestResources",
+        "NX": False,
+        "DarkMode": False,
+        "LoadModels": True,
+        "SettingsMenuOrganization": {
+            "Graphics": [
+                "DarkMode",
+                "LoadModels"
+            ],
+            "Operation": [
+                "GameDump",
+                "NX"
+            ]
+        }
     }
 
     def checkSettings():
@@ -45,6 +56,10 @@ def getSettings():
             WriteSettings.WriteSettings(defaultSettings)
             print("Created and poulated json file.")
             checkSettings()
+
+            settings = LoadSettings.LoadSettings()
+            return(settings)
+
 
     settings = checkSettings()
     if settings.get('NX') == True:
@@ -58,12 +73,19 @@ def getSettings():
 # Formats settings to be shared with the js end of things
 def shareSettings(setting):
     settings, content, aoc = getSettings()
-    if setting == None:
+    if (setting == "All" or setting == None):
         pass
     else:
         settings = settings.get(setting)
     jsonSettings = json.dumps(settings)
     print(f'!startData{jsonSettings}!endData')
+
+# To set settings:
+def setSettings(newSettings):
+    #raise NameError(newSettings)
+    WriteSettings.WriteSettings(json.loads(newSettings.replace("'", '"') ))
+    print("Created and poulated json file.")
+
 
 # this exists so js can not be stupid
 def getCurrentSection():

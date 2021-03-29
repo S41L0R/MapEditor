@@ -82,7 +82,10 @@ const cameraLookSpeed = 1;
 const instNum = 50;
 
 // Determines whether models should be loaded. Currently this is equivelent to badFramerate.
-const loadModels = true;
+//const loadModels = true;
+
+var loadModels;
+loadPython(function (s) { loadModels = s;}, "shareSettings", "LoadModels");
 
 // Define Map Based variables
 // -----------------------------------------------------------------------------
@@ -105,6 +108,9 @@ var cubeGeo = new THREE.BoxBufferGeometry();
 var sphereGeo = new THREE.SphereBufferGeometry();
 var cylinderGeo = new THREE.CylinderBufferGeometry();
 var capsuleGeo = new THREE.CapsuleBufferGeometry();
+
+var modelsToCacheTotal;
+var modelsToCacheDone;
 
 //var capsuleGeo = new THREE.BufferGeometry();
 
@@ -336,10 +342,24 @@ async function loadPython (callback, func, arg) {
 			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
 				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
 			} else if (dataBuffer.toString().includes("!startProgressData")) {
-				modelsToCacheDone = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressData") + 18, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
+				if (modelsToCacheDone/modelsToCacheTotal < 1) {
+					document.getElementById("progressBar").style.visibility="visible";
+					document.getElementById("ProgressContainerDiv").style.visibility="visible";
+					document.getElementById("loadStatus").style.visibility="visible";
+					document.getElementById("progressBar").style.width=`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`
+					console.error(`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`)
+					console.error(modelsToCacheDone);
+					console.error(modelsToCacheTotal);
+				}
+				else {
+					document.getElementById("progressBar").style.visibility="hidden";
+					document.getElementById("ProgressContainerDiv").style.visibility="hidden";
+					document.getElementById("loadStatus").style.visibility="hidden";
+				}
 			} else {
 				console.log("false");
 			}
+
 		});
 	} else {
 		const { spawn } = require("child_process");
@@ -361,6 +381,26 @@ async function loadPython (callback, func, arg) {
 				if (func == "main") {
 					sectionData = data;
 				}
+			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
+				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
+			} else if (dataBuffer.toString().includes("!startProgressData")) {
+				console.error("testestestest")
+				modelsToCacheDone = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressData") + 18, dataBuffer.toString().lastIndexOf("!endProgressData"))
+				if (modelsToCacheDone/modelsToCacheTotal < 1) {
+					document.getElementById("progressBar").style.visibility="visible";
+					document.getElementById("ProgressContainerDiv").style.visibility="visible";
+					document.getElementById("loadStatus").style.visibility="visible";
+					document.getElementById("progressBar").style.width=`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`
+					console.error(`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`)
+					console.error(modelsToCacheDone);
+					console.error(modelsToCacheTotal);
+				}
+				else {
+					document.getElementById("progressBar").style.visibility="hidden";
+					document.getElementById("ProgressContainerDiv").style.visibility="hidden";
+					document.getElementById("loadStatus").style.visibility="hidden";
+				}
+
 			} else {
 				console.log("false");
 			}
@@ -547,7 +587,7 @@ async function loadActors (actorsData, isMainLoad) {
 			objects.push(duplicateMesh);
 
 
-			await duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
 
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
@@ -600,10 +640,11 @@ async function loadActors (actorsData, isMainLoad) {
 
 			console.log(i);
 
-
+			/*
 			await loader.load("./Assets/Models/Capsule.dae", function (collada) {
 				daeCapsuleOnLoad(collada);
 			});
+			*/
 			//console.error(capsuleGeo)
 			//var capsuleGeo = await new THREE.CapsuleBufferGeometry()
 			if (i.UnitConfigName.value == "Area") {

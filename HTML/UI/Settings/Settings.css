@@ -11,24 +11,18 @@
   font-size: 4vh;
   vertical-align: middle;
   /*position: absolute;*/
-
   display:flex;
   flex-direction:column;
   justify-content:space-around;
-
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-
-
   animation-fill-mode: forwards;
-
   align-items: center;
-
-
+  z-index: 0;
 }
 
 .LauncherButton p {
@@ -37,7 +31,6 @@
     flex-direction: column;
     /*height: 100%;*/
     vertical-align: middle;
-    visibility: hidden;
 
 }
 
@@ -45,11 +38,13 @@
   width: 50%;
   height: auto;
   visibility: hidden;
-
+  position: relative;
+  z-index: -1;
 }
 
 #Title {
   position:relative;
+  margin-bottom: 0;
 }
 
 #container {
@@ -64,17 +59,12 @@
   flex-basis: 0;
 
   /*Specify Animations*/
-
-
-
   /*
   animation-name: ShrinkDiv;
   animation-duration: 4s;
   */
-
   transition: all 4s ease;
-
-
+  position: relative;
 }
 
 
@@ -173,4 +163,105 @@
   to {
     opacity: 0;
   }
+}
+
+
+.settingsModuleBoolean {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  background-color:white;
+  border-radius: 10px;
+  transition-duration: 180ms;
+}
+
+.settingsModuleString {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  background-color:darkgrey;
+  border-radius: 10px;
+  transition-duration: 180ms;
+}
+
+.settingsModuleInt {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  background-color:darkgrey;
+  border-radius: 10px;
+  transition-duration: 180ms;
+}
+
+.settingsModuleFloat {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  background-color:darkgrey;
+  border-radius: 10px;
+  transition-duration: 180ms;
+}
+
+p {
+  margin-bottom: 0;
+}
+input {
+  margin-top: 10;
+  margin-bottom: 10;
+}
+
+.SettingsContainer {
+  position: absolute;
+  width: 50%;
+  overflow-y: auto;
+  height: 100%;
+}
+
+
+.tabButton {
+  border-radius: 10px;
+  background-color: slategrey;
+  margin: 10px;
+  font-size: 20;
+  position: relative;
+  margin-right: 0;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  text-align: center;
+}
+
+
+
+
+input {
+  font-size: 16px;
+  font-family: inherit;
+  padding: 0.25em 0.5em;
+  background-color: #fff;
+  border: 2px solid #8b8a8b;
+  border-radius: 4px;
+
+  transition: 180ms box-shadow ease-in-out;
+
+}
+
+input:focus {
+  border-color: powderblue;
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 3px slategrey;
+}
+
+
+#saveButton {
+  background-color: slategrey;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: absolute;
+  bottom: 0;
+  font-size: 20;
+  font-weight: bold;
+  height: 10%;
 }
