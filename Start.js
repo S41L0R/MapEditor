@@ -192,7 +192,8 @@ function createWindow () {
     icon: 'Assets/UI/Logo/MapEditorIconDarkMode-Alt.png',
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
+      contextIsolation: false
     }
   })
   // and load the index.html of the app.

@@ -868,6 +868,93 @@ async function loadActors (actorsData, isMainLoad) {
 	}
 	console.log(scene);
 
+	/*
+	for (const rail of sectionData.Static.Rails) {
+		let pointsArray = [new THREE.Vector3(2,100,5), new THREE.Vector3(3, 100, 8), new THREE.Vector3(5, 115, 6)];
+		console.error(rail)
+		for (const railPoint of rail.RailPoints) {
+			//pointsArray.push(new THREE.Vector3(railPoint.Translate[0], railPoint.Translate[1], railPoint.Translate[2]))
+			camera.position.x = railPoint.Translate[0]
+			camera.position.y = railPoint.Translate[1]
+			camera.position.z = railPoint.Translate[2]
+			camera.position.x = 0;
+			camera.position.y = 100;
+			camera.position.z = 0;
+			console.error(railPoint)
+			//pointsArray.push(new THREE.Vector3(2,100,5), new THREE.Vector3(3, 100, 8), new THREE.Vector3(5, 115, 6));
+
+		}
+		
+		// Create a sine-like wave
+		const curve = new THREE.CubicBezierCurve3( [
+				new THREE.Vector3( -10, 0, 0 ),
+				new THREE.Vector3( -5, 15, 0 ),
+				new THREE.Vector3( 20, 15, 0 ),
+				new THREE.Vector3( 10, 0, 0 )
+		]);
+		const points = curve.getPoints( 50 );
+		const geometry = new THREE.BufferGeometry().setFromPoints( points );
+		const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+		// Create the final object to add to the scene
+		const curveObject = new THREE.Line( geometry, material );
+		scene.add(curveObject);
+	}*/
+
+	/*
+	//for (const rail of sectionData.Static.Rails) {
+		let pointsArray = [];
+		for (const railPoint of rail.RailPoints) {
+			pointsArray.push(new THREE.Vector3(railPoint.Translate[0], railPoint.Translate[1], railPoint.Translate[2]));
+			
+			camera.position.x = railPoint.Translate[0];
+			camera.position.y = railPoint.Translate[1];
+			camera.position.z = railPoint.Translate[2];
+		}
+		const curve = new THREE.CatmullRomCurve3( [
+				new THREE.Vector3( -10, 0, 10 ),
+				new THREE.Vector3( -5, 5, 5 ),
+				new THREE.Vector3( 0, 0, 0 ),
+				new THREE.Vector3( 5, -5, 5 ),
+				new THREE.Vector3( 10, 0, 10 )
+		] );
+		//const curve = new THREE.CatmullRomCurve3(pointsArray);
+		const points = curve.getPoints(50);
+		const geometry = new THREE.BufferGeometry().setFromPoints(points);
+		const curveMaterial = new THREE.BufferGeometry().setFromPoints(points);
+		const curveObject = new THREE.Line(geometry, curveMaterial);
+		scene.add(curveObject);
+	//}*/
+	
+
+	/*
+	const curve = new THREE.CatmullRomCurve3( [
+			new THREE.Vector3( -10, 0, 10 ),
+			new THREE.Vector3( -5, 5, 5 ),
+			new THREE.Vector3( 0, 0, 0 ),
+				new THREE.Vector3( 5, -5, 5 ),
+					new THREE.Vector3( 10, 0, 10 )
+					] );
+	*/
+
+	for (const rail of sectionData.Static.Rails) {
+		let pointsArray = [];
+		for (const railPoint of rail.RailPoints) {
+			console.error(railPoint);
+			pointsArray.push(new THREE.Vector3(railPoint.Translate[0].value, railPoint.Translate[1].value, railPoint.Translate[2].value));
+		}
+		console.error(pointsArray);
+		const curve = new THREE.CatmullRomCurve3(pointsArray);
+		const points = curve.getPoints( 50 );
+		const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+		const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+
+		// Create the final object to add to the scene
+		const curveObject = new THREE.Line( geometry, curveMat );
+
+		scene.add(curveObject);
+	}
+
 	if (isMainLoad) {
 		/* Kinda bad code tbh, so I'll use a bad method for commenting out a comment.
 		camera.position.x = actorsData.Dynamic.Objs[actorsData.Dynamic.Objs.length - 1].Translate[0].value;
@@ -1762,7 +1849,7 @@ function pointerDown (evt) {
 							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
 							unconfirmedSelectedObject = intersect.object;
 							transformControlsPass = true;
-							return;s
+							return;
 
 						}
 						if (transformControlsPass) {
@@ -1829,6 +1916,7 @@ function controlSetRotate () {
 // -----------------------------------------------------------------------------
 
 function animate () {
+		console.warn(sectionData)
 	/*
 	let geoArray = [];
 	if (scene.children != undefined) {
