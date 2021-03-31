@@ -5,3 +5,6 @@ node_modules/
 Cache/
 Test/
 build/
+*~
+*.swp
+*.swo
