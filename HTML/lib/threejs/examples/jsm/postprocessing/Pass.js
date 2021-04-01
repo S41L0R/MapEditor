@@ -1,8 +1,9 @@
 import {
+	BufferGeometry,
+	Float32BufferAttribute,
 	OrthographicCamera,
-	PlaneBufferGeometry,
 	Mesh
-} from "../../../build/three.module.js";
+} from '../../../build/three.module.js';
 
 function Pass() {
 
@@ -34,10 +35,19 @@ Object.assign( Pass.prototype, {
 
 // Helper for passes that need to fill the viewport with a single quad.
 
+// Important: It's actually a hack to put FullScreenQuad into the Pass namespace. This is only
+// done to make examples/js code work. Normally, FullScreenQuad should be exported
+// from this module like Pass.
+
 Pass.FullScreenQuad = ( function () {
 
 	var camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-	var geometry = new PlaneBufferGeometry( 2, 2 );
+
+	// https://github.com/mrdoob/three.js/pull/21358
+
+	var geometry = new BufferGeometry();
+	geometry.setAttribute( 'position', new Float32BufferAttribute( [ - 1, 3, 0, - 1, - 1, 0, 3, - 1, 0 ], 3 ) );
+	geometry.setAttribute( 'uv', new Float32BufferAttribute( [ 0, 2, 0, 0, 2, 0 ], 2 ) );
 
 	var FullScreenQuad = function ( material ) {
 

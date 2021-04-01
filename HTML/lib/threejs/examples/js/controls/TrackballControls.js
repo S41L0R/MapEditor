@@ -1,5 +1,3 @@
-console.warn( "THREE.TrackballControls: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
-
 THREE.TrackballControls = function ( object, domElement ) {
 
 	if ( domElement === undefined ) console.warn( 'THREE.TrackballControls: The second parameter "domElement" is now mandatory.' );
@@ -31,9 +29,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 	this.minDistance = 0;
 	this.maxDistance = Infinity;
 
-	this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
+	this.keys = [ 'KeyA' /*A*/, 'KeyS' /*S*/, 'KeyD' /*D*/ ];
 
-	this.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.ZOOM, RIGHT: THREE.MOUSE.PAN };
+	this.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
 
 	// internals
 
@@ -402,6 +400,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				onMouseDown( event );
 				break;
 
@@ -418,6 +417,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				onMouseMove( event );
 				break;
 
@@ -434,6 +434,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				onMouseUp( event );
 				break;
 
@@ -453,15 +454,15 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 			return;
 
-		} else if ( event.keyCode === scope.keys[ STATE.ROTATE ] && ! scope.noRotate ) {
+		} else if ( event.code === scope.keys[ STATE.ROTATE ] && ! scope.noRotate ) {
 
 			_keyState = STATE.ROTATE;
 
-		} else if ( event.keyCode === scope.keys[ STATE.ZOOM ] && ! scope.noZoom ) {
+		} else if ( event.code === scope.keys[ STATE.ZOOM ] && ! scope.noZoom ) {
 
 			_keyState = STATE.ZOOM;
 
-		} else if ( event.keyCode === scope.keys[ STATE.PAN ] && ! scope.noPan ) {
+		} else if ( event.code === scope.keys[ STATE.PAN ] && ! scope.noPan ) {
 
 			_keyState = STATE.PAN;
 
@@ -475,14 +476,13 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		_keyState = STATE.NONE;
 
-		window.addEventListener( 'keydown', keydown, false );
+		window.addEventListener( 'keydown', keydown );
 
 	}
 
 	function onMouseDown( event ) {
 
 		event.preventDefault();
-		event.stopPropagation();
 
 		if ( _state === STATE.NONE ) {
 
@@ -526,8 +526,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		}
 
-		scope.domElement.ownerDocument.addEventListener( 'pointermove', onPointerMove, false );
-		scope.domElement.ownerDocument.addEventListener( 'pointerup', onPointerUp, false );
+		scope.domElement.ownerDocument.addEventListener( 'pointermove', onPointerMove );
+		scope.domElement.ownerDocument.addEventListener( 'pointerup', onPointerUp );
 
 		scope.dispatchEvent( startEvent );
 
@@ -538,7 +538,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 		if ( scope.enabled === false ) return;
 
 		event.preventDefault();
-		event.stopPropagation();
 
 		var state = ( _keyState !== STATE.NONE ) ? _keyState : _state;
 
@@ -564,7 +563,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 		if ( scope.enabled === false ) return;
 
 		event.preventDefault();
-		event.stopPropagation();
 
 		_state = STATE.NONE;
 
@@ -582,7 +580,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 		if ( scope.noZoom === true ) return;
 
 		event.preventDefault();
-		event.stopPropagation();
 
 		switch ( event.deltaMode ) {
 
@@ -645,7 +642,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 		if ( scope.enabled === false ) return;
 
 		event.preventDefault();
-		event.stopPropagation();
 
 		switch ( event.touches.length ) {
 
@@ -700,37 +696,37 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	this.dispose = function () {
 
-		scope.domElement.removeEventListener( 'contextmenu', contextmenu, false );
+		scope.domElement.removeEventListener( 'contextmenu', contextmenu );
 
-		scope.domElement.removeEventListener( 'pointerdown', onPointerDown, false );
-		scope.domElement.removeEventListener( 'wheel', mousewheel, false );
+		scope.domElement.removeEventListener( 'pointerdown', onPointerDown );
+		scope.domElement.removeEventListener( 'wheel', mousewheel );
 
-		scope.domElement.removeEventListener( 'touchstart', touchstart, false );
-		scope.domElement.removeEventListener( 'touchend', touchend, false );
-		scope.domElement.removeEventListener( 'touchmove', touchmove, false );
+		scope.domElement.removeEventListener( 'touchstart', touchstart );
+		scope.domElement.removeEventListener( 'touchend', touchend );
+		scope.domElement.removeEventListener( 'touchmove', touchmove );
 
-		scope.domElement.ownerDocument.removeEventListener( 'pointermove', onPointerMove, false );
-		scope.domElement.ownerDocument.removeEventListener( 'pointerup', onPointerUp, false );
+		scope.domElement.ownerDocument.removeEventListener( 'pointermove', onPointerMove );
+		scope.domElement.ownerDocument.removeEventListener( 'pointerup', onPointerUp );
 
-		window.removeEventListener( 'keydown', keydown, false );
-		window.removeEventListener( 'keyup', keyup, false );
+		window.removeEventListener( 'keydown', keydown );
+		window.removeEventListener( 'keyup', keyup );
 
 	};
 
-	this.domElement.addEventListener( 'contextmenu', contextmenu, false );
+	this.domElement.addEventListener( 'contextmenu', contextmenu );
 
-	this.domElement.addEventListener( 'pointerdown', onPointerDown, false );
-	this.domElement.addEventListener( 'wheel', mousewheel, false );
+	this.domElement.addEventListener( 'pointerdown', onPointerDown );
+	this.domElement.addEventListener( 'wheel', mousewheel );
 
-	this.domElement.addEventListener( 'touchstart', touchstart, false );
-	this.domElement.addEventListener( 'touchend', touchend, false );
-	this.domElement.addEventListener( 'touchmove', touchmove, false );
+	this.domElement.addEventListener( 'touchstart', touchstart );
+	this.domElement.addEventListener( 'touchend', touchend );
+	this.domElement.addEventListener( 'touchmove', touchmove );
 
-	this.domElement.ownerDocument.addEventListener( 'pointermove', onPointerMove, false );
-	this.domElement.ownerDocument.addEventListener( 'pointerup', onPointerUp, false );
+	this.domElement.ownerDocument.addEventListener( 'pointermove', onPointerMove );
+	this.domElement.ownerDocument.addEventListener( 'pointerup', onPointerUp );
 
-	window.addEventListener( 'keydown', keydown, false );
-	window.addEventListener( 'keyup', keyup, false );
+	window.addEventListener( 'keydown', keydown );
+	window.addEventListener( 'keyup', keyup );
 
 	this.handleResize();
 

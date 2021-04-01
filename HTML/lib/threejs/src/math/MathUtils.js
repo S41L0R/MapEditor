@@ -54,11 +54,43 @@ const MathUtils = {
 
 	},
 
+	// https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/inverse-lerp-a-super-useful-yet-often-overlooked-function-r5230/
+
+	inverseLerp: function ( x, y, value ) {
+
+		if ( x !== y ) {
+
+			return ( value - x ) / ( y - x );
+
+		 } else {
+
+			return 0;
+
+		 }
+
+	},
+
 	// https://en.wikipedia.org/wiki/Linear_interpolation
 
 	lerp: function ( x, y, t ) {
 
 		return ( 1 - t ) * x + t * y;
+
+	},
+
+	// http://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/
+
+	damp: function ( x, y, lambda, dt ) {
+
+		return MathUtils.lerp( x, y, 1 - Math.exp( - lambda * dt ) );
+
+	},
+
+	// https://www.desmos.com/calculator/vcsjnyz7x4
+
+	pingpong: function ( x, length = 1 ) {
+
+		return length - Math.abs( MathUtils.euclideanModulo( x, length * 2 ) - length );
 
 	},
 

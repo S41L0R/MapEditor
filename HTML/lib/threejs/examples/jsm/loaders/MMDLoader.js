@@ -29,9 +29,10 @@ import {
 	Uint16BufferAttribute,
 	Vector3,
 	VectorKeyframeTrack
-} from "../../../build/three.module.js";
-import { TGALoader } from "../loaders/TGALoader.js";
-import { MMDParser } from "../libs/mmdparser.module.js";
+} from '../../../build/three.module.js';
+import { TGALoader } from '../loaders/TGALoader.js';
+import { MMDParser } from '../libs/mmdparser.module.js';
+
 /**
  * Dependencies
  *  - mmd-parser https://github.com/takahirox/mmd-parser
@@ -217,6 +218,7 @@ var MMDLoader = ( function () {
 				.setPath( this.path )
 				.setResponseType( 'arraybuffer' )
 				.setRequestHeader( this.requestHeader )
+				.setWithCredentials( this.withCredentials )
 				.load( url, function ( buffer ) {
 
 					onLoad( parser.parsePmd( buffer, true ) );
@@ -242,6 +244,7 @@ var MMDLoader = ( function () {
 				.setPath( this.path )
 				.setResponseType( 'arraybuffer' )
 				.setRequestHeader( this.requestHeader )
+				.setWithCredentials( this.withCredentials )
 				.load( url, function ( buffer ) {
 
 					onLoad( parser.parsePmx( buffer, true ) );
@@ -272,7 +275,8 @@ var MMDLoader = ( function () {
 				.setMimeType( undefined )
 				.setPath( this.animationPath )
 				.setResponseType( 'arraybuffer' )
-				.setRequestHeader( this.requestHeader );
+				.setRequestHeader( this.requestHeader )
+				.setWithCredentials( this.withCredentials );
 
 			for ( var i = 0, il = urls.length; i < il; i ++ ) {
 
@@ -306,6 +310,7 @@ var MMDLoader = ( function () {
 				.setPath( this.animationPath )
 				.setResponseType( 'text' )
 				.setRequestHeader( this.requestHeader )
+				.setWithCredentials( this.withCredentials )
 				.load( url, function ( text ) {
 
 					onLoad( parser.parseVpd( text, true ) );
@@ -613,6 +618,8 @@ var MMDLoader = ( function () {
 				var boneData = data.bones[ i ];
 
 				var bone = {
+					index: i,
+					transformationClass: boneData.transformationClass,
 					parent: boneData.parentIndex,
 					name: boneData.name,
 					pos: boneData.position.slice( 0, 3 ),
@@ -721,6 +728,10 @@ var MMDLoader = ( function () {
 
 					iks.push( param );
 
+					// Save the reference even from bone data for efficiently
+					// simulating PMX animation system
+					bones[ i ].ik = param;
+
 				}
 
 			}
@@ -728,6 +739,9 @@ var MMDLoader = ( function () {
 			// grants
 
 			if ( data.metadata.format === 'pmx' ) {
+
+				// bone index -> grant entry map
+				var grantEntryMap = {};
 
 				for ( var i = 0; i < data.metadata.boneCount; i ++ ) {
 
@@ -746,15 +760,54 @@ var MMDLoader = ( function () {
 						transformationClass: boneData.transformationClass
 					};
 
-					grants.push( param );
+					grantEntryMap[ i ] = { parent: null, children: [], param: param, visited: false };
 
 				}
 
-				grants.sort( function ( a, b ) {
+				var rootEntry = { parent: null, children: [], param: null, visited: false };
 
-					return a.transformationClass - b.transformationClass;
+				// Build a tree representing grant hierarchy
 
-				} );
+				for ( var boneIndex in grantEntryMap ) {
+
+					var grantEntry = grantEntryMap[ boneIndex ];
+					var parentGrantEntry = grantEntryMap[ grantEntry.parentIndex ] || rootEntry;
+
+					grantEntry.parent = parentGrantEntry;
+					parentGrantEntry.children.push( grantEntry );
+
+				}
+
+				// Sort grant parameters from parents to children because
+				// grant uses parent's transform that parent's grant is already applied
+				// so grant should be applied in order from parents to children
+
+				function traverse( entry ) {
+
+					if ( entry.param ) {
+
+						grants.push( entry.param );
+
+						// Save the reference even from bone data for efficiently
+						// simulating PMX animation system
+						bones[ entry.param.index ].grant = entry.param;
+
+					}
+
+					entry.visited = true;
+
+					for ( var i = 0, il = entry.children.length; i < il; i ++ ) {
+
+						var child = entry.children[ i ];
+
+						// Cut off a loop if exists. (Is a grant loop invalid?)
+						if ( ! child.visited ) traverse( child );
+
+					}
+
+				}
+
+				traverse( rootEntry );
 
 			}
 

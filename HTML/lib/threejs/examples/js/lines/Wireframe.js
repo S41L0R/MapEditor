@@ -1,5 +1,3 @@
-console.warn( "THREE.Wireframe: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
-
 THREE.Wireframe = function ( geometry, material ) {
 
 	THREE.Mesh.call( this );
@@ -28,9 +26,9 @@ THREE.Wireframe.prototype = Object.assign( Object.create( THREE.Mesh.prototype )
 
 			var instanceStart = geometry.attributes.instanceStart;
 			var instanceEnd = geometry.attributes.instanceEnd;
-			var lineDistances = new Float32Array( 2 * instanceStart.data.count );
+			var lineDistances = new Float32Array( 2 * instanceStart.count );
 
-			for ( var i = 0, j = 0, l = instanceStart.data.count; i < l; i ++, j += 2 ) {
+			for ( var i = 0, j = 0, l = instanceStart.count; i < l; i ++, j += 2 ) {
 
 				start.fromBufferAttribute( instanceStart, i );
 				end.fromBufferAttribute( instanceEnd, i );

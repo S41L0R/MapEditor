@@ -56,6 +56,7 @@ const clock = new THREE.Clock();
 // -----------------------------------------------------------------------------
 
 const raycaster = new THREE.Raycaster();
+raycaster.params.Points.threshold = 3;
 const mouse = new THREE.Vector2();
 
 let selectedObject;
@@ -161,21 +162,21 @@ function resizeCanvasToDisplaySize () {
 	}
 }
 
-const geo = new THREE.Geometry();
+//const geo = new THREE.Geometry();
 
-geo.vertices.push(
-	new THREE.Vector3(-1, 1, 0),
-	new THREE.Vector3(-1, -1, 0),
-	new THREE.Vector3(1, -1, 0)
-);
+//geo.vertices.push(
+	//new THREE.Vector3(-1, 1, 0),
+	//new THREE.Vector3(-1, -1, 0),
+	//new THREE.Vector3(1, -1, 0)
+//);
 
-geo.faces.push(new THREE.Face3(0, 1, 2));
+//geo.faces.push(new THREE.Face3(0, 1, 2));
 
-geo.computeBoundingSphere();
+//geo.computeBoundingSphere();
 
-const tri = new THREE.Mesh(geo, material);
-scene.add(tri);
-tri.position.set(50, 50, 50);
+//const tri = new THREE.Mesh(geo, material);
+//scene.add(tri);
+//tri.position.set(50, 50, 50);
 
 
 
@@ -962,7 +963,7 @@ async function loadActors (actorsData, isMainLoad) {
 	}*/
 
 
-	RailTools.createRails(sectionData, scene);
+	RailTools.createRails(sectionData, scene, objects);
 
 	if (isMainLoad) {
 		/* Kinda bad code tbh, so I'll use a bad method for commenting out a comment.
@@ -1147,7 +1148,28 @@ transformControl.addEventListener("dragging-changed", function (event) {
 	fpControls.enabled = !event.value;
 	doObjectSelect = !event.value;
 
-	if (selectedObject.parent.type == "Group") {
+
+	if (selectedObject.type == "Points") {
+		//selectedObject = selectedObject.object;
+		for (const rail of sectionData.Static.Rails) {
+			if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
+				console.error("hi there");
+				/*
+				for (railPoint of rail.RailPoints) {
+					console.error(railPoint);
+					railPoint.Translate[0].value = selectedObject.position.x;
+					railPoint.Translate[1].value = selectedObject.position.y;
+					railPoint.Translate[2].value = selectedObject.position.z;
+				}
+				*/
+				rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x;
+				rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y;
+				rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z;
+				RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene);
+			}
+		}
+	} 
+	else if (selectedObject.parent.type == "Group") {
 		transformControl.attach(selectedObject.parent);
 		transformControlAttached = true;
 		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
@@ -1181,10 +1203,13 @@ transformControl.addEventListener("dragging-changed", function (event) {
 		}
 
 
-
-
 		setActorData(selectedObject.parent.HashID, selectedObject.parent.Type, tempActorData);
-	} else {
+
+	}
+
+
+
+	else {
 		transformControl.attach(selectedObject);
 		transformControlAttached = true;
 

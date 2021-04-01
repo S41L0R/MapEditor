@@ -1,4 +1,3 @@
-console.warn( "THREE.LineMaterial: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 /**
  * parameters = {
  *  color: <hex>,
@@ -6,6 +5,7 @@ console.warn( "THREE.LineMaterial: As part of the transition to ES6 Modules, the
  *  dashed: <boolean>,
  *  dashScale: <float>,
  *  dashSize: <float>,
+ *  dashOffset: <float>,
  *  gapSize: <float>,
  *  resolution: <Vector2>, // to be set by renderer
  * }
@@ -17,6 +17,7 @@ THREE.UniformsLib.line = {
 	resolution: { value: new THREE.Vector2( 1, 1 ) },
 	dashScale: { value: 1 },
 	dashSize: { value: 1 },
+	dashOffset: { value: 0 },
 	gapSize: { value: 1 }, // todo FIX - maybe change to totalSize
 	opacity: { value: 1 }
 
@@ -185,6 +186,7 @@ THREE.ShaderLib[ 'line' ] = {
 		#ifdef USE_DASH
 
 			uniform float dashSize;
+			uniform float dashOffset;
 			uniform float gapSize;
 
 		#endif
@@ -207,9 +209,27 @@ THREE.ShaderLib[ 'line' ] = {
 
 				if ( vUv.y < - 1.0 || vUv.y > 1.0 ) discard; // discard endcaps
 
-				if ( mod( vLineDistance, dashSize + gapSize ) > dashSize ) discard; // todo - FIX
+				if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard; // todo - FIX
 
 			#endif
+
+			float alpha = opacity;
+
+			#ifdef ALPHA_TO_COVERAGE
+
+			// artifacts appear on some hardware if a derivative is taken within a conditional
+			float a = vUv.x;
+			float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+			float len2 = a * a + b * b;
+			float dlen = fwidth( len2 );
+
+			if ( abs( vUv.y ) > 1.0 ) {
+
+				alpha = 1.0 - smoothstep( 1.0 - dlen, 1.0 + dlen, len2 );
+
+			}
+
+			#else
 
 			if ( abs( vUv.y ) > 1.0 ) {
 
@@ -221,12 +241,14 @@ THREE.ShaderLib[ 'line' ] = {
 
 			}
 
-			vec4 diffuseColor = vec4( diffuse, opacity );
+			#endif
+
+			vec4 diffuseColor = vec4( diffuse, alpha );
 
 			#include <logdepthbuf_fragment>
 			#include <color_fragment>
 
-			gl_FragColor = vec4( diffuseColor.rgb, diffuseColor.a );
+			gl_FragColor = vec4( diffuseColor.rgb, alpha );
 
 			#include <tonemapping_fragment>
 			#include <encodings_fragment>
@@ -328,6 +350,24 @@ THREE.LineMaterial = function ( parameters ) {
 
 		},
 
+		dashOffset: {
+
+			enumerable: true,
+
+			get: function () {
+
+				return this.uniforms.dashOffset.value;
+
+			},
+
+			set: function ( value ) {
+
+				this.uniforms.dashOffset.value = value;
+
+			}
+
+		},
+
 		gapSize: {
 
 			enumerable: true,
@@ -377,6 +417,40 @@ THREE.LineMaterial = function ( parameters ) {
 			set: function ( value ) {
 
 				this.uniforms.resolution.value.copy( value );
+
+			}
+
+		},
+
+		alphaToCoverage: {
+
+			enumerable: true,
+
+			get: function () {
+
+				return Boolean( 'ALPHA_TO_COVERAGE' in this.defines );
+
+			},
+
+			set: function ( value ) {
+
+				if ( Boolean( value ) !== Boolean( 'ALPHA_TO_COVERAGE' in this.defines ) ) {
+
+					this.needsUpdate = true;
+
+				}
+
+				if ( value ) {
+
+					this.defines.ALPHA_TO_COVERAGE = '';
+					this.extensions.derivatives = true;
+
+				} else {
+
+					delete this.defines.ALPHA_TO_COVERAGE;
+					this.extensions.derivatives = false;
+
+				}
 
 			}
 

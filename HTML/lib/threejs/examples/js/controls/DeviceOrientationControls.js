@@ -1,13 +1,17 @@
-console.warn( "THREE.DeviceOrientationControls: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
-
 /**
  * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
  */
 
 THREE.DeviceOrientationControls = function ( object ) {
 
+	if ( window.isSecureContext === false ) {
+
+		console.error( 'THREE.DeviceOrientationControls: DeviceOrientationEvent is only available in secure contexts (https)' );
+
+	}
+
 	var scope = this;
-	var changeEvent = { type: "change" };
+	var changeEvent = { type: 'change' };
 	var EPS = 0.000001;
 
 	this.object = object;
@@ -70,8 +74,8 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 				if ( response == 'granted' ) {
 
-					window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
-					window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+					window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent );
+					window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent );
 
 				}
 
@@ -83,8 +87,8 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 		} else {
 
-			window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
-			window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+			window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent );
+			window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent );
 
 		}
 
@@ -94,8 +98,8 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 	this.disconnect = function () {
 
-		window.removeEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
-		window.removeEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+		window.removeEventListener( 'orientationchange', onScreenOrientationChangeEvent );
+		window.removeEventListener( 'deviceorientation', onDeviceOrientationChangeEvent );
 
 		scope.enabled = false;
 
