@@ -14,6 +14,7 @@ const path = require("path");
 // Get friends
 
 const ActorTools = require("./HTML/utils/ActorTools.js")
+const RailTools = require("./HTML/utils/RailTools.js")
 
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
@@ -404,6 +405,10 @@ async function loadPython (callback, func, arg) {
 			} else {
 				console.log("false");
 			}
+		});
+
+		childPython.stdio[2].on("data", (dataBuffer) => {
+			console.error(dataBuffer.toString());
 		});
 	}
 }
@@ -884,7 +889,7 @@ async function loadActors (actorsData, isMainLoad) {
 			//pointsArray.push(new THREE.Vector3(2,100,5), new THREE.Vector3(3, 100, 8), new THREE.Vector3(5, 115, 6));
 
 		}
-		
+
 		// Create a sine-like wave
 		const curve = new THREE.CubicBezierCurve3( [
 				new THREE.Vector3( -10, 0, 0 ),
@@ -905,7 +910,7 @@ async function loadActors (actorsData, isMainLoad) {
 		let pointsArray = [];
 		for (const railPoint of rail.RailPoints) {
 			pointsArray.push(new THREE.Vector3(railPoint.Translate[0], railPoint.Translate[1], railPoint.Translate[2]));
-			
+
 			camera.position.x = railPoint.Translate[0];
 			camera.position.y = railPoint.Translate[1];
 			camera.position.z = railPoint.Translate[2];
@@ -924,7 +929,7 @@ async function loadActors (actorsData, isMainLoad) {
 		const curveObject = new THREE.Line(geometry, curveMaterial);
 		scene.add(curveObject);
 	//}*/
-	
+
 
 	/*
 	const curve = new THREE.CatmullRomCurve3( [
@@ -935,7 +940,7 @@ async function loadActors (actorsData, isMainLoad) {
 					new THREE.Vector3( 10, 0, 10 )
 					] );
 	*/
-
+	/*
 	for (const rail of sectionData.Static.Rails) {
 		let pointsArray = [];
 		for (const railPoint of rail.RailPoints) {
@@ -953,7 +958,11 @@ async function loadActors (actorsData, isMainLoad) {
 		const curveObject = new THREE.Line( geometry, curveMat );
 
 		scene.add(curveObject);
-	}
+		console.error(sectionData);
+	}*/
+
+
+	RailTools.createRails(sectionData, scene);
 
 	if (isMainLoad) {
 		/* Kinda bad code tbh, so I'll use a bad method for commenting out a comment.
@@ -1966,7 +1975,20 @@ function loadDarkMode (darkMode) {
 // Calls the function to save current data in process.py
 const saveButton = document.getElementById("saveButton");
 saveButton.addEventListener("click", function () {
-	loadPython(function (s) { console.warn("Saving..."); }, "save", sectionData);
+	console.error(sectionData)
+	//loadPython(function (s) { console.warn("Saving..."); }, "save", JSON.stringify(sectionData));
+
+	// Special saving code - uses stdin because sectionData is big.
+		const { spawn } = require("child_process");
+		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), 'save'], {cwd:__dirname});
+
+		childPython.stdio[2].on("data", function (dataBuffer){
+			console.error(dataBuffer.toString());
+		});
+
+		childPython.stdin.write(JSON.stringify(sectionData));
+		childPython.stdin.end();
+
 	console.warn("e");
 });
 

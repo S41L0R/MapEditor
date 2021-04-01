@@ -270,9 +270,19 @@ def setDarkMode(variant):
     settings.update({'DarkMode': darkMode})
     WriteSettings.WriteSettings(settings)
 
-def save(dataToSave):
+#def save(dataToSave):
+#    #print(dataToSave)
+#    loadedData = json.loads(dataToSave)
+#    loadedData.update({'Section': currentSection})
+#    smubinWriter.writeMapFile(loadedData)
+#    print('Saved!')
+#    return
+
+def save():
     #print(dataToSave)
-    loadedData = json.loads(dataToSave)
+    dataToSave = sys.stdin.readlines()
+    #raise Exception(dataToSave[0])
+    loadedData = json.loads(dataToSave[0])
     loadedData.update({'Section': currentSection})
     smubinWriter.writeMapFile(loadedData)
     print('Saved!')
