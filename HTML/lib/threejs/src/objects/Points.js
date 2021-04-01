@@ -11,14 +11,14 @@ const _ray = new Ray();
 const _sphere = new Sphere();
 const _position = new Vector3();
 
-function Points( geometry, material ) {
+function Points( geometry = new BufferGeometry(), material = new PointsMaterial() ) {
 
 	Object3D.call( this );
 
 	this.type = 'Points';
 
-	this.geometry = geometry !== undefined ? geometry : new BufferGeometry();
-	this.material = material !== undefined ? material : new PointsMaterial();
+	this.geometry = geometry;
+	this.material = material;
 
 	this.updateMorphTargets();
 
@@ -46,6 +46,7 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		const geometry = this.geometry;
 		const matrixWorld = this.matrixWorld;
 		const threshold = raycaster.params.Points.threshold;
+		const drawRange = geometry.drawRange;
 
 		// Checking boundingSphere distance to ray
 
@@ -59,7 +60,7 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		//
 
-		_inverseMatrix.getInverse( matrixWorld );
+		_inverseMatrix.copy( matrixWorld ).invert();
 		_ray.copy( raycaster.ray ).applyMatrix4( _inverseMatrix );
 
 		const localThreshold = threshold / ( ( this.scale.x + this.scale.y + this.scale.z ) / 3 );
@@ -69,17 +70,18 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			const index = geometry.index;
 			const attributes = geometry.attributes;
-			const positions = attributes.position.array;
+			const positionAttribute = attributes.position;
 
 			if ( index !== null ) {
 
-				const indices = index.array;
+				const start = Math.max( 0, drawRange.start );
+				const end = Math.min( index.count, ( drawRange.start + drawRange.count ) );
 
-				for ( let i = 0, il = indices.length; i < il; i ++ ) {
+				for ( let i = start, il = end; i < il; i ++ ) {
 
-					const a = indices[ i ];
+					const a = index.getX( i );
 
-					_position.fromArray( positions, a * 3 );
+					_position.fromBufferAttribute( positionAttribute, a );
 
 					testPoint( _position, a, localThresholdSq, matrixWorld, raycaster, intersects, this );
 
@@ -87,9 +89,12 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			} else {
 
-				for ( let i = 0, l = positions.length / 3; i < l; i ++ ) {
+				const start = Math.max( 0, drawRange.start );
+				const end = Math.min( positionAttribute.count, ( drawRange.start + drawRange.count ) );
 
-					_position.fromArray( positions, i * 3 );
+				for ( let i = start, l = end; i < l; i ++ ) {
+
+					_position.fromBufferAttribute( positionAttribute, i );
 
 					testPoint( _position, i, localThresholdSq, matrixWorld, raycaster, intersects, this );
 
@@ -99,13 +104,7 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		} else {
 
-			const vertices = geometry.vertices;
-
-			for ( let i = 0, l = vertices.length; i < l; i ++ ) {
-
-				testPoint( vertices[ i ], i, localThresholdSq, matrixWorld, raycaster, intersects, this );
-
-			}
+			console.error( 'THREE.Points.raycast() no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.' );
 
 		}
 

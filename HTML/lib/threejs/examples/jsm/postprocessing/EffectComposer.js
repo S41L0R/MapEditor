@@ -1,17 +1,18 @@
 import {
+	BufferGeometry,
 	Clock,
+	Float32BufferAttribute,
 	LinearFilter,
 	Mesh,
 	OrthographicCamera,
-	PlaneBufferGeometry,
 	RGBAFormat,
 	Vector2,
 	WebGLRenderTarget
-} from "../../../build/three.module.js";
-import { CopyShader } from "../shaders/CopyShader.js";
-import { ShaderPass } from "../postprocessing/ShaderPass.js";
-import { MaskPass } from "../postprocessing/MaskPass.js";
-import { ClearMaskPass } from "../postprocessing/MaskPass.js";
+} from '../../../build/three.module.js';
+import { CopyShader } from '../shaders/CopyShader.js';
+import { ShaderPass } from '../postprocessing/ShaderPass.js';
+import { MaskPass } from '../postprocessing/MaskPass.js';
+import { ClearMaskPass } from '../postprocessing/MaskPass.js';
 
 var EffectComposer = function ( renderer, renderTarget ) {
 
@@ -93,6 +94,18 @@ Object.assign( EffectComposer.prototype, {
 
 		this.passes.splice( index, 0, pass );
 		pass.setSize( this._width * this._pixelRatio, this._height * this._pixelRatio );
+
+	},
+
+	removePass: function ( pass ) {
+
+		const index = this.passes.indexOf( pass );
+
+		if ( index !== - 1 ) {
+
+			this.passes.splice( index, 1 );
+
+		}
 
 	},
 
@@ -264,7 +277,12 @@ Object.assign( Pass.prototype, {
 Pass.FullScreenQuad = ( function () {
 
 	var camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-	var geometry = new PlaneBufferGeometry( 2, 2 );
+
+	// https://github.com/mrdoob/three.js/pull/21358
+
+	var geometry = new BufferGeometry();
+	geometry.setAttribute( 'position', new Float32BufferAttribute( [ - 1, 3, 0, - 1, - 1, 0, 3, - 1, 0 ], 3 ) );
+	geometry.setAttribute( 'uv', new Float32BufferAttribute( [ 0, 2, 0, 0, 2, 0 ], 2 ) );
 
 	var FullScreenQuad = function ( material ) {
 

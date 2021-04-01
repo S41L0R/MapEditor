@@ -1,56 +1,128 @@
+// Get Friends:
+RailHelperTools = require("./RailHelperTools.js");
+
 // This function creates all the rails in a scene based on a maplike.
-const createRails = async function(maplike, scenelike) {
+const createRails = async function(maplike, scenelike, intersectables) {
 	for (const rail of maplike.Static.Rails) {
-		// Check if it's a linear or bezier curve
-		switch (rail.RailType.value) {
-			case "Bezier":
-				createBezierRail(rail, scenelike);
-				break;
-			case "Linear":
-				createLinearRail(rail, scenelike);
-				break;
-		}
+		drawRail(rail, scenelike);
+		RailHelperTools.drawHelpers(rail, scenelike, intersectables);
 	}
 
 }
 
+// This function reloads all rails in the scene:
+const reloadRails = async function(scenelike) {
+
+}
+
+// This function reloads a specific rail by destroying and creating it via hashID:
+const reloadRail = async function(hashID, maplike, scenelike) {
+	console.error(hashID);
+	console.error(maplike);
+	console.error(scenelike);
+	removeRail(hashID, scenelike);
+	addRail(hashID, maplike, scenelike);
+}
+
+// This function removes a rail from the scene.
+const removeRail = async function(hashID, scenelike) {
+	// We first loop through the scene:
+	for (item of scenelike.children) {
+		// Then if it has the matching hashID we get rid of it:
+		if (item.HashID == hashID) {
+			console.error(hashID);
+			console.error("bye");
+			for (object of item.children) {
+				object.geometry.dispose();
+				object.material.dispose();
+			}
+			scenelike.remove(item);
+			// And then we break because we know we have already found the rail:
+			break;
+		}
+	}
+}
+
+const addRail = async function(hashID, maplike, scenelike) {
+	for (const rail of maplike.Static.Rails) {
+		// Check if it matches the hashID
+		if (rail.HashId.value == hashID) {
+			drawRail(rail, scenelike);
+		}
+	}
+}
+
+async function drawRail(rail, scenelike) {
+	// Check if it's a linear or bezier curve
+	switch(rail.RailType.value) {
+		case "Bezier":
+			drawBezierRail(rail, scenelike);
+			break;
+		case "Linear":
+			drawLinearRail(rail, scenelike);
+			break;
+	}
+}
+
+
 // This function just creates a Bezier rail in the scene based on a rail JSON.
-async function createBezierRail(rail, scenelike) {
+async function drawBezierRail(rail, scenelike) {
 	createBezierRailPointArray(rail).then((pointArray) => {
-		createBezierRailPath(pointArray, scenelike);
+		createBezierRailPath(pointArray, scenelike, rail.HashId.value);
 	});
 }
 
 // This function makes a linear rail in the scene based on rail JSON data.
-async function createLinearRail(rail, scenelike) {
+async function drawLinearRail(rail, scenelike) {
 	createLinearRailPointArray(rail).then((pointArray) => {
-		createLinearRailPath(pointArray, scenelike);
+		createLinearRailPath(pointArray, scenelike, rail.HashId.value);
 	});
 	
 }
 
-function createBezierRailPath(pointArray, scenelike) {
+async function createBezierRailPath(pointArray, scenelike, RailHashID) {
 	// Cubic Bezier curves don't take an array in, instead they take only four arguments.
 	// We can solve this problem by creating multiple curves.
+
+	// The first thing we'll want to do is make sure we have a group for all curves in a rail. 
+	// This will optimize searching so that we don't have to search through every curve in order to find the curves we're looking for.
+	// (Because otherwise we wouldn't be able to break from a searching loop without the risk of not finding all relevant curves.)
+	
+	const railGroup = new THREE.Group();
+	// We'll hack on an identifying hashID:
+	railGroup.HashID = RailHashID;
 	for (i=0; i < pointArray.length-3; i+=3) {
 		// I'm gonna go on the assumption that controlPoints are offsets from points on a linear path
 		// So let's create a line and find the world space positions for those offsets:
-		const worldSpaceControlPointPositions = getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[1+1], pointArray[i+2]);
-		const curve = new THREE.CubicBezierCurve3(pointArray[i], worldSpaceControlPointPositions[0], worldSpaceControlPointPositions[1], pointArray[i+3]);
-		const points = curve.getPoints( 50 );
-		const geometry = new THREE.BufferGeometry().setFromPoints( points );
+		getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[i+1], pointArray[i+2]).then((worldSpaceControlPointPositions) => {
+			console.error(worldSpaceControlPointPositions);
+			console.error(pointArray)
+			console.error(pointArray[i]);
+			//const worldSpaceControlPointPositions = getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[1+1], pointArray[i+2]);
+			const curve = new THREE.CubicBezierCurve3(worldSpaceControlPointPositions[0], worldSpaceControlPointPositions[1], worldSpaceControlPointPositions[2], worldSpaceControlPointPositions[3]);
+			const points = curve.getPoints( 50 );
+			const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-		const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+			const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
-		// Create the final object to add to the scene
-		const curveObject = new THREE.Line( geometry, curveMat );
-		scenelike.add(curveObject);
+			// Create the final object to add to the scene
+			const curveObject = new THREE.Line( geometry, curveMat );
+
+			// And put it with other curves from the rail in the group
+			railGroup.add(curveObject);
+		});
 	}
+	scenelike.add(railGroup);
 }
 
-function createLinearRailPath(pointArray, scenelike) {
+async function createLinearRailPath(pointArray, scenelike, RailHashID) {
 	// Just like cubic Bezier, line curves don't take in an array, just two points.
 	// This means we'll be making multiple line curves.
+
+	// Again, we'll be adding this stuff to a group for faster searching later:
+	const railGroup = new THREE.Group();
+	// And again, with a hashID connected:
+	railGroup.HashID = RailHashID;
 	for (i=0; i < pointArray.length-1; i++) {
 	        const curve = new THREE.LineCurve3(pointArray[i], pointArray[i+1]);
 	        const points = curve.getPoints( 50 );
@@ -60,9 +132,11 @@ function createLinearRailPath(pointArray, scenelike) {
 
 	        // Create the final object to add to the scene
 		const curveObject = new THREE.Line( geometry, curveMat );
-
-		scenelike.add(curveObject);
+		
+		// And add it to the group
+		railGroup.add(curveObject);
 	}
+	scenelike.add(railGroup);
 }
 
 async function createBezierRailPointArray(rail) {
@@ -174,14 +248,19 @@ async function createLinearRailPointArray(rail) {
 	// Now we'll just want to package pointArray to be shipped off to the function caller.
 	return(pointArray);
 }
-function getWorldSpaceControlPoints(point1, point2, controlPoint1, controlPoint2) {
+async function getWorldSpaceControlPoints(point1, point2, controlPoint1, controlPoint2) {
 	const line = new THREE.LineCurve3(point1, point2);
 	const worldSpaceOffsetOrigins = line.getPoints(2);
 	const point1InWorldSpace = new THREE.Vector3(controlPoint1.x + worldSpaceOffsetOrigins[1].x, controlPoint1.y + worldSpaceOffsetOrigins[1].y, controlPoint1.z + worldSpaceOffsetOrigins[1].z);
 	const point2InWorldSpace = new THREE.Vector3(controlPoint2.x + worldSpaceOffsetOrigins[1].x, controlPoint2.y + worldSpaceOffsetOrigins[1].y, controlPoint2.z + worldSpaceOffsetOrigins[1].z);
-	return([point1InWorldSpace, point2InWorldSpace]);
+
+	// Notice we're also returning point1 and point2. This is because if this is being called using a .then() in a loop, counters in that loop can get confused because this might return later.
+	// To combat that, we're just returning the endpoints of the line as well so that the calling function can remember what it was looking for.
+	return([point1, point1InWorldSpace, point2InWorldSpace, point2]);
 }
 
 module.exports = {
-	createRails: createRails
+	createRails: createRails,
+	reloadRails: reloadRails,
+	reloadRail: reloadRail
 }
