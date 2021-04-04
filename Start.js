@@ -159,9 +159,9 @@ Menu.setApplicationMenu(menu)
 
 let win
 
-ipc.on('toMainWindowFromActorEditor', (event, message, hashID, actorType) => {
+ipc.on('toMainWindowFromActorEditor', (event, message, hashID, actorType, isEditingRail) => {
   console.log(event, message)
-  win.webContents.send('fromActorEditor', message, hashID, actorType)
+  win.webContents.send('fromActorEditor', message, hashID, actorType, isEditingRail)
 })
 
 ipc.on('toMainWindowFromVisibilityEditor', (event, message) => {

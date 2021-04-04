@@ -1,6 +1,21 @@
-// Get Friends:
-RailHelperTools = require("./RailHelperTools.js");
+// NOTE:
+//
+// Get rid of ignoreRailPointIndex and ignoreControlPointIndex.
+//
+//
+// Why?
+//
+// Because we don't need to reload helpers at all if we're moving a controlPoint.
+//
+// We only need to do it if we're moving a railPoint.
 
+
+
+const RAIL_RES = 50;
+
+// Get Friends:
+const RailHelperTools = require("./RailHelperTools.js");
+const GeneralRailTools = require("./GeneralRailTools.js");
 // This function creates all the rails in a scene based on a maplike.
 const createRails = async function(maplike, scenelike, intersectables) {
 	for (const rail of maplike.Static.Rails) {
@@ -17,12 +32,15 @@ const reloadRails = async function(scenelike) {
 
 // This function reloads a specific rail by destroying and creating it via hashID:
 const reloadRail = async function(hashID, maplike, scenelike) {
-	console.error(hashID);
-	console.error(maplike);
-	console.error(scenelike);
+	//console.error(hashID);
+	//console.error(maplike);
+	//console.error(scenelike);
 	removeRail(hashID, scenelike);
+	//RailHelperTools.removeControlPointHelpersByRailHashID(hashID, scenelike);
 	addRail(hashID, maplike, scenelike);
 }
+
+
 
 // This function removes a rail from the scene.
 const removeRail = async function(hashID, scenelike) {
@@ -30,11 +48,13 @@ const removeRail = async function(hashID, scenelike) {
 	for (item of scenelike.children) {
 		// Then if it has the matching hashID we get rid of it:
 		if (item.HashID == hashID) {
-			console.error(hashID);
-			console.error("bye");
+			//console.error(hashID);
+			//console.error("bye");
 			for (object of item.children) {
 				object.geometry.dispose();
 				object.material.dispose();
+				delete object;
+
 			}
 			scenelike.remove(item);
 			// And then we break because we know we have already found the rail:
@@ -65,6 +85,29 @@ async function drawRail(rail, scenelike) {
 }
 
 
+// Yes, this function is just a modified version of one from a a threejs example project.
+function updateSplineOutline(scenelike, hashID) {
+	for ( const item of scenelike.children ) {
+		if (item.HashID == hashID) {
+
+
+			const curveMesh = item.mesh;
+			const position = curveMesh.geometry.attributes.position;
+
+			for ( let i = 0; i < RAIL_RES; i ++ ) {
+
+				const t = i / ( RAIL_RES - 1 );
+				item.getPoint( t, point );
+				position.setXYZ( i, point.x, point.y, point.z );
+
+			}
+
+			position.needsUpdate = true;
+		}
+	}
+
+}
+
 // This function just creates a Bezier rail in the scene based on a rail JSON.
 async function drawBezierRail(rail, scenelike) {
 	createBezierRailPointArray(rail).then((pointArray) => {
@@ -77,30 +120,30 @@ async function drawLinearRail(rail, scenelike) {
 	createLinearRailPointArray(rail).then((pointArray) => {
 		createLinearRailPath(pointArray, scenelike, rail.HashId.value);
 	});
-	
+
 }
 
 async function createBezierRailPath(pointArray, scenelike, RailHashID) {
 	// Cubic Bezier curves don't take an array in, instead they take only four arguments.
 	// We can solve this problem by creating multiple curves.
 
-	// The first thing we'll want to do is make sure we have a group for all curves in a rail. 
+	// The first thing we'll want to do is make sure we have a group for all curves in a rail.
 	// This will optimize searching so that we don't have to search through every curve in order to find the curves we're looking for.
 	// (Because otherwise we wouldn't be able to break from a searching loop without the risk of not finding all relevant curves.)
-	
+
 	const railGroup = new THREE.Group();
 	// We'll hack on an identifying hashID:
 	railGroup.HashID = RailHashID;
 	for (i=0; i < pointArray.length-3; i+=3) {
 		// I'm gonna go on the assumption that controlPoints are offsets from points on a linear path
 		// So let's create a line and find the world space positions for those offsets:
-		getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[i+1], pointArray[i+2]).then((worldSpaceControlPointPositions) => {
-			console.error(worldSpaceControlPointPositions);
-			console.error(pointArray)
-			console.error(pointArray[i]);
+		GeneralRailTools.getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[i+1], pointArray[i+2]).then((worldSpaceControlPointPositions) => {
+			//console.error(worldSpaceControlPointPositions);
+			//console.error(pointArray)
+			//console.error(pointArray[i]);
 			//const worldSpaceControlPointPositions = getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[1+1], pointArray[i+2]);
 			const curve = new THREE.CubicBezierCurve3(worldSpaceControlPointPositions[0], worldSpaceControlPointPositions[1], worldSpaceControlPointPositions[2], worldSpaceControlPointPositions[3]);
-			const points = curve.getPoints( 50 );
+			const points = curve.getPoints( RAIL_RES );
 			const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
 			const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
@@ -125,25 +168,31 @@ async function createLinearRailPath(pointArray, scenelike, RailHashID) {
 	railGroup.HashID = RailHashID;
 	for (i=0; i < pointArray.length-1; i++) {
 	        const curve = new THREE.LineCurve3(pointArray[i], pointArray[i+1]);
-	        const points = curve.getPoints( 50 );
+	        const points = curve.getPoints( 2 );
 	        const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
 	        const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
 	        // Create the final object to add to the scene
 		const curveObject = new THREE.Line( geometry, curveMat );
-		
+
 		// And add it to the group
 		railGroup.add(curveObject);
 	}
 	scenelike.add(railGroup);
 }
+let createBezierRailPointArrayCache = {};
+const createBezierRailPointArray = async function(rail) {
+	// Before we run the bulk of the function, we'll just run some quick caching code to check if we've already calculated this:
 
-async function createBezierRailPointArray(rail) {
+	// We'll only be referencing the positions of railPoints and controlPoints as that's all that matters for this function, and to save memory:
+	if ([JSON.stringify([rail.RailPoints, rail.ControlPoints])] in createBezierRailPointArrayCache) {
+		return(createBezierRailPointArrayCache[JSON.stringify([rail.RailPoints, rail.ControlPoints])]);
+	}
 	// We'll be using a cubic Bezier curve, which means we have two controlpoints.
 	// Bezier rails already have two controlpoints, so we can just hook into those.
 	// Cubic Bezier curves in ThreeJs follow the following format for their position data:
-	// 
+	//
 	// Point1, (Vector3)
 	// ControlPoint1, (Vector3)
 	// ControlPoint2, (Vector3)
@@ -153,7 +202,6 @@ async function createBezierRailPointArray(rail) {
 
 	// We can start by creating an array to store the points:
 	let pointArray = [];
-
 	// Then we'll loop through and for each railPoint add the needed stuff:
 	for (const [index, railPoint] of rail.RailPoints.entries()) {
 		// Something we have to take into account is that the first controlPoint is for the previous segment, and the next controlPoint is for the next one.
@@ -210,21 +258,23 @@ async function createBezierRailPointArray(rail) {
 			// (If it exists)
 			if (rail.RailPoints[index+1].ControlPoints != undefined) {
 				pointArray.push(new THREE.Vector3(rail.RailPoints[index+1].ControlPoints[0][0].value, rail.RailPoints[index+1].ControlPoints[0][1].value, rail.RailPoints[index+1].ControlPoints[0][2].value));
-		
+
 			}
 			else {
 				pointArray.push(new THREE.Vector3(0, 0, 0));
 			}
 		}
-		
+
 	}
 
 	// Okay, we're done with this so we'll package pointArray up nicely to be shipped off to whatever called this function.
+	// (But not before caching the value!)
+	createBezierRailPointArrayCache[JSON.stringify([rail.RailPoints, rail.ControlPoints])] = pointArray;
 	return(pointArray);
 }
 
 
-async function createLinearRailPointArray(rail) {
+const createLinearRailPointArray = async function(rail) {
 	// This will be a lot simpler than the cubic Bezier curve, so all we need to do is (A). Loop through all of the rail's railPoints, and (B). Remember to take IsClosed into account.
 
 	// Let's start by initializing an array to add the railPoints to:
@@ -248,19 +298,69 @@ async function createLinearRailPointArray(rail) {
 	// Now we'll just want to package pointArray to be shipped off to the function caller.
 	return(pointArray);
 }
-async function getWorldSpaceControlPoints(point1, point2, controlPoint1, controlPoint2) {
-	const line = new THREE.LineCurve3(point1, point2);
-	const worldSpaceOffsetOrigins = line.getPoints(2);
-	const point1InWorldSpace = new THREE.Vector3(controlPoint1.x + worldSpaceOffsetOrigins[1].x, controlPoint1.y + worldSpaceOffsetOrigins[1].y, controlPoint1.z + worldSpaceOffsetOrigins[1].z);
-	const point2InWorldSpace = new THREE.Vector3(controlPoint2.x + worldSpaceOffsetOrigins[1].x, controlPoint2.y + worldSpaceOffsetOrigins[1].y, controlPoint2.z + worldSpaceOffsetOrigins[1].z);
 
-	// Notice we're also returning point1 and point2. This is because if this is being called using a .then() in a loop, counters in that loop can get confused because this might return later.
-	// To combat that, we're just returning the endpoints of the line as well so that the calling function can remember what it was looking for.
-	return([point1, point1InWorldSpace, point2InWorldSpace, point2]);
+const setControlPointPos = async function(rail, railPointIndex, controlPointIndex, position) {
+	if (controlPointIndex == 0) {
+		if (rail.RailPoints[railPointIndex - 1] != undefined) {
+			// Then this should be on a line between the previous railPoint and the current one
+
+			// We'll get Vector3s representing the positions of points:
+			let point1 = new THREE.Vector3(rail.RailPoints[railPointIndex - 1].Translate[0].value, rail.RailPoints[railPointIndex - 1].Translate[1].value, rail.RailPoints[railPointIndex - 1].Translate[2].value);
+			let point2 = new THREE.Vector3(rail.RailPoints[railPointIndex].Translate[0].value, rail.RailPoints[railPointIndex].Translate[1].value, rail.RailPoints[railPointIndex].Translate[2].value);
+
+			GeneralRailTools.getLocalSpaceControlPoints(point1, point2,  position, 0).then((localSpaceControlPointPositions) => {
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][0].value = localSpaceControlPointPositions[1].x;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][1].value = localSpaceControlPointPositions[1].y;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][2].value = localSpaceControlPointPositions[1].z;
+			});
+		}
+		else if (rail.IsClosed.value == true) {
+			// Then this should be on a line between the previous railPoint and the current one
+
+			// We'll get Vector3s representing the positions of points:
+			let point1 = new THREE.Vector3(rail.RailPoints[rail.RailPoints.length - 1].Translate[0].value, rail.RailPoints[rail.RailPoints.length - 1].Translate[1].value, rail.RailPoints[rail.RailPoints.length - 1].Translate[2].value);
+			let point2 = new THREE.Vector3(rail.RailPoints[railPointIndex].Translate[0].value, rail.RailPoints[railPointIndex].Translate[1].value, rail.RailPoints[railPointIndex].Translate[2].value);
+
+			GeneralRailTools.getLocalSpaceControlPoints(point1, point2,  position, 0).then((localSpaceControlPointPositions) => {
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][0].value = localSpaceControlPointPositions[1].x;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][1].value = localSpaceControlPointPositions[1].y;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][2].value = localSpaceControlPointPositions[1].z;
+			});
+		}
+	}
+	else if (controlPointIndex == 1) {
+		// Then this should be on a line between the current railPoint and the next one
+		if (rail.RailPoints[railPointIndex + 1] != undefined) {
+			// We'll get Vector3s representing the positions of points:
+			let point2 = new THREE.Vector3(rail.RailPoints[railPointIndex + 1].Translate[0].value, rail.RailPoints[railPointIndex + 1].Translate[1].value, rail.RailPoints[railPointIndex + 1].Translate[2].value);
+			let point1 = new THREE.Vector3(rail.RailPoints[railPointIndex].Translate[0].value, rail.RailPoints[railPointIndex].Translate[1].value, rail.RailPoints[railPointIndex].Translate[2].value);
+
+			GeneralRailTools.getLocalSpaceControlPoints(point1, point2,  position, 0).then((localSpaceControlPointPositions) => {
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][0].value = localSpaceControlPointPositions[1].x;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][1].value = localSpaceControlPointPositions[1].y;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][2].value = localSpaceControlPointPositions[1].z;
+			});
+
+		}
+		else if (rail.IsClosed.value == true) {
+			// We'll get Vector3s representing the positions of points:
+			let point2 = new THREE.Vector3(rail.RailPoints[0].Translate[0].value, rail.RailPoints[0].Translate[1].value, rail.RailPoints[0].Translate[2].value);
+			let point1 = new THREE.Vector3(rail.RailPoints[railPointIndex].Translate[0].value, rail.RailPoints[railPointIndex].Translate[1].value, rail.RailPoints[railPointIndex].Translate[2].value);
+
+			GeneralRailTools.getLocalSpaceControlPoints(point1, point2,  position, 0).then((localSpaceControlPointPositions) => {
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][0].value = localSpaceControlPointPositions[1].x;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][1].value = localSpaceControlPointPositions[1].y;
+				rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex][2].value = localSpaceControlPointPositions[1].z;
+			});
+		}
+	}
 }
 
 module.exports = {
 	createRails: createRails,
 	reloadRails: reloadRails,
-	reloadRail: reloadRail
+	reloadRail: reloadRail,
+	createBezierRailPointArray: createBezierRailPointArray,
+	createLinearRailPointArray: createLinearRailPointArray,
+	setControlPointPos: setControlPointPos
 }

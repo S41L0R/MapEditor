@@ -15,6 +15,7 @@ const path = require("path");
 
 const ActorTools = require("./HTML/utils/ActorTools.js")
 const RailTools = require("./HTML/utils/RailTools.js")
+const RailHelperTools = require("./HTML/utils/RailHelperTools.js")
 
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
@@ -56,7 +57,7 @@ const clock = new THREE.Clock();
 // -----------------------------------------------------------------------------
 
 const raycaster = new THREE.Raycaster();
-raycaster.params.Points.threshold = 3;
+raycaster.params.Points.threshold = 1;
 const mouse = new THREE.Vector2();
 
 let selectedObject;
@@ -1029,7 +1030,7 @@ function setActorData (hashId, type, data) {
 		for (var i of sectionData.Static.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (i.HashId.value == hashId) {
-        	sectionData.Dynamic.Objs[index] = data;
+        	sectionData.Static.Objs[index] = data;
 				console.warn(i);
       	}
 			// }
@@ -1078,6 +1079,37 @@ function setActorData (hashId, type, data) {
 	}
 }
 
+
+function findRailData (hashId) {
+	for (const i of sectionData.Static.Rails) {
+		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+		if (i.HashId.value == hashId) {
+			return i;
+		}
+	}
+}
+
+
+
+function setRailData (hashId, data) {
+	var index = 0;
+	for (var i of sectionData.Static.Rails) {
+		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
+		if (i.HashId.value == hashId) {
+			sectionData.Static.Rails[index] = data;
+			console.warn(i);
+		}
+		index = index + 1;
+	}
+	console.warn(findRailData(hashId));
+	console.warn(data);
+	console.warn(sectionData);
+
+	RailTools.reloadRail(hashId, sectionData, scene);
+	RailHelperTools.reloadControlPointHelpersByRailHashID(hashId, scene, sectionData, objects);
+	RailHelperTools.reloadRailPointHelpersByRailHashID(hashId, scene, sectionData, objects);
+}
+
 // -----------------------------------------------------------------------------
 
 // Controls the side bar panel thing, doesn't currently have a system for multi-actor selection, but I'll need to give TransformControls that first.
@@ -1102,7 +1134,20 @@ function showActorData (ActorHashID, ActorType) {
   <button class="button" id="ActorEditButton">Edit BYML</button>
 
   `;
-	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findActorData(ActorHashID, ActorType), ActorType); });
+	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findActorData(ActorHashID, ActorType), ActorType, false); });
+	// document.getElementById("ActorEditButton").onclick = findActorData(ActorHashID, ActorType);
+}
+
+
+function showRailData (RailHashID) {
+	const actorDataPanel = document.getElementById("DataEditorTextWindow");
+	actorDataPanel.innerHTML = `
+  <p id="SelectedActorName"><strong>${findRailData(RailHashID).RailType.value} Rail</strong></p>
+  <p>${RailHashID}</p>
+  <button class="button" id="ActorEditButton">Edit BYML</button>
+
+  `;
+	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findRailData(RailHashID), null, true); });
 	// document.getElementById("ActorEditButton").onclick = findActorData(ActorHashID, ActorType);
 }
 // -----------------------------------------------------------------------------
@@ -1142,7 +1187,7 @@ objects.push(transformControl);
 let transformControlAttached = false;
 
 // Do some junk that matters but doesn't matter.
-transformControl.addEventListener("change", render);
+//transformControl.addEventListener("change", render);
 
 transformControl.addEventListener("dragging-changed", function (event) {
 	fpControls.enabled = !event.value;
@@ -1151,24 +1196,38 @@ transformControl.addEventListener("dragging-changed", function (event) {
 
 	if (selectedObject.type == "Points") {
 		//selectedObject = selectedObject.object;
-		for (const rail of sectionData.Static.Rails) {
-			if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
-				console.error("hi there");
-				/*
-				for (railPoint of rail.RailPoints) {
-					console.error(railPoint);
-					railPoint.Translate[0].value = selectedObject.position.x;
-					railPoint.Translate[1].value = selectedObject.position.y;
-					railPoint.Translate[2].value = selectedObject.position.z;
+		if (selectedObject.relevantType == "RailPoint") {
+			for (const rail of sectionData.Static.Rails) {
+				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
+					console.error("hi there");
+					/*
+					for (railPoint of rail.RailPoints) {
+						console.error(railPoint);
+						railPoint.Translate[0].value = selectedObject.position.x;
+						railPoint.Translate[1].value = selectedObject.position.y;
+						railPoint.Translate[2].value = selectedObject.position.z;
+					}
+					*/
+					rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x;
+					rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y;
+					rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z;
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
+					RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, scene, sectionData, objects);
 				}
-				*/
-				rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x;
-				rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y;
-				rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z;
-				RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene);
 			}
 		}
-	} 
+		else if (selectedObject.relevantType == "ControlPoint") {
+			for (const rail of sectionData.Static.Rails) {
+				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
+					RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, selectedObject.position);
+					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][0].value = selectedObject.position.x;
+					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][1].value = selectedObject.position.y;
+					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][2].value = selectedObject.position.z;
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
+				}
+			}
+		}
+	}
 	else if (selectedObject.parent.type == "Group") {
 		transformControl.attach(selectedObject.parent);
 		transformControlAttached = true;
@@ -1318,10 +1377,14 @@ scene.add(camera);
 // const electron = require('electron')
 // const BrowserWindow = electron.BrowserWindow;
 
-function createEditorWindow (obj, actorType) {
+function createEditorWindow (obj, actorType, editingRail) {
 	const { BrowserWindow } = require("electron").remote;
 
-	const editorWin = new BrowserWindow({ width: 600, height: 400, webPreferences: { nodeIntegration: true } });
+	const editorWin = new BrowserWindow({ width: 600, height: 400, webPreferences: {
+		nodeIntegration: true,
+		contextIsolation: false,
+		enableRemoteModule: true
+	} });
 	// win.LoadURL("file://HTML/UI/SelectedActor/SelectedActor.html")
 	editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`);
 
@@ -1331,7 +1394,7 @@ function createEditorWindow (obj, actorType) {
 
 	editorWin.webContents.on("did-finish-load", () => {
 		// editorWin.webContents.send('toActorEditor', 'Hello second window!');
-		editorWin.webContents.send("toActorEditor", { data: obj, type: actorType, HashID: obj.HashId.value, windowID: 1 });
+		editorWin.webContents.send("toActorEditor", { data: obj, type: actorType, HashID: obj.HashId.value, editingRail: editingRail, windowID: 1 });
 	});
 }
 
@@ -1339,7 +1402,11 @@ function createEditorWindow (obj, actorType) {
 function createVisibilityWindow () {
 	const { BrowserWindow } = require("electron").remote;
 
-	const visiblityWin = new BrowserWindow({ width: 600, height: 400, webPreferences: { nodeIntegration: true } });
+	const visiblityWin = new BrowserWindow({ width: 600, height: 400, webPreferences: {
+		nodeIntegration: true,
+	 	contextIsolation: false,
+	 	enableRemoteModule: true
+	 } });
 	visiblityWin.loadURL(`file://${__dirname}/HTML/UI/VisibilityEditor/VisibilityEditor.html`);
 
 	visiblityWin.once("ready-to-show", () => {
@@ -1368,27 +1435,33 @@ function createVisibilityWindow () {
 
 const ipc = require("electron").ipcRenderer;
 
-ipc.on("fromActorEditor", (event, message, actorHashID, type) => {
-	setActorData(actorHashID, type, message);
-	console.warn(message);
-	console.warn(actorHashID);
-	console.warn(type);
-	ActorTools.removeObjectActors([actorHashID], scene, transformControl);
-	console.warn(sectionData)
-	let actorsData = {
-		"Dynamic": {
-			"Objs": []
-		},
-		"Static": {
-			"Objs": [],
-			"LocationPosX": sectionData.Static.LocationPosX,
-			"LocationPosZ": sectionData.Static.LocationPosZ
-		}
-	};
-	actorsData[type].Objs.push(message);
-	console.warn(actorsData);
-	loadActors(actorsData, false)
-	console.warn(scene);
+ipc.on("fromActorEditor", (event, message, hashID, type, isEditingRail) => {
+	if (!isEditingRail) {
+		setActorData(hashID, type, message);
+		console.warn(message);
+		console.warn(hashID);
+		console.warn(type);
+		ActorTools.removeObjectActors([hashID], scene, transformControl);
+		console.warn(sectionData)
+		let actorsData = {
+			"Dynamic": {
+				"Objs": []
+			},
+			"Static": {
+				"Objs": [],
+				"LocationPosX": sectionData.Static.LocationPosX,
+				"LocationPosZ": sectionData.Static.LocationPosZ
+			}
+		};
+		actorsData[type].Objs.push(message);
+		console.warn(actorsData);
+		loadActors(actorsData, false)
+		console.warn(scene);
+	}
+	// Otherwise we're editing a rail:
+	else {
+		setRailData(hashID, message)
+	}
 });
 
 
@@ -1906,9 +1979,16 @@ function pointerDown (evt) {
 						transformControlAttached = true;
 						showActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
 					} else {
-						transformControl.attach(selectedObject);
-						transformControlAttached = true;
-						showActorData(selectedObject.HashID, selectedObject.Type);
+						if (selectedObject.relevantType == "ControlPoint" || selectedObject.relevantType == "RailPoint") {
+							transformControl.attach(selectedObject);
+							transformControlAttached = true;
+							showRailData(selectedObject.CorrespondingRailHashID)
+						}
+						else {
+							transformControl.attach(selectedObject);
+							transformControlAttached = true;
+							showActorData(selectedObject.HashID, selectedObject.Type);
+						}
 					}
 				}
 				console.warn(unconfirmedSelectedObject)
@@ -1982,6 +2062,40 @@ function animate () {
 	camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
 	renderer.render(scene, camera);
 	//console.error(scene)
+
+	if (transformControl.dragging) {
+		if (selectedObject.relevantType == "RailPoint") {
+			for (const rail of sectionData.Static.Rails) {
+				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
+					console.error("hi there");
+					/*
+					for (railPoint of rail.RailPoints) {
+						console.error(railPoint);
+						railPoint.Translate[0].value = selectedObject.position.x;
+						railPoint.Translate[1].value = selectedObject.position.y;
+						railPoint.Translate[2].value = selectedObject.position.z;
+					}
+					*/
+					rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x;
+					rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y;
+					rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z;
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
+					RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, scene, sectionData, objects);
+				}
+			}
+		}
+		else if (selectedObject.relevantType == "ControlPoint") {
+			for (const rail of sectionData.Static.Rails) {
+				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
+					RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, selectedObject.position);
+					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][0].value = selectedObject.position.x;
+					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][1].value = selectedObject.position.y;
+					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][2].value = selectedObject.position.z;
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
+				}
+			}
+		}
+	}
 }
 animate();
 
