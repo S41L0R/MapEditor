@@ -114,7 +114,7 @@ loadPython(function (s) { loadModels = s;}, "shareSettings", "LoadModels");
 const testDict = new Object();
 let sectionData;
 
-
+let sectionName;
 
 
 
@@ -259,24 +259,35 @@ const daeOnLoad = function (dae, currentUrl) {
 	//console.error("callednum: " + calledNum)
 	console.log("Loading complete!");
 	daeModel = dae.scene;
+
+	/*
 	daeModel.traverse(function (child) {
 		if (child instanceof THREE.Mesh) {
 			objects.push(child);
 			console.log("Child instanceof THREE.Mesh = true");
 		}
 	});
+
+	*/
+
 	//console.error(dae)
 	//let daeGeometry = dae.geometry.clone();
 	//let daeMaterial = dae.material;
 
 	//daeModel = new THREE.Mesh(daeGeometry, daeMaterial)
-	objects.push(dae.scene);
+	//objects.push(dae.scene);
 	console.log("objects:");
 	console.log(objects);
 
-	for (let i = 1; i < daeModel.children.length; i++) {
-		daeModel.children[i].geometry.computeBoundingSphere();
-		console.log(daeModel.children[i].geometry);
+	if (daeModel.children.length > 0) {
+		for (let i = 1; i < daeModel.children.length; i++) {
+			daeModel.children[i].geometry.computeBoundingSphere();
+			console.log(daeModel.children[i].geometry);
+		}
+	}
+	else {
+		daeModel.geometry.computeBoundingSphere();
+		console.log(daeModel.geometry);
 	}
 
 	//scene.add(daeModel);
@@ -465,7 +476,7 @@ async function loadInstanceModels(urlDict) {
 	globUrlDict = urlDict;
 
 	if (urlDict == null) {
-		loadPython(function (s) { loadInstanceModels(s) }, "getActorModelPaths");
+		loadPython(function (s) { loadInstanceModels(s) }, "getActorModelPaths", sectionName);
 		return;
 	}
 
@@ -600,14 +611,20 @@ async function loadActors (actorsData, isMainLoad) {
 		if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]] != undefined && loadModels == true && globUrlDict[i.UnitConfigName.value] != undefined) {
 
 
-			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
+			let duplicateMesh;
+			if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].children.length > 0) {
+				duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
+			}
+			else {
+				duplicateMesh = instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].clone();
+			}
 
 
 
 
 
 
-			await scene.add(duplicateMesh);
+			scene.add(duplicateMesh);
 
 			objects.push(duplicateMesh);
 
@@ -649,6 +666,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 
 			console.warn(i);
+
 
 			console.warn(duplicateMesh);
 
@@ -772,8 +790,13 @@ async function loadActors (actorsData, isMainLoad) {
 
 			//loader.load(url, daeOnLoadDynamic, onProgress);
 
-			let duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
-
+			let duplicateMesh;
+			if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].children.length > 0) {
+				duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
+			}
+			else {
+				duplicateMesh = instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].clone();
+			}
 			//console.warn(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
 
 
@@ -783,7 +806,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 			objects.push(duplicateMesh);
 
-			duplicateMesh.children[0].position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
 
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
@@ -1485,6 +1508,7 @@ ipc.on("fromActorEditor", (event, message, hashID, type, isEditingRail) => {
 
 ipc.on("loadSection", (event, message) => {
 	displaySectionName(message);
+	sectionName = message;
 	//console.error("hi")
 	loadPython(function (s) { loadInstanceModels(null)}, "main", message);
 });
@@ -2048,7 +2072,7 @@ function controlSetRotate () {
 // -----------------------------------------------------------------------------
 
 function animate () {
-		console.warn(sectionData)
+		//console.warn(sectionData)
 	/*
 	let geoArray = [];
 	if (scene.children != undefined) {
