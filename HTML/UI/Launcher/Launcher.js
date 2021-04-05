@@ -81,8 +81,8 @@ document.getElementById("SettingsButton").addEventListener("click", function() {
 });
 
 
-console.error(__dirname)
-console.error(path.join(__dirname, "../../../MapEditor/Process.py"))
+//console.error(__dirname)
+//console.error(path.join(__dirname, "../../../MapEditor/Process.py"))
 const { spawn } = require("child_process");
 const childPython = spawn("python", [path.join(__dirname, "../../../MapEditor/Process.py"), "cacheMapTex"], {cwd:path.join(__dirname, "../../../")})
 

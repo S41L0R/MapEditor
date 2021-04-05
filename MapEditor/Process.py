@@ -202,7 +202,9 @@ def cacheModels(sectionData, cachedModels):
 
 def cacheMapTex():
     settings, content, aoc = getSettings()
+    optionalMapTexList = ["MapTex_A-0", "MapTex_A-9", "MapTex_B-0", "MapTex_B-9", "MapTex_C-0", "MapTex_C-9", "MapTex_D-0", "MapTex_D-9", "MapTex_E-0", "MapTex_E-9", "MapTex_F-0", "MapTex_F-9", "MapTex_G-0", "MapTex_G-9", "MapTex_H-0", "MapTex_H-9", "MapTex_I-0", "MapTex_I-9", "MapTex_J-0", "MapTex_J-9", "MapTex_K-0", "MapTex_K-1", "MapTex_K-2", "MapTex_K-3", "MapTex_K-4", "MapTex_K-5", "MapTex_K-6", "MapTex_K-7", "MapTex_K-8", "MapTex_K-9", "MapTex_Z-0", "MapTex_Z-1", "MapTex_Z-2", "MapTex_Z-3", "MapTex_Z-4", "MapTex_Z-5", "MapTex_Z-6", "MapTex_Z-7", "MapTex_Z-8", "MapTex_Z-9"]
     mapTexList = ["MapTex_A-1", "MapTex_A-2", "MapTex_A-3", "MapTex_A-4", "MapTex_A-5", "MapTex_A-6", "MapTex_A-7", "MapTex_A-8", "MapTex_B-1", "MapTex_B-2", "MapTex_B-3", "MapTex_B-4", "MapTex_B-5", "MapTex_B-6", "MapTex_B-7", "MapTex_B-8", "MapTex_C-1", "MapTex_C-2", "MapTex_C-3", "MapTex_C-4", "MapTex_C-5", "MapTex_C-6", "MapTex_C-7", "MapTex_C-8", "MapTex_D-1", "MapTex_D-2", "MapTex_D-3", "MapTex_D-4", "MapTex_D-5", "MapTex_D-6", "MapTex_D-7", "MapTex_D-8", "MapTex_E-1", "MapTex_E-2", "MapTex_E-3", "MapTex_E-4", "MapTex_E-5", "MapTex_E-6", "MapTex_E-7", "MapTex_E-8", "MapTex_F-1", "MapTex_F-2", "MapTex_F-3", "MapTex_F-4", "MapTex_F-5", "MapTex_F-6", "MapTex_F-7", "MapTex_F-8", "MapTex_G-1", "MapTex_G-2", "MapTex_G-3", "MapTex_G-4", "MapTex_G-5", "MapTex_G-6", "MapTex_G-7", "MapTex_G-8", "MapTex_H-1", "MapTex_H-2", "MapTex_H-3", "MapTex_H-4", "MapTex_H-5", "MapTex_H-6", "MapTex_H-7", "MapTex_H-8", "MapTex_I-1", "MapTex_I-2", "MapTex_I-3", "MapTex_I-4", "MapTex_I-5", "MapTex_I-6", "MapTex_I-7", "MapTex_I-8", "MapTex_J-1", "MapTex_J-2", "MapTex_J-3", "MapTex_J-4", "MapTex_J-5", "MapTex_J-6", "MapTex_J-7", "MapTex_J-8"]
+    mapTexList.extend(optionalMapTexList)
     sbfres.cacheMapTex(mapTexList, f'{settings["GameDump"]}/{content}/UI/MapTex/MainField')
 
 

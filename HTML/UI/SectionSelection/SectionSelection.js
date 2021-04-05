@@ -11,6 +11,9 @@ var startPosX;
 var startPosY;
 var timeout = setTimeout(function(){}, 500);
 
+
+
+
 function selectSection(sectionName) {
   if (safeToSelect) {
     //document.getElementById(sectionName).style["box-shadow"] = "inset 0 0 100px black";

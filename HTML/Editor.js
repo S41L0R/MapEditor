@@ -39,16 +39,34 @@ const material = new THREE.MeshStandardMaterial({
 	transparent: true,
 	opacity: 0.75
 });
-const areaTexture = cubeTexLoader.load(
-	"./Assets/Textures/AreaTexture.png");
-const areaMaterial = new THREE.MeshStandardMaterial({
-	emissiveMap: areaTexture,
-	map: areaTexture,
+const areaTexture_Box = cubeTexLoader.load(
+	"./Assets/Textures/AreaTexture - Box.png");
+const areaTexture_Sphere = cubeTexLoader.load(
+		"./Assets/Textures/AreaTexture - Sphere.png");
+
+areaTexture_Sphere.wrapS = THREE.RepeatWrapping;
+areaTexture_Sphere.wrapT = THREE.RepeatWrapping;
+areaTexture_Sphere.repeat.set( 16, 16 );
+
+const areaMaterial_Box = new THREE.MeshStandardMaterial({
+	emissiveMap: areaTexture_Box,
+	map: areaTexture_Box,
 	emissive: new THREE.Color("#FFFFFF"),
 	transparent: true,
 	alphaTest: 0.35,
 	opacity: 0.5,
 	side: THREE.DoubleSide
+});
+
+const areaMaterial_Sphere = new THREE.MeshStandardMaterial({
+	emissiveMap: areaTexture_Sphere,
+	map: areaTexture_Sphere,
+	emissive: new THREE.Color("#FFFFFF"),
+	transparent: true,
+	alphaTest: 0.35,
+	opacity: 0.5,
+	side: THREE.DoubleSide,
+
 });
 
 const clock = new THREE.Clock();
@@ -656,16 +674,16 @@ async function loadActors (actorsData, isMainLoad) {
 			//var capsuleGeo = await new THREE.CapsuleBufferGeometry()
 			if (i.UnitConfigName.value == "Area") {
 				if (i["!Parameters"].Shape.value == "Sphere") {
-					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial_Sphere);
 				}
 				else if (i["!Parameters"].Shape.value == "Cylinder") {
-					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial_Sphere);
 				}
 				else if (i["!Parameters"].Shape.value == "Capsule") {
-					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial_Sphere);
 				}
 				else {
-					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial_Box);
 				}
 			}
 			else {
@@ -816,16 +834,16 @@ async function loadActors (actorsData, isMainLoad) {
 			console.log(i);
 			if (i.UnitConfigName.value == "Area") {
 				if (i["!Parameters"].Shape.value == "Sphere") {
-					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial_Sphere);
 				}
 				else if (i["!Parameters"].Shape.value == "Cylinder") {
-					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial_Sphere);
 				}
 				else if (i["!Parameters"].Shape.value == "Capsule") {
-					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial_Sphere);
 				}
 				else {
-					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial);
+					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial_Box);
 				}
 			}
 			else {
