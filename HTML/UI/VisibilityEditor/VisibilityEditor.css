@@ -208,15 +208,18 @@ html {
    outline: 0;
    font-family: 'Nunito',sans-serif;
 }
+
+img {
+}
 body{
-   background-color:#e8eaf6;
+   background-color: #3c434d;
 }
 
 
 .searchContainer{
    padding: 15px;
    border-radius: 5px;
-   background-color: #fff;
+   background-color: slategrey;
    width: 90%;
    position: absolute;
    left: 50%;
@@ -230,7 +233,7 @@ body{
 .searchContainer h1{
    text-transform: uppercase;
    margin-bottom: 15px;
-   color: #4686f6;
+   color: black;
 }
 .searchContainer input{
    padding: 10px 15px;
@@ -243,36 +246,40 @@ body{
 
 }
 .searchContainer ul li{
-
-   list-style-type: none;
-   padding: 15px 0;
-   background-color: #cfd8dc;
-   transition: .4s;
+list-style-type: none;
+padding-top: 15px;
+background-color: #cfd8dc;
+transition: .4s;
+display: flex;
+justify-content: space-between;
 }
-.searchContainer ul button{
-   color: #212121;
+.searchContainer ul section{
+   color: #3c3c3c;
    text-decoration: none;
-
 }
 
-button {
-  background-color: #4CAF50; /* Green */
+section {
+  background-color: slategrey; /* Green */
   border: none;
-  color: white;
+  color: #ffffff;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
   font-size: 16px;
   transition-duration: 0.2s;
   display:block;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
 }
 
-button:hover {
+section:hover {
   background-color: #4287f5; /* Blue */
   color: white;
 }
 
-button:active {
+section:active {
   transition-duration: 0.1s;
   background-color: #4257f5; /* Darker Blue */
 }
@@ -287,24 +294,28 @@ image {
 
 .visibleButton {
   /*height:100%;*/
-  width:25%;
-  float: right;
-  padding: 10px;
+  padding: 0px;
   height: 100px;
   margin: 0;
   text-align: center;
   font-size: 16px;
+  flex-basis: calc(100% - 20px);
+  justify-content: center;
+  align-items: center;
 }
+
 
 .selectionButton {
   /*height:100%;*/
-  width:75%;
-  float: left;
-  padding: 10px;
+  padding: 0;
   height: 100px;
   margin: 0;
   text-align: center;
   font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  flex-basis: calc(200% - 20px);
+  word-break: break-all;
 }
 
 .li {
@@ -315,6 +326,7 @@ image {
 
 ul {
   padding: 0;
+  width: 100%;
 }
 
 .buttonContainer {

@@ -9,6 +9,7 @@ body {
   font-size: 2.5vh;
   font-weight: bold;
   font-family: "Noto Sans TC", "sans-serif";
+  background-color: black;
 }
 
 
@@ -42,7 +43,7 @@ body {
 
 
 .sectionImg {
-  width: 10%;
+  width: calc(1*(100%/12));
   height: auto;
   padding: 0;
   margin: 0;
@@ -72,11 +73,11 @@ body {
   height:100%;*/
   /*box-shadow: inset 3px 3px 10px 0 #000000;*/
 
-  top: 12.5%;
+  top: calc(1*(100%/10));
   left: 0;
   visibility: hidden;
 
-  width: 10%;
+  width: calc(1*(100%/12));
   height: auto;
 }
 
@@ -93,6 +94,20 @@ body {
   height:15%;
   top:0;
   left:0;
+}
+
+#FloatingVignette {
+  position: fixed;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  top:0;
+  left:0;
+  pointer-events: none;
 }
 
 
@@ -557,104 +572,104 @@ body {
 
 
 #A-1-Box {
-  top:0;
-  left:0;
+  top:calc(1*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-1-Box {
-  top:0;
-  left:10%;
+  top:calc(1*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-1-Box {
-  top:0;
-  left:20%;
+  top:calc(1*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-1-Box {
-  top:0;
-  left:30%;
+  top:calc(1*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-1-Box {
-  top:0;
-  left:40%;
+  top:calc(1*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-1-Box {
-  top:0;
-  left:50%;
+  top:calc(1*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-1-Box {
-  top:0;
-  left:60%;
+  top:calc(1*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-1-Box {
-  top:0;
-  left:70%;
+  top:calc(1*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-1-Box {
-  top:0;
-  left:80%;
+  top:calc(1*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-1-Box {
-  top:0;
-  left:90%;
+  top:calc(1*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
 #A-2-Box {
-  top:12.5%;
-  left:0;
+  top:calc(2*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-2-Box {
-  top:12.5%;
-  left:10%;
+  top:calc(2*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-2-Box {
-  top:12.5%;
-  left:20%;
+  top:calc(2*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-2-Box {
-  top:12.5%;
-  left:30%;
+  top:calc(2*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-2-Box {
-  top:12.5%;
-  left:40%;
+  top:calc(2*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-2-Box {
-  top:12.5%;
-  left:50%;
+  top:calc(2*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-2-Box {
-  top:12.5%;
-  left:60%;
+  top:calc(2*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-2-Box {
-  top:12.5%;
-  left:70%;
+  top:calc(2*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-2-Box {
-  top:12.5%;
-  left:80%;
+  top:calc(2*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-2-Box {
-  top:12.5%;
-  left:90%;
+  top:calc(2*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
@@ -662,53 +677,53 @@ body {
 
 
 #A-3-Box {
-  top:25%;
-  left:0;
+  top:calc(3*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-3-Box {
-  top:25%;
-  left:10%;
+  top:calc(3*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-3-Box {
-  top:25%;
-  left:20%;
+  top:calc(3*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-3-Box {
-  top:25%;
-  left:30%;
+  top:calc(3*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-3-Box {
-  top:25%;
-  left:40%;
+  top:calc(3*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-3-Box {
-  top:25%;
-  left:50%;
+  top:calc(3*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-3-Box {
-  top:25%;
-  left:60%;
+  top:calc(3*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-3-Box {
-  top:25%;
-  left:70%;
+  top:calc(3*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-3-Box {
-  top:25%;
-  left:80%;
+  top:calc(3*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-3-Box {
-  top:25%;
-  left:90%;
+  top:calc(3*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
@@ -717,106 +732,106 @@ body {
 
 
 #A-4-Box {
-  top:37.5%;
-  left:0;
+  top:calc(4*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-4-Box {
-  top:37.5%;
-  left:10%;
+  top:calc(4*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-4-Box {
-  top:37.5%;
-  left:20%;
+  top:calc(4*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-4-Box {
-  top:37.5%;
-  left:30%;
+  top:calc(4*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-4-Box {
-  top:37.5%;
-  left:40%;
+  top:calc(4*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-4-Box {
-  top:37.5%;
-  left:50%;
+  top:calc(4*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-4-Box {
-  top:37.5%;
-  left:60%;
+  top:calc(4*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-4-Box {
-  top:37.5%;
-  left:70%;
+  top:calc(4*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-4-Box {
-  top:37.5%;
-  left:80%;
+  top:calc(4*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-4-Box {
-  top:37.5%;
-  left:90%;
+  top:calc(4*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
 
 
 #A-5-Box {
-  top:50%;
-  left:0;
+  top:calc(5*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-5-Box {
-  top:50%;
-  left:10%;
+  top:calc(5*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-5-Box {
-  top:50%;
-  left:20%;
+  top:calc(5*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-5-Box {
-  top:50%;
-  left:30%;
+  top:calc(5*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-5-Box {
-  top:50%;
-  left:40%;
+  top:calc(5*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-5-Box {
-  top:50%;
-  left:50%;
+  top:calc(5*(100%/10));
+  left:calc(4*(100%/10));
 }
 
 #G-5-Box {
-  top:50%;
-  left:60%;
+  top:calc(5*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-5-Box {
-  top:50%;
-  left:70%;
+  top:calc(5*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-5-Box {
-  top:50%;
-  left:80%;
+  top:calc(5*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-5-Box {
-  top:50%;
-  left:90%;
+  top:calc(5*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
@@ -826,106 +841,106 @@ body {
 
 
 #A-6-Box {
-  top:62.5%;
-  left:0;
+  top:calc(6*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-6-Box {
-  top:62.5%;
-  left:10%;
+  top:calc(6*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-6-Box {
-  top:62.5%;
-  left:20%;
+  top:calc(6*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-6-Box {
-  top:62.5%;
-  left:30%;
+  top:calc(6*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-6-Box {
-  top:62.5%;
-  left:40%;
+  top:calc(6*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-6-Box {
-  top:62.5%;
-  left:50%;
+  top:calc(6*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-6-Box {
-  top:62.5%;
-  left:60%;
+  top:calc(6*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-6-Box {
-  top:62.5%;
-  left:70%;
+  top:calc(6*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-6-Box {
-  top:62.5%;
-  left:80%;
+  top:calc(6*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-6-Box {
-  top:62.5%;
-  left:90%;
+  top:calc(6*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
 
 
 #A-7-Box {
-  top:75%;
-  left:0;
+  top:calc(7*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-7-Box {
-  top:75%;
-  left:10%;
+  top:calc(7*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-7-Box {
-  top:75%;
-  left:20%;
+  top:calc(7*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-7-Box {
-  top:75%;
-  left:30%;
+  top:calc(7*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-7-Box {
-  top:75%;
-  left:40%;
+  top:calc(7*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-7-Box {
-  top:75%;
-  left:50%;
+  top:calc(7*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-7-Box {
-  top:75%;
-  left:60%;
+  top:calc(7*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-7-Box {
-  top:75%;
-  left:70%;
+  top:calc(7*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-7-Box {
-  top:75%;
-  left:80%;
+  top:calc(7*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-7-Box {
-  top:75%;
-  left:90%;
+  top:calc(7*(100%/10));
+  left:calc(10*(100%/12));
 }
 
 
@@ -935,51 +950,152 @@ body {
 
 
 #A-8-Box {
-  top:87.5%;
-  left:0;
+  top:calc(8*(100%/10));
+  left:calc(1*(100%/12));
 }
 
 #B-8-Box {
-  top:87.5%;
-  left:10%;
+  top:calc(8*(100%/10));
+  left:calc(2*(100%/12));
 }
 
 #C-8-Box {
-  top:87.5%;
-  left:20%;
+  top:calc(8*(100%/10));
+  left:calc(3*(100%/12));
 }
 
 #D-8-Box {
-  top:87.5%;
-  left:30%;
+  top:calc(8*(100%/10));
+  left:calc(4*(100%/12));
 }
 
 #E-8-Box {
-  top:87.5%;
-  left:40%;
+  top:calc(8*(100%/10));
+  left:calc(5*(100%/12));
 }
 
 #F-8-Box {
-  top:87.5%;
-  left:50%;
+  top:calc(8*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-8-Box {
-  top:87.5%;
-  left:60%;
+  top:calc(8*(100%/10));
+  left:calc(7*(100%/12));
 }
 
 #H-8-Box {
-  top:87.5%;
-  left:70%;
+  top:calc(8*(100%/10));
+  left:calc(8*(100%/12));
 }
 
 #I-8-Box {
-  top:87.5%;
-  left:80%;
+  top:calc(8*(100%/10));
+  left:calc(9*(100%/12));
 }
 
 #J-8-Box {
-  top:87.5%;
-  left:90%;
+  top:calc(8*(100%/10));
+  left:calc(10*(100%/12));
+}
+
+
+
+
+
+
+#Z-0-Box {
+  top:calc(0*(100%/10));
+  left:calc(0*(100%/12));
+}
+#Z-1-Box {
+  top:calc(1*(100%/10));
+  left:calc(0*(100%/12));
+}
+#Z-2-Box {
+  top:calc(2*(100%/10));
+  left:calc(0*(100%/12));
+}
+
+#Z-3-Box {
+  top:calc(3*(100%/10));
+  left:calc(0*(100%/12));
+}
+#Z-4-Box {
+  top:calc(4*(100%/10));
+  left:calc(0*(100%/12));
+}
+#Z-5-Box {
+  top:calc(5*(100%/10));
+  left:calc(0*(100%/12));
+}
+
+#Z-6-Box {
+  top:calc(6*(100%/10));
+  left:calc(0*(100%/12));
+}
+
+#Z-7-Box {
+  top:calc(7*(100%/10));
+  left:calc(0*(100%/12));
+}
+
+#Z-8-Box {
+  top:calc(8*(100%/10));
+  left:calc(0*(100%/12));
+}
+
+#Z-9-Box {
+  top:calc(9*(100%/10));
+  left:calc(0*(100%/12));
+}
+
+
+
+
+
+#K-0-Box {
+  top:calc(0*(100%/10));
+  left:calc(11*(100%/12));
+}
+#K-1-Box {
+  top:calc(1*(100%/10));
+  left:calc(11*(100%/12));
+}
+#K-2-Box {
+  top:calc(2*(100%/10));
+  left:calc(11*(100%/12));
+}
+
+#K-3-Box {
+  top:calc(3*(100%/10));
+  left:calc(11*(100%/12));
+}
+#K-4-Box {
+  top:calc(4*(100%/10));
+  left:calc(11*(100%/12));
+}
+#K-5-Box {
+  top:calc(5*(100%/10));
+  left:calc(11*(100%/12));
+}
+
+#K-6-Box {
+  top:calc(6*(100%/10));
+  left:calc(11*(100%/12));
+}
+
+#K-7-Box {
+  top:calc(7*(100%/10));
+  left:calc(11*(100%/12));
+}
+
+#K-8-Box {
+  top:calc(8*(100%/10));
+  left:calc(11*(100%/12));
+}
+
+#K-9-Box {
+  top:calc(9*(100%/10));
+  left:calc(11*(100%/12));
 }
