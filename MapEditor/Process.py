@@ -155,7 +155,7 @@ def oldCacheModels(modelList, cachedModels):
 
 
 
-def cacheModels(sectionData, cachedModels):
+def cacheModels(sectionData):
     try:
         open("Cache/CachedModels.json", "x")
     except:
@@ -183,7 +183,8 @@ def cacheModels(sectionData, cachedModels):
         actorModelData = json.loads(readActorCache.read())
     modelList = []
     for i in sectionData.fullUniqueActors:
-      print(i['value'])
+      if (i['value'] == "Animal_Cow_A"):
+          print(i['value'])
       if actorModelData.get(i['value']) not in cachedModels:
           modelList.append(actorModelData[i['value']])
           print(actorModelData[i['value']])
@@ -208,7 +209,13 @@ def cacheMapTex():
     sbfres.cacheMapTex(mapTexList, f'{settings["GameDump"]}/{content}/UI/MapTex/MainField')
 
 
-def getActorModelPaths():
+def getActorModelPaths(sectionName):
+    global currentSection
+    currentSection = sectionName
+
+    mapFileData = mapFile()
+    fullUniqueActors = mapFileData.fullUniqueActors
+
     settings, content, aoc = getSettings()
     actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
     actorinfoCache = cacheActorInfo(actorinfoPath)
@@ -217,14 +224,21 @@ def getActorModelPaths():
 
     outputDict = {}
     print(actorModelData)
-    for i in actorModelData:
+
+    for i in fullUniqueActors:
         print(i)
-        outputDict[i] = f'Cache/Model/{actorModelData[i]["bfres"]}/{actorModelData[i]["mainmodel"]}.dae'
+        print(actorModelData[i['value']])
+        outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+
+
+    #for i in actorModelData:
+        #print(i)
+        #outputDict[i] = f'Cache/Model/{actorModelData[i]["bfres"]}/{actorModelData[i]["mainmodel"]}.dae'
     print("!startData"+json.dumps(outputDict)+"!endData")
     sys.stdout.flush()
 
 def TESTRunCacheModels():
-    cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"], [2, 3, 4])
+    cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"])
 
 
 def showActorInfo():
@@ -297,12 +311,12 @@ def main(sectionName):
         #Folder already exists. Just some useless code so except works:
         print()
     global currentSection
-    currentSection = sectionName;
+    currentSection = sectionName
     mapFileData = mapFile()
     print(f"!startData{mapFileData.formattedMapJson}!endData")
     #save(mapFileData.formattedMapJson)
     sys.stdout.flush()
-    cacheModels(mapFileData, [])
+    cacheModels(mapFileData)
     cacheMapTex()
 
 
