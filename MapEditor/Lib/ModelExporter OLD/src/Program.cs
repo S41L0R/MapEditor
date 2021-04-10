@@ -20,7 +20,7 @@ namespace ModelExporter
                 if (arg.Contains("Tex1") || arg.Contains("Tex2"))
                     continue;
 
-                if (arg.Contains("Tex"))
+                if (arg.Contains(".Tex"))
                     continue;
 
                 string fileName = arg.Replace(".sbfres", ".Tex1.sbfres");
@@ -68,7 +68,7 @@ namespace ModelExporter
                         DAE.Export($"{args[args.Length - 1]}{model.Name}.dae", new DAE.ExportSettings()
                         {
                             ExportTextures = true,
-                        }, model, model.GetMappedTextures(), model.Skeleton);
+                        }, model, model.GetMappedTextures(), new STSkeleton());
                     }
                 }
                 catch

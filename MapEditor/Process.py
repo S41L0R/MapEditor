@@ -231,11 +231,79 @@ def getActorModelPaths(sectionName):
         outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
 
 
+
+
     #for i in actorModelData:
         #print(i)
         #outputDict[i] = f'Cache/Model/{actorModelData[i]["bfres"]}/{actorModelData[i]["mainmodel"]}.dae'
     print("!startData"+json.dumps(outputDict)+"!endData")
     sys.stdout.flush()
+
+
+def newGetActorModelPaths(sectionName):
+    global currentSection
+    currentSection = sectionName
+
+    mapFileData = mapFile()
+    fullUniqueActors = mapFileData.fullUniqueActors
+
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
+    actorinfoCache = cacheActorInfo(actorinfoPath)
+    with open(actorinfoCache, 'rt') as readActorCache:
+        actorModelData = json.loads(readActorCache.read())
+
+    outputDict = {}
+    print(actorModelData)
+
+    for i in fullUniqueActors:
+        print(i)
+        print(actorModelData[i['value']])
+        outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+        #
+        #    "path": f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae',
+        #    "name": i["value"]
+        #}
+
+
+
+    #for i in actorModelData:
+        #print(i)
+        #outputDict[i] = f'Cache/Model/{actorModelData[i]["bfres"]}/{actorModelData[i]["mainmodel"]}.dae'
+    print("!startData"+json.dumps(outputDict)+"!endData")
+    sys.stdout.flush()
+
+
+
+def getActorModelPath(actorName, sectionName):
+    global currentSection
+    currentSection = sectionName
+
+    mapFileData = mapFile()
+
+    fullUniqueActors = mapFileData.fullUniqueActors
+
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
+    actorinfoCache = cacheActorInfo(actorinfoPath)
+    with open(actorinfoCache, 'rt') as readActorCache:
+        actorModelData = json.loads(readActorCache.read())
+
+    print("!startData"+f'Cache/Model/{actorModelData[actorName]["bfres"]}/{actorModelData[actorName]["mainmodel"]}.dae'+"!endData")
+
+
+    sys.stdout.flush()
+
+
+
+def getFullUniqueActors(sectionName):
+    global currentSection
+    currentSection = sectionName
+
+    mapFileData = mapFile()
+    fullUniqueActors = mapFileData.fullUniqueActors
+
+    print("!startData"+json.dumps(fullUniqueActors)+"!endData")
 
 def TESTRunCacheModels():
     cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"])
