@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="HTML/Light-Mode.css" id="styleSheet"></link>
     <link rel="stylesheet" href="HTML/general.css"></link>
     <script src="HTML/lib/threejs/build/three.min.js"></script>
+    <script src="HTML/lib/postprocessing/postprocessing.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap" rel="stylesheet"></link>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
 
@@ -30,9 +31,19 @@
 </head>
 
 <body>
+
+  <div id="loadingDisplay">
+    <img src="Assets/UI/SectionSelection/SelectionBox.png" id="loadingVignette"></img>
+    <img src="Assets/UI/Loading/Loading.gif" id="loadingGif"></img>
+    <p id="loadingStatus"></p>
+
+  </div>
+  <div id="devDisplay">
+    <p id="renderStats"></p>
+  </div>
+
   <canvas id="viewport">3D stuff goes here but apparently not because either me, SDarkMagic(ow), or you did something dumb.</canvas>
   <script src="HTML/lib/stats/stats.min.js"></script>
-  <script src="HTML/lib/threejs/build/three.js"></script>
   <script src="HTML/lib/capsuleGeo/three-js-capsule-geometry.js"></script>
   <script src="HTML/Editor.js" rel = "script" type = "module"></script>
   <section id="cardButtonContainer">

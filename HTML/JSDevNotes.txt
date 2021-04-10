@@ -1,0 +1,27 @@
+Utils
+--------
+RaycastTools.js > Raycast and get object
+PythonTools.js > loadPython(function, params), bulkLoadPython(function, dataToSend)
+ModelTools.js > Ability to load a model and add it to an internal dict under a key named after the model. Ability to create instancedMesh via UnitConfigName.
+SceneTools.js > Ability to interact with items in scene.
+TransformControlTools.js > Simple TransformControl listeners.
+MapTools.js > General functions for interfacing with the map data. For example: setActorDataByHashID(sectionData, HashID), forEachActor(sectionData, func())
+RendererTools.js > Basic renderer stuff.
+CacheTools.js > Load from and write to cache.
+
+Basic Editor.js stuff:
+
+
+const renderer = new THREE.WebGLRenderer({ canvas: viewport, powerPreference: "high-performance" });
+document.body.appendChild(renderer.domElement);
+
+
+
+PythonTools.loadPython("main", sectionName).then((sectionData) => {
+	// First place actors in scene (Will be dummy if there is no model):
+	SceneTools.addActorsToScene(scene, RayCastTools.intersectables, sectionData);
+	
+	
+
+
+});

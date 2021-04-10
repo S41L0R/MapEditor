@@ -35,7 +35,7 @@ namespace ModelExporter
                             new TextureExportSettings()
                             {
                                 ExportArrays = false,
-                                ExportMipmaps = false,
+                                ExportMipmaps = false
                             });
                     }
                 }
@@ -51,7 +51,7 @@ namespace ModelExporter
                             new TextureExportSettings()
                             {
                                 ExportArrays = false,
-                                ExportMipmaps = false,
+                                ExportMipmaps = false
                             });
                     }
                 }
