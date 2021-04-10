@@ -6,7 +6,7 @@ with open("README.md", "r") as desc:
 
 
 setuptools.setup(
-    name="MapEditor++",
+    name="MapEditor",
     version="0.0.1",
     description="Ice spear, but better",
     long_description=long_description,
@@ -25,7 +25,6 @@ setuptools.setup(
         "pathlib",
         "pywebview>=3.2",
         "blwpprod>=1.1.2",
-        "json",
 	"pycollada"
     ],
 )
