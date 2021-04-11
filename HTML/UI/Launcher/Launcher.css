@@ -38,6 +38,10 @@
     vertical-align: middle;
 }
 
+.LauncherButton:hover {
+  cursor: pointer
+}
+
 .LauncherButtonIcon {
   width: 50%;
   height: auto;

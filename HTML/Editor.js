@@ -174,11 +174,11 @@ darkModeToggle.addEventListener("click", function () {
 	if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
 		styleSheet.href = "HTML/Dark-Mode.css";
 		scene.background = customDarkSkyColor;
-		loadPython(function (s) { console.log(s); }, "setDarkMode", "dark");
+		PythonTools.loadPython(function (s) { console.log(s); }, "setDarkMode", "dark");
 	} else {
 		styleSheet.href = "HTML/Light-Mode.css";
 		scene.background = customSkyColor;
-		loadPython(function (s) { console.log(s); }, "setDarkMode", "light");
+		PythonTools.loadPython(function (s) { console.log(s); }, "setDarkMode", "light");
 	}
 });
 // -----------------------------------------------------------------------------
@@ -189,8 +189,7 @@ darkModeToggle.addEventListener("click", function () {
 
 
 DomListners.initListeners(document, editorControls)
-
-const sectionName = "E-4"
+const sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
 document.getElementById("loadingStatus").innerHTML = "Loading Python";
 PythonTools.loadPython("main", sectionName).then((sectionData) => {
 	document.getElementById("loadingStatus").innerHTML = "Creating Rails";

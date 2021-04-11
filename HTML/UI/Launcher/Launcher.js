@@ -1,6 +1,7 @@
 const fs = require("fs");
 const ipc = require('electron').ipcRenderer;
 const path = require('path');
+const owoify = require('owoify-js').default
 
 document.getElementById("MapEditorButton").addEventListener("click", function() {
   console.log("hi")
@@ -40,7 +41,13 @@ document.getElementById("MapEditorButton").addEventListener("click", function() 
 
 });
 
+var settingsTxtElement = document.getElementById('settings')
+var mapEditTxtElement = document.getElementById('mapEditor')
+var settingsInitTxt = settingsTxtElement.innerText
+var mapEditInitTxt = mapEditTxtElement.innerText
 
+settingsTxtElement.innerText = owoify(settingsInitTxt, 'uvu')
+mapEditTxtElement.innerText = owoify(mapEditInitTxt, 'uvu')
 
 document.getElementById("SettingsButton").addEventListener("click", function() {
   console.log("hi")

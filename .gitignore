@@ -8,3 +8,5 @@ build/
 *~
 *.swp
 *.swo
+dist/
+*.egg-info/
