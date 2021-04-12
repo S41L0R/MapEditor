@@ -20,6 +20,8 @@ const SelectionTools = require("./HTML/utils/SelectionTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
+const ipc = require("electron").ipcRenderer
+
 
 // Constants
 // -----------------------------------------------------------------------------
@@ -218,21 +220,29 @@ darkModeToggle.addEventListener("click", function () {
 
 
 DomListners.initListeners(document, editorControls)
-const sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
-document.getElementById("loadingStatus").innerHTML = "Loading Python";
-PythonTools.loadPython("main", sectionName).then((sectionData) => {
-	document.getElementById("loadingStatus").innerHTML = "Creating Rails";
-	RailTools.createRails(sectionData, scene, [])
-	// First place actors in scene (Will be dummy if there is no model):
-		document.getElementById("loadingStatus").innerHTML = "Loading Models";
-    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
-			document.getElementById("loadingDisplay").style.opacity = 0;
-		});
+
+ipc.on("loadSection", async (event, sectionName) => {
+
+	// Just in case we hit reload and want to see something
+	// Though this code doesn't work at the moment.
+	if (sectionName != undefined) {
+		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
+	}
+	document.getElementById("loadingStatus").innerHTML = "Loading Python";
+	PythonTools.loadPython("main", sectionName).then((sectionData) => {
+		document.getElementById("loadingStatus").innerHTML = "Creating Rails";
+		RailTools.createRails(sectionData, scene, [])
+		// First place actors in scene (Will be dummy if there is no model):
+			document.getElementById("loadingStatus").innerHTML = "Loading Models";
+	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
+				document.getElementById("loadingDisplay").style.opacity = 0;
+			});
 
 
-  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)
+	  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)
 
 
 
 
+	});
 });
