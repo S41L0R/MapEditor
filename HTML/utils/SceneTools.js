@@ -2,6 +2,7 @@
 // -----------------------------------------------------------------------------
 const RayCastTools = require("./RayCastTools.js")
 const ModelTools = require("./ModelTools.js")
+const SelectionTools = require("./SelectionTools.js")
 
 
 
@@ -9,6 +10,8 @@ let currentBasicCubeIndex = 0;
 
 const addActorsToScene = async function(scenelike, maplike, intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE) {
   return ModelTools.loadModels(maplike, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(() => {
+
+    addInstancedMeshes(scenelike);
     console.warn("models should have loaded")
     let currentIndexDict = {}
     maplike.Static.Objs.forEach((actor) => {
@@ -145,18 +148,18 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
 
     // Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
     try {
-      rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value));
+      rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"));
     }
     catch {
 
       // Just in case it's 1D rotation
       try {
-        rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0));
+        rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0, "ZYX"));
       }
 
       // In case there is no rotation.
       catch {
-        rotation.setFromEuler(new THREE.Euler(0, 0, 0));
+        rotation.setFromEuler(new THREE.Euler(0, 0, 0, "ZYX"));
       }
     }
 
@@ -179,8 +182,9 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
     for (actorModel of actorModels) {
       actorModel.setMatrixAt(currentIndex, actorMatrix);
       actorModel.instanceMatrix.needsUpdate = true;
-      scenelike.add(actorModel)
-      console.log(actorModel)
+
+
+      SelectionTools.createObjectDummy(actorModel, currentIndex, THREE, scenelike)
     }
   }
   else {
@@ -201,18 +205,18 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
 
     // Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
     try {
-      rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value));
+      rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"));
     }
     catch {
 
       // Just in case it's 1D rotation
       try {
-        rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0));
+        rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0, "ZYX"));
       }
 
       // In case there is no rotation.
       catch {
-        rotation.set(0, 0, 0);
+        rotation.set(0, 0, 0, "ZYX");
       }
     }
 
@@ -234,12 +238,21 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
     actorModel.setMatrixAt(currentBasicCubeIndex, actorMatrix);
     currentBasicCubeIndex = currentBasicCubeIndex + 1;
     actorModel.instanceMatrix.needsUpdate = true;
-    scenelike.add(actorModel)
-    console.log(actorModel)
+
   }
 }
 
 
+const addInstancedMeshes = async function (scenelike) {
+  for (let key in ModelTools.modelDict) {
+    for (actorModel of ModelTools.modelDict[key]) {
+      RayCastTools.intersectables.push(actorModel)
+      scenelike.add(actorModel)
+    }
+  }
+}
+
 module.exports = {
-  addActorsToScene: addActorsToScene
+  addActorsToScene: addActorsToScene,
+  addInstancedMeshes: addInstancedMeshes
 }

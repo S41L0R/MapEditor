@@ -6,6 +6,8 @@ import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorC
 import { ColladaLoader } from "./lib/threejs/examples/jsm/loaders/ColladaLoader.js";
 
 import { BufferGeometryUtils } from "./lib/threejs/examples/jsm/utils/BufferGeometryUtils.js";
+
+import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js";
 // -----------------------------------------------------------------------------
 
 // Requires
@@ -14,6 +16,7 @@ const PythonTools = require("./HTML/utils/PythonTools.js")
 const SceneTools = require("./HTML/utils/SceneTools.js")
 const RayCastTools = require("./HTML/utils/RayCastTools.js")
 const RailTools = require("./HTML/utils/RailTools.js")
+const SelectionTools = require("./HTML/utils/SelectionTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -137,6 +140,26 @@ editorControls.movementSpeed = cameraSpeed;
 editorControls.lookSpeed = cameraLookSpeed;
 // -----------------------------------------------------------------------------
 
+// Setup Selection
+// -----------------------------------------------------------------------------
+SelectionTools.initSelectionTools(THREE, scene);
+// -----------------------------------------------------------------------------
+
+// Setup TransformControls
+// -----------------------------------------------------------------------------
+const transformControl = new TransformControls(camera, renderer.domElement);
+// This is so we can detect if the user is clicking on transformControl and if
+// so don't select an object.
+RayCastTools.intersectables.push(transformControl);
+scene.add(transformControl);
+// -----------------------------------------------------------------------------
+
+// Setup Raycaster
+// -----------------------------------------------------------------------------
+RayCastTools.initRaycaster(viewport, document, TransformControls, transformControl, camera);
+// -----------------------------------------------------------------------------
+
+
 // Renderer
 // -----------------------------------------------------------------------------
 
@@ -155,11 +178,17 @@ function render() {
   renderer.render(scene, camera)
 
 	document.getElementById("renderStats").innerHTML = `
+	Camera Pos: ${Math.trunc(camera.position.x)} ${Math.trunc(camera.position.y)} ${Math.trunc(camera.position.z)}<br>
 	Scene Polycount: ${renderer.info.render.triangles}<br>
 	Active Drawcalls: ${renderer.info.render.calls}<br>
 	Textures in Memory: ${renderer.info.memory.textures}<br>
 	Geometries in Memory: ${renderer.info.memory.geometries}
 	`;
+
+
+	if (transformControl.dragging) {
+		SelectionTools.updateSelectedObjs();
+	}
 }
 render()
 
