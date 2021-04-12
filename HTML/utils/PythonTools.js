@@ -84,7 +84,6 @@ async function loadPython (func, arg) {
 
 
   			if (dataBuffer.toString().includes("!startData")) {
-
   				const data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
 
   				resolve(data);
