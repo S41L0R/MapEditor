@@ -193,7 +193,7 @@ def cacheModels(sectionData):
     print("!startProgressDataTotal"+str(len(modelList))+"!endProgressDataTotal")
     cachedModels = cachedModels + sbfres.cacheModels(modelList, f'{settings["GameDump"]}/{content}/Model')
 
-    cachedModelsJSON = json.dumps(cachedModels)
+    cachedModelsJSON = json.dumps(cachedModels, indent=2)
 
     with open("Cache/CachedModels.json", "w") as cachedModelsJSONFile:
         cachedModelsJSONFile.write(cachedModelsJSON)
@@ -223,12 +223,15 @@ def getActorModelPaths(sectionName):
         actorModelData = json.loads(readActorCache.read())
 
     outputDict = {}
-    print(actorModelData)
+    #print(actorModelData)
 
     for i in fullUniqueActors:
         print(i)
         print(actorModelData[i['value']])
-        outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+        if actorModelData[i['value']]['bfres'] != None:
+            outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+        else:
+            continue
 
 
 

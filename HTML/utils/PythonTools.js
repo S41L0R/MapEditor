@@ -84,7 +84,6 @@ async function loadPython (func, arg) {
 
 
   			if (dataBuffer.toString().includes("!startData")) {
-
   				const data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
 
   				resolve(data);
@@ -112,7 +111,7 @@ async function loadPython (func, arg) {
   				}
 
   			} else {
-  				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func} Arg: ${arg}`);
+  				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func}, Arg: ${arg}`);
   			}
   		});
     });
