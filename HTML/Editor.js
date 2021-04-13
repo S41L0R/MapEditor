@@ -225,7 +225,6 @@ ipc.on("loadSection", async (event, sectionName) => {
 
 	// Just in case we hit reload and want to see something
 	// Though this code doesn't work at the moment.
-	console.log(sectionName)
 	if (sectionName === undefined) {
 		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
 	}

@@ -236,8 +236,11 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
     actorMatrix.compose(position, rotation, scale)
 
     actorModel.setMatrixAt(currentBasicCubeIndex, actorMatrix);
+    SelectionTools.createObjectDummy(actorModel, currentBasicCubeIndex, THREE, scenelike)
     currentBasicCubeIndex = currentBasicCubeIndex + 1;
     actorModel.instanceMatrix.needsUpdate = true;
+
+
 
   }
 }
