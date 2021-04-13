@@ -1,4 +1,7 @@
 import os
+import Lib.Utils.Util as util
+import threading
+import pathlib
 
 def cacheModels(modelList, modelPath):
     cachedModels = [];
@@ -37,27 +40,24 @@ def cacheModels(modelList, modelPath):
 
 
 def cacheMapTex(mapTexList, mapTexPath):
-    for i in mapTexList:
-        os.system(f"cd")
-        #os.system(f"Lib\\ModelExporter\\ModelExporter.exe '{i}' '../../../Cache/MapTex/'")
-        if (i != None):
-            try:
-                os.mkdir(f"Cache/MapTex/")
-
-            except:
-                print("Dir already exists, moving on.")
-
-            try:
-                os.mkdir(f"Cache/MapTex/{i}/")
-            except:
-                print("Dir already exists, moving on.")
-
-
-            if (os.path.exists(os.path.join(mapTexPath, i+'.sbmaptex'))):
-                os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(mapTexPath, i+'.sbmaptex')}\" Cache/MapTex/{i}/")
+    util.findMKDir('Cache/MapTex')
+    threadList = []
+    def cache(sectionName):
+        texPath = pathlib.Path(f'{mapTexPath}/{sectionName}.sbmaptex')
+        cachePath = pathlib.Path(f'Cache/MapTex/{sectionName}')
+        if (cachePath / f'{sectionName}.png').exists():
+            return
+        else:
+            if (texPath.exists()):
+                util.findMKDir(cachePath)
+                os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{texPath}\" {cachePath}/")
             else:
-                print("The following path does not exist:\n"+os.path.join(mapTexPath, i+'.sbmaptex'))
+                print(f"The following path does not exist:\n{texPath}")
+            return
 
-            print(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(mapTexPath, i+'.sbmaptex')}\" Cache/MapTex/{i}/")
-            print(os.getcwd())
-            print(i)
+    for i in mapTexList:
+        if (i != None):
+            texThread = threading.Thread(target=cache, kwargs={'sectionName': i})
+            threadList.append(texThread)
+    for thread in threadList:
+        thread.start()

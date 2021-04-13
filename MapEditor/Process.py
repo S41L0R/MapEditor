@@ -306,7 +306,7 @@ def getFullUniqueActors(sectionName):
     mapFileData = mapFile()
     fullUniqueActors = mapFileData.fullUniqueActors
 
-    print("!startData"+json.dumps(fullUniqueActors)+"!endData")
+    print(f"!startData{json.dumps(fullUniqueActors)}!endData")
 
 def TESTRunCacheModels():
     cacheModels(["C:/Cemu/GamesMAPEDITING/[USA] The Legend of Zelda Breath of the Wild/content/Model/Animal_Bass.sbfres"])
@@ -316,19 +316,6 @@ def showActorInfo():
     actorinfo = ActorInfo.actorData()
     with open('./actorinfo.json', 'wt') as writeActorInfo_Test:
         writeActorInfo_Test.write(utils.expandByml(actorinfo.ActorInfo).jsonData)
-
-# Send data
-
-"""
-app = Flask()
-
-@app.route('/sendData')
-def sendData():
-  return jsonActors
-
-
-app.run(port=8080)
-"""
 
 
 # Keep this at the bottom of the file! This will print out every variable to be sent to js.
@@ -376,12 +363,8 @@ def save():
     return
 
 def main(sectionName):
-    try:
-        os.mkdir("./Cache")
-    except:
-        #Folder already exists. Just some useless code so except works:
-        print()
     global currentSection
+    utils.findMKDir('./Cache')
     currentSection = sectionName
     mapFileData = mapFile()
     print(f"!startData{mapFileData.formattedMapJson}!endData")
@@ -419,9 +402,6 @@ def exposeFunctions(window):
 webview.start(exposeFunctions, NewWindow, gui='cef', debug=True, http_server=True)
 """
 
-#if __name__ == "__main__":
-    #print('main')
-    #main()
 if len(sys.argv) != 2:
     exec(f"{sys.argv[1]}(\"{sys.argv[2]}\")")
 else:

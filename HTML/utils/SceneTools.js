@@ -250,6 +250,10 @@ const addInstancedMeshes = async function (scenelike) {
       scenelike.add(actorModel)
     }
   }
+  for (let key in ModelTools.basicMeshDict) {
+    RayCastTools.intersectables.push(ModelTools.basicMeshDict[key])
+    scenelike.add(ModelTools.basicMeshDict[key])
+  }
 }
 
 module.exports = {
