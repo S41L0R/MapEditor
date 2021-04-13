@@ -41,7 +41,7 @@ async function loadPython (func, arg) {
   				//return(data);
   				// return(data);
   				if (func == "main") {
-  					sectionData = data;
+  					var sectionData = data;
   				}
   			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
   				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
@@ -63,12 +63,11 @@ async function loadPython (func, arg) {
   			}
 
   		});
-    });
-
-    // Oh no! Python came across an error:
-    childPython.stdio[2].on("data", (dataBuffer) => {
+		// Oh no! Python came across an error:
+		childPython.stdio[2].on("data", (dataBuffer) => {
 			console.error(dataBuffer.toString());
 		});
+    });
 	} else {
 
 
@@ -91,7 +90,7 @@ async function loadPython (func, arg) {
   				// return(data);
 
   				if (func == "main") {
-  					sectionData = data;
+  					var sectionData = data;
   				}
   			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
   				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
@@ -111,15 +110,16 @@ async function loadPython (func, arg) {
   				}
 
   			} else {
+				console.log(dataBuffer.toString())
   				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func}, Arg: ${arg}`);
   			}
   		});
-    });
-
-    // Oh no! Python came across an error:
+		// Oh no! Python came across an error:
 		childPython.stdio[2].on("data", (dataBuffer) => {
 			console.error(dataBuffer.toString());
 		});
+    });
+
 	}
 }
 

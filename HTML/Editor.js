@@ -225,12 +225,14 @@ ipc.on("loadSection", async (event, sectionName) => {
 
 	// Just in case we hit reload and want to see something
 	// Though this code doesn't work at the moment.
-	if (sectionName != undefined) {
+	console.log(sectionName)
+	if (sectionName === undefined) {
 		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
 	}
 	document.getElementById("loadingStatus").innerHTML = "Loading Python";
 	PythonTools.loadPython("main", sectionName).then((sectionData) => {
 		document.getElementById("loadingStatus").innerHTML = "Creating Rails";
+		console.log('rails')
 		RailTools.createRails(sectionData, scene, [])
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models";
