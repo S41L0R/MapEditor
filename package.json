@@ -1,11 +1,8 @@
 {
   "name": "MapEditor",
   "version": "1.0.0",
-  "description": "",
+  "description": "A cool Map Editor for BotW",
   "main": "Start.js",
-  "directories": {
-    "lib": "lib"
-  },
   "dependencies": {
     "child_process": "^1.0.2",
     "esm": "^3.2.25",
@@ -15,18 +12,36 @@
   },
   "devDependencies": {
     "electron": "^12.0.2",
+    "electron-builder": "^22.10.5",
     "electron-packager": "^15.2.0",
     "eslint": "^7.16.0"
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager ./ SilentPrincess --platform=win32 --arch=x64 --out=build --icon=./Assets/UI/Icon/MapEditorIconDarkMode-Alt.ico --ignore='^/Cache$'"
+    "oldBuild": "electron-packager ./ SilentPrincess --platform=win32 --arch=x64 --out=build --icon=./Assets/UI/Icon/MapEditorIconDarkMode-Alt.ico --ignore='^/Cache$'",
+    "build": "electron-builder"
   },
-  "author": "",
+  "author": "S41L0R, SDarkMagic, Arcaith",
   "license": "ISC",
   "standard": {
     "ignore": [
       "/lib/"
     ]
+  },
+  "build": {
+    "appId": "Silent-Princess.MapEditor",
+    "productName": "Silent-Princess",
+    "mac": {
+      "category": "use.windows.not.mac"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "Assets/UI/MapEditorIconDarkMode-Alt.ico"
+    },
+    "directories": {
+      "output": "release"
+    },
+    "asar": false,
+    "files": "!Cache"
   }
 }
