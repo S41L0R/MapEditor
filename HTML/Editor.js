@@ -219,7 +219,7 @@ darkModeToggle.addEventListener("click", function () {
 
 
 
-DomListners.initListeners(document, editorControls)
+DomListners.initListeners(document, editorControls, transformControl)
 
 ipc.on("loadSection", async (event, sectionName) => {
 

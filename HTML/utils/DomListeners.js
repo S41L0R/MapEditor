@@ -1,7 +1,8 @@
 
 
-const initListeners = async function(document, editorControls) {
+const initListeners = async function(document, editorControls, transformControl) {
   initCameraSpeedControls(document, editorControls)
+  initTransformModeButtons(document, transformControl)
 }
 
 async function initCameraSpeedControls(document, editorControls) {
@@ -15,7 +16,17 @@ async function initCameraSpeedControls(document, editorControls) {
 }
 
 
-
+async function initTransformModeButtons(document, transformControl) {
+  document.getElementById("Translate").addEventListener("click", () => {
+    transformControl.mode = "translate";
+  })
+  document.getElementById("Rotate").addEventListener("click", () => {
+    transformControl.mode = "rotate";
+  })
+  document.getElementById("Scale").addEventListener("click", () => {
+    transformControl.mode = "scale";
+  })
+}
 
 
 
