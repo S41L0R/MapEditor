@@ -12,13 +12,13 @@ let selectedDummys = [];
 
 
 
-const createObjectDummy = async function (instancedMesh, index, THREE, scenelike) {
+const createObjectDummy = async function (instancedMeshes, index, THREE, scenelike) {
   // We're using groups because they are simple and don't need geometry or anything.
   // Not that this will hold anything - though it could hold debug objects.
   const dummyObject = new THREE.Group();
-  dummyObject.userData.instancedMesh = instancedMesh;
+  dummyObject.userData.instancedMeshes = instancedMeshes;
   dummyObject.userData.index = index;
-  instancedMesh.getMatrixAt(index, dummyObject.matrix);
+  instancedMeshes[0].getMatrixAt(index, dummyObject.matrix);
   dummyObject.matrixAutoUpdate = false;
   objectDummys.push(dummyObject);
   scenelike.add(dummyObject);
@@ -30,14 +30,15 @@ const initSelectionTools = async function (THREE, scenelike) {
 
 const selectObject = async function (instancedMesh, index, transformControl, THREE) {
   for (const dummy of objectDummys) {
-    if (dummy.userData.instancedMesh === instancedMesh) {
+    if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
       if (dummy.userData.index === index) {
+        console.error("FOUND")
         if (!selectedDummys.includes(dummy)) {
           selectedDummys.push(dummy);
           groupSelector.add(dummy);
           updateGroupSelectorPos(THREE, transformControl)
           updateSelectedDummys(THREE);
-          //displaySelection(dummy, THREE)
+          displaySelection(dummy, THREE)
           transformControl.attach(groupSelector)
         }
       }
@@ -49,8 +50,12 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
 const updateSelectedObjs = function() {
   for (const dummy of selectedDummys) {
     console.error(dummy.position)
-    dummy.userData.instancedMesh.setMatrixAt(dummy.userData.index, dummy.matrixWorld);
-    dummy.userData.instancedMesh.instanceMatrix.needsUpdate = true;
+    for (instancedMesh of dummy.userData.instancedMeshes) {
+      instancedMesh.setMatrixAt(dummy.userData.index, dummy.matrixWorld);
+      instancedMesh.instanceMatrix.needsUpdate = true;
+
+      updateObjectSelectionDisplay(instancedMesh, dummy.userData.index);
+    }
   }
 }
 
@@ -99,13 +104,42 @@ function toLocalSpace(object, THREE) {
 }
 
 function displaySelection(dummy, THREE) {
+  /*
   // Should make things look red but doesn't work.
   console.error(dummy)
-  let instancedMesh = dummy.userData.instancedMesh;
+  let instancedMesh = dummy.userData.instancedMeshes;
   let index = dummy.userData.index;
 
   instancedMesh.setColorAt(index, new THREE.Color("#FF0000"));
   instancedMesh.instanceColor.needsUpdate = true;
+
+  */
+
+  for (instancedMesh of dummy.userData.instancedMeshes) {
+    const wireframeGeo = new THREE.WireframeGeometry( instancedMesh.geometry );
+
+    const wireframe = new THREE.LineSegments( wireframeGeo );
+    wireframe.material.depthTest = true;
+    wireframe.material.opacity = 0.25;
+    wireframe.material.transparent = true;
+    wireframe.material.color = new THREE.Color("#0000FF")
+
+    wireframe.userData.index = dummy.userData.index;
+
+    instancedMesh.getMatrixAt(dummy.userData.index, wireframe.matrix);
+    wireframe.matrixAutoUpdate = false;
+
+    instancedMesh.add(wireframe)
+
+  }
+}
+
+function updateObjectSelectionDisplay(instancedMesh, index) {
+  for (const wireframe of instancedMesh.children) {
+    if (wireframe.userData.index === index) {
+      instancedMesh.getMatrixAt(index, wireframe.matrix)
+    }
+  }
 }
 
 module.exports = {
