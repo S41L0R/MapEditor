@@ -69,6 +69,7 @@ const deselectAll = async function (transformControl, THREE) {
   for (const dummy of selectedDummys) {
     groupSelector.remove(dummy)
     undisplaySelection(dummy, THREE)
+    resetGroupSelectorPos()
   }
   transformControl.detach(groupSelector)
   selectedDummys = []
@@ -117,6 +118,12 @@ function updateGroupSelectorPos(THREE, transformControl) {
   // Just some meh code to make sure the transformControl doesn't glitch out
   //transformControl.detach();
   //transformControl.attach(groupSelector);
+}
+
+function resetGroupSelectorPos() {
+  groupSelector.position.set(0, 0, 0);
+  groupSelector.rotation.set(0, 0, 0);
+  groupSelector.scale.set(1, 1, 1);
 }
 
 function toLocalSpace(object, THREE) {
