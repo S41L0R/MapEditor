@@ -46,6 +46,34 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
   }
 }
 
+const deselectObject = async function (instancedMesh, index, transformControl, THREE) {
+  for (const dummy of objectDummys) {
+    if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
+      if (dummy.userData.index === index) {
+        console.error("FOUND")
+        if (selectedDummys.includes(dummy)) {
+          selectedDummys.splice(selectedDummys.indexOf(dummy), 1);
+          groupSelector.remove(dummy);
+          updateGroupSelectorPos(THREE, transformControl)
+          updateSelectedDummys(THREE);
+          undisplaySelection(dummy, THREE)
+          transformControl.attach(groupSelector)
+        }
+      }
+    }
+  }
+}
+
+
+const deselectAll = async function (transformControl, THREE) {
+  for (const dummy of selectedDummys) {
+    groupSelector.remove(dummy)
+    undisplaySelection(dummy, THREE)
+  }
+  transformControl.detach(groupSelector)
+  selectedDummys = []
+}
+
 
 const updateSelectedObjs = function() {
   for (const dummy of selectedDummys) {
@@ -134,6 +162,18 @@ function displaySelection(dummy, THREE) {
   }
 }
 
+function undisplaySelection(dummy, THREE) {
+  for (instancedMesh of dummy.userData.instancedMeshes) {
+    for (wireframe of instancedMesh.children) {
+      if (wireframe.userData.index === dummy.userData.index) {
+        instancedMesh.remove(wireframe)
+        wireframe.material.dispose();
+        wireframe.geometry.dispose();
+      }
+    }
+  }
+}
+
 function updateObjectSelectionDisplay(instancedMesh, index) {
   for (const wireframe of instancedMesh.children) {
     if (wireframe.userData.index === index) {
@@ -144,6 +184,8 @@ function updateObjectSelectionDisplay(instancedMesh, index) {
 
 module.exports = {
   selectObject: selectObject,
+  deselectObject: deselectObject,
+  deselectAll: deselectAll,
   createObjectDummy: createObjectDummy,
   updateSelectedObjs: updateSelectedObjs,
 

@@ -24,13 +24,34 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
   viewport.onpointerdown = (event) => {
     switch (event.pointerType) {
       case "mouse":
+        // Primary (usually left) click:
         if (event.buttons === 1) {
+          // Then we want to select something
           if (!transformControl.dragging) {
             if (doObjectSelect) {
               let selectedObject = raycast(TransformControls, camera)
               console.error(selectedObject)
               if (selectedObject !== undefined) {
                 SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE);
+              }
+            }
+          }
+        }
+        // Auxiliary (usually middle) click:
+        if (event.buttons === 4) {
+          // Then we want to deselect something/everything dependong on whether we have intersects:
+
+          if (!transformControl.dragging) {
+            if (doObjectSelect) {
+              let selectedObject = raycast(TransformControls, camera)
+
+              // If we clicked something, deselect just it:
+              if (selectedObject !== undefined) {
+                SelectionTools.deselectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
+              }
+              // Otherwise, deselect everything:
+              else {
+                SelectionTools.deselectAll(transformControl, THREE)
               }
             }
           }
