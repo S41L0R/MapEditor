@@ -1,8 +1,10 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const fs = require('fs')
 const isMac = process.platform === 'darwin'
-
+const { exec } = require('child_process')
 const ipc = require('electron').ipcMain
+
+
 
 const template = [
   // These menu names are beginning to physically hurt
@@ -180,7 +182,7 @@ ipc.on('loadHTML', (event, message) => {
       win.webContents.send('loadSection', message[1]);
       win.webContents.send('appDataPath', app.getPath('userData'));
     });
-    
+
   }
 })
 
@@ -207,4 +209,17 @@ function createWindow () {
 
 app.whenReady().then(createWindow)
 
+ipc.on('runSetup', (event) => {
+  exec('python setup.py install', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`)
+      //return;
+    }
+    if (stderr) {
+      console.warn(`Stderr: ${stderr}`)
+      //return;
+    }
+    console.log(`Stdout: ${stdout}`)
+  })
+})
 

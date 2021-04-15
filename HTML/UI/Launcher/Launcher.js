@@ -2,6 +2,15 @@ const fs = require("fs");
 const ipc = require('electron').ipcRenderer;
 const path = require('path');
 const owoify = require('owoify-js').default
+const process = require('process')
+const PythonTools = require("../../utils/PythonTools")
+
+
+var setup = await PythonTools.loadPython('checkSetupPy')
+console.log(setup)
+if (setup['NeedsRestart'] == true) {
+  ipc.send('runSetup')
+}
 
 document.getElementById("MapEditorButton").addEventListener("click", function() {
   console.log("hi")
@@ -91,8 +100,10 @@ document.getElementById("SettingsButton").addEventListener("click", function() {
 //console.error(__dirname)
 //console.error(path.join(__dirname, "../../../MapEditor/Process.py"))
 const { spawn } = require("child_process");
-const childPython = spawn("python", [path.join(__dirname, "../../../MapEditor/Process.py"), "cacheMapTex"], {cwd:path.join(__dirname, "../../../")})
 
+const childPython = spawn("python", [path.join(__dirname, "../../../MapEditor/Process.py"), "cacheMapTex"], {cwd:path.join(__dirname, "../../../")})
 childPython.stdio[1].on("data", (dataBuffer) => {
   console.error(dataBuffer.toString())
 });
+
+console.warn(process.pid)

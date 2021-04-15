@@ -36,6 +36,10 @@ def getSettings():
         "NX": False,
         "DarkMode": False,
         "LoadModels": True,
+        "SetupPy": {
+            "HasRun": False,
+            "Version": None
+        },
         "SettingsMenuOrganization": {
             "Graphics": [
                 "DarkMode",
@@ -361,6 +365,25 @@ def save():
     smubinWriter.writeMapFile(loadedData)
     print('Saved!')
     return
+
+def checkSetupPy():
+    with open('./version.txt', 'rt') as readVer:
+        version = readVer.read()
+    settings, content, aoc = getSettings()
+    status = {}
+    if settings.get('SetupPy') != None:
+        if settings['SetupPy']['HasRun'] == True and str(settings['SetupPy']['Version']) == str(version):
+            print('Version Match')
+            status.update({'NeedsRestart': False})
+        else:
+            status.update({'NeedsRestart': True})
+            settings.update({'SetupPy': {'HasRun': True, 'Version': version}})
+            setSettings(json.dumps(settings))
+    else:
+        status.update({'NeedsRestart': True})
+        settings.update({'SetupPy': {'HasRun': True, 'Version': version}})
+        setSettings(json.dumps(settings))
+    print(f"!startData{json.dumps(status)}!endData")
 
 def main(sectionName):
     global currentSection
