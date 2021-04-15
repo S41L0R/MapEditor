@@ -1,5 +1,4 @@
 import setuptools
-import pathlib
 
 with open("README.md", "r") as desc:
     long_description = desc.read()
@@ -28,6 +27,6 @@ setuptools.setup(
         "pathlib",
         "pywebview>=3.2",
         "blwpprod>=1.1.2",
-	"pycollada"
+	    "pycollada"
     ],
 )
