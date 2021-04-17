@@ -27,12 +27,34 @@
   background: #005773;
 }
 
+.selectedActorListItem {
+  background-color: #008CBA;
+}
+
 .button {
   background-color: #008CBA;
   color: white;
 }
 
 .button:hover {
+  background-color: #002836;
+}
+
+
+
+
+
+#selectedActorsList {
+  /*background-color: black;*/
+  background-color: #00000038;
+}
+
+.selectedActorListItem {
+  color: white;
+}
+
+
+.selectedActorListItem:hover {
   background-color: #002836;
 }
 /*#Scale {
@@ -48,11 +70,11 @@ body::-webkit-scrollbar {
   width: 1em;
   background-color: powderblue
 }
- 
+
 body::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgb(131 233 255 / 30%);
 }
- 
+
 body::-webkit-scrollbar-thumb {
   background-color: #008CBA;
   outline: 1px solid #001921;

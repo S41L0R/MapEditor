@@ -49,6 +49,24 @@
 .button:hover {
   background-color: #002836;
 }
+
+
+
+
+
+#selectedActorsList {
+  /*background-color: black;*/
+  background-color: #00000038;
+}
+
+.selectedActorListItem {
+  color: white;
+}
+
+
+.selectedActorListItem:hover {
+  background-color: #002836;
+}
 /*#Scale {
   background: url("/Assets/UI/Transform Mode Images/MapEditorScale.png");
 }*/
