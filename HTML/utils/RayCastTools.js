@@ -1,4 +1,5 @@
 const SelectionTools = require("./SelectionTools.js")
+const DataEditorTools = require("./DataEditorTools.js")
 
 // TO DO:
 
@@ -33,6 +34,8 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
               console.error(selectedObject)
               if (selectedObject !== undefined) {
                 SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE);
+
+                DataEditorTools.addActorToSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
               }
             }
           }
@@ -48,10 +51,14 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
               // If we clicked something, deselect just it:
               if (selectedObject !== undefined) {
                 SelectionTools.deselectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
+
+                DataEditorTools.removeActorFromSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
               }
               // Otherwise, deselect everything:
               else {
                 SelectionTools.deselectAll(transformControl, THREE)
+
+                DataEditorTools.removeAllActorsFromSelectedActorsList(document)
               }
             }
           }

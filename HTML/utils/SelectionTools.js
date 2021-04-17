@@ -36,15 +36,31 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
         if (!selectedDummys.includes(dummy)) {
           selectedDummys.push(dummy);
           groupSelector.add(dummy);
+          /*
+          for (selectedDummy of selectedDummys) {
+            groupSelector.remove(selectedDummy)
+          }
+          */
           updateGroupSelectorPos(THREE, transformControl)
+          /*
+          for (selectedDummy of selectedDummys) {
+            if (selectedDummy !== dummy) {
+              groupSelector.add(selectedDummy)
+            }
+          }
+          groupSelector.attach(dummy)
+          */
+          //groupSelector.attach(dummy);
           updateSelectedDummys(THREE);
           displaySelection(dummy, THREE)
           transformControl.attach(groupSelector)
+
         }
       }
     }
   }
 }
+
 
 const deselectObject = async function (instancedMesh, index, transformControl, THREE) {
   for (const dummy of objectDummys) {
@@ -129,13 +145,41 @@ function resetGroupSelectorPos() {
 function toLocalSpace(object, THREE) {
   console.error(object)
   let oldPosVector = new THREE.Vector3().setFromMatrixPosition(object.matrixWorld);
+  console.error(oldPosVector)
   let posX = oldPosVector.x - groupSelector.position.x;
   let posY = oldPosVector.y - groupSelector.position.y;
   let posZ = oldPosVector.z - groupSelector.position.z;
+  let newPosVector = new THREE.Vector3(posX, posY, posZ);
+
+  let oldRotEuler = new THREE.Euler().setFromRotationMatrix(object.matrixWorld);
+  let rotX = oldRotEuler._x - groupSelector.rotation.x;
+  let rotY = oldRotEuler._y - groupSelector.rotation.y;
+  let rotZ = oldRotEuler._z - groupSelector.rotation.z;
+  let newRotEuler = new THREE.Euler(rotX, rotY, rotZ);
+  //let newRotQuaternion = new THREE.Quaternion().setFromEuler(newRotEuler);
+
+  let oldScaleVector = new THREE.Vector3().setFromMatrixScale(object.matrixWorld);
+  let scaleX = oldScaleVector.x - groupSelector.scale.x;
+  let scaleY = oldScaleVector.y - groupSelector.scale.y;
+  let scaleZ = oldScaleVector.z - groupSelector.scale.z;
+  let newScaleVector = new THREE.Vector3(scaleX, scaleY, scaleZ);
+
   console.error(posX)
   console.error(posY)
   console.error(posZ)
+
+  console.error(newPosVector)
+  console.error(newRotEuler)
+  console.error(newScaleVector)
+
+  //object.position.set(newPosVector.x, newPosVector.y, newPosVector.z);
+  //object.rotation.set(rotX, rotY, rotZ);
+  //object.scale.set(newScaleVector.x, -newScaleVector.y, newScaleVector.z);
+  //object.updateMatrix();
+  //object.matrix.makeRotationFromEuler(newRotEuler)
+  //object.matrix.compose(newPosVector, new THREE.Quaternion().setFromRotationMatrix(object.matrix), newScaleVector)
   object.matrix.setPosition(posX, posY, posZ)
+  //object.matrix.setScale(scaleX, scaleY, scaleZ)
 }
 
 function displaySelection(dummy, THREE) {

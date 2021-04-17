@@ -183,10 +183,16 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
       actorModel.setMatrixAt(currentIndex, actorMatrix);
       actorModel.instanceMatrix.needsUpdate = true;
 
+      actorModel.userData.actorList[currentIndex] = actor;
+
 
 
     }
     SelectionTools.createObjectDummy(actorModels, currentIndex, THREE, scenelike)
+
+
+
+
   }
   else {
     // We can put the standard cube mesh
@@ -240,6 +246,9 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
     SelectionTools.createObjectDummy([actorModel], currentBasicCubeIndex, THREE, scenelike)
     currentBasicCubeIndex = currentBasicCubeIndex + 1;
     actorModel.instanceMatrix.needsUpdate = true;
+
+
+    actorModel.userData.actorList[currentBasicCubeIndex] = actor;
 
 
 

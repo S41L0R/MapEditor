@@ -141,7 +141,9 @@ const setupCubeMesh = async function (THREE) {
     	opacity: 0.75,
       side: THREE.DoubleSide
     });
-    basicMeshDict["basicCube"] = new THREE.InstancedMesh(cubeGeometry, material, 9999);
+    basicCubeMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999);
+    basicCubeMesh.userData.actorList = [];
+    basicMeshDict["basicCube"] = basicCubeMesh
 
 
     resolve();
@@ -193,6 +195,7 @@ const colladaOnLoad = function (collada, actorName, resolve, BufferGeometryUtils
       let colladaMaterial = item.material;
 
       let colladaInstancedMesh = new THREE.InstancedMesh(colladaGeometry, colladaMaterial, modelNum);
+      colladaInstancedMesh.userData.actorList = [];
       colladaMeshArray.push(colladaInstancedMesh)
     }
   })
