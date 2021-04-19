@@ -186,7 +186,6 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
       actorModel.userData.actorList[currentIndex] = actor;
 
 
-
     }
     SelectionTools.createObjectDummy(actorModels, currentIndex, THREE, scenelike)
 
