@@ -1,3 +1,6 @@
+const DomListeners = require("./DomListeners.js")
+
+
 let selectedActor;
 
 async function displayActor(actor, document) {
@@ -6,6 +9,8 @@ async function displayActor(actor, document) {
     <p>${actor.HashId.value}</p>
     <button class="button" id="ActorEditButton">Edit BYML</button>
   `
+
+  DomListeners.initDataEditorButton(document, selectedActor)
 }
 
 const addActorToSelectedActorsList = async function(actor, document) {
@@ -67,5 +72,7 @@ const removeAllActorsFromSelectedActorsList = async function(document) {
 module.exports = {
   addActorToSelectedActorsList: addActorToSelectedActorsList,
   removeActorFromSelectedActorsList: removeActorFromSelectedActorsList,
-  removeAllActorsFromSelectedActorsList: removeAllActorsFromSelectedActorsList
+  removeAllActorsFromSelectedActorsList: removeAllActorsFromSelectedActorsList,
+
+  selectedActor: selectedActor
 }

@@ -17,6 +17,7 @@ const SceneTools = require("./HTML/utils/SceneTools.js")
 const RayCastTools = require("./HTML/utils/RayCastTools.js")
 const RailTools = require("./HTML/utils/RailTools.js")
 const SelectionTools = require("./HTML/utils/SelectionTools.js")
+const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -230,6 +231,10 @@ ipc.on("loadSection", async (event, sectionName) => {
 	}
 	document.getElementById("loadingStatus").innerHTML = "Loading Python";
 	PythonTools.loadPython("main", sectionName).then((sectionData) => {
+		// Setup ActorEditor
+		// -----------------------------------------------------------------------------
+		ActorEditorTools.initActorEditorTools(sectionData)
+		// -----------------------------------------------------------------------------
 		document.getElementById("loadingStatus").innerHTML = "Creating Rails";
 		console.log('rails')
 		RailTools.createRails(sectionData, scene, [])
