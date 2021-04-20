@@ -1,7 +1,7 @@
 const {BrowserWindow} = require("electron").remote
 
 
-const initListeners = async function(document, editorControls, transformControl) {
+const initListeners = async function(document, editorControls, transformControl, saveFunction) {
   initCameraSpeedControls(document, editorControls)
   initTransformModeButtons(document, transformControl)
 }
@@ -16,6 +16,12 @@ async function initCameraSpeedControls(document, editorControls) {
   };
 }
 
+async function initSaveButton(document, saveFunction, sectionData) {
+  document.getElementById('saveButton').addEventListener('click', () => {
+    saveFunction(sectionData)
+    console.error('S A V I N G !')
+  })
+}
 
 async function initTransformModeButtons(document, transformControl) {
   document.getElementById("Translate").addEventListener("click", () => {
@@ -63,6 +69,6 @@ const initDataEditorButton = async function (document, actor) {
 
 module.exports = {
   initListeners: initListeners,
-
+  initSaveButton: initSaveButton,
   initDataEditorButton: initDataEditorButton
 }
