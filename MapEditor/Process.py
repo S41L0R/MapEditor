@@ -36,6 +36,7 @@ def getSettings():
         "NX": False,
         "DarkMode": False,
         "LoadModels": True,
+        "TestingMapSection": "J-8",
         "SetupPy": {
             "HasRun": False,
             "Version": None
@@ -338,12 +339,14 @@ def setDarkMode(variant):
     settings.update({'DarkMode': darkMode})
     WriteSettings.WriteSettings(settings)
 
-def save(dataToSave):
-    print(dataToSave)
+def save(sectionPath):
+    with open(sectionPath, 'rt') as readSectionJSON:
+        dataToSave = readSectionJSON.read()
+        print(dataToSave)
     loadedData = json.loads(dataToSave)
     loadedData.update({'Section': currentSection})
     smubinWriter.writeMapFile(loadedData)
-    print('Saved!')
+    print('File saved successfully! :)')
     return
 
 """

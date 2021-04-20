@@ -10,3 +10,4 @@ build/
 *.swo
 dist/
 *.egg-info/
+temp/
