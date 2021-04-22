@@ -1,4 +1,4 @@
-
+global.THREE = THREE;
 // Imports
 // -----------------------------------------------------------------------------
 import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorControls.js";
@@ -18,7 +18,11 @@ const RayCastTools = require("./HTML/utils/RayCastTools.js")
 const RailTools = require("./HTML/utils/RailTools.js")
 const SelectionTools = require("./HTML/utils/SelectionTools.js")
 const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
+<<<<<<< HEAD
 const SaveTools = require('./HTML/utils/SaveTools.js')
+=======
+const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
+>>>>>>> ca73911068f8d4052984b2a90a241cb7197695f6
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -156,6 +160,9 @@ const transformControl = new TransformControls(camera, renderer.domElement);
 // so don't select an object.
 RayCastTools.intersectables.push(transformControl);
 scene.add(transformControl);
+
+// Set up listeners and other transformControl utils:
+TransformControlTools.initTransformControlListeners(transformControl);
 // -----------------------------------------------------------------------------
 
 // Setup Raycaster
@@ -191,7 +198,7 @@ function render() {
 
 
 	if (transformControl.dragging) {
-		SelectionTools.updateSelectedObjs();
+		TransformControlTools.onTransformControlDrag(transformControl);
 	}
 }
 render()
