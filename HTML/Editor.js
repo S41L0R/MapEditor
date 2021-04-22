@@ -18,11 +18,8 @@ const RayCastTools = require("./HTML/utils/RayCastTools.js")
 const RailTools = require("./HTML/utils/RailTools.js")
 const SelectionTools = require("./HTML/utils/SelectionTools.js")
 const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
-<<<<<<< HEAD
 const SaveTools = require('./HTML/utils/SaveTools.js')
-=======
 const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
->>>>>>> ca73911068f8d4052984b2a90a241cb7197695f6
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -214,11 +211,11 @@ darkModeToggle.addEventListener("click", function () {
 	if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
 		styleSheet.href = "HTML/Dark-Mode.css";
 		scene.background = customDarkSkyColor;
-		PythonTools.loadPython(function (s) { console.log(s); }, "setDarkMode", "dark");
+		PythonTools.loadPython("setDarkMode", "dark");
 	} else {
 		styleSheet.href = "HTML/Light-Mode.css";
 		scene.background = customSkyColor;
-		PythonTools.loadPython(function (s) { console.log(s); }, "setDarkMode", "light");
+		PythonTools.loadPython("setDarkMode", "light");
 	}
 });
 // -----------------------------------------------------------------------------
