@@ -94,7 +94,6 @@ const deselectAll = async function (transformControl, THREE) {
 
 const updateSelectedObjs = function() {
   for (const dummy of selectedDummys) {
-    console.error(dummy.position)
     for (instancedMesh of dummy.userData.instancedMeshes) {
       instancedMesh.setMatrixAt(dummy.userData.index, dummy.matrixWorld);
       instancedMesh.instanceMatrix.needsUpdate = true;
@@ -152,9 +151,9 @@ function toLocalSpace(object, THREE) {
   let newPosVector = new THREE.Vector3(posX, posY, posZ);
 
   let oldRotEuler = new THREE.Euler().setFromRotationMatrix(object.matrixWorld);
-  let rotX = oldRotEuler._x - groupSelector.rotation.x;
-  let rotY = oldRotEuler._y - groupSelector.rotation.y;
-  let rotZ = oldRotEuler._z - groupSelector.rotation.z;
+  let rotX = oldRotEuler.x - groupSelector.rotation.x;
+  let rotY = oldRotEuler.y - groupSelector.rotation.y;
+  let rotZ = oldRotEuler.z - groupSelector.rotation.z;
   let newRotEuler = new THREE.Euler(rotX, rotY, rotZ);
   //let newRotQuaternion = new THREE.Quaternion().setFromEuler(newRotEuler);
 
@@ -182,7 +181,7 @@ function toLocalSpace(object, THREE) {
   //object.matrix.setScale(scaleX, scaleY, scaleZ)
 }
 
-function displaySelection(dummy, THREE) {
+async function displaySelection(dummy, THREE) {
   /*
   // Should make things look red but doesn't work.
   console.error(dummy)
