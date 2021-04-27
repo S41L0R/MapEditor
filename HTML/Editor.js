@@ -18,6 +18,7 @@ const RayCastTools = require("./HTML/utils/RayCastTools.js")
 const RailTools = require("./HTML/utils/RailTools.js")
 const SelectionTools = require("./HTML/utils/SelectionTools.js")
 const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
+const SaveTools = require('./HTML/utils/SaveTools.js')
 const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
@@ -224,21 +225,16 @@ darkModeToggle.addEventListener("click", function () {
 // -----------------------------------------------------------------------------
 
 
-
-
-
-
-DomListners.initListeners(document, editorControls, transformControl)
-
-ipc.on("loadSection", async (event, sectionName) => {
-
+async function loadSection(sectionName) {
 	// Just in case we hit reload and want to see something
-	// Though this code doesn't work at the moment.
+	var section = sectionName
 	if (sectionName === undefined) {
-		sectionName = await PythonTools.loadPython("shareSettings", "TestingMapSection")
+		section = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
 	}
+	console.log(section)
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
-	PythonTools.loadPython("main", sectionName).then((sectionData) => {
+	PythonTools.loadPython("main", section).then((sectionData) => {
+		DomListners.initSaveButton(document, SaveTools.saveData, sectionData)
 		// Setup ActorEditor
 		// -----------------------------------------------------------------------------
 		ActorEditorTools.initActorEditorTools(sectionData)
@@ -247,16 +243,28 @@ ipc.on("loadSection", async (event, sectionName) => {
 		console.log("rails")
 		RailTools.createRails(sectionData, scene, [])
 		// First place actors in scene (Will be dummy if there is no model):
-		document.getElementById("loadingStatus").innerHTML = "Loading Models"
-	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
-			document.getElementById("loadingDisplay").style.opacity = 0
-		})
+			document.getElementById("loadingStatus").innerHTML = "Loading Models"
+	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, section, THREE).then(()=>{
+				document.getElementById("loadingDisplay").style.opacity = 0
+			})
 
 
 	  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)
+	});
+}
 
 
 
+DomListners.initListeners(document, editorControls, transformControl)
 
-	})
-})
+ipc.on("loadSection", async (event, sectionName) => {
+	await loadSection(sectionName)
+});
+
+var perfEntries = performance.getEntriesByType('navigation')
+
+if (perfEntries[0].type == 'reload') {
+	console.log('Page Reloaded')
+	await loadSection()
+}
+else {}

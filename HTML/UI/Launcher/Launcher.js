@@ -105,5 +105,3 @@ const childPython = spawn("python", [path.join(__dirname, "../../../MapEditor/Pr
 childPython.stdio[1].on("data", (dataBuffer) => {
   console.error(dataBuffer.toString())
 });
-
-console.warn(process.pid)
