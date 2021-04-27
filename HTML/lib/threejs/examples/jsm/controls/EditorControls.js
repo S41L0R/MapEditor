@@ -3,7 +3,7 @@ import {
 	Spherical,
 	Vector3,
 	Euler
-} from "../../../build/three.module.js";
+} from '../../../build/three.module.js';
 
 var FirstPersonControls = function ( object, domElement ) {
 
@@ -117,10 +117,14 @@ var FirstPersonControls = function ( object, domElement ) {
 		if ( this.domElement !== document ) {
 
 			this.domElement.focus();
+
 		}
-		if (event.button === 2) {
+
+		if ( event.button === 2 ) {
+
 			this.rMouseDown = true;
 			domElement.requestPointerLock();
+
 		}
 
 		event.preventDefault();
@@ -137,9 +141,11 @@ var FirstPersonControls = function ( object, domElement ) {
 		event.stopPropagation();
 
 
-		if (event.button === 2) {
+		if ( event.button === 2 ) {
+
 			this.rMouseDown = false;
 			document.exitPointerLock();
+
 		}
 
 		this.mouseDragOn = false;
@@ -147,6 +153,7 @@ var FirstPersonControls = function ( object, domElement ) {
 	};
 
 	this.onMouseMove = function ( event ) {
+
 		//Variable to check if the mouse is moving
 		this.mouseMoving = true;
 
@@ -154,6 +161,7 @@ var FirstPersonControls = function ( object, domElement ) {
 		this.movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 		if ( this.domElement === document ) {
+
 			this.mouseX = event.pageX - this.viewHalfX;
 			this.mouseY = event.pageY - this.viewHalfY;
 
@@ -243,10 +251,12 @@ var FirstPersonControls = function ( object, domElement ) {
 	this.update = function () {
 
 		return function update( delta ) {
-			let frameTime = performance.now() - lastFrameTime;
+
+			const frameTime = performance.now() - lastFrameTime;
 			//console.warn(frameTime);
 
-			if (this.rMouseDown == true) {
+			if ( this.rMouseDown == true ) {
+
 				var mouseDiffX = 1;
 				var mouseDiffY = 1;
 				//mouseDiffX = this.mouseX - this.prevMouseX;
@@ -255,7 +265,8 @@ var FirstPersonControls = function ( object, domElement ) {
 				//console.warn(this.object.rotation);
 
 				//this.object.rotation._x = this.object.rotation._x + mouseDiffX;
-				if (this.mouseMoving == true) {
+				if ( this.mouseMoving == true ) {
+
 					//this.object.rotateX(-this.movementY/4 * this.lookSpeed);
 					//this.object.rotateY(-this.movementX/4 * this.lookSpeed);
 					var minPolarAngle = 0; // radians
@@ -263,37 +274,39 @@ var FirstPersonControls = function ( object, domElement ) {
 					var euler = new Euler( 0, 0, 0, 'YXZ' );
 					euler.setFromQuaternion( this.object.quaternion );
 					var PI_2 = Math.PI / 2;
-					euler.y -= this.movementX/frameTime * this.lookSpeed;
-					euler.x -= this.movementY/frameTime * this.lookSpeed;
+					euler.y -= this.movementX / frameTime * this.lookSpeed;
+					euler.x -= this.movementY / frameTime * this.lookSpeed;
 
 					euler.x = Math.max( PI_2 - maxPolarAngle, Math.min( PI_2 - minPolarAngle, euler.x ) );
 
 					this.object.quaternion.setFromEuler( euler );
+
 				}
+
 			}
-				//this.object.rotation._z = 0;
-				//this.object.rotation._x = this.object.rotation._x + mouseDiffX;
-				//this.object.rotateX(mouseDiffX);
-				//console.warn(mouseDiffX);
+			//this.object.rotation._z = 0;
+			//this.object.rotation._x = this.object.rotation._x + mouseDiffX;
+			//this.object.rotateX(mouseDiffX);
+			//console.warn(mouseDiffX);
 
-				var actualMoveSpeed = delta * this.movementSpeed;
-				if ( this.moveForward || ( this.autoForward && ! this.moveBackward ) ) this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
-				if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+			var actualMoveSpeed = delta * this.movementSpeed;
+			if ( this.moveForward || ( this.autoForward && ! this.moveBackward ) ) this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
+			if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
 
-				if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
-				if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
+			if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
+			if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
 
-				if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
-				if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
+			if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
+			if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
 
-				if ( this.moveGlobalUp ) this.object.position.y = this.object.position.y + actualMoveSpeed;
-				if ( this.moveGlobalDown ) this.object.position.y = this.object.position.y - actualMoveSpeed;
+			if ( this.moveGlobalUp ) this.object.position.y = this.object.position.y + actualMoveSpeed;
+			if ( this.moveGlobalDown ) this.object.position.y = this.object.position.y - actualMoveSpeed;
 
-				// Sets mouseMoving to false. If the mouse is moved, it will be set to true for a frame, until this goes through and clears it.
-				this.mouseMoving = false;
-				lastFrameTime = performance.now();
+			// Sets mouseMoving to false. If the mouse is moved, it will be set to true for a frame, until this goes through and clears it.
+			this.mouseMoving = false;
+			lastFrameTime = performance.now();
 
-		}
+		};
 
 
 	}();

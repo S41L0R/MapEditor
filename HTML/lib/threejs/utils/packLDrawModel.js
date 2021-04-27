@@ -25,16 +25,17 @@ var path = require( 'path' );
 
 if ( process.argv.length !== 3 ) {
 
-	console.log( "Usage: node packLDrawModel <modelFilePath>" );
+	console.log( 'Usage: node packLDrawModel <modelFilePath>' );
 	exit( 0 );
 
 }
+
 var fileName = process.argv[ 2 ];
 
 var materialsFilePath = path.join( ldrawPath, materialsFileName );
 
 console.log( 'Loading materials file "' + materialsFilePath + '"...' );
-var materialsContent = fs.readFileSync( materialsFilePath, { encoding: "utf8" } );
+var materialsContent = fs.readFileSync( materialsFilePath, { encoding: 'utf8' } );
 
 console.log( 'Packing "' + fileName + '"...' );
 
@@ -62,22 +63,23 @@ for ( var i = 0; i < listOfNotFound.length; i ++ ) {
 
 if ( someNotFound ) {
 
-	console.log( "Some files were not found, aborting." );
+	console.log( 'Some files were not found, aborting.' );
 	process.exit( - 1 );
 
 }
 
 // Obtain packed content
-var packedContent = materialsContent + "\n";
+var packedContent = materialsContent + '\n';
 for ( var i = objectsPaths.length - 1; i >= 0; i -- ) {
 
 	packedContent += objectsContents[ i ];
 
 }
-packedContent += "\n";
+
+packedContent += '\n';
 
 // Save output file
-var outPath = fileName + "_Packed.mpd";
+var outPath = fileName + '_Packed.mpd';
 console.log( 'Writing "' + outPath + '"...' );
 fs.writeFileSync( outPath, packedContent );
 
@@ -94,11 +96,11 @@ function parseObject( fileName, isRoot ) {
 
 	var originalFileName = fileName;
 
-	var prefix = "";
+	var prefix = '';
 	var objectContent = null;
 	for ( var attempt = 0; attempt < 2; attempt ++ ) {
 
-		prefix = "";
+		prefix = '';
 
 		if ( attempt === 1 ) {
 
@@ -108,11 +110,11 @@ function parseObject( fileName, isRoot ) {
 
 		if ( fileName.startsWith( '48/' ) ) {
 
-			prefix = "p/";
+			prefix = 'p/';
 
 		} else if ( fileName.startsWith( 's/' ) ) {
 
-			prefix = "parts/";
+			prefix = 'parts/';
 
 		}
 
@@ -120,37 +122,37 @@ function parseObject( fileName, isRoot ) {
 
 		try {
 
-			objectContent = fs.readFileSync( absoluteObjectPath, { encoding: "utf8" } );
+			objectContent = fs.readFileSync( absoluteObjectPath, { encoding: 'utf8' } );
 			break;
 
 		} catch ( e ) {
 
-			prefix = "parts/";
+			prefix = 'parts/';
 			absoluteObjectPath = path.join( ldrawPath, prefix, fileName );
 
 			try {
 
-				objectContent = fs.readFileSync( absoluteObjectPath, { encoding: "utf8" } );
+				objectContent = fs.readFileSync( absoluteObjectPath, { encoding: 'utf8' } );
 				break;
 
 			} catch ( e ) {
 
-				prefix = "p/";
+				prefix = 'p/';
 				absoluteObjectPath = path.join( ldrawPath, prefix, fileName );
 
 				try {
 
-					objectContent = fs.readFileSync( absoluteObjectPath, { encoding: "utf8" } );
+					objectContent = fs.readFileSync( absoluteObjectPath, { encoding: 'utf8' } );
 					break;
 
 				} catch ( e ) {
 
 					try {
 
-						prefix = "models/";
+						prefix = 'models/';
 						absoluteObjectPath = path.join( ldrawPath, prefix, fileName );
 
-						objectContent = fs.readFileSync( absoluteObjectPath, { encoding: "utf8" } );
+						objectContent = fs.readFileSync( absoluteObjectPath, { encoding: 'utf8' } );
 						break;
 
 					} catch ( e ) {
@@ -188,9 +190,9 @@ function parseObject( fileName, isRoot ) {
 
 	}
 
-	var processedObjectContent = isRoot ? "" : "0 FILE " + objectPath + "\n";
+	var processedObjectContent = isRoot ? '' : '0 FILE ' + objectPath + '\n';
 
-	var lines = objectContent.split( "\n" );
+	var lines = objectContent.split( '\n' );
 
 	for ( var i = 0, n = lines.length; i < n; i ++ ) {
 
@@ -204,6 +206,7 @@ function parseObject( fileName, isRoot ) {
 			charIndex ++;
 
 		}
+
 		line = line.substring( charIndex );
 		lineLength = line.length;
 		charIndex = 0;
@@ -277,13 +280,13 @@ function parseObject( fileName, isRoot ) {
 
 				pathMap[ subobjectFileName ] = subobjectPath ? subobjectPath : subobjectFileName;
 
-				processedObjectContent += line.substring( 0, charIndex ) + pathMap[ subobjectFileName ] + "\n";
+				processedObjectContent += line.substring( 0, charIndex ) + pathMap[ subobjectFileName ] + '\n';
 
 			}
 
 		} else {
 
-			processedObjectContent += line + "\n";
+			processedObjectContent += line + '\n';
 
 		}
 

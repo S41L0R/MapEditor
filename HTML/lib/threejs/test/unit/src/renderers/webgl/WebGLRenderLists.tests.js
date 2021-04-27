@@ -11,7 +11,7 @@ export default QUnit.module( 'Renderers', () => {
 		QUnit.module( 'WebGLRenderLists', () => {
 
 			// PUBLIC STUFF
-			QUnit.test( "get", ( assert ) => {
+			QUnit.test( 'get', ( assert ) => {
 
 				var properties = new WebGLProperties();
 
@@ -22,9 +22,9 @@ export default QUnit.module( 'Renderers', () => {
 				var listA = renderLists.get( sceneA );
 				var listB = renderLists.get( sceneB );
 
-				assert.propEqual( listA, new WebGLRenderList( properties ), "listA is type of WebGLRenderList." );
-				assert.propEqual( listB, new WebGLRenderList( properties ), "listB is type of WebGLRenderList." );
-				assert.ok( listA !== listB, "Render lists are different." );
+				assert.propEqual( listA, new WebGLRenderList( properties ), 'listA is type of WebGLRenderList.' );
+				assert.propEqual( listB, new WebGLRenderList( properties ), 'listB is type of WebGLRenderList.' );
+				assert.ok( listA !== listB, 'Render lists are different.' );
 
 
 			} );

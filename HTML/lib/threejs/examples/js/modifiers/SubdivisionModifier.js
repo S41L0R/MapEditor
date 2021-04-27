@@ -1,4 +1,4 @@
-console.warn( "THREE.SubdivisionModifier: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
+console.warn( 'THREE.SubdivisionModifier: As part of the transition to ES6 Modules, the files in \'examples/js\' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation.' );
 /**
  *	Subdivision Geometry Modifier
  *		using Loop Subdivision Scheme
@@ -59,7 +59,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 		var vertexIndexA = Math.min( a, b );
 		var vertexIndexB = Math.max( a, b );
 
-		var key = vertexIndexA + "_" + vertexIndexB;
+		var key = vertexIndexA + '_' + vertexIndexB;
 
 		return map[ key ];
 
@@ -71,7 +71,7 @@ THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 		var vertexIndexA = Math.min( a, b );
 		var vertexIndexB = Math.max( a, b );
 
-		var key = vertexIndexA + "_" + vertexIndexB;
+		var key = vertexIndexA + '_' + vertexIndexB;
 
 		var edge;
 
