@@ -8,7 +8,7 @@ export default QUnit.module( 'Editor', () => {
 
 		QUnit.test( 'write me !', ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			assert.ok( false, 'everything\'s gonna be alright' );
 
 		} );
 

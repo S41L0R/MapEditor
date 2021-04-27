@@ -1,7 +1,7 @@
 
-QUnit.module( "SetMaterialValueCommand" );
+QUnit.module( 'SetMaterialValueCommand' );
 
-QUnit.test( "Test for SetMaterialValueCommand (Undo and Redo)", function( assert ) {
+QUnit.test( 'Test for SetMaterialValueCommand (Undo and Redo)', function ( assert ) {
 
 	// setup scene
 	var editor = new Editor();
@@ -30,9 +30,9 @@ QUnit.test( "Test for SetMaterialValueCommand (Undo and Redo)", function( assert
 
 	var testDataKeys = Object.keys( testData );
 
-	testDataKeys.map( function( attributeName ) {
+	testDataKeys.map( function ( attributeName ) {
 
-		testData[ attributeName ].map( function( value ) {
+		testData[ attributeName ].map( function ( value ) {
 
 			var cmd = new SetMaterialValueCommand( box, attributeName, value );
 			cmd.updatable = false;
@@ -42,15 +42,15 @@ QUnit.test( "Test for SetMaterialValueCommand (Undo and Redo)", function( assert
 
 		var length = testData[ attributeName ].length;
 		assert.ok( box.material[ attributeName ] == testData[ attributeName ][ length - 1 ],
-			"OK, " + attributeName + " was set correctly to the last value (expected: '" + testData[ attributeName ][ length - 1 ] + "', actual: '" + box.material[ attributeName ] + "')" );
+			'OK, ' + attributeName + ' was set correctly to the last value (expected: \'' + testData[ attributeName ][ length - 1 ] + '\', actual: \'' + box.material[ attributeName ] + '\')' );
 
 		editor.undo();
 		assert.ok( box.material[ attributeName ] == testData[ attributeName ][ length - 2 ],
-			"OK, " + attributeName + " was set correctly to the second to the last value after undo (expected: '" + testData[ attributeName ][ length - 2 ] + "', actual: '" + box.material[ attributeName ] + "')" );
+			'OK, ' + attributeName + ' was set correctly to the second to the last value after undo (expected: \'' + testData[ attributeName ][ length - 2 ] + '\', actual: \'' + box.material[ attributeName ] + '\')' );
 
 		editor.redo();
 		assert.ok( box.material[ attributeName ] == testData[ attributeName ][ length - 1 ],
-			"OK, " + attributeName + " was set correctly to the last value again after redo (expected: '" + testData[ attributeName ][ length - 1 ] + "', actual: '" + box.material[ attributeName ] + "')" );
+			'OK, ' + attributeName + ' was set correctly to the last value again after redo (expected: \'' + testData[ attributeName ][ length - 1 ] + '\', actual: \'' + box.material[ attributeName ] + '\')' );
 
 	} );
 

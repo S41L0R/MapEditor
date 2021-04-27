@@ -5,7 +5,7 @@ import { OBJLoader } from '../../examples/jsm/loaders/OBJLoader.js';
 
 if ( process.argv.length <= 2 ) {
 
-	console.log( "Usage: " + path.basename( __filename ) + " model.obj" );
+	console.log( 'Usage: ' + path.basename( __filename ) + ' model.obj' );
 	process.exit( - 1 );
 
 }

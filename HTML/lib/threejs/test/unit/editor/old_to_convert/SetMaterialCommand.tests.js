@@ -1,7 +1,7 @@
 
-QUnit.module( "SetMaterialCommand" );
+QUnit.module( 'SetMaterialCommand' );
 
-QUnit.test( "Test for SetMaterialCommand (Undo and Redo)", function( assert ) {
+QUnit.test( 'Test for SetMaterialCommand (Undo and Redo)', function ( assert ) {
 
 	// setup
 	var editor = new Editor();
@@ -24,7 +24,7 @@ QUnit.test( "Test for SetMaterialCommand (Undo and Redo)", function( assert ) {
 
 	];
 
-	materialClasses.map( function( materialClass ) {
+	materialClasses.map( function ( materialClass ) {
 
 		material = new THREE[ materialClass ]();
 		editor.execute( new SetMaterialCommand( box, material ) );
@@ -35,7 +35,7 @@ QUnit.test( "Test for SetMaterialCommand (Undo and Redo)", function( assert ) {
 
 	// initial test
 	assert.ok( box.material.type == materialClasses[ i ],
-		"OK, initial material type was set correctly (expected: '" + materialClasses[ i ] + "', actual: '" + box.material.type + "')" );
+		'OK, initial material type was set correctly (expected: \'' + materialClasses[ i ] + '\', actual: \'' + box.material.type + '\')' );
 
 
 
@@ -45,7 +45,7 @@ QUnit.test( "Test for SetMaterialCommand (Undo and Redo)", function( assert ) {
 		editor.undo();
 		-- i;
 		assert.ok( box.material.type == materialClasses[ i ],
-			"OK, material type was set correctly after undo (expected: '" + materialClasses[ i ] + "', actual: '" + box.material.type + "')" );
+			'OK, material type was set correctly after undo (expected: \'' + materialClasses[ i ] + '\', actual: \'' + box.material.type + '\')' );
 
 	}
 
@@ -55,7 +55,7 @@ QUnit.test( "Test for SetMaterialCommand (Undo and Redo)", function( assert ) {
 		editor.redo();
 		++ i;
 		assert.ok( box.material.type == materialClasses[ i ],
-			"OK, material type was set correctly after redo (expected: '" + materialClasses[ i ] + "', actual: '" + box.material.type + "')" );
+			'OK, material type was set correctly after redo (expected: \'' + materialClasses[ i ] + '\', actual: \'' + box.material.type + '\')' );
 
 	}
 

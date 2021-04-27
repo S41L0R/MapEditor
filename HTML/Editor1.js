@@ -2,14 +2,14 @@
 // -----------------------------------------------------------------------------
 
 // import { THREE } from './lib/threejs/build/three.js';
-import { ColladaLoader } from "./lib/threejs/examples/jsm/loaders/ColladaLoader.js";
-import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorControls.js";
-import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js";
-import {SkeletonUtils} from "./lib/threejs/examples/jsm/utils/SkeletonUtils.js";
-import {BufferGeometryUtils} from "./lib/threejs/examples/jsm/utils/BufferGeometryUtils.js";
+import { ColladaLoader } from "./lib/threejs/examples/jsm/loaders/ColladaLoader.js"
+import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorControls.js"
+import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js"
+import {SkeletonUtils} from "./lib/threejs/examples/jsm/utils/SkeletonUtils.js"
+import {BufferGeometryUtils} from "./lib/threejs/examples/jsm/utils/BufferGeometryUtils.js"
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("fs")
+const path = require("path")
 
 // Get friends
 
@@ -20,34 +20,34 @@ const ModelTools = require("./HTML/utils/ModelTools.js")
 
 // Define ThreeJs variables:
 // -----------------------------------------------------------------------------
-const viewport = document.getElementById("viewport");
+const viewport = document.getElementById("viewport")
 // var viewport = document.body;
 
-const scene = new THREE.Scene();
+const scene = new THREE.Scene()
 
-const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000);
+const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000)
 
-const renderer = new THREE.WebGLRenderer({ canvas: viewport, powerPreference: "high-performance" });
-document.body.appendChild(renderer.domElement);
+const renderer = new THREE.WebGLRenderer({ canvas: viewport, powerPreference: "high-performance" })
+document.body.appendChild(renderer.domElement)
 
-const geometry = new THREE.BoxBufferGeometry();
-const cubeTexLoader = new THREE.TextureLoader();
+const geometry = new THREE.BoxBufferGeometry()
+const cubeTexLoader = new THREE.TextureLoader()
 const cubeTexture = cubeTexLoader.load(
-	"./Assets/Textures/CubeTexture.png");
+	"./Assets/Textures/CubeTexture.png")
 const material = new THREE.MeshStandardMaterial({
 	emissiveMap: cubeTexture,
 	emissive: new THREE.Color("#FFFFFF"),
 	transparent: true,
 	opacity: 0.75
-});
+})
 const areaTexture_Box = cubeTexLoader.load(
-	"./Assets/Textures/AreaTexture - Box.png");
+	"./Assets/Textures/AreaTexture - Box.png")
 const areaTexture_Sphere = cubeTexLoader.load(
-		"./Assets/Textures/AreaTexture - Sphere.png");
+	"./Assets/Textures/AreaTexture - Sphere.png")
 
-areaTexture_Sphere.wrapS = THREE.RepeatWrapping;
-areaTexture_Sphere.wrapT = THREE.RepeatWrapping;
-areaTexture_Sphere.repeat.set( 16, 16 );
+areaTexture_Sphere.wrapS = THREE.RepeatWrapping
+areaTexture_Sphere.wrapT = THREE.RepeatWrapping
+areaTexture_Sphere.repeat.set( 16, 16 )
 
 const areaMaterial_Box = new THREE.MeshStandardMaterial({
 	emissiveMap: areaTexture_Box,
@@ -57,7 +57,7 @@ const areaMaterial_Box = new THREE.MeshStandardMaterial({
 	alphaTest: 0.35,
 	opacity: 0.5,
 	side: THREE.DoubleSide
-});
+})
 
 const areaMaterial_Sphere = new THREE.MeshStandardMaterial({
 	emissiveMap: areaTexture_Sphere,
@@ -68,71 +68,71 @@ const areaMaterial_Sphere = new THREE.MeshStandardMaterial({
 	opacity: 0.5,
 	side: THREE.DoubleSide,
 
-});
+})
 
-const clock = new THREE.Clock();
+const clock = new THREE.Clock()
 
 // Define raycasting/selection variables
 // -----------------------------------------------------------------------------
 
-const raycaster = new THREE.Raycaster();
-raycaster.params.Points.threshold = 1;
-const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster()
+raycaster.params.Points.threshold = 1
+const mouse = new THREE.Vector2()
 
-let selectedObject;
+let selectedObject
 
-camera.position.z = 5;
+camera.position.z = 5
 
 // Define pointerDown and pointerUp
-viewport.onpointerdown = pointerDown;
+viewport.onpointerdown = pointerDown
 
-const objects = [];
+const objects = []
 
-let doObjectSelect = true;
+let doObjectSelect = true
 
-const selectedObjectGroup = new THREE.Group();
+const selectedObjectGroup = new THREE.Group()
 
 // User-Defined Variables
 // -----------------------------------------------------------------------------
 
-const customColor = new THREE.Color("skyblue");
-const customDarkColor = new THREE.Color("#2b2b31");
-let cameraSpeed = 150;
-const cameraLookSpeed = 1;
+const customColor = new THREE.Color("skyblue")
+const customDarkColor = new THREE.Color("#2b2b31")
+let cameraSpeed = 150
+const cameraLookSpeed = 1
 
 // Amount of instances for each model before it creates a new instanced mesh object.
-const instNum = 50;
+const instNum = 50
 
 // Determines whether models should be loaded. Currently this is equivelent to badFramerate.
 //const loadModels = true;
 
-var loadModels;
-loadPython(function (s) { loadModels = s;}, "shareSettings", "LoadModels");
+var loadModels
+loadPython(function (s) { loadModels = s}, "shareSettings", "LoadModels")
 
 // Define Map Based variables
 // -----------------------------------------------------------------------------
 
-const testDict = new Object();
-let sectionData;
+const testDict = new Object()
+let sectionData
 
-let sectionName;
-
-
+let sectionName
 
 
-var calledNum = 0;
+
+
+var calledNum = 0
 
 
 // Define Global models
 // -----------------------------------------------------------------------------
 
-var cubeGeo = new THREE.BoxBufferGeometry();
-var sphereGeo = new THREE.SphereBufferGeometry();
-var cylinderGeo = new THREE.CylinderBufferGeometry();
-var capsuleGeo = new THREE.CapsuleBufferGeometry();
+var cubeGeo = new THREE.BoxBufferGeometry()
+var sphereGeo = new THREE.SphereBufferGeometry()
+var cylinderGeo = new THREE.CylinderBufferGeometry()
+var capsuleGeo = new THREE.CapsuleBufferGeometry()
 
-var modelsToCacheTotal;
-var modelsToCacheDone;
+var modelsToCacheTotal
+var modelsToCacheDone
 
 //var capsuleGeo = new THREE.BufferGeometry();
 
@@ -154,9 +154,9 @@ var modelsToCacheDone;
 // Define basic eventListeners
 // -----------------------------------------------------------------------------
 
-document.getElementById("openVisibilityPanelButton").addEventListener("click", () => { createVisibilityWindow(); });
+document.getElementById("openVisibilityPanelButton").addEventListener("click", () => { createVisibilityWindow() })
 
-document.getElementById("addActorButton").addEventListener("click", () => { addActor(); });
+document.getElementById("addActorButton").addEventListener("click", () => { addActor() })
 
 
 
@@ -165,18 +165,18 @@ document.getElementById("addActorButton").addEventListener("click", () => { addA
 
 // Automatically scale canvas to fit:
 function resizeCanvasToDisplaySize () {
-	const canvas = renderer.domElement;
+	const canvas = renderer.domElement
 	// look up the size the canvas is being displayed
-	const width = canvas.clientWidth;
-	const height = canvas.clientHeight;
+	const width = canvas.clientWidth
+	const height = canvas.clientHeight
 
 	// adjust displayBuffer size to match
 	if (canvas.width !== width || canvas.height !== height) {
 		// you must pass false here or three.js sadly fights the browser
-		renderer.setSize(width, height, false);
-		camera.aspect = width / height;
-		camera.far = 100000;
-		camera.updateProjectionMatrix();
+		renderer.setSize(width, height, false)
+		camera.aspect = width / height
+		camera.far = 100000
+		camera.updateProjectionMatrix()
 
 		// update any render target sizes here
 	}
@@ -185,9 +185,9 @@ function resizeCanvasToDisplaySize () {
 //const geo = new THREE.Geometry();
 
 //geo.vertices.push(
-	//new THREE.Vector3(-1, 1, 0),
-	//new THREE.Vector3(-1, -1, 0),
-	//new THREE.Vector3(1, -1, 0)
+//new THREE.Vector3(-1, 1, 0),
+//new THREE.Vector3(-1, -1, 0),
+//new THREE.Vector3(1, -1, 0)
 //);
 
 //geo.faces.push(new THREE.Face3(0, 1, 2));
@@ -204,11 +204,11 @@ function resizeCanvasToDisplaySize () {
 // -----------------------------------------------------------------------------
 
 
-var stats = new Stats();
-stats.showPanel(0);
-stats.domElement.style.top = 50;
-document.body.appendChild( stats.dom );
-stats.begin();
+var stats = new Stats()
+stats.showPanel(0)
+stats.domElement.style.top = 50
+document.body.appendChild( stats.dom )
+stats.begin()
 
 
 
@@ -216,34 +216,34 @@ stats.begin();
 // -----------------------------------------------------------------------------
 
 // Loading loadManager
-const loadManager = new THREE.LoadingManager();
+const loadManager = new THREE.LoadingManager()
 loadManager.onStart = function (url, itemsLoaded, itemsTotal) {
-	console.log("Started loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.");
-};
-let daeModel;
+	console.log("Started loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.")
+}
+let daeModel
 
 const onLoad = function (dae) {
-	console.log("Loading complete!");
-	daeModel = dae.scene;
+	console.log("Loading complete!")
+	daeModel = dae.scene
 	daeModel.traverse(function (child) {
 		if (child instanceof THREE.Mesh) {
-			objects.push(child);
-			console.log("Child instanceof THREE.Mesh = true");
+			objects.push(child)
+			console.log("Child instanceof THREE.Mesh = true")
 		}
-	});
-	objects.push(dae.scene);
-	console.log("objects:");
-	console.log(objects);
+	})
+	objects.push(dae.scene)
+	console.log("objects:")
+	console.log(objects)
 
 	for (let i = 1; i < daeModel.children.length; i++) {
-		daeModel.children[i].geometry.computeBoundingSphere();
-		console.log(daeModel.children[i].geometry);
+		daeModel.children[i].geometry.computeBoundingSphere()
+		console.log(daeModel.children[i].geometry)
 	}
 
-	scene.add(daeModel);
-	daeModel.parent.remove(daeModel.children[0]);
-	console.log(daeModel);
-};
+	scene.add(daeModel)
+	daeModel.parent.remove(daeModel.children[0])
+	console.log(daeModel)
+}
 
 
 
@@ -251,15 +251,15 @@ const onLoad = function (dae) {
 
 
 
-var currentModelDataForLoad;
-var instancedMeshIndex = [];
+var currentModelDataForLoad
+var instancedMeshIndex = []
 
 
 
 const daeOnLoad = function (dae, currentUrl) {
 	//console.error("callednum: " + calledNum)
-	console.log("Loading complete!");
-	daeModel = dae.scene;
+	console.log("Loading complete!")
+	daeModel = dae.scene
 
 	/*
 	daeModel.traverse(function (child) {
@@ -277,8 +277,8 @@ const daeOnLoad = function (dae, currentUrl) {
 
 	//daeModel = new THREE.Mesh(daeGeometry, daeMaterial)
 	//objects.push(dae.scene);
-	console.log("objects:");
-	console.log(objects);
+	console.log("objects:")
+	console.log(objects)
 
 	ModelTools.bakeSkeleton(daeModel)
 
@@ -306,43 +306,43 @@ const daeOnLoad = function (dae, currentUrl) {
 	*/
 	//scene.add(daeModel);
 	//daeModel.parent.remove(daeModel.children[0]);
-	console.log(daeModel);
+	console.log(daeModel)
 
 
 
 
 
-	instancedMeshIndex[currentUrl] = daeModel;
+	instancedMeshIndex[currentUrl] = daeModel
 
-	console.warn(instancedMeshIndex);
+	console.warn(instancedMeshIndex)
 
-	console.warn("Loaded Model");
+	console.warn("Loaded Model")
 
-	console.warn(instancedMeshIndex);
+	console.warn(instancedMeshIndex)
 	console.warn(calledNum)
 	console.warn(instancedMeshIndex["doneNum"])
 
 	if (instancedMeshIndex["doneNum"] != undefined) {
 
-		console.warn("doneNum was not null.");
-		instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1;
+		console.warn("doneNum was not null.")
+		instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1
 	}
 	else {
-		instancedMeshIndex["doneNum"] = 1;
-		console.warn("doneNum was null.");
+		instancedMeshIndex["doneNum"] = 1
+		console.warn("doneNum was null.")
 	}
 	if (instancedMeshIndex["doneNum"] == calledNum) {
 
-		console.warn("loadActors time");
-		loadActors(sectionData, true);
+		console.warn("loadActors time")
+		loadActors(sectionData, true)
 	}
 
-};
+}
 
 
 
 function daeCapsuleOnLoad(dae) {
-	capsuleGeo = dae.scene.geometry;
+	capsuleGeo = dae.scene.geometry
 }
 
 
@@ -361,71 +361,71 @@ function daeCapsuleOnLoad(dae) {
 
 
 const onProgress = function (url, itemsLoaded, itemsTotal) {
-	console.warn("Loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.");
-};
+	console.warn("Loading file: " + url + ".\nLoaded " + itemsLoaded + " of " + itemsTotal + " files.")
+}
 async function loadPython (callback, func, arg) {
-	console.log("Got to LoadPython!");
+	console.log("Got to LoadPython!")
 
 	if (arg == null) {
-		const { spawn } = require("child_process");
-		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), `${func}`], {cwd:__dirname});
+		const { spawn } = require("child_process")
+		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), `${func}`], {cwd:__dirname})
 
-		console.log(`Process is spawned - With func ${func}.`);
-		var loadingPython = true;
+		console.log(`Process is spawned - With func ${func}.`)
+		var loadingPython = true
 		childPython.stdio[1].on("data", (dataBuffer) => {
-			console.log(`stdout as string from buffer: ${dataBuffer}`);
+			console.log(`stdout as string from buffer: ${dataBuffer}`)
 
 			if (dataBuffer.toString().includes("!startData")) {
-				console.log("true");
-				const data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
-				console.log(data);
+				console.log("true")
+				const data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")))
+				console.log(data)
 				// callback(data);
-				callback(data);
+				callback(data)
 				// return(data);
 				if (func == "main") {
-					sectionData = data;
+					sectionData = data
 				}
 			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
 				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
 			} else if (dataBuffer.toString().includes("!startProgressData")) {
 				if (modelsToCacheDone/modelsToCacheTotal < 1) {
-					document.getElementById("progressBar").style.visibility="visible";
-					document.getElementById("ProgressContainerDiv").style.visibility="visible";
-					document.getElementById("loadStatus").style.visibility="visible";
+					document.getElementById("progressBar").style.visibility="visible"
+					document.getElementById("ProgressContainerDiv").style.visibility="visible"
+					document.getElementById("loadStatus").style.visibility="visible"
 					document.getElementById("progressBar").style.width=`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`
 					console.error(`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`)
-					console.error(modelsToCacheDone);
-					console.error(modelsToCacheTotal);
+					console.error(modelsToCacheDone)
+					console.error(modelsToCacheTotal)
 				}
 				else {
-					document.getElementById("progressBar").style.visibility="hidden";
-					document.getElementById("ProgressContainerDiv").style.visibility="hidden";
-					document.getElementById("loadStatus").style.visibility="hidden";
+					document.getElementById("progressBar").style.visibility="hidden"
+					document.getElementById("ProgressContainerDiv").style.visibility="hidden"
+					document.getElementById("loadStatus").style.visibility="hidden"
 				}
 			} else {
-				console.log("false");
+				console.log("false")
 			}
 
-		});
+		})
 	} else {
-		const { spawn } = require("child_process");
-		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), `${func}`, `${arg}`], {cwd:__dirname});
+		const { spawn } = require("child_process")
+		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), `${func}`, `${arg}`], {cwd:__dirname})
 
-		console.log(`Process is spawned - With func ${func} and arg ${arg}.`);
-		var loadingPython = true;
+		console.log(`Process is spawned - With func ${func} and arg ${arg}.`)
+		var loadingPython = true
 		childPython.stdio[1].on("data", (dataBuffer) => {
-			console.log(`stdout as string from buffer: ${dataBuffer}`);
+			console.log(`stdout as string from buffer: ${dataBuffer}`)
 
 			if (dataBuffer.toString().includes("!startData")) {
-				console.log("true");
-				const data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")));
-				console.log(data);
+				console.log("true")
+				const data = JSON.parse(dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startData") + 10, dataBuffer.toString().lastIndexOf("!endData")))
+				console.log(data)
 				// callback(data);
-				callback(data);
+				callback(data)
 				// return(data);
 
 				if (func == "main") {
-					sectionData = data;
+					sectionData = data
 				}
 			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
 				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
@@ -433,38 +433,38 @@ async function loadPython (callback, func, arg) {
 				console.error("testestestest")
 				modelsToCacheDone = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressData") + 18, dataBuffer.toString().lastIndexOf("!endProgressData"))
 				if (modelsToCacheDone/modelsToCacheTotal < 1) {
-					document.getElementById("progressBar").style.visibility="visible";
-					document.getElementById("ProgressContainerDiv").style.visibility="visible";
-					document.getElementById("loadStatus").style.visibility="visible";
+					document.getElementById("progressBar").style.visibility="visible"
+					document.getElementById("ProgressContainerDiv").style.visibility="visible"
+					document.getElementById("loadStatus").style.visibility="visible"
 					document.getElementById("progressBar").style.width=`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`
 					console.error(`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`)
-					console.error(modelsToCacheDone);
-					console.error(modelsToCacheTotal);
+					console.error(modelsToCacheDone)
+					console.error(modelsToCacheTotal)
 				}
 				else {
-					document.getElementById("progressBar").style.visibility="hidden";
-					document.getElementById("ProgressContainerDiv").style.visibility="hidden";
-					document.getElementById("loadStatus").style.visibility="hidden";
+					document.getElementById("progressBar").style.visibility="hidden"
+					document.getElementById("ProgressContainerDiv").style.visibility="hidden"
+					document.getElementById("loadStatus").style.visibility="hidden"
 				}
 
 			} else {
-				console.log("false");
+				console.log("false")
 			}
-		});
+		})
 
 		childPython.stdio[2].on("data", (dataBuffer) => {
-			console.error(dataBuffer.toString());
-		});
+			console.error(dataBuffer.toString())
+		})
 	}
 }
 // loadPython();
 // var data = loadPython();
-let fullData;
+let fullData
 function loadPythonCallback (data) {
-	fullData = data;
+	fullData = data
 }
 // loadPython(loadPythonCallback);
-console.log("test");
+console.log("test")
 
 
 
@@ -474,40 +474,40 @@ console.log("test");
 
 
 
-let globUrlDict;
+let globUrlDict
 function daeOnError() {
 	console.warn("Issue loading. Probably can't find path.")
 	if (instancedMeshIndex["doneNum"] == undefined) {
-			instancedMeshIndex["doneNum"] = 1;
-			console.warn("doneNum was null.");
+		instancedMeshIndex["doneNum"] = 1
+		console.warn("doneNum was null.")
 	}
 	//calledNum = calledNum - 1
 	console.warn(calledNum)
-	instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1;
+	instancedMeshIndex["doneNum"] = instancedMeshIndex["doneNum"] + 1
 }
 async function loadInstanceModels(urlDict) {
 	console.warn(urlDict)
-	globUrlDict = urlDict;
+	globUrlDict = urlDict
 
 	if (urlDict == null) {
-		loadPython(function (s) { loadInstanceModels(s) }, "getActorModelPaths", sectionName);
-		return;
+		loadPython(function (s) { loadInstanceModels(s) }, "getActorModelPaths", sectionName)
+		return
 	}
 
-	let urlArray = [path.join(__dirname, "./Cache/Model/Enemy_Moriblin_Bone/Moriblin_Bone.dae")];
+	let urlArray = [path.join(__dirname, "./Cache/Model/Enemy_Moriblin_Bone/Moriblin_Bone.dae")]
 
 
 	for (const i in urlDict) {
-			console.warn(i)
-			console.warn(urlDict[i])
-			//loader.load(urlArray[i], daeOnLoad, onProgress);
-			loader.load(urlDict[i], function (collada) {
-  daeOnLoad(collada, urlDict[i]);
-}, onProgress, daeOnError);
-			calledNum = calledNum + 1;
-			console.warn("Loaded DaeModel")
+		console.warn(i)
+		console.warn(urlDict[i])
+		//loader.load(urlArray[i], daeOnLoad, onProgress);
+		loader.load(urlDict[i], function (collada) {
+			daeOnLoad(collada, urlDict[i])
+		}, onProgress, daeOnError)
+		calledNum = calledNum + 1
+		console.warn("Loaded DaeModel")
 		console.warn(path.join(__dirname, urlDict[i]))
-/*		fs.access(urlDict[i], fs.F_OK, (err) => {
+		/*		fs.access(urlDict[i], fs.F_OK, (err) => {
 			if (err) {
 				calledNum = calledNum - 1
 				console.warn(path.join(__dirname, urlDict[i]))
@@ -518,7 +518,7 @@ async function loadInstanceModels(urlDict) {
 		console.warn(calledNum)
 	}
 
-/*
+	/*
 	Object.keys(urlDict).forEach(function(k){
 		console.warn(k)
 		console.warn(urlArray[k])
@@ -536,7 +536,7 @@ async function loadInstanceModels(urlDict) {
 
 
 async function loadActors (actorsData, isMainLoad) {
-	console.log("Got to loadActors!");
+	console.log("Got to loadActors!")
 
 	// pywebview.api.getStuff();
 	//const loader = new THREE.FontLoader();
@@ -582,7 +582,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 
 
-		currentModelDataForLoad = i;
+		currentModelDataForLoad = i
 		// var i = 0;
 		/*
     loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
@@ -625,12 +625,12 @@ async function loadActors (actorsData, isMainLoad) {
 		if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]] != undefined && loadModels == true && globUrlDict[i.UnitConfigName.value] != undefined) {
 
 
-			let duplicateMesh;
+			let duplicateMesh
 			if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].children.length > 0) {
-				duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
+				duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
 			}
 			else {
-				duplicateMesh = instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].clone();
+				duplicateMesh = instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].clone()
 			}
 
 
@@ -638,16 +638,16 @@ async function loadActors (actorsData, isMainLoad) {
 
 
 
-			scene.add(duplicateMesh);
+			scene.add(duplicateMesh)
 
-			objects.push(duplicateMesh);
+			objects.push(duplicateMesh)
 
 
-			duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value)
 
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
-				duplicateMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+				duplicateMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180)
 			}
 			catch {
 
@@ -664,7 +664,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 			// Try to apply scale, if it doesn't exist add some.
 			try {
-				duplicateMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+				duplicateMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value)
 			}
 			catch {
 				// This could also mean that there's only 1 scale value, try that first.
@@ -675,27 +675,27 @@ async function loadActors (actorsData, isMainLoad) {
 					duplicateMesh.scale.set(1, 1, 1)
 				}
 			}
-			duplicateMesh.HashID = i.HashId.value;
-			duplicateMesh.Type = "Static";
+			duplicateMesh.HashID = i.HashId.value
+			duplicateMesh.Type = "Static"
 
 
-			console.warn(i);
+			console.warn(i)
 
 
-			console.warn(duplicateMesh);
+			console.warn(duplicateMesh)
 
-			console.warn(i.Translate[0].value);
+			console.warn(i.Translate[0].value)
 
-			console.warn("instancedMeshBase:");
+			console.warn("instancedMeshBase:")
 
-			console.log(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
+			console.log(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
 
 		}
 
 
 		else {
 
-			console.log(i);
+			console.log(i)
 
 			/*
 			await loader.load("./Assets/Models/Capsule.dae", function (collada) {
@@ -706,26 +706,26 @@ async function loadActors (actorsData, isMainLoad) {
 			//var capsuleGeo = await new THREE.CapsuleBufferGeometry()
 			if (i.UnitConfigName.value == "Area") {
 				if (i["!Parameters"].Shape.value == "Sphere") {
-					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial_Sphere);
+					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial_Sphere)
 				}
 				else if (i["!Parameters"].Shape.value == "Cylinder") {
-					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial_Sphere);
+					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial_Sphere)
 				}
 				else if (i["!Parameters"].Shape.value == "Capsule") {
-					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial_Sphere);
+					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial_Sphere)
 				}
 				else {
-					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial_Box);
+					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial_Box)
 				}
 			}
 			else {
-				var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+				var cubeMesh = await new THREE.Mesh(cubeGeo, material)
 			}
-			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value)
 
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
-				cubeMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+				cubeMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180)
 			}
 			catch {
 
@@ -742,7 +742,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 			// Try to apply scale, if it doesn't exist add some.
 			try {
-				cubeMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+				cubeMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value)
 			}
 			catch {
 				// This could also mean that there's only 1 scale value, try that first.
@@ -753,13 +753,13 @@ async function loadActors (actorsData, isMainLoad) {
 					cubeMesh.scale.set(1, 1, 1)
 				}
 			}
-			cubeMesh.HashID = i.HashId.value;
-			cubeMesh.Type = "Static";
-			await scene.add(cubeMesh);
-			await objects.push(cubeMesh);
-			await console.log("cubeMesh");
-			console.log(cubeMesh);
-			await console.log("No cubeMesh");
+			cubeMesh.HashID = i.HashId.value
+			cubeMesh.Type = "Static"
+			await scene.add(cubeMesh)
+			await objects.push(cubeMesh)
+			await console.log("cubeMesh")
+			console.log(cubeMesh)
+			await console.log("No cubeMesh")
 
 		}
 
@@ -767,7 +767,7 @@ async function loadActors (actorsData, isMainLoad) {
 	for (const i of actorsData.Dynamic.Objs) {
 
 
-		currentModelDataForLoad = i;
+		currentModelDataForLoad = i
 		// var i = 0;
 		/*
     loader.load( 'HTML/lib/threejs/examples/fonts/helvetiker_regular.typeface.json', async function ( font ) {
@@ -804,27 +804,27 @@ async function loadActors (actorsData, isMainLoad) {
 
 			//loader.load(url, daeOnLoadDynamic, onProgress);
 
-			let duplicateMesh;
+			let duplicateMesh
 			if (instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].children.length > 0) {
-				duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]]);
+				duplicateMesh = SkeletonUtils.clone(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
 			}
 			else {
-				duplicateMesh = instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].clone();
+				duplicateMesh = instancedMeshIndex[globUrlDict[i.UnitConfigName.value]].clone()
 			}
 			//console.warn(instancedMeshIndex[globUrlDict[i.UnitConfigName.value]])
 
 
 
 
-			scene.add(duplicateMesh);
+			scene.add(duplicateMesh)
 
-			objects.push(duplicateMesh);
+			objects.push(duplicateMesh)
 
-			duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			duplicateMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value)
 
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
-				duplicateMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+				duplicateMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180)
 			}
 			catch {
 
@@ -841,7 +841,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 			// Try to apply scale, if it doesn't exist add some.
 			try {
-				duplicateMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+				duplicateMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value)
 			}
 			catch {
 				// This could also mean that there's only 1 scale value, try that first.
@@ -852,8 +852,8 @@ async function loadActors (actorsData, isMainLoad) {
 					duplicateMesh.scale.set(1, 1, 1)
 				}
 			}
-			duplicateMesh.HashID = i.HashId.value;
-			duplicateMesh.Type = "Dynamic";
+			duplicateMesh.HashID = i.HashId.value
+			duplicateMesh.Type = "Dynamic"
 
 
 			/*
@@ -868,28 +868,28 @@ async function loadActors (actorsData, isMainLoad) {
 		else {
 
 
-			console.log(i);
+			console.log(i)
 			if (i.UnitConfigName.value == "Area") {
 				if (i["!Parameters"].Shape.value == "Sphere") {
-					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial_Sphere);
+					var cubeMesh = await new THREE.Mesh(sphereGeo, areaMaterial_Sphere)
 				}
 				else if (i["!Parameters"].Shape.value == "Cylinder") {
-					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial_Sphere);
+					var cubeMesh = await new THREE.Mesh(cylinderGeo, areaMaterial_Sphere)
 				}
 				else if (i["!Parameters"].Shape.value == "Capsule") {
-					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial_Sphere);
+					var cubeMesh = await new THREE.Mesh(capsuleGeo, areaMaterial_Sphere)
 				}
 				else {
-					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial_Box);
+					var cubeMesh = await new THREE.Mesh(cubeGeo, areaMaterial_Box)
 				}
 			}
 			else {
-				var cubeMesh = await new THREE.Mesh(cubeGeo, material);
+				var cubeMesh = await new THREE.Mesh(cubeGeo, material)
 			}
-			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value);
+			cubeMesh.position.set(i.Translate[0].value, i.Translate[1].value, i.Translate[2].value)
 			// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
 			try {
-				cubeMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180);
+				cubeMesh.rotation.set(i.Rotate[0].value * Math.PI / 180, i.Rotate[1].value * Math.PI / 180, i.Rotate[2].value * Math.PI / 180)
 			}
 			catch {
 
@@ -906,7 +906,7 @@ async function loadActors (actorsData, isMainLoad) {
 
 			// Try to apply scale, if it doesn't exist add some.
 			try {
-				cubeMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value);
+				cubeMesh.scale.set(i.Scale[0].value, i.Scale[1].value, i.Scale[2].value)
 			}
 			catch {
 				// This could also mean that there's only 1 scale value, try that first.
@@ -917,18 +917,18 @@ async function loadActors (actorsData, isMainLoad) {
 					cubeMesh.scale.set(1, 1, 1)
 				}
 			}
-			cubeMesh.HashID = i.HashId.value;
-			cubeMesh.Type = "Dynamic";
-			await scene.add(cubeMesh);
-			await objects.push(cubeMesh);
-			await console.log("cubeMesh");
-			console.log(cubeMesh);
-			await console.log("No cubeMesh");
+			cubeMesh.HashID = i.HashId.value
+			cubeMesh.Type = "Dynamic"
+			await scene.add(cubeMesh)
+			await objects.push(cubeMesh)
+			await console.log("cubeMesh")
+			console.log(cubeMesh)
+			await console.log("No cubeMesh")
 
 		}
 
 	}
-	console.log(scene);
+	console.log(scene)
 
 	/*
 	for (const rail of sectionData.Static.Rails) {
@@ -1019,7 +1019,7 @@ async function loadActors (actorsData, isMainLoad) {
 	}*/
 
 
-	RailTools.createRails(sectionData, scene, objects);
+	RailTools.createRails(sectionData, scene, objects)
 
 	if (isMainLoad) {
 		/* Kinda bad code tbh, so I'll use a bad method for commenting out a comment.
@@ -1028,9 +1028,9 @@ async function loadActors (actorsData, isMainLoad) {
 		camera.position.z = actorsData.Dynamic.Objs[actorsData.Dynamic.Objs.length - 1].Translate[2].value;
 		*/
 
-		camera.position.x = actorsData.Static.LocationPosX.value;
-		camera.position.y = 50;
-		camera.position.z = actorsData.Static.LocationPosX.value;
+		camera.position.x = actorsData.Static.LocationPosX.value
+		camera.position.y = 50
+		camera.position.z = actorsData.Static.LocationPosX.value
 
 
 		//camera.position.x = scene.children[66].position.x;
@@ -1041,20 +1041,20 @@ async function loadActors (actorsData, isMainLoad) {
 
 // Light mode / Dark mode
 // -----------------------------------------------------------------------------
-const darkModeToggle = document.getElementById("darkModeToggle");
-const styleSheet = document.getElementById("styleSheet");
+const darkModeToggle = document.getElementById("darkModeToggle")
+const styleSheet = document.getElementById("styleSheet")
 
 darkModeToggle.addEventListener("click", function () {
 	if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
-		styleSheet.href = "HTML/Dark-Mode.css";
-		scene.background = customDarkColor;
-		loadPython(function (s) { console.log(s); }, "setDarkMode", "dark");
+		styleSheet.href = "HTML/Dark-Mode.css"
+		scene.background = customDarkColor
+		loadPython(function (s) { console.log(s) }, "setDarkMode", "dark")
 	} else {
-		styleSheet.href = "HTML/Light-Mode.css";
-		scene.background = customColor;
-		loadPython(function (s) { console.log(s); }, "setDarkMode", "light");
+		styleSheet.href = "HTML/Light-Mode.css"
+		scene.background = customColor
+		loadPython(function (s) { console.log(s) }, "setDarkMode", "light")
 	}
-});
+})
 
 // Used to return the actor data for showActorData. Later on I'll just assign the index in the Objs array from sectionData as a value directly to the object on creation so I don't need this.
 // -----------------------------------------------------------------------------
@@ -1063,7 +1063,7 @@ function findActorData (hashId, type) {
 		for (const i of sectionData.Static.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (i.HashId.value == hashId) {
-        	return i;
+        	return i
       	}
 			// }
 		}
@@ -1072,7 +1072,7 @@ function findActorData (hashId, type) {
 		for (const i of sectionData.Dynamic.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (i.HashId.value == hashId) {
-        	return (i);
+        	return (i)
       	}
 			// }
 		}
@@ -1081,56 +1081,56 @@ function findActorData (hashId, type) {
 
 function setActorData (hashId, type, data) {
 	if (type == "Static") {
-		var index = 0;
+		var index = 0
 		for (var i of sectionData.Static.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (i.HashId.value == hashId) {
-        	sectionData.Static.Objs[index] = data;
-				console.warn(i);
+        	sectionData.Static.Objs[index] = data
+				console.warn(i)
       	}
 			// }
-			index = index + 1;
+			index = index + 1
 		}
 	}
 	if (type == "Dynamic") {
-		var index = 0;
+		var index = 0
 		for (var i of sectionData.Dynamic.Objs) {
 			// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
       	if (i.HashId.value == hashId) {
-        	sectionData.Dynamic.Objs[index] = data;
-				console.warn(i);
+        	sectionData.Dynamic.Objs[index] = data
+				console.warn(i)
       	}
 			// }
-			index = index + 1;
+			index = index + 1
 		}
 	} else {
-		console.warn(type);
+		console.warn(type)
 	}
-	console.warn(findActorData(hashId, type));
-	console.warn(data);
-	console.warn(type);
-	console.warn(sectionData);
+	console.warn(findActorData(hashId, type))
+	console.warn(data)
+	console.warn(type)
+	console.warn(sectionData)
 
-	var index = 0;
+	var index = 0
 	for (var i of scene.children) {
 		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
 		if (i.HashID == hashId) {
 			console.warn(data)
 			console.warn(scene)
-			scene.children[index].position.x = data.Translate[0].value;
-			scene.children[index].position.y = data.Translate[1].value;
-			scene.children[index].position.z = data.Translate[2].value;
+			scene.children[index].position.x = data.Translate[0].value
+			scene.children[index].position.y = data.Translate[1].value
+			scene.children[index].position.z = data.Translate[2].value
 
-			scene.children[index].rotation.x = data.Rotate[0].value * Math.PI / 180;
-			scene.children[index].rotation.y = data.Rotate[1].value * Math.PI / 180;
-			scene.children[index].rotation.z = data.Rotate[2].value * Math.PI / 180;
+			scene.children[index].rotation.x = data.Rotate[0].value * Math.PI / 180
+			scene.children[index].rotation.y = data.Rotate[1].value * Math.PI / 180
+			scene.children[index].rotation.z = data.Rotate[2].value * Math.PI / 180
 
-			scene.children[index].scale.x = data.Scale[0].value;
-			scene.children[index].scale.y = data.Scale[1].value;
-			scene.children[index].scale.z = data.Scale[2].value;
+			scene.children[index].scale.x = data.Scale[0].value
+			scene.children[index].scale.y = data.Scale[1].value
+			scene.children[index].scale.z = data.Scale[2].value
 		}
 		// }
-		index = index + 1;
+		index = index + 1
 	}
 }
 
@@ -1139,7 +1139,7 @@ function findRailData (hashId) {
 	for (const i of sectionData.Static.Rails) {
 		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
 		if (i.HashId.value == hashId) {
-			return i;
+			return i
 		}
 	}
 }
@@ -1147,22 +1147,22 @@ function findRailData (hashId) {
 
 
 function setRailData (hashId, data) {
-	var index = 0;
+	var index = 0
 	for (var i of sectionData.Static.Rails) {
 		// if (sectionData.Dynamic.Objs.hasOwnProperty(i)) {
 		if (i.HashId.value == hashId) {
-			sectionData.Static.Rails[index] = data;
-			console.warn(i);
+			sectionData.Static.Rails[index] = data
+			console.warn(i)
 		}
-		index = index + 1;
+		index = index + 1
 	}
-	console.warn(findRailData(hashId));
-	console.warn(data);
-	console.warn(sectionData);
+	console.warn(findRailData(hashId))
+	console.warn(data)
+	console.warn(sectionData)
 
-	RailTools.reloadRail(hashId, sectionData, scene);
-	RailHelperTools.reloadControlPointHelpersByRailHashID(hashId, scene, sectionData, objects);
-	RailHelperTools.reloadRailPointHelpersByRailHashID(hashId, scene, sectionData, objects);
+	RailTools.reloadRail(hashId, sectionData, scene)
+	RailHelperTools.reloadControlPointHelpersByRailHashID(hashId, scene, sectionData, objects)
+	RailHelperTools.reloadRailPointHelpersByRailHashID(hashId, scene, sectionData, objects)
 }
 
 // -----------------------------------------------------------------------------
@@ -1170,39 +1170,39 @@ function setRailData (hashId, data) {
 // Controls the side bar panel thing, doesn't currently have a system for multi-actor selection, but I'll need to give TransformControls that first.
 // -----------------------------------------------------------------------------
 // Initializes the camera slider varaibles
-const cameraSlider = document.getElementById("cameraSlider");
-const sliderValue = document.getElementById("sliderValue");
-sliderValue.innerHTML = cameraSlider.value;
+const cameraSlider = document.getElementById("cameraSlider")
+const sliderValue = document.getElementById("sliderValue")
+sliderValue.innerHTML = cameraSlider.value
 
 // Changes the camera speed when the slider's value changes
 cameraSlider.oninput = function () {
-	sliderValue.innerHTML = this.value;
-	cameraSpeed = this.value;
-	fpControls.movementSpeed = cameraSpeed;
-};
+	sliderValue.innerHTML = this.value
+	cameraSpeed = this.value
+	fpControls.movementSpeed = cameraSpeed
+}
 
 function showActorData (ActorHashID, ActorType) {
-	const actorDataPanel = document.getElementById("DataEditorTextWindow");
+	const actorDataPanel = document.getElementById("DataEditorTextWindow")
 	actorDataPanel.innerHTML = `
   <p id="SelectedActorName"><strong>${findActorData(ActorHashID, ActorType).UnitConfigName.value}</strong></p>
   <p>${ActorHashID}</p>
   <button class="button" id="ActorEditButton">Edit BYML</button>
 
-  `;
-	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findActorData(ActorHashID, ActorType), ActorType, false); });
+  `
+	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findActorData(ActorHashID, ActorType), ActorType, false) })
 	// document.getElementById("ActorEditButton").onclick = findActorData(ActorHashID, ActorType);
 }
 
 
 function showRailData (RailHashID) {
-	const actorDataPanel = document.getElementById("DataEditorTextWindow");
+	const actorDataPanel = document.getElementById("DataEditorTextWindow")
 	actorDataPanel.innerHTML = `
   <p id="SelectedActorName"><strong>${findRailData(RailHashID).RailType.value} Rail</strong></p>
   <p>${RailHashID}</p>
   <button class="button" id="ActorEditButton">Edit BYML</button>
 
-  `;
-	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findRailData(RailHashID), null, true); });
+  `
+	document.getElementById("ActorEditButton").addEventListener("click", () => { createEditorWindow(findRailData(RailHashID), null, true) })
 	// document.getElementById("ActorEditButton").onclick = findActorData(ActorHashID, ActorType);
 }
 // -----------------------------------------------------------------------------
@@ -1217,9 +1217,9 @@ function showRailData (RailHashID) {
 // DAE loader
 // -----------------------------------------------------------------------------
 
-const loader = new ColladaLoader();
-const url = "./Test/TestToolboxGuardian/Guardian_A_Perfect.dae";
-loader.load(url, onLoad, onProgress, onDaeError);
+const loader = new ColladaLoader()
+const url = "./Test/TestToolboxGuardian/Guardian_A_Perfect.dae"
+loader.load(url, onLoad, onProgress, onDaeError)
 // console.log(daeModel);
 
 function onDaeError(collada) {
@@ -1228,25 +1228,25 @@ function onDaeError(collada) {
 // -----------------------------------------------------------------------------
 
 // Controls
-var fpControls = new FirstPersonControls(camera, renderer.domElement);
-fpControls.movementSpeed = cameraSpeed;
-fpControls.loocSpeed = cameraLookSpeed;
-fpControls.lookSpeed = 0.1;
+var fpControls = new FirstPersonControls(camera, renderer.domElement)
+fpControls.movementSpeed = cameraSpeed
+fpControls.loocSpeed = cameraLookSpeed
+fpControls.lookSpeed = 0.1
 
 // Transform Controls
 // -----------------------------------------------------------------------------
 
 // Initialize transformControl
-const transformControl = new TransformControls(camera, renderer.domElement);
-objects.push(transformControl);
-let transformControlAttached = false;
+const transformControl = new TransformControls(camera, renderer.domElement)
+objects.push(transformControl)
+let transformControlAttached = false
 
 // Do some junk that matters but doesn't matter.
 //transformControl.addEventListener("change", render);
 
 transformControl.addEventListener("dragging-changed", function (event) {
-	fpControls.enabled = !event.value;
-	doObjectSelect = !event.value;
+	fpControls.enabled = !event.value
+	doObjectSelect = !event.value
 
 
 	if (selectedObject.type == "Points") {
@@ -1254,7 +1254,7 @@ transformControl.addEventListener("dragging-changed", function (event) {
 		if (selectedObject.relevantType == "RailPoint") {
 			for (const rail of sectionData.Static.Rails) {
 				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
-					console.error("hi there");
+					console.error("hi there")
 					/*
 					for (railPoint of rail.RailPoints) {
 						console.error(railPoint);
@@ -1263,36 +1263,36 @@ transformControl.addEventListener("dragging-changed", function (event) {
 						railPoint.Translate[2].value = selectedObject.position.z;
 					}
 					*/
-					rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x;
-					rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y;
-					rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z;
-					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
-					RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, scene, sectionData, objects);
+					rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x
+					rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y
+					rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects)
+					RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, scene, sectionData, objects)
 				}
 			}
 		}
 		else if (selectedObject.relevantType == "ControlPoint") {
 			for (const rail of sectionData.Static.Rails) {
 				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
-					RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, selectedObject.position);
+					RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, selectedObject.position)
 					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][0].value = selectedObject.position.x;
 					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][1].value = selectedObject.position.y;
 					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][2].value = selectedObject.position.z;
-					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects)
 				}
 			}
 		}
 	}
 	else if (selectedObject.parent.type == "Group") {
-		transformControl.attach(selectedObject.parent);
-		transformControlAttached = true;
-		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
-		console.warn(tempActorData);
+		transformControl.attach(selectedObject.parent)
+		transformControlAttached = true
+		var tempActorData = findActorData(selectedObject.parent.HashID, selectedObject.parent.Type)
+		console.warn(tempActorData)
 		console.warn("asdf")
 
 
 		try {
-			tempActorData.Scale = [{"type":300, "value": selectedObject.parent.scale.x}, {"type":300, "value": selectedObject.parent.scale.y}, {"type":300, "value": selectedObject.parent.scale.z}];
+			tempActorData.Scale = [{"type":300, "value": selectedObject.parent.scale.x}, {"type":300, "value": selectedObject.parent.scale.y}, {"type":300, "value": selectedObject.parent.scale.z}]
 		}
 		catch {
 			console.log("Scale doesn't exist. Correcting.")
@@ -1301,7 +1301,7 @@ transformControl.addEventListener("dragging-changed", function (event) {
 		}
 
 		try {
-			tempActorData.Rotate = [{"type":300, "value": selectedObject.parent.rotation.x * 180 / Math.PI}, {"type":300, "value": selectedObject.parent.rotation.y * 180 / Math.PI}, {"type":300, "value": selectedObject.parent.rotation.z * 180 / Math.PI}];
+			tempActorData.Rotate = [{"type":300, "value": selectedObject.parent.rotation.x * 180 / Math.PI}, {"type":300, "value": selectedObject.parent.rotation.y * 180 / Math.PI}, {"type":300, "value": selectedObject.parent.rotation.z * 180 / Math.PI}]
 		}
 		catch {
 			console.log("Rotation doesn't exist. Correcting.")
@@ -1309,7 +1309,7 @@ transformControl.addEventListener("dragging-changed", function (event) {
 		}
 
 		try {
-			tempActorData.Translate = [{"type":300,"value":selectedObject.parent.position.x}, {"type":300,"value":selectedObject.parent.position.y}, {"type":300,"value":selectedObject.parent.position.z}];
+			tempActorData.Translate = [{"type":300,"value":selectedObject.parent.position.x}, {"type":300,"value":selectedObject.parent.position.y}, {"type":300,"value":selectedObject.parent.position.z}]
 		}
 		catch {
 			console.log("Translation... doesn't exist? Correcting I guess.")
@@ -1317,18 +1317,18 @@ transformControl.addEventListener("dragging-changed", function (event) {
 		}
 
 
-		setActorData(selectedObject.parent.HashID, selectedObject.parent.Type, tempActorData);
+		setActorData(selectedObject.parent.HashID, selectedObject.parent.Type, tempActorData)
 
 	}
 
 
 
 	else {
-		transformControl.attach(selectedObject);
-		transformControlAttached = true;
+		transformControl.attach(selectedObject)
+		transformControlAttached = true
 
-		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type);
-		console.warn(tempActorData);
+		var tempActorData = findActorData(selectedObject.HashID, selectedObject.Type)
+		console.warn(tempActorData)
 		console.warn("asdf")
 
 		//tempActorData.Scale = [selectedObject.scale.x, selectedObject.scale.y, selectedObject.scale.z];
@@ -1341,21 +1341,21 @@ transformControl.addEventListener("dragging-changed", function (event) {
 
 
 		try {
-			tempActorData.Scale = [{"type":300, "value": selectedObject.scale.x}, {"type":300, "value": selectedObject.scale.y}, {"type":300, "value": selectedObject.scale.z}];
+			tempActorData.Scale = [{"type":300, "value": selectedObject.scale.x}, {"type":300, "value": selectedObject.scale.y}, {"type":300, "value": selectedObject.scale.z}]
 		}
 		catch {
 			console.log("Scale doesn't exist.")
 		}
 
 		try {
-			tempActorData.Rotate = [{"type":300, "value": selectedObject.rotation.x * 180 / Math.PI}, {"type":300, "value": selectedObject.rotation.y * 180 / Math.PI}, {"type":300, "value": selectedObject.rotation.z * 180 / Math.PI}];
+			tempActorData.Rotate = [{"type":300, "value": selectedObject.rotation.x * 180 / Math.PI}, {"type":300, "value": selectedObject.rotation.y * 180 / Math.PI}, {"type":300, "value": selectedObject.rotation.z * 180 / Math.PI}]
 		}
 		catch {
 			console.log("Rotation doesn't exist.")
 		}
 
 		try {
-			tempActorData.Translate = [{"type":300,"value":selectedObject.position.x}, {"type":300,"value":selectedObject.position.y}, {"type":300,"value":selectedObject.position.z}];
+			tempActorData.Translate = [{"type":300,"value":selectedObject.position.x}, {"type":300,"value":selectedObject.position.y}, {"type":300,"value":selectedObject.position.z}]
 		}
 		catch {
 			console.log("Translation... doesn't exist?")
@@ -1389,42 +1389,42 @@ transformControl.addEventListener("dragging-changed", function (event) {
 
 		*/
 
-		setActorData(selectedObject.HashID, selectedObject.Type, tempActorData);
+		setActorData(selectedObject.HashID, selectedObject.Type, tempActorData)
 	}
-});
-transformControl.setMode("translate");
+})
+transformControl.setMode("translate")
 
 function updatebounds () {
-	console.log("parent:");
-	console.log(transformControl.object.parent);
-	let child;
+	console.log("parent:")
+	console.log(transformControl.object.parent)
+	let child
 	for (child = 1; child < transformControl.object.parent.children.length; child++) {
-		transformControl.object.parent.children[child].geometry.computeBoundingSphere();
+		transformControl.object.parent.children[child].geometry.computeBoundingSphere()
 	}
-	render();
+	render()
 }
 
 function render () {
-	renderer.render(scene, camera);
+	renderer.render(scene, camera)
 }
 // Adds transformControl to the scene.
-scene.add(transformControl);
+scene.add(transformControl)
 
 // Custom background color
 // -----------------------------------------------------------------------------
 
-scene.background = customColor;
+scene.background = customColor
 
 // Lighting
 // -----------------------------------------------------------------------------
-const cameraPointLight = new THREE.PointLight(0xffffff, 1, 100, 2);
-cameraPointLight.position.set(0, 0, 0);
-camera.add(cameraPointLight);
+const cameraPointLight = new THREE.PointLight(0xffffff, 1, 100, 2)
+cameraPointLight.position.set(0, 0, 0)
+camera.add(cameraPointLight)
 
-const hemiLight = new THREE.HemisphereLight(customColor, 0x080820, 1);
-scene.add(hemiLight);
+const hemiLight = new THREE.HemisphereLight(customColor, 0x080820, 1)
+scene.add(hemiLight)
 
-scene.add(camera);
+scene.add(camera)
 
 // -----------------------------------------------------------------------------
 
@@ -1433,70 +1433,70 @@ scene.add(camera);
 // const BrowserWindow = electron.BrowserWindow;
 
 function createEditorWindow (obj, actorType, editingRail) {
-	const { BrowserWindow } = require("electron").remote;
+	const { BrowserWindow } = require("electron").remote
 
 	const editorWin = new BrowserWindow({ width: 600, height: 400, webPreferences: {
 		nodeIntegration: true,
 		contextIsolation: false,
 		enableRemoteModule: true
-	} });
+	} })
 	// win.LoadURL("file://HTML/UI/SelectedActor/SelectedActor.html")
-	editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`);
+	editorWin.loadURL(`file://${__dirname}/HTML/UI/SelectedActor/SelectedActor.html`)
 
 	editorWin.once("ready-to-show", () => {
-		editorWin.show();
-	});
+		editorWin.show()
+	})
 
 	editorWin.webContents.on("did-finish-load", () => {
 		// editorWin.webContents.send('toActorEditor', 'Hello second window!');
-		editorWin.webContents.send("toActorEditor", { data: obj, type: actorType, HashID: obj.HashId.value, editingRail: editingRail, windowID: 1 });
-	});
+		editorWin.webContents.send("toActorEditor", { data: obj, type: actorType, HashID: obj.HashId.value, editingRail: editingRail, windowID: 1 })
+	})
 }
 
 
 function createVisibilityWindow () {
-	const { BrowserWindow } = require("electron").remote;
+	const { BrowserWindow } = require("electron").remote
 
 	const visiblityWin = new BrowserWindow({ width: 600, height: 400, webPreferences: {
 		nodeIntegration: true,
 	 	contextIsolation: false,
 	 	enableRemoteModule: true
-	 } });
-	visiblityWin.loadURL(`file://${__dirname}/HTML/UI/VisibilityEditor/VisibilityEditor.html`);
+	 } })
+	visiblityWin.loadURL(`file://${__dirname}/HTML/UI/VisibilityEditor/VisibilityEditor.html`)
 
 	visiblityWin.once("ready-to-show", () => {
-		visiblityWin.show();
-	});
+		visiblityWin.show()
+	})
 	//console.error(sectionData)
 	let fullActorDict = {HashIDs: [], ActorNames: []}
 	for (const i of sectionData.Static.Objs) {
 		fullActorDict.HashIDs.push({HashID: i.HashId.value, Name: i.UnitConfigName.value})
 		//fullActorDict.HashIDs.HashID.push(i.HashId.value);
 		//fullActorDict.HashIDs.Name.push(i.UnitConfigName.value);
-		fullActorDict.ActorNames.push(i.UnitConfigName.value);
+		fullActorDict.ActorNames.push(i.UnitConfigName.value)
 	}
 	for (const i of sectionData.Dynamic.Objs) {
 		fullActorDict.HashIDs.push({HashID: i.HashId.value, Name: i.UnitConfigName.value})
 		//fullActorDict.HashIDs.HashID.push(i.HashId.value);
 		//fullActorDict.HashIDs.Name.push(i.UnitConfigName.value);
-		fullActorDict.ActorNames.push(i.UnitConfigName.value);
+		fullActorDict.ActorNames.push(i.UnitConfigName.value)
 	}
 	fullActorDict.ActorNames = [...new Set(fullActorDict.ActorNames)]
 	console.warn(fullActorDict)
 	visiblityWin.webContents.on("did-finish-load", () => {
-		visiblityWin.webContents.send("toVisibilityWindow", fullActorDict);
-	});
+		visiblityWin.webContents.send("toVisibilityWindow", fullActorDict)
+	})
 }
 
-const ipc = require("electron").ipcRenderer;
+const ipc = require("electron").ipcRenderer
 
 ipc.on("fromActorEditor", (event, message, hashID, type, isEditingRail) => {
 	if (!isEditingRail) {
-		setActorData(hashID, type, message);
-		console.warn(message);
-		console.warn(hashID);
-		console.warn(type);
-		ActorTools.removeObjectActors([hashID], scene, transformControl);
+		setActorData(hashID, type, message)
+		console.warn(message)
+		console.warn(hashID)
+		console.warn(type)
+		ActorTools.removeObjectActors([hashID], scene, transformControl)
 		console.warn(sectionData)
 		let actorsData = {
 			"Dynamic": {
@@ -1507,42 +1507,42 @@ ipc.on("fromActorEditor", (event, message, hashID, type, isEditingRail) => {
 				"LocationPosX": sectionData.Static.LocationPosX,
 				"LocationPosZ": sectionData.Static.LocationPosZ
 			}
-		};
-		actorsData[type].Objs.push(message);
-		console.warn(actorsData);
+		}
+		actorsData[type].Objs.push(message)
+		console.warn(actorsData)
 		loadActors(actorsData, false)
-		console.warn(scene);
+		console.warn(scene)
 	}
 	// Otherwise we're editing a rail:
 	else {
 		setRailData(hashID, message)
 	}
-});
+})
 
 
 ipc.on("loadSection", (event, message) => {
-	displaySectionName(message);
-	sectionName = message;
+	displaySectionName(message)
+	sectionName = message
 	//console.error("hi")
-	loadPython(function (s) { loadInstanceModels(null)}, "main", message);
-});
+	loadPython(function (s) { loadInstanceModels(null)}, "main", message)
+})
 
 ipc.on("appDataPath", (event, message) => {
 	//console.error(message)
-});
+})
 
 ipc.on("fromVisibilityEditor", (event, message) => {
-	console.warn(message);
+	console.warn(message)
 	console.warn(scene)
 	let num = 0
 	for (const x of scene.children) {
 		if (message.HashIDs.includes(x.HashID)) {
-			x.visible = false;
+			x.visible = false
 		}
 		else {
-			x.visible = true;
+			x.visible = true
 		}
-		num = num + 1;
+		num = num + 1
 	}
 	/*
 	for (const i of message.HashIDs) {
@@ -1570,7 +1570,7 @@ ipc.on("fromVisibilityEditor", (event, message) => {
 	}
 	*/
 	for (const i of message.ActorNames) {
-		let num = 0;
+		let num = 0
 		for (const x of scene.children) {
 			try {
 				//console.warn (i)
@@ -1580,55 +1580,55 @@ ipc.on("fromVisibilityEditor", (event, message) => {
 					console.warn(objects)
 					console.warn("i")
 					if (x.visible == true) {
-						x.visible = false;
-						objects[num].visible = false;
+						x.visible = false
+						objects[num].visible = false
 					}
 					else {
-						x.visible = true;
-						objects[num].visible = true;
+						x.visible = true
+						objects[num].visible = true
 					}
 				}
 			}
 			catch {
 				console.warn("Couldn't find actor data.")
 			}
-			num = num + 1;
+			num = num + 1
 		}
 
 
 		console.warn(i)
 	}
-});
+})
 
 document.getElementById("DataEditorTextWindow").innerHTML = `
 
-`;
+`
 
 // Handle Adding Actors
 // -----------------------------------------------------------------------------
 
 function addActor() {
-	let position = new THREE.Vector3();
-	position.setFromMatrixPosition(camera.matrixWorld);
+	let position = new THREE.Vector3()
+	position.setFromMatrixPosition(camera.matrixWorld)
 
 	//Generate new HashID
 	let highestIntHashID
 	sectionData.Static.Objs.forEach((data) => {
-		let intHashID = data.HashId.value;
+		let intHashID = data.HashId.value
 		if (intHashID > highestIntHashID || highestIntHashID == undefined) {
-			highestIntHashID = intHashID;
+			highestIntHashID = intHashID
 		}
 	})
 	sectionData.Dynamic.Objs.forEach((data) => {
-		let intHashID = data.HashId.value;
+		let intHashID = data.HashId.value
 		if (intHashID > highestIntHashID || highestIntHashID == undefined) {
-			highestIntHashID = intHashID;
+			highestIntHashID = intHashID
 		}
 	})
 
-	let highestInGameHashID = 4294961892;
+	let highestInGameHashID = 4294961892
 
-	highestIntHashID = highestInGameHashID;
+	highestIntHashID = highestInGameHashID
 	let addedActorData =
 	{
 		"HashId": {
@@ -1641,9 +1641,9 @@ function addActor() {
 			{"type": 300, "value": camera.rotation.x}
 		],
 		"Translate": [
-				{"type": 300, "value": camera.position.x},
-				{"type": 300, "value": camera.position.y},
-				{"type": 300, "value": camera.position.z}
+			{"type": 300, "value": camera.position.x},
+			{"type": 300, "value": camera.position.y},
+			{"type": 300, "value": camera.position.z}
 		],
 		"UnitConfigName": {"type": 400, "value": "Test"}
 	}
@@ -1659,29 +1659,29 @@ function addActor() {
 			"LocationPosX": sectionData.Static.LocationPosX,
 			"LocationPosZ": sectionData.Static.LocationPosZ
 		}
-	};
-	actorsData.Dynamic.Objs.push(addedActorData);
-	loadActors(actorsData, false);
+	}
+	actorsData.Dynamic.Objs.push(addedActorData)
+	loadActors(actorsData, false)
 
 	console.error(sectionData.Dynamic.Objs[0])
-	console.error(highestIntHashID);
+	console.error(highestIntHashID)
 	console.error(sectionData)
 }
 
 // Handle Mouse Movement
 // -----------------------------------------------------------------------------
-document.addEventListener("mousemove", onMouseMove, true);
+document.addEventListener("mousemove", onMouseMove, true)
 
 function onMouseMove (event) {
 	// calculate mouse position in normalized device coordinates
 	// (-1 to +1) for both components
 
-	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 	// console.log(mouse.x);
 }
 
-console.log(scene.children);
+console.log(scene.children)
 
 // Handle Actor Selection
 // -----------------------------------------------------------------------------
@@ -1690,9 +1690,9 @@ console.log(scene.children);
 
 function clearActorSelectionGroup() {
 	for (const i of selectedObjectGroup) {
-		i.position.x = i.position.x + selectedObjectGroup.position.x;
-		i.position.y = i.position.y + selectedObjectGroup.position.y;
-		i.position.z = i.position.z + selectedObjectGroup.position.z;
+		i.position.x = i.position.x + selectedObjectGroup.position.x
+		i.position.y = i.position.y + selectedObjectGroup.position.y
+		i.position.z = i.position.z + selectedObjectGroup.position.z
 		scene.add(i)
 		selectedObjectGroup.remove(i)
 	}
@@ -1830,19 +1830,19 @@ function pointerDown (evt) {
 
 
 function pointerDown (evt) {
-	let action;
-	let breakException = {};
+	let action
+	let breakException = {}
 
 	switch (evt.pointerType) {
 	case "mouse":
 		if (evt.buttons === 1) {
 			if (doObjectSelect == true) {
-				raycaster.setFromCamera(mouse, camera);
-				const intersects = raycaster.intersectObjects(objects, true);
+				raycaster.setFromCamera(mouse, camera)
+				const intersects = raycaster.intersectObjects(objects, true)
 				console.warn(objects)
 				console.warn(intersects)
-				let transformControlsPass = false;
-				let unconfirmedSelectedObject = null;
+				let transformControlsPass = false
+				let unconfirmedSelectedObject = null
 				if (intersects.length > 0) {
 					intersects.forEach((intersect, i) => {
 
@@ -1850,200 +1850,200 @@ function pointerDown (evt) {
 						if (intersect.object.visible) {
 						//console.error("i")
 
-						let foundTransformBreak = false;
-						let foundTransformReturn = false;
+							let foundTransformBreak = false
+							let foundTransformReturn = false
 
-						try {
-							if (intersect.object instanceof TransformControls) {
+							try {
+								if (intersect.object instanceof TransformControls) {
 									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
 										if (unconfirmedSelectedObject != null) {
 											//Workaround to break from the forEach.
-											foundTransformBreak = true;
-											throw breakException;
+											foundTransformBreak = true
+											throw breakException
 										}
 										//Workaround to get past the catch statement
-										foundTransformReturn = true;
-										return;
+										foundTransformReturn = true
+										return
 									}
 
-									unconfirmedSelectedObject = null;
+									unconfirmedSelectedObject = null
 
 									//Workaround to break from the forEach.
-									foundTransformBreak = true;
-									throw breakException;
+									foundTransformBreak = true
+									throw breakException
 
 							    }
-						}
-						catch {
+							}
+							catch {
 							//console.error("hi")
-							if (transformControlsPass) {
-								return;
-							}
-							if (foundTransformBreak) {
-								throw breakException;
-							}
-							if (foundTransformReturn) {
-								return;
-							}
-							console.error("This shouldn't be here...")
-							// I guess I'll add the object as the intersect anyway...
+								if (transformControlsPass) {
+									return
+								}
+								if (foundTransformBreak) {
+									throw breakException
+								}
+								if (foundTransformReturn) {
+									return
+								}
+								console.error("This shouldn't be here...")
+								// I guess I'll add the object as the intersect anyway...
 
 
-							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
-							unconfirmedSelectedObject = intersect.object;
-							transformControlsPass = true;
-							return;
-						}
-						try {
-							if (intersect.object.parent instanceof TransformControls) {
+								//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+								unconfirmedSelectedObject = intersect.object
+								transformControlsPass = true
+								return
+							}
+							try {
+								if (intersect.object.parent instanceof TransformControls) {
 									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
 										if (unconfirmedSelectedObject != null) {
 											//Workaround to break from the forEach.
-											foundTransformBreak = true;
-											throw breakException;
+											foundTransformBreak = true
+											throw breakException
 										}
 										//Workaround to get past the catch statement
-										foundTransformReturn = true;
-										return;
+										foundTransformReturn = true
+										return
 									}
 
-									unconfirmedSelectedObject = null;
+									unconfirmedSelectedObject = null
 
 									//Workaround to break from the forEach.
-									foundTransformBreak = true;
-									throw breakException;
+									foundTransformBreak = true
+									throw breakException
 
 								}
-						}
-						catch {
+							}
+							catch {
 							//console.error("hi")
-							if (transformControlsPass) {
-								return;
-							}
-							if (foundTransformBreak) {
-								throw breakException;
-							}
-							if (foundTransformReturn) {
-								return;
-							}
-							console.error("Couldn't find object parent... this shouldn't be here, unless you're selecting the scene.")
+								if (transformControlsPass) {
+									return
+								}
+								if (foundTransformBreak) {
+									throw breakException
+								}
+								if (foundTransformReturn) {
+									return
+								}
+								console.error("Couldn't find object parent... this shouldn't be here, unless you're selecting the scene.")
 
-							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
-							unconfirmedSelectedObject = intersect.object;
-							transformControlsPass = true;
-							return;
+								//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+								unconfirmedSelectedObject = intersect.object
+								transformControlsPass = true
+								return
 
-						}
-						try {
-							if (intersect.object.parent.parent instanceof TransformControls) {
+							}
+							try {
+								if (intersect.object.parent.parent instanceof TransformControls) {
 
 									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
 										if (unconfirmedSelectedObject != null) {
 											//Workaround to break from the forEach.
-											foundTransformBreak = true;
-											throw breakException;
+											foundTransformBreak = true
+											throw breakException
 										}
 										//Workaround to get past the catch statement
-										foundTransformReturn = true;
-										return;
+										foundTransformReturn = true
+										return
 									}
 
-									unconfirmedSelectedObject = null;
+									unconfirmedSelectedObject = null
 
 									//Workaround to break from the forEach.
-									foundTransformBreak = true;
-									throw breakException;
+									foundTransformBreak = true
+									throw breakException
 								}
-						}
-						catch {
+							}
+							catch {
 							//console.error("hi")
-							if (transformControlsPass) {
-								return;
-							}
-							if (foundTransformBreak) {
-								throw breakException;
-							}
-							if (foundTransformReturn) {
-								return;
-							}
-							//console.error("Couldn't find next parent.")
+								if (transformControlsPass) {
+									return
+								}
+								if (foundTransformBreak) {
+									throw breakException
+								}
+								if (foundTransformReturn) {
+									return
+								}
+								//console.error("Couldn't find next parent.")
 
-							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
-							unconfirmedSelectedObject = intersect.object;
-							transformControlsPass = true;
-							return;
+								//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+								unconfirmedSelectedObject = intersect.object
+								transformControlsPass = true
+								return
 
-						}
-						try {
-							if (intersect.object.parent.parent.parent instanceof TransformControls) {
+							}
+							try {
+								if (intersect.object.parent.parent.parent instanceof TransformControls) {
 									if (intersect.object.name == "XZ" || intersect.object.name == "XY" || intersect.object.name == "YZ" || intersect.object.type == "TransformControlsPlane" || transformControlAttached == false) {
 										if (unconfirmedSelectedObject != null) {
 											//Workaround to break from the forEach.
-											foundTransformBreak = true;
-											throw breakException;
+											foundTransformBreak = true
+											throw breakException
 										}
 										//Workaround to get past the catch statement
-										foundTransformReturn = true;
-										return;
+										foundTransformReturn = true
+										return
 									}
 
-									unconfirmedSelectedObject = null;
+									unconfirmedSelectedObject = null
 
 									//Workaround to break from the forEach.
-									foundTransformBreak = true;
-									throw breakException;
+									foundTransformBreak = true
+									throw breakException
 
 								}
-						}
-						catch {
+							}
+							catch {
 							//console.error("hi")
+								if (transformControlsPass) {
+									return
+								}
+								if (foundTransformBreak) {
+									throw breakException
+								}
+								if (foundTransformReturn) {
+									return
+								}
+
+								//console.error("Couldn't find next parent.")
+
+								//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
+								unconfirmedSelectedObject = intersect.object
+								transformControlsPass = true
+								return
+
+							}
 							if (transformControlsPass) {
-								return;
-							}
-							if (foundTransformBreak) {
-								throw breakException;
-							}
-							if (foundTransformReturn) {
-								return;
+								return
 							}
 
-							//console.error("Couldn't find next parent.")
+							console.warn("Object has too many parents, but that's fine.")
 
 							//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
-							unconfirmedSelectedObject = intersect.object;
-							transformControlsPass = true;
-							return;
-
+							unconfirmedSelectedObject = intersect.object
+							transformControlsPass = true
+							return
 						}
-						if (transformControlsPass) {
-							return;
-						}
-
-						console.warn("Object has too many parents, but that's fine.")
-
-						//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
-						unconfirmedSelectedObject = intersect.object;
-						transformControlsPass = true;
-						return;
-					}
 					})
 				}
 				if (unconfirmedSelectedObject != null) {
-					selectedObject = unconfirmedSelectedObject;
+					selectedObject = unconfirmedSelectedObject
 					if (selectedObject.parent.type == "Group") {
-						transformControl.attach(selectedObject.parent);
-						transformControlAttached = true;
-						showActorData(selectedObject.parent.HashID, selectedObject.parent.Type);
+						transformControl.attach(selectedObject.parent)
+						transformControlAttached = true
+						showActorData(selectedObject.parent.HashID, selectedObject.parent.Type)
 					} else {
 						if (selectedObject.relevantType == "ControlPoint" || selectedObject.relevantType == "RailPoint") {
-							transformControl.attach(selectedObject);
-							transformControlAttached = true;
+							transformControl.attach(selectedObject)
+							transformControlAttached = true
 							showRailData(selectedObject.CorrespondingRailHashID)
 						}
 						else {
-							transformControl.attach(selectedObject);
-							transformControlAttached = true;
-							showActorData(selectedObject.HashID, selectedObject.Type);
+							transformControl.attach(selectedObject)
+							transformControlAttached = true
+							showActorData(selectedObject.HashID, selectedObject.Type)
 						}
 					}
 				}
@@ -2052,34 +2052,34 @@ function pointerDown (evt) {
 
 
 
-			break;
+			break
 		}
 	case "pen":
-		action = "tapping";
-		break;
+		action = "tapping"
+		break
 	case "touch":
-		action = "touching";
-		break;
+		action = "touching"
+		break
 	default:
-		action = "interacting with";
-		break;
+		action = "interacting with"
+		break
 	}
 }
 
 // Handle TransformControl Mode changes
-document.getElementById("Translate").addEventListener("click", controlSetTranslate);
-document.getElementById("Rotate").addEventListener("click", controlSetRotate);
-document.getElementById("Scale").addEventListener("click", controlSetScale);
+document.getElementById("Translate").addEventListener("click", controlSetTranslate)
+document.getElementById("Rotate").addEventListener("click", controlSetRotate)
+document.getElementById("Scale").addEventListener("click", controlSetScale)
 
 function controlSetTranslate () {
-	transformControl.setMode("translate");
+	transformControl.setMode("translate")
 }
 function controlSetScale () {
-	transformControl.setMode("scale");
+	transformControl.setMode("scale")
 }
 
 function controlSetRotate () {
-	transformControl.setMode("rotate");
+	transformControl.setMode("rotate")
 }
 
 // More boring stuff
@@ -2087,7 +2087,7 @@ function controlSetRotate () {
 
 function animate () {
 
-		//console.warn(sectionData)
+	//console.warn(sectionData)
 	/*
 	let geoArray = [];
 	if (scene.children != undefined) {
@@ -2110,26 +2110,26 @@ function animate () {
 	console.warn("Textures in Memory", renderer.info.memory.textures)
 	console.warn("Geometries in Memory", renderer.info.memory.geometries)
 
-	var position = new THREE.Vector3();
-  position.setFromMatrixPosition( camera.matrixWorld );
+	var position = new THREE.Vector3()
+	position.setFromMatrixPosition( camera.matrixWorld )
 	//console.error(position)
-	stats.update();
-	resizeCanvasToDisplaySize();
+	stats.update()
+	resizeCanvasToDisplaySize()
 
-	requestAnimationFrame(animate);
+	requestAnimationFrame(animate)
 
 
-	fpControls.update(clock.getDelta());
+	fpControls.update(clock.getDelta())
 
-	camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
-	renderer.render(scene, camera);
+	camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight
+	renderer.render(scene, camera)
 	//console.error(scene)
 
 	if (transformControl.dragging) {
 		if (selectedObject.relevantType == "RailPoint") {
 			for (const rail of sectionData.Static.Rails) {
 				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
-					console.error("hi there");
+					console.error("hi there")
 					/*
 					for (railPoint of rail.RailPoints) {
 						console.error(railPoint);
@@ -2138,71 +2138,71 @@ function animate () {
 						railPoint.Translate[2].value = selectedObject.position.z;
 					}
 					*/
-					rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x;
-					rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y;
-					rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z;
-					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
-					RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, scene, sectionData, objects);
+					rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = selectedObject.position.x
+					rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = selectedObject.position.y
+					rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = selectedObject.position.z
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects)
+					RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, scene, sectionData, objects)
 				}
 			}
 		}
 		else if (selectedObject.relevantType == "ControlPoint") {
 			for (const rail of sectionData.Static.Rails) {
 				if (rail.HashId.value == selectedObject.CorrespondingRailHashID) {
-					RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, selectedObject.position);
+					RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, selectedObject.position)
 					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][0].value = selectedObject.position.x;
 					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][1].value = selectedObject.position.y;
 					//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][2].value = selectedObject.position.z;
-					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects);
+					RailTools.reloadRail(selectedObject.CorrespondingRailHashID, sectionData, scene, objects)
 				}
 			}
 		}
 	}
 }
-animate();
+animate()
 
 // Load settings from config.json
 function loadDarkMode (darkMode) {
-	console.warn("darkmode:" + darkMode);
+	console.warn("darkmode:" + darkMode)
 	if (darkMode == true) {
-		styleSheet.href = "HTML/Dark-Mode.css";
-		scene.background = customDarkColor;
+		styleSheet.href = "HTML/Dark-Mode.css"
+		scene.background = customDarkColor
 	} else {
-		styleSheet.href = "HTML/Light-Mode.css";
-		scene.background = customColor;
+		styleSheet.href = "HTML/Light-Mode.css"
+		scene.background = customColor
 	}
 }
 
 // Calls the function to save current data in process.py
-const saveButton = document.getElementById("saveButton");
+const saveButton = document.getElementById("saveButton")
 saveButton.addEventListener("click", function () {
 	console.error(sectionData)
 	//loadPython(function (s) { console.warn("Saving..."); }, "save", JSON.stringify(sectionData));
 
 	// Special saving code - uses stdin because sectionData is big.
-		const { spawn } = require("child_process");
-		const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), 'save'], {cwd:__dirname});
+	const { spawn } = require("child_process")
+	const childPython = spawn("python", [path.join(__dirname, "./MapEditor/Process.py"), "save"], {cwd:__dirname})
 
-		childPython.stdio[2].on("data", function (dataBuffer){
-			console.error(dataBuffer.toString());
-		});
+	childPython.stdio[2].on("data", function (dataBuffer){
+		console.error(dataBuffer.toString())
+	})
 
-		childPython.stdin.write(JSON.stringify(sectionData));
-		childPython.stdin.end();
+	childPython.stdin.write(JSON.stringify(sectionData))
+	childPython.stdin.end()
 
-	console.warn("e");
-});
+	console.warn("e")
+})
 
 // function to get the current section name ahd display it.
 function displaySectionName (section) {
-	const sectionName = document.getElementById("sectionName");
-	console.warn(sectionName);
-	console.warn(section);
-	sectionName.innerHTML = section;
+	const sectionName = document.getElementById("sectionName")
+	console.warn(sectionName)
+	console.warn(section)
+	sectionName.innerHTML = section
 }
 
 // loadPython(function(s){console.warn("ugh what is it this time");loadDarkMode(s);}, "shareSettings", 'DarkMode');
 window.onload = function () {
-	loadPython(function (s) { console.warn("ugh what is it this time"); loadDarkMode(s); }, "shareSettings", "DarkMode");
+	loadPython(function (s) { console.warn("ugh what is it this time"); loadDarkMode(s) }, "shareSettings", "DarkMode")
 
-};
+}

@@ -14,12 +14,14 @@
     "electron": "^12.0.2",
     "electron-builder": "^22.10.5",
     "electron-packager": "^15.2.0",
-    "eslint": "^7.16.0"
+    "eslint": "^7.24.0"
   },
   "scripts": {
     "start": "electron .",
     "oldBuild": "electron-packager ./ SilentPrincess --platform=win32 --arch=x64 --out=build --icon=./Assets/UI/Icon/MapEditorIconDarkMode-Alt.ico --ignore='^/Cache$'",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "lint": "eslint ./HTML -c .eslintrc.json --ignore-path .eslintignore",
+    "lintfix": "eslint ./HTML --fix -c .eslintrc.json --ignore-path .eslintignore"
   },
   "author": "S41L0R, SDarkMagic, Arcaith",
   "license": "ISC",
