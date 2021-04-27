@@ -113,7 +113,7 @@ stats.begin()
 
 // -----------------------------------------------------------------------------
 
-// Boring code that doesn't matter
+// Boring code that doesn't matter, except it does a bit
 // -----------------------------------------------------------------------------
 
 // Automatically scale canvas to fit:
