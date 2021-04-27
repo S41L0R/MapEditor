@@ -11,3 +11,4 @@ release/
 *.swo
 dist/
 *.egg-info/
+temp/

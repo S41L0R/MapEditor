@@ -228,12 +228,15 @@ class compressByml:
         subDict = {}
         dictOut = {}
         if isinstance(dictIn, dict):
-            for key in dictIn.keys():
-                #print(f'dictType {key}')
-                subDict = self.compressAll(dictIn.get(key))
-                dictOut.update({key: subDict})
-                #print(dictOut)
-            return((dictOut))
+            if 'type' in dictIn.keys() and 'value' in dictIn.keys():
+                return(self.convertDataType(dictIn))
+            else:
+                for key in dictIn.keys():
+                    #print(f'dictType {key}')
+                    subDict = self.compressAll(dictIn.get(key))
+                    dictOut.update({key: subDict})
+                    #print(dictOut)
+                return((dictOut))
 
         elif isinstance(dictIn, list):
             for item in dictIn:
@@ -249,34 +252,76 @@ class compressByml:
         else:
             return(dictIn)
 
-    def convertDataType(self, dataIn):
-        if isinstance(dataIn, bool):
-            return(dataIn)
-        elif isinstance(dataIn, int):
-            if dataIn < 0:
-                if dataIn >= -127:
-                    return oead.S8(dataIn)
-                elif dataIn >= -32768:
-                    return oead.S16(dataIn)
-                elif dataIn >= -2147483648:
-                    return oead.S32(dataIn)
-                elif dataIn >= -2147483648:
-                    return oead.S64(dataIn)
-                else:
-                    return dataIn
+    def convertDataType(self, dataIn: dict):
+        dataType = dataIn['type']
+        dataVal = dataIn['value']
+        mainType = int(str(dataType)[0])
+        subType = int(str(dataType)[-1])
+        if mainType == 1:
+            if subType == 0:
+                # Handle U8
+                valOut = oead.U8(dataVal)
+            elif subType == 1:
+                # Handle U16
+                valOut = oead.U16(dataVal)
+            elif subType == 2:
+                # Handle U32
+                valOut = oead.U32(dataVal)
+            elif subType == 3:
+                # Handle U64
+                valOut = oead.S64(dataVal)
             else:
-                if dataIn <= 255:
-                    return oead.S8(dataIn)
-                elif dataIn >= 65535:
-                    return oead.S16(dataIn)
-                elif dataIn >= 4294967295:
-                    return oead.S32(dataIn)
-                elif dataIn >= 4294967295:
-                    return oead.S64(dataIn)
-                else:
-                    return dataIn
+                # Raise error about invalid subType
+                print('Error')
+                return
+        elif mainType == 2:
+            if subType == 0:
+                # Handle S8
+                valOut = oead.S8(dataVal)
+            elif subType == 1:
+                # Handle S16
+                valOut = oead.S16(dataVal)
+            elif subType == 2:
+                # Handle S32
+                valOut = oead.S32(dataVal)
+            elif subType == 3:
+                # Handle S64
+                valOut = oead.S64(dataVal)
+            else:
+                # Raise error about invalid subType
+                print('Error')
+                return
+        elif mainType == 3:
+            if subType == 0:
+                # Handle F32
+                valOut = oead.F32(dataVal)
+            elif subType == 1:
+                # Handle F64
+                valOut = oead.F64(dataVal)
+            else:
+                print('Error')
+        elif mainType == 4:
+            if subType == 0:
+                # Handle Strings
+                valOut = str(dataVal)
+            else:
+                print('Error')
+        elif mainType == 5:
+            if subType == 0:
+                # Handle Bools
+                valOut = bool(dataVal)
+            else:
+                print('Error')
+        elif mainType == 6:
+            if subType == 0:
+                # Handle Unkown data types
+                valOut = dataVal
+            else:
+                print('Error')
         else:
-            return(dataIn)
+            # Throw Error about unassociated data-type or invalid arg
+            print('Error...')
+        return(dataVal)
 
 def findUniqueActors(mapDataIn, listIn=list([])):
     for actor in mapDataIn.get('Objs'):
