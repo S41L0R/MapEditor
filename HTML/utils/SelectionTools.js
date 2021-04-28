@@ -243,5 +243,9 @@ module.exports = {
 
 
 	objectDummys: objectDummys,
-	selectedDummys: selectedDummys
+	selectedDummys: selectedDummys,
+
+	getSelectedDummys: () => {
+		return selectedDummys
+	}
 }
