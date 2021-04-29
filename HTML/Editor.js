@@ -234,6 +234,8 @@ async function loadSection(sectionName) {
 	console.log(section)
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
 	PythonTools.loadPython("main", section).then((sectionData) => {
+		// Found it made things a lot easier to have a few global vars that I use a lot.
+		global.sectionData = sectionData
 		DomListners.initSaveButton(document, SaveTools.saveData, sectionData)
 		// Setup ActorEditor
 		// -----------------------------------------------------------------------------

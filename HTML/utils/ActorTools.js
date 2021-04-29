@@ -49,7 +49,9 @@ const removeObjectActors = async function(hashIDList, scenelike, transformContro
 	}
 }
 
-
+const removeDataActorByDummy = async function(dummy) {
+	removeDataActors([dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index]], global.sectionData)
+}
 const removeObjectActorByDummy = async function(dummy) {
 	// Okay, so this is how this function will work:
 	// We get the data in the InstanceMatrix for this instance,
@@ -63,9 +65,10 @@ const removeObjectActorByDummy = async function(dummy) {
 
 	// It doesn't matter that we're just getting the first element,
 	// these instanceMeshes should have the same count anyway.
+	const firstInstancedMesh = dummy.userData.instancedMeshes[0]
 	const firstInstanceMatrixObj = dummy.userData.instancedMeshes[0].instanceMatrix
 	const itemSize = firstInstanceMatrixObj.itemSize
-	const count = firstInstanceMatrixObj.count
+	const count = firstInstancedMesh.count
 	const lastIndex = count - 1 // -1 to account for indices starting from 0
 
 	const index = dummy.userData.index
@@ -259,5 +262,6 @@ module.exports = {
 	removeDataActors: removeDataActors,
 	removeObjectActors: removeObjectActors,
 	updateDataActor: updateDataActor,
-	removeObjectActorByDummy: removeObjectActorByDummy
+	removeObjectActorByDummy: removeObjectActorByDummy,
+	removeDataActorByDummy: removeDataActorByDummy
 }

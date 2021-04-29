@@ -47,6 +47,7 @@ async function initDeleteActorEvent(document) {
 			DataEditorTools.removeAllActorsFromSelectedActorsList(document)
 			for (const dummy of selectedDummys) {
 				ActorTools.removeObjectActorByDummy(dummy)
+				ActorTools.removeDataActorByDummy(dummy)
 			}
 		}
 	})
