@@ -222,7 +222,7 @@ darkModeToggle.addEventListener("click", function () {
 
 
 async function loadSection(sectionName) {
-	// Just in case we hit reload and want to see something
+		// Just in case we hit reload and want to see something
 	var section = sectionName
 	if (sectionName === undefined) {
 		section = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
@@ -249,11 +249,24 @@ async function loadSection(sectionName) {
 	});
 }
 
-
+async function loadDarkMode() {
+	// Sets dark mode/light mode based on settings
+	let darkMode = await PythonTools.loadPython('getDarkMode')
+	console.error(darkMode)
+	if (darkMode == true){
+		styleSheet.href = "HTML/Dark-Mode.css";
+		scene.background = customDarkSkyColor;
+	}
+	else {
+		styleSheet.href = "HTML/Light-Mode.css";
+		scene.background = customSkyColor;
+	}
+}
 
 DomListners.initListeners(document, editorControls, transformControl)
 
 ipc.on("loadSection", async (event, sectionName) => {
+	await loadDarkMode()
 	await loadSection(sectionName)
 });
 
