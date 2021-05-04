@@ -1,12 +1,12 @@
 
 function mergeParams( defaults, customParams ) {
 
-	if ( typeof customParams == "undefined" ) return defaults;
+	if ( typeof customParams == 'undefined' ) return defaults;
 
 	var defaultKeys = Object.keys( defaults );
 	var params = {};
 
-	defaultKeys.map( function( key ) {
+	defaultKeys.map( function ( key ) {
 
 		params[ key ] = customParams[ key ] || defaultKeys[ key ];
 
@@ -19,9 +19,9 @@ function mergeParams( defaults, customParams ) {
 
 function getGeometryParams( type, customParams ) {
 
-	if ( typeof customParams != "undefined" &&
-		typeof customParams.geometry != "undefined" &&
-		typeof customParams.geometry.parameters != "undefined" ) {
+	if ( typeof customParams != 'undefined' &&
+		typeof customParams.geometry != 'undefined' &&
+		typeof customParams.geometry.parameters != 'undefined' ) {
 
 		var customGeometryParams = customParams.geometry.parameters;
 
@@ -31,19 +31,19 @@ function getGeometryParams( type, customParams ) {
 
 	switch ( type ) {
 
-		case "BoxGeometry":
+		case 'BoxGeometry':
 
 			defaults = { width: 100, height: 100, depth: 100, widthSegments: 1, heightSegments: 1, depthSegments: 1 };
 			break;
 
-		case "SphereGeometry":
+		case 'SphereGeometry':
 
 			defaults = { radius: 75, widthSegments: 32, heightSegments: 16, phiStart: 0, phiLength: 6.28, thetaStart: 0.00, thetaLength: 3.14 };
 			break;
 
 		default:
 
-			console.error( "Type '" + type + "' is not known while creating params" );
+			console.error( 'Type \'' + type + '\' is not known while creating params' );
 			return false;
 
 	}
@@ -58,7 +58,7 @@ function getGeometry( type, customParams ) {
 
 	switch ( type ) {
 
-		case "BoxGeometry":
+		case 'BoxGeometry':
 
 			return new THREE.BoxGeometry(
 				params[ 'width' ],
@@ -69,7 +69,7 @@ function getGeometry( type, customParams ) {
 				params[ 'depthSegments' ]
 			);
 
-		case "SphereGeometry":
+		case 'SphereGeometry':
 
 			return new THREE.SphereGeometry(
 				params[ 'radius' ],
@@ -83,7 +83,7 @@ function getGeometry( type, customParams ) {
 
 		default:
 
-			console.error( "Type '" + type + "' is not known while creating geometry " );
+			console.error( 'Type \'' + type + '\' is not known while creating geometry ' );
 			return false;
 
 	}
@@ -95,7 +95,7 @@ function getObject( name, type, customParams ) {
 	var geometry = getGeometry( type, customParams );
 
 	var object = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial() );
-	object.name = name || type + " 1";
+	object.name = name || type + ' 1';
 
 	return object;
 
@@ -104,20 +104,20 @@ function getObject( name, type, customParams ) {
 
 function aBox( name, customParams ) {
 
-	return getObject( name, "BoxGeometry", customParams );
+	return getObject( name, 'BoxGeometry', customParams );
 
 }
 
 function aSphere( name, customParams ) {
 
-	return getObject( name, "SphereGeometry", customParams );
+	return getObject( name, 'SphereGeometry', customParams );
 
 }
 
 function aPointlight( name ) {
 
 	var object = new THREE.PointLight( 54321, 1.0, 0.0, 1.0 );
-	object.name = name || "PointLight 1";
+	object.name = name || 'PointLight 1';
 
 	return object;
 
@@ -126,7 +126,7 @@ function aPointlight( name ) {
 function aPerspectiveCamera( name ) {
 
 	var object = new THREE.PerspectiveCamera( 50.1, 0.4, 1.03, 999.05 );
-	object.name = name || "PerspectiveCamera 1";
+	object.name = name || 'PerspectiveCamera 1';
 
 	return object;
 

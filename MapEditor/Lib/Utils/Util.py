@@ -223,28 +223,29 @@ class compressByml:
     def __init__(self, mapDictIn):
         self.compressedData = self.compressAll(mapDictIn)
 
-    def compressAll(self, dictIn):
+    def compressAll(self, dictIn, compress=True):
         subList = []
         subDict = {}
         dictOut = {}
+        print(f'DictIn: {dictIn}\n')
         if isinstance(dictIn, dict):
             if 'type' in dictIn.keys() and 'value' in dictIn.keys():
-                #print('type conversion')
+                print('type conversion')
                 return(self.convertDataType(dictIn))
             else:
-
                 for key in dictIn.keys():
-                    #print(f'dictType {key}')
-                    if key == 'Rails':
-                        subDict = subDict
+                    if key == '!Parameters' or key == 'Translate':
+                        subDict = self.compressAll(dictIn.get(key), False)
                         dictOut.update({key: subDict})
+                        print(f'DictOut: {dictOut}\n')
                     else:
                         subDict = self.compressAll(dictIn.get(key))
-                        #print(subDict)
                         dictOut.update({key: subDict})
-                        #print(dictOut)
-
-                return((dictOut))
+                        print(f'DictOut: {dictOut}\n')
+                if compress == False:
+                    return(dictOut)
+                else:
+                    return(oead.byml.Hash(dictOut))
 
         elif isinstance(dictIn, list):
             for item in dictIn:
@@ -252,8 +253,10 @@ class compressByml:
                 newItem = self.compressAll(item)
                 subList.append(newItem)
                 #print(f'subList {subList}')
-
-            return((subList))
+            if compress == False:
+                return(subList)
+            else:
+                return(oead.byml.Array(subList))
         else:
             print('Was not a list or dict', dictIn)
             return(dictIn)

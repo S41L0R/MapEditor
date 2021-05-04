@@ -1,7 +1,7 @@
 
-QUnit.module( "TestCmdSetScene" );
+QUnit.module( 'TestCmdSetScene' );
 
-QUnit.test( "Test for SetSceneCommand (Undo and Redo)", function( assert ) {
+QUnit.test( 'Test for SetSceneCommand (Undo and Redo)', function ( assert ) {
 
 	// setup
 	var editor = new Editor();
@@ -9,7 +9,7 @@ QUnit.test( "Test for SetSceneCommand (Undo and Redo)", function( assert ) {
 
 
 	// create multiple editors (scenes) and save the output
-	var scenes = objects.map( function( object ) {
+	var scenes = objects.map( function ( object ) {
 
 		editor = new Editor();
 		var cmd = new AddObjectCommand( object );
@@ -22,7 +22,7 @@ QUnit.test( "Test for SetSceneCommand (Undo and Redo)", function( assert ) {
 
 	// create new empty editor (scene), merge the other editors (scenes)
 	editor = new Editor();
-	scenes.map( function( scene ) {
+	scenes.map( function ( scene ) {
 
 		var importedScene = importScene( scene.exportedData );
 		var cmd = new SetSceneCommand( importedScene );
@@ -33,13 +33,13 @@ QUnit.test( "Test for SetSceneCommand (Undo and Redo)", function( assert ) {
 
 	// tests
 	assert.ok( editor.scene.children.length = scenes.length,
-		"OK, all scenes have been merged" );
+		'OK, all scenes have been merged' );
 
 	var i = 0;
 	while ( i < editor.scene.children.length ) {
 
 		assert.ok( editor.scene.children[ i ].name == scenes[ i ].obj.name,
-			"OK, editor.scene.children[ " + i + " ].name matches scenes[ " + i + " ].obj.name" );
+			'OK, editor.scene.children[ ' + i + ' ].name matches scenes[ ' + i + ' ].obj.name' );
 		i ++;
 
 	}
@@ -49,7 +49,7 @@ QUnit.test( "Test for SetSceneCommand (Undo and Redo)", function( assert ) {
 	while ( i < editor.scene.children.length ) {
 
 		assert.ok( editor.scene.children[ i ].name == scenes[ i ].obj.name,
-			"OK, editor.scene.children[ " + i + " ].name matches scenes[ " + i + " ].obj.name after undo" );
+			'OK, editor.scene.children[ ' + i + ' ].name matches scenes[ ' + i + ' ].obj.name after undo' );
 		i ++;
 
 	}
@@ -60,7 +60,7 @@ QUnit.test( "Test for SetSceneCommand (Undo and Redo)", function( assert ) {
 	while ( i < editor.scene.children.length ) {
 
 		assert.ok( editor.scene.children[ i ].name == scenes[ i ].obj.name,
-			"OK, editor.scene.children[ " + i + " ].name matches scenes[ " + i + " ].obj.name after redo" );
+			'OK, editor.scene.children[ ' + i + ' ].name matches scenes[ ' + i + ' ].obj.name after redo' );
 		i ++;
 
 	}

@@ -6,33 +6,33 @@ const SelectionTools = require("./SelectionTools.js")
 
 
 
-let currentBasicCubeIndex = 0;
+let currentBasicCubeIndex = 0
 
 const addActorsToScene = async function(scenelike, maplike, intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE) {
-  return ModelTools.loadModels(maplike, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(() => {
+	return ModelTools.loadModels(maplike, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(() => {
 
-    addInstancedMeshes(scenelike);
-    console.warn("models should have loaded")
-    let currentIndexDict = {}
-    maplike.Static.Objs.forEach((actor) => {
-      if (currentIndexDict[actor.UnitConfigName.value] === undefined) {
-        currentIndexDict[actor.UnitConfigName.value] = 0;
-      }
-      else {
-        currentIndexDict[actor.UnitConfigName.value] = currentIndexDict[actor.UnitConfigName.value] + 1;
-      }
-      addActorToScene(actor, scenelike, intersectables, currentIndexDict[actor.UnitConfigName.value])
-    })
-    maplike.Dynamic.Objs.forEach((actor) => {
-      if (currentIndexDict[actor.UnitConfigName.value] === undefined) {
-        currentIndexDict[actor.UnitConfigName.value] = 0;
-      }
-      else {
-        currentIndexDict[actor.UnitConfigName.value] = currentIndexDict[actor.UnitConfigName.value] + 1;
-      }
-      addActorToScene(actor, scenelike, intersectables, currentIndexDict[actor.UnitConfigName.value])
-    })
-  })
+		addInstancedMeshes(scenelike)
+		console.warn("models should have loaded")
+		let currentIndexDict = {}
+		maplike.Static.Objs.forEach((actor) => {
+			if (currentIndexDict[actor.UnitConfigName.value] === undefined) {
+				currentIndexDict[actor.UnitConfigName.value] = 0
+			}
+			else {
+				currentIndexDict[actor.UnitConfigName.value] = currentIndexDict[actor.UnitConfigName.value] + 1
+			}
+			addActorToScene(actor, scenelike, intersectables, currentIndexDict[actor.UnitConfigName.value])
+		})
+		maplike.Dynamic.Objs.forEach((actor) => {
+			if (currentIndexDict[actor.UnitConfigName.value] === undefined) {
+				currentIndexDict[actor.UnitConfigName.value] = 0
+			}
+			else {
+				currentIndexDict[actor.UnitConfigName.value] = currentIndexDict[actor.UnitConfigName.value] + 1
+			}
+			addActorToScene(actor, scenelike, intersectables, currentIndexDict[actor.UnitConfigName.value])
+		})
+	})
 }
 
 /*
@@ -134,126 +134,126 @@ const reloadActor = async function(actor, scenelike, intersectables) {
 }
 
 const addActorToScene = async function(actor, scenelike, intersectables, currentIndex) {
-  if (ModelTools.modelDict[actor.UnitConfigName.value] !== undefined) {
+	if (ModelTools.modelDict[actor.UnitConfigName.value] !== undefined) {
 
-    console.warn("actorMesh")
-    actorModels = ModelTools.modelDict[actor.UnitConfigName.value];
+		console.warn("actorMesh")
+		actorModels = ModelTools.modelDict[actor.UnitConfigName.value]
 
-    // Set actorModel transform:
-    let actorMatrix = new THREE.Matrix4();
+		// Set actorModel transform:
+		let actorMatrix = new THREE.Matrix4()
 
-    let position = new THREE.Vector3(0, 0, 0);
-    let rotation = new THREE.Quaternion(0, 0, 0, 0);
-    let scale = new THREE.Vector3(1, 1, 1);
+		let position = new THREE.Vector3(0, 0, 0)
+		let rotation = new THREE.Quaternion(0, 0, 0, 0)
+		let scale = new THREE.Vector3(1, 1, 1)
 
-    position.set(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value);
+		position.set(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value)
 
-    // Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
-    try {
-      rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"));
-    }
-    catch {
+		// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
+		try {
+			rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"))
+		}
+		catch {
 
-      // Just in case it's 1D rotation
-      try {
-        rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0, "ZYX"));
-      }
+			// Just in case it's 1D rotation
+			try {
+				rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0, "ZYX"))
+			}
 
-      // In case there is no rotation.
-      catch {
-        rotation.setFromEuler(new THREE.Euler(0, 0, 0, "ZYX"));
-      }
-    }
+			// In case there is no rotation.
+			catch {
+				rotation.setFromEuler(new THREE.Euler(0, 0, 0, "ZYX"))
+			}
+		}
 
-    // Try to apply scale, if it doesn't exist add some.
-    try {
-      scale.set(actor.Scale[0].value, actor.Scale[1].value, actor.Scale[2].value);
-    }
-    catch {
-      // This could also mean that there's only 1 scale value, try that first.
-      try {
-        scale.set(actor.Scale.value, actor.Scale.value, actor.Scale.value);
-      }
-      catch {
-        scale.set(1, 1, 1);
-      }
-    }
-    actorMatrix.compose(position, rotation, scale)
-    console.warn(actorMatrix)
-    console.warn(currentIndex)
-    for (actorModel of actorModels) {
-      actorModel.setMatrixAt(currentIndex, actorMatrix);
-      actorModel.instanceMatrix.needsUpdate = true;
+		// Try to apply scale, if it doesn't exist add some.
+		try {
+			scale.set(actor.Scale[0].value, actor.Scale[1].value, actor.Scale[2].value)
+		}
+		catch {
+			// This could also mean that there's only 1 scale value, try that first.
+			try {
+				scale.set(actor.Scale.value, actor.Scale.value, actor.Scale.value)
+			}
+			catch {
+				scale.set(1, 1, 1)
+			}
+		}
+		actorMatrix.compose(position, rotation, scale)
+		console.warn(actorMatrix)
+		console.warn(currentIndex)
+		for (actorModel of actorModels) {
+			actorModel.setMatrixAt(currentIndex, actorMatrix)
+			actorModel.instanceMatrix.needsUpdate = true
 
-      actorModel.userData.actorList[currentIndex] = actor;
-
-
-    }
-    SelectionTools.createObjectDummy(actorModels, currentIndex, THREE, scenelike)
+			actorModel.userData.actorList[currentIndex] = actor
 
 
-
-
-  }
-  else {
-    // We can put the standard cube mesh
-    console.warn("cubeMesh")
-
-    console.warn(ModelTools)
-    let actorModel = ModelTools.basicMeshDict["basicCube"];
-
-    // Set actorModel transform:
-    let actorMatrix = new THREE.Matrix4();
-
-    let position = new THREE.Vector3(0, 0, 0);
-    let rotation = new THREE.Quaternion(0, 0, 0, 0);
-    let scale = new THREE.Vector3(1, 1, 1);
-
-    position.set(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value);
-
-    // Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
-    try {
-      rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"));
-    }
-    catch {
-
-      // Just in case it's 1D rotation
-      try {
-        rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0, "ZYX"));
-      }
-
-      // In case there is no rotation.
-      catch {
-        rotation.set(0, 0, 0, "ZYX");
-      }
-    }
-
-    // Try to apply scale, if it doesn't exist add some.
-    try {
-      scale.set(actor.Scale[0].value, actor.Scale[1].value, actor.Scale[2].value);
-    }
-    catch {
-      // This could also mean that there's only 1 scale value, try that first.
-      try {
-        scale.set(actor.Scale.value, actor.Scale.value, actor.Scale.value);
-      }
-      catch {
-        scale.set(1, 1, 1);
-      }
-    }
-    actorMatrix.compose(position, rotation, scale)
-
-    actorModel.setMatrixAt(currentBasicCubeIndex, actorMatrix);
-    SelectionTools.createObjectDummy([actorModel], currentBasicCubeIndex, THREE, scenelike)
-    currentBasicCubeIndex = currentBasicCubeIndex + 1;
-    actorModel.instanceMatrix.needsUpdate = true;
-
-
-    actorModel.userData.actorList[currentBasicCubeIndex] = actor;
+		}
+		SelectionTools.createObjectDummy(actorModels, currentIndex, THREE, scenelike)
 
 
 
-  }
+
+	}
+	else {
+		// We can put the standard cube mesh
+		console.warn("cubeMesh")
+
+		console.warn(ModelTools)
+		let actorModel = ModelTools.basicMeshDict["basicCube"]
+
+		// Set actorModel transform:
+		let actorMatrix = new THREE.Matrix4()
+
+		let position = new THREE.Vector3(0, 0, 0)
+		let rotation = new THREE.Quaternion(0, 0, 0, 0)
+		let scale = new THREE.Vector3(1, 1, 1)
+
+		position.set(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value)
+
+		// Try to apply rotation from three-dimensional param, if only one dimension exists apply that instead.
+		try {
+			rotation.setFromEuler(new THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"))
+		}
+		catch {
+
+			// Just in case it's 1D rotation
+			try {
+				rotation.setFromEuler(new THREE.Euler(0, actor.Rotate.value, 0, "ZYX"))
+			}
+
+			// In case there is no rotation.
+			catch {
+				rotation.set(0, 0, 0, "ZYX")
+			}
+		}
+
+		// Try to apply scale, if it doesn't exist add some.
+		try {
+			scale.set(actor.Scale[0].value, actor.Scale[1].value, actor.Scale[2].value)
+		}
+		catch {
+			// This could also mean that there's only 1 scale value, try that first.
+			try {
+				scale.set(actor.Scale.value, actor.Scale.value, actor.Scale.value)
+			}
+			catch {
+				scale.set(1, 1, 1)
+			}
+		}
+		actorMatrix.compose(position, rotation, scale)
+
+		actorModel.setMatrixAt(currentBasicCubeIndex, actorMatrix)
+		SelectionTools.createObjectDummy([actorModel], currentBasicCubeIndex, THREE, scenelike)
+		currentBasicCubeIndex = currentBasicCubeIndex + 1
+		actorModel.instanceMatrix.needsUpdate = true
+
+
+		actorModel.userData.actorList[currentBasicCubeIndex] = actor
+
+
+
+	}
 }
 
 const removeActorFromScene = async function (actor, scenelike, intersectables) {
@@ -262,19 +262,19 @@ const removeActorFromScene = async function (actor, scenelike, intersectables) {
 
 
 const addInstancedMeshes = async function (scenelike) {
-  for (let key in ModelTools.modelDict) {
-    for (actorModel of ModelTools.modelDict[key]) {
-      RayCastTools.intersectables.push(actorModel)
-      scenelike.add(actorModel)
-    }
-  }
-  for (let key in ModelTools.basicMeshDict) {
-    RayCastTools.intersectables.push(ModelTools.basicMeshDict[key])
-    scenelike.add(ModelTools.basicMeshDict[key])
-  }
+	for (let key in ModelTools.modelDict) {
+		for (actorModel of ModelTools.modelDict[key]) {
+			RayCastTools.intersectables.push(actorModel)
+			scenelike.add(actorModel)
+		}
+	}
+	for (let key in ModelTools.basicMeshDict) {
+		RayCastTools.intersectables.push(ModelTools.basicMeshDict[key])
+		scenelike.add(ModelTools.basicMeshDict[key])
+	}
 }
 
 module.exports = {
-  addActorsToScene: addActorsToScene,
-  addInstancedMeshes: addInstancedMeshes
+	addActorsToScene: addActorsToScene,
+	addInstancedMeshes: addInstancedMeshes
 }

@@ -13,14 +13,14 @@ export default QUnit.module( 'Core', () => {
 	QUnit.module( 'DirectGeometry', () => {
 
 		// INSTANCING
-		QUnit.todo( "Instancing", ( assert ) => {
+		QUnit.todo( 'Instancing', ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			assert.ok( false, 'everything\'s gonna be alright' );
 
 		} );
 
 		// PUBLIC STUFF
-		QUnit.test( "computeGroups", ( assert ) => {
+		QUnit.test( 'computeGroups', ( assert ) => {
 
 			var a = new DirectGeometry();
 			var b = new Geometry();
@@ -40,11 +40,11 @@ export default QUnit.module( 'Core', () => {
 
 			a.computeGroups( b );
 
-			assert.deepEqual( a.groups, expected, "Groups are as expected" );
+			assert.deepEqual( a.groups, expected, 'Groups are as expected' );
 
 		} );
 
-		QUnit.test( "fromGeometry", ( assert ) => {
+		QUnit.test( 'fromGeometry', ( assert ) => {
 
 			// geometry definition
 
@@ -177,12 +177,12 @@ export default QUnit.module( 'Core', () => {
 				new Vector4( 0.8, 0.2, 0, 0 )
 			];
 
-			assert.deepEqual( directGeometry.vertices, vertices, "Vertices are as expected" );
-			assert.deepEqual( directGeometry.normals, normals, "Normals are as expected" );
-			assert.deepEqual( directGeometry.colors, colors, "Colors are as expected" );
-			assert.deepEqual( directGeometry.uvs, uvs, "Texture coordinates are as expected" );
-			assert.deepEqual( directGeometry.skinIndices, skinIndices, "Skin indices are as expected" );
-			assert.deepEqual( directGeometry.skinWeights, skinWeights, "Skin weights are as expected" );
+			assert.deepEqual( directGeometry.vertices, vertices, 'Vertices are as expected' );
+			assert.deepEqual( directGeometry.normals, normals, 'Normals are as expected' );
+			assert.deepEqual( directGeometry.colors, colors, 'Colors are as expected' );
+			assert.deepEqual( directGeometry.uvs, uvs, 'Texture coordinates are as expected' );
+			assert.deepEqual( directGeometry.skinIndices, skinIndices, 'Skin indices are as expected' );
+			assert.deepEqual( directGeometry.skinWeights, skinWeights, 'Skin weights are as expected' );
 
 		} );
 

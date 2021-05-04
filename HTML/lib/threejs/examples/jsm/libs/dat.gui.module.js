@@ -18,6 +18,7 @@ function ___$insertStyle( css ) {
 		return;
 
 	}
+
 	if ( typeof window === 'undefined' ) {
 
 		return;
@@ -52,6 +53,7 @@ function colorToString( color, forceCSSHex ) {
 			str = '0' + str;
 
 		}
+
 		return '#' + str;
 
 	} else if ( colorFormat === 'CSS_RGB' ) {
@@ -91,6 +93,7 @@ function colorToString( color, forceCSSHex ) {
 		return '{h:' + h + ',s:' + s + ',v:' + v + ',a:' + a + '}';
 
 	}
+
 	return 'unknown format';
 
 }
@@ -148,6 +151,7 @@ var Common = {
 				args = [ toCall[ i ].apply( this, args ) ];
 
 			}
+
 			return args[ 0 ];
 
 		};
@@ -160,6 +164,7 @@ var Common = {
 			return;
 
 		}
+
 		if ( ARR_EACH && obj.forEach && obj.forEach === ARR_EACH ) {
 
 			obj.forEach( itr, scope );
@@ -211,6 +216,7 @@ var Common = {
 				if ( ! callImmediately ) func.apply( obj, args );
 
 			}
+
 			var callNow = callImmediately || ! timeout;
 			clearTimeout( timeout );
 			timeout = setTimeout( delayed, threshold );
@@ -246,11 +252,13 @@ var Common = {
 			return _isNaN.apply( this, arguments );
 
 		}
+
 		isNaN.toString = function () {
 
 			return _isNaN.toString();
 
 		};
+
 		return isNaN;
 
 	}( function ( obj ) {
@@ -303,6 +311,7 @@ var INTERPRETATIONS = [
 						return false;
 
 					}
+
 					return {
 						space: 'HEX',
 						hex: parseInt( '0x' + test[ 1 ].toString() + test[ 1 ].toString() + test[ 2 ].toString() + test[ 2 ].toString() + test[ 3 ].toString() + test[ 3 ].toString(), 0 )
@@ -320,6 +329,7 @@ var INTERPRETATIONS = [
 						return false;
 
 					}
+
 					return {
 						space: 'HEX',
 						hex: parseInt( '0x' + test[ 1 ].toString(), 0 )
@@ -337,6 +347,7 @@ var INTERPRETATIONS = [
 						return false;
 
 					}
+
 					return {
 						space: 'RGB',
 						r: parseFloat( test[ 1 ] ),
@@ -356,6 +367,7 @@ var INTERPRETATIONS = [
 						return false;
 
 					}
+
 					return {
 						space: 'RGB',
 						r: parseFloat( test[ 1 ] ),
@@ -401,6 +413,7 @@ var INTERPRETATIONS = [
 						return false;
 
 					}
+
 					return {
 						space: 'RGB',
 						r: original[ 0 ],
@@ -453,6 +466,7 @@ var INTERPRETATIONS = [
 						};
 
 					}
+
 					return false;
 
 				},
@@ -480,6 +494,7 @@ var INTERPRETATIONS = [
 						};
 
 					}
+
 					return false;
 
 				},
@@ -507,6 +522,7 @@ var INTERPRETATIONS = [
 						};
 
 					}
+
 					return false;
 
 				},
@@ -534,6 +550,7 @@ var INTERPRETATIONS = [
 						};
 
 					}
+
 					return false;
 
 				},
@@ -618,6 +635,7 @@ var ColorMath = {
 			};
 
 		}
+
 		if ( r === max ) {
 
 			h = ( g - b ) / delta;
@@ -631,12 +649,14 @@ var ColorMath = {
 			h = 4 + ( r - g ) / delta;
 
 		}
+
 		h /= 6;
 		if ( h < 0 ) {
 
 			h += 1;
 
 		}
+
 		return {
 			h: h * 360,
 			s: s,
@@ -664,13 +684,13 @@ var ColorMath = {
 	}
 };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function ( obj ) {
+var _typeof = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol' ? function ( obj ) {
 
 	return typeof obj;
 
 } : function ( obj ) {
 
-	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	return obj && typeof Symbol === 'function' && obj.constructor === Symbol && obj !== Symbol.prototype ? 'symbol' : typeof obj;
 
 };
 
@@ -688,7 +708,7 @@ var classCallCheck = function ( instance, Constructor ) {
 
 	if ( ! ( instance instanceof Constructor ) ) {
 
-		throw new TypeError( "Cannot call a class as a function" );
+		throw new TypeError( 'Cannot call a class as a function' );
 
 	}
 
@@ -703,7 +723,7 @@ var createClass = function () {
 			var descriptor = props[ i ];
 			descriptor.enumerable = descriptor.enumerable || false;
 			descriptor.configurable = true;
-			if ( "value" in descriptor ) descriptor.writable = true;
+			if ( 'value' in descriptor ) descriptor.writable = true;
 			Object.defineProperty( target, descriptor.key, descriptor );
 
 		}
@@ -745,7 +765,7 @@ var get = function get( object, property, receiver ) {
 
 		}
 
-	} else if ( "value" in desc ) {
+	} else if ( 'value' in desc ) {
 
 		return desc.value;
 
@@ -767,9 +787,9 @@ var get = function get( object, property, receiver ) {
 
 var inherits = function ( subClass, superClass ) {
 
-	if ( typeof superClass !== "function" && superClass !== null ) {
+	if ( typeof superClass !== 'function' && superClass !== null ) {
 
-		throw new TypeError( "Super expression must either be null or a function, not " + typeof superClass );
+		throw new TypeError( 'Super expression must either be null or a function, not ' + typeof superClass );
 
 	}
 
@@ -799,11 +819,11 @@ var possibleConstructorReturn = function ( self, call ) {
 
 	if ( ! self ) {
 
-		throw new ReferenceError( "this hasn't been initialised - super() hasn't been called" );
+		throw new ReferenceError( 'this hasn\'t been initialised - super() hasn\'t been called' );
 
 	}
 
-	return call && ( typeof call === "object" || typeof call === "function" ) ? call : self;
+	return call && ( typeof call === 'object' || typeof call === 'function' ) ? call : self;
 
 };
 
@@ -818,9 +838,11 @@ var Color = function () {
 			throw new Error( 'Failed to interpret color arguments' );
 
 		}
+
 		this.__state.a = this.__state.a || 1;
 
 	}
+
 	createClass( Color, [ {
 		key: 'toString',
 		value: function toString() {
@@ -856,6 +878,7 @@ function defineRGBComponent( target, component, componentHexIndex ) {
 				return this.__state[ component ];
 
 			}
+
 			Color.recalculateRGB( this, component, componentHexIndex );
 			return this.__state[ component ];
 
@@ -868,12 +891,14 @@ function defineRGBComponent( target, component, componentHexIndex ) {
 				this.__state.space = 'RGB';
 
 			}
+
 			this.__state[ component ] = v;
 
 		}
 	} );
 
 }
+
 function defineHSVComponent( target, component ) {
 
 	Object.defineProperty( target, component, {
@@ -884,6 +909,7 @@ function defineHSVComponent( target, component ) {
 				return this.__state[ component ];
 
 			}
+
 			Color.recalculateHSV( this );
 			return this.__state[ component ];
 
@@ -896,12 +922,14 @@ function defineHSVComponent( target, component ) {
 				this.__state.space = 'HSV';
 
 			}
+
 			this.__state[ component ] = v;
 
 		}
 	} );
 
 }
+
 Color.recalculateRGB = function ( color, component, componentHexIndex ) {
 
 	if ( color.__state.space === 'HEX' ) {
@@ -919,6 +947,7 @@ Color.recalculateRGB = function ( color, component, componentHexIndex ) {
 	}
 
 };
+
 Color.recalculateHSV = function ( color ) {
 
 	var result = ColorMath.rgb_to_hsv( color.r, color.g, color.b );
@@ -937,6 +966,7 @@ Color.recalculateHSV = function ( color ) {
 	}
 
 };
+
 Color.COMPONENTS = [ 'r', 'g', 'b', 'h', 's', 'v', 'hex', 'a' ];
 defineRGBComponent( Color.prototype, 'r', 2 );
 defineRGBComponent( Color.prototype, 'g', 1 );
@@ -965,6 +995,7 @@ Object.defineProperty( Color.prototype, 'hex', {
 			this.__state.space = 'HEX';
 
 		}
+
 		return this.__state.hex;
 
 	},
@@ -989,6 +1020,7 @@ var Controller = function () {
 		this.__onFinishChange = undefined;
 
 	}
+
 	createClass( Controller, [ {
 		key: 'onChange',
 		value: function onChange( fnc ) {
@@ -1015,6 +1047,7 @@ var Controller = function () {
 				this.__onChange.call( this, newValue );
 
 			}
+
 			this.updateDisplay();
 			return this;
 
@@ -1068,15 +1101,18 @@ function cssValueToPixels( val ) {
 		return 0;
 
 	}
+
 	var match = val.match( CSS_VALUE_PIXELS );
 	if ( ! Common.isNull( match ) ) {
 
 		return parseFloat( match[ 1 ] );
 
 	}
+
 	return 0;
 
 }
+
 var dom = {
 	makeSelectable: function makeSelectable( elem, selectable ) {
 
@@ -1086,6 +1122,7 @@ var dom = {
 			return false;
 
 		} : function () {};
+
 		elem.style.MozUserSelect = selectable ? 'auto' : 'none';
 		elem.style.KhtmlUserSelect = selectable ? 'auto' : 'none';
 		elem.unselectable = selectable ? 'on' : 'off';
@@ -1100,11 +1137,13 @@ var dom = {
 			horizontal = true;
 
 		}
+
 		if ( Common.isUndefined( vertical ) ) {
 
 			vertical = true;
 
 		}
+
 		elem.style.position = 'absolute';
 		if ( horizontal ) {
 
@@ -1112,6 +1151,7 @@ var dom = {
 			elem.style.right = 0;
 
 		}
+
 		if ( vertical ) {
 
 			elem.style.top = 0;
@@ -1129,6 +1169,7 @@ var dom = {
 			throw new Error( 'Event type ' + eventType + ' not supported.' );
 
 		}
+
 		var evt = document.createEvent( className );
 		switch ( className ) {
 
@@ -1145,6 +1186,7 @@ var dom = {
 				break;
 
 			}
+
 			case 'KeyboardEvents':
 			{
 
@@ -1162,6 +1204,7 @@ var dom = {
 				break;
 
 			}
+
 			default:
 			{
 
@@ -1171,6 +1214,7 @@ var dom = {
 			}
 
 		}
+
 		Common.defaults( evt, aux );
 		elem.dispatchEvent( evt );
 
@@ -1187,6 +1231,7 @@ var dom = {
 			elem.attachEvent( 'on' + event, func );
 
 		}
+
 		return dom;
 
 	},
@@ -1202,6 +1247,7 @@ var dom = {
 			elem.detachEvent( 'on' + event, func );
 
 		}
+
 		return dom;
 
 	},
@@ -1222,6 +1268,7 @@ var dom = {
 			}
 
 		}
+
 		return dom;
 
 	},
@@ -1251,6 +1298,7 @@ var dom = {
 			elem.className = undefined;
 
 		}
+
 		return dom;
 
 	},
@@ -1286,6 +1334,7 @@ var dom = {
 			} while ( elem );
 
 		}
+
 		return offset;
 
 	},
@@ -1312,12 +1361,14 @@ var BooleanController = function ( _Controller ) {
 			_this.setValue( ! _this.__prev );
 
 		}
+
 		dom.bind( _this2.__checkbox, 'change', onChange, false );
 		_this2.domElement.appendChild( _this2.__checkbox );
 		_this2.updateDisplay();
 		return _this2;
 
 	}
+
 	createClass( BooleanController, [ {
 		key: 'setValue',
 		value: function setValue( v ) {
@@ -1328,6 +1379,7 @@ var BooleanController = function ( _Controller ) {
 				this.__onFinishChange.call( this, this.getValue() );
 
 			}
+
 			this.__prev = this.getValue();
 			return toReturn;
 
@@ -1348,6 +1400,7 @@ var BooleanController = function ( _Controller ) {
 				this.__prev = false;
 
 			}
+
 			return get( BooleanController.prototype.__proto__ || Object.getPrototypeOf( BooleanController.prototype ), 'updateDisplay', this ).call( this );
 
 		}
@@ -1377,6 +1430,7 @@ var OptionController = function ( _Controller ) {
 			options = map;
 
 		}
+
 		Common.each( options, function ( value, key ) {
 
 			var opt = document.createElement( 'option' );
@@ -1396,6 +1450,7 @@ var OptionController = function ( _Controller ) {
 		return _this2;
 
 	}
+
 	createClass( OptionController, [ {
 		key: 'setValue',
 		value: function setValue( v ) {
@@ -1406,6 +1461,7 @@ var OptionController = function ( _Controller ) {
 				this.__onFinishChange.call( this, this.getValue() );
 
 			}
+
 			return toReturn;
 
 		}
@@ -1436,6 +1492,7 @@ var StringController = function ( _Controller ) {
 			_this.setValue( _this.__input.value );
 
 		}
+
 		function onBlur() {
 
 			if ( _this.__onFinishChange ) {
@@ -1445,6 +1502,7 @@ var StringController = function ( _Controller ) {
 			}
 
 		}
+
 		_this2.__input = document.createElement( 'input' );
 		_this2.__input.setAttribute( 'type', 'text' );
 		dom.bind( _this2.__input, 'keyup', onChange );
@@ -1464,6 +1522,7 @@ var StringController = function ( _Controller ) {
 		return _this2;
 
 	}
+
 	createClass( StringController, [ {
 		key: 'updateDisplay',
 		value: function updateDisplay() {
@@ -1473,6 +1532,7 @@ var StringController = function ( _Controller ) {
 				this.__input.value = this.getValue();
 
 			}
+
 			return get( StringController.prototype.__proto__ || Object.getPrototypeOf( StringController.prototype ), 'updateDisplay', this ).call( this );
 
 		}
@@ -1489,9 +1549,11 @@ function numDecimals( x ) {
 		return _x.length - _x.indexOf( '.' ) - 1;
 
 	}
+
 	return 0;
 
 }
+
 var NumberController = function ( _Controller ) {
 
 	inherits( NumberController, _Controller );
@@ -1520,10 +1582,12 @@ var NumberController = function ( _Controller ) {
 			_this.__impliedStep = _this.__step;
 
 		}
+
 		_this.__precision = numDecimals( _this.__impliedStep );
 		return _this;
 
 	}
+
 	createClass( NumberController, [ {
 		key: 'setValue',
 		value: function setValue( v ) {
@@ -1538,11 +1602,13 @@ var NumberController = function ( _Controller ) {
 				_v = this.__max;
 
 			}
+
 			if ( this.__step !== undefined && _v % this.__step !== 0 ) {
 
 				_v = Math.round( _v / this.__step ) * this.__step;
 
 			}
+
 			return get( NumberController.prototype.__proto__ || Object.getPrototypeOf( NumberController.prototype ), 'setValue', this ).call( this, _v );
 
 		}
@@ -1583,6 +1649,7 @@ function roundToDecimal( value, decimals ) {
 	return Math.round( value * tenTo ) / tenTo;
 
 }
+
 var NumberControllerBox = function ( _NumberController ) {
 
 	inherits( NumberControllerBox, _NumberController );
@@ -1603,6 +1670,7 @@ var NumberControllerBox = function ( _NumberController ) {
 			}
 
 		}
+
 		function onFinish() {
 
 			if ( _this.__onFinishChange ) {
@@ -1612,11 +1680,13 @@ var NumberControllerBox = function ( _NumberController ) {
 			}
 
 		}
+
 		function onBlur() {
 
 			onFinish();
 
 		}
+
 		function onMouseDrag( e ) {
 
 			var diff = prevY - e.clientY;
@@ -1624,6 +1694,7 @@ var NumberControllerBox = function ( _NumberController ) {
 			prevY = e.clientY;
 
 		}
+
 		function onMouseUp() {
 
 			dom.unbind( window, 'mousemove', onMouseDrag );
@@ -1631,6 +1702,7 @@ var NumberControllerBox = function ( _NumberController ) {
 			onFinish();
 
 		}
+
 		function onMouseDown( e ) {
 
 			dom.bind( window, 'mousemove', onMouseDrag );
@@ -1638,6 +1710,7 @@ var NumberControllerBox = function ( _NumberController ) {
 			prevY = e.clientY;
 
 		}
+
 		_this2.__input = document.createElement( 'input' );
 		_this2.__input.setAttribute( 'type', 'text' );
 		dom.bind( _this2.__input, 'change', onChange );
@@ -1660,6 +1733,7 @@ var NumberControllerBox = function ( _NumberController ) {
 		return _this2;
 
 	}
+
 	createClass( NumberControllerBox, [ {
 		key: 'updateDisplay',
 		value: function updateDisplay() {
@@ -1678,6 +1752,7 @@ function map( v, i1, i2, o1, o2 ) {
 	return o1 + ( o2 - o1 ) * ( ( v - i1 ) / ( i2 - i1 ) );
 
 }
+
 var NumberControllerSlider = function ( _NumberController ) {
 
 	inherits( NumberControllerSlider, _NumberController );
@@ -1700,6 +1775,7 @@ var NumberControllerSlider = function ( _NumberController ) {
 			onMouseDrag( e );
 
 		}
+
 		function onMouseDrag( e ) {
 
 			e.preventDefault();
@@ -1708,6 +1784,7 @@ var NumberControllerSlider = function ( _NumberController ) {
 			return false;
 
 		}
+
 		function onMouseUp() {
 
 			dom.unbind( window, 'mousemove', onMouseDrag );
@@ -1719,6 +1796,7 @@ var NumberControllerSlider = function ( _NumberController ) {
 			}
 
 		}
+
 		function onTouchStart( e ) {
 
 			if ( e.touches.length !== 1 ) {
@@ -1726,11 +1804,13 @@ var NumberControllerSlider = function ( _NumberController ) {
 				return;
 
 			}
+
 			dom.bind( window, 'touchmove', onTouchMove );
 			dom.bind( window, 'touchend', onTouchEnd );
 			onTouchMove( e );
 
 		}
+
 		function onTouchMove( e ) {
 
 			var clientX = e.touches[ 0 ].clientX;
@@ -1738,6 +1818,7 @@ var NumberControllerSlider = function ( _NumberController ) {
 			_this.setValue( map( clientX, bgRect.left, bgRect.right, _this.__min, _this.__max ) );
 
 		}
+
 		function onTouchEnd() {
 
 			dom.unbind( window, 'touchmove', onTouchMove );
@@ -1749,12 +1830,14 @@ var NumberControllerSlider = function ( _NumberController ) {
 			}
 
 		}
+
 		_this2.updateDisplay();
 		_this2.__background.appendChild( _this2.__foreground );
 		_this2.domElement.appendChild( _this2.__background );
 		return _this2;
 
 	}
+
 	createClass( NumberControllerSlider, [ {
 		key: 'updateDisplay',
 		value: function updateDisplay() {
@@ -1791,6 +1874,7 @@ var FunctionController = function ( _Controller ) {
 		return _this2;
 
 	}
+
 	createClass( FunctionController, [ {
 		key: 'fire',
 		value: function fire() {
@@ -1800,6 +1884,7 @@ var FunctionController = function ( _Controller ) {
 				this.__onChange.call( this );
 
 			}
+
 			this.getValue().call( this.object );
 			if ( this.__onFinishChange ) {
 
@@ -1938,6 +2023,7 @@ var ColorController = function ( _Controller ) {
 			dom.bind( window, 'touchend', fieldUpSV );
 
 		}
+
 		function fieldDownH( e ) {
 
 			setH( e );
@@ -1947,6 +2033,7 @@ var ColorController = function ( _Controller ) {
 			dom.bind( window, 'touchend', fieldUpH );
 
 		}
+
 		function fieldUpSV() {
 
 			dom.unbind( window, 'mousemove', setSV );
@@ -1956,6 +2043,7 @@ var ColorController = function ( _Controller ) {
 			onFinish();
 
 		}
+
 		function fieldUpH() {
 
 			dom.unbind( window, 'mousemove', setH );
@@ -1965,6 +2053,7 @@ var ColorController = function ( _Controller ) {
 			onFinish();
 
 		}
+
 		function onBlur() {
 
 			var i = interpret( this.value );
@@ -1980,6 +2069,7 @@ var ColorController = function ( _Controller ) {
 			}
 
 		}
+
 		function onFinish() {
 
 			if ( _this.__onFinishChange ) {
@@ -1989,6 +2079,7 @@ var ColorController = function ( _Controller ) {
 			}
 
 		}
+
 		_this2.__saturation_field.appendChild( valueField );
 		_this2.__selector.appendChild( _this2.__field_knob );
 		_this2.__selector.appendChild( _this2.__saturation_field );
@@ -2004,6 +2095,7 @@ var ColorController = function ( _Controller ) {
 				e.preventDefault();
 
 			}
+
 			var fieldRect = _this.__saturation_field.getBoundingClientRect();
 			var _ref = e.touches && e.touches[ 0 ] || e,
 				clientX = _ref.clientX,
@@ -2019,6 +2111,7 @@ var ColorController = function ( _Controller ) {
 				v = 0;
 
 			}
+
 			if ( s > 1 ) {
 
 				s = 1;
@@ -2028,12 +2121,14 @@ var ColorController = function ( _Controller ) {
 				s = 0;
 
 			}
+
 			_this.__color.v = v;
 			_this.__color.s = s;
 			_this.setValue( _this.__color.toOriginal() );
 			return false;
 
 		}
+
 		function setH( e ) {
 
 			if ( e.type.indexOf( 'touch' ) === - 1 ) {
@@ -2041,6 +2136,7 @@ var ColorController = function ( _Controller ) {
 				e.preventDefault();
 
 			}
+
 			var fieldRect = _this.__hue_field.getBoundingClientRect();
 			var _ref2 = e.touches && e.touches[ 0 ] || e,
 				clientY = _ref2.clientY;
@@ -2054,14 +2150,17 @@ var ColorController = function ( _Controller ) {
 				h = 0;
 
 			}
+
 			_this.__color.h = h * 360;
 			_this.setValue( _this.__color.toOriginal() );
 			return false;
 
 		}
+
 		return _this2;
 
 	}
+
 	createClass( ColorController, [ {
 		key: 'updateDisplay',
 		value: function updateDisplay() {
@@ -2087,6 +2186,7 @@ var ColorController = function ( _Controller ) {
 				}
 
 			}
+
 			Common.extend( this.__temp.__state, this.__color.__state );
 			this.__temp.a = 1;
 			var flip = this.__color.v < 0.5 || this.__color.s > 0.5 ? 255 : 0;
@@ -2124,6 +2224,7 @@ function linearGradient( elem, x, a, b ) {
 	} );
 
 }
+
 function hueGradient( elem ) {
 
 	elem.style.background = '';
@@ -2163,7 +2264,7 @@ var css = {
 	}
 };
 
-var saveDialogContents = "<div id=\"dg-save\" class=\"dg dialogue\">\n\n  Here's the new load parameter for your <code>GUI</code>'s constructor:\n\n  <textarea id=\"dg-new-constructor\"></textarea>\n\n  <div id=\"dg-save-locally\">\n\n    <input id=\"dg-local-storage\" type=\"checkbox\"/> Automatically save\n    values to <code>localStorage</code> on exit.\n\n    <div id=\"dg-local-explain\">The values saved to <code>localStorage</code> will\n      override those passed to <code>dat.GUI</code>'s constructor. This makes it\n      easier to work incrementally, but <code>localStorage</code> is fragile,\n      and your friends may not see the same values you do.\n\n    </div>\n\n  </div>\n\n</div>";
+var saveDialogContents = '<div id="dg-save" class="dg dialogue">\n\n  Here\'s the new load parameter for your <code>GUI</code>\'s constructor:\n\n  <textarea id="dg-new-constructor"></textarea>\n\n  <div id="dg-save-locally">\n\n    <input id="dg-local-storage" type="checkbox"/> Automatically save\n    values to <code>localStorage</code> on exit.\n\n    <div id="dg-local-explain">The values saved to <code>localStorage</code> will\n      override those passed to <code>dat.GUI</code>\'s constructor. This makes it\n      easier to work incrementally, but <code>localStorage</code> is fragile,\n      and your friends may not see the same values you do.\n\n    </div>\n\n  </div>\n\n</div>';
 
 var ControllerFactory = function ControllerFactory( object, property ) {
 
@@ -2173,6 +2274,7 @@ var ControllerFactory = function ControllerFactory( object, property ) {
 		return new OptionController( object, property, arguments[ 2 ] );
 
 	}
+
 	if ( Common.isNumber( initialValue ) ) {
 
 		if ( Common.isNumber( arguments[ 2 ] ) && Common.isNumber( arguments[ 3 ] ) ) {
@@ -2182,32 +2284,39 @@ var ControllerFactory = function ControllerFactory( object, property ) {
 				return new NumberControllerSlider( object, property, arguments[ 2 ], arguments[ 3 ], arguments[ 4 ] );
 
 			}
+
 			return new NumberControllerSlider( object, property, arguments[ 2 ], arguments[ 3 ] );
 
 		}
+
 		if ( Common.isNumber( arguments[ 4 ] ) ) {
 
 			return new NumberControllerBox( object, property, { min: arguments[ 2 ], max: arguments[ 3 ], step: arguments[ 4 ] } );
 
 		}
+
 		return new NumberControllerBox( object, property, { min: arguments[ 2 ], max: arguments[ 3 ] } );
 
 	}
+
 	if ( Common.isString( initialValue ) ) {
 
 		return new StringController( object, property );
 
 	}
+
 	if ( Common.isFunction( initialValue ) ) {
 
 		return new FunctionController( object, property, '' );
 
 	}
+
 	if ( Common.isBoolean( initialValue ) ) {
 
 		return new BooleanController( object, property );
 
 	}
+
 	return null;
 
 };
@@ -2217,6 +2326,7 @@ function requestAnimationFrame( callback ) {
 	setTimeout( callback, 1000 / 60 );
 
 }
+
 var requestAnimationFrame$1 = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || requestAnimationFrame;
 
 var CenteredDiv = function () {
@@ -2256,6 +2366,7 @@ var CenteredDiv = function () {
 		} );
 
 	}
+
 	createClass( CenteredDiv, [ {
 		key: 'show',
 		value: function show() {
@@ -2289,6 +2400,7 @@ var CenteredDiv = function () {
 				dom.unbind( _this.domElement, 'oTransitionEnd', hide );
 
 			};
+
 			dom.bind( this.domElement, 'webkitTransitionEnd', hide );
 			dom.bind( this.domElement, 'transitionend', hide );
 			dom.bind( this.domElement, 'oTransitionEnd', hide );
@@ -2310,7 +2422,7 @@ var CenteredDiv = function () {
 
 }();
 
-var styleSheet = ___$insertStyle( ".dg ul{list-style:none;margin:0;padding:0;width:100%;clear:both}.dg.ac{position:fixed;top:0;left:0;right:0;height:0;z-index:0}.dg:not(.ac) .main{overflow:hidden}.dg.main{-webkit-transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;transition:opacity .1s linear}.dg.main.taller-than-window{overflow-y:auto}.dg.main.taller-than-window .close-button{opacity:1;margin-top:-1px;border-top:1px solid #2c2c2c}.dg.main ul.closed .close-button{opacity:1 !important}.dg.main:hover .close-button,.dg.main .close-button.drag{opacity:1}.dg.main .close-button{-webkit-transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;transition:opacity .1s linear;border:0;line-height:19px;height:20px;cursor:pointer;text-align:center;background-color:#000}.dg.main .close-button.close-top{position:relative}.dg.main .close-button.close-bottom{position:absolute}.dg.main .close-button:hover{background-color:#111}.dg.a{float:right;margin-right:15px;overflow-y:visible}.dg.a.has-save>ul.close-top{margin-top:0}.dg.a.has-save>ul.close-bottom{margin-top:27px}.dg.a.has-save>ul.closed{margin-top:0}.dg.a .save-row{top:0;z-index:1002}.dg.a .save-row.close-top{position:relative}.dg.a .save-row.close-bottom{position:fixed}.dg li{-webkit-transition:height .1s ease-out;-o-transition:height .1s ease-out;-moz-transition:height .1s ease-out;transition:height .1s ease-out;-webkit-transition:overflow .1s linear;-o-transition:overflow .1s linear;-moz-transition:overflow .1s linear;transition:overflow .1s linear}.dg li:not(.folder){cursor:auto;height:27px;line-height:27px;padding:0 4px 0 5px}.dg li.folder{padding:0;border-left:4px solid rgba(0,0,0,0)}.dg li.title{cursor:pointer;margin-left:-4px}.dg .closed li:not(.title),.dg .closed ul li,.dg .closed ul li>*{height:0;overflow:hidden;border:0}.dg .cr{clear:both;padding-left:3px;height:27px;overflow:hidden}.dg .property-name{cursor:default;float:left;clear:left;width:40%;overflow:hidden;text-overflow:ellipsis}.dg .c{float:left;width:60%;position:relative}.dg .c input[type=text]{border:0;margin-top:4px;padding:3px;width:100%;float:right}.dg .has-slider input[type=text]{width:30%;margin-left:0}.dg .slider{float:left;width:66%;margin-left:-5px;margin-right:0;height:19px;margin-top:4px}.dg .slider-fg{height:100%}.dg .c input[type=checkbox]{margin-top:7px}.dg .c select{margin-top:5px}.dg .cr.function,.dg .cr.function .property-name,.dg .cr.function *,.dg .cr.boolean,.dg .cr.boolean *{cursor:pointer}.dg .cr.color{overflow:visible}.dg .selector{display:none;position:absolute;margin-left:-9px;margin-top:23px;z-index:10}.dg .c:hover .selector,.dg .selector.drag{display:block}.dg li.save-row{padding:0}.dg li.save-row .button{display:inline-block;padding:0px 6px}.dg.dialogue{background-color:#222;width:460px;padding:15px;font-size:13px;line-height:15px}#dg-new-constructor{padding:10px;color:#222;font-family:Monaco, monospace;font-size:10px;border:0;resize:none;box-shadow:inset 1px 1px 1px #888;word-wrap:break-word;margin:12px 0;display:block;width:440px;overflow-y:scroll;height:100px;position:relative}#dg-local-explain{display:none;font-size:11px;line-height:17px;border-radius:3px;background-color:#333;padding:8px;margin-top:10px}#dg-local-explain code{font-size:10px}#dat-gui-save-locally{display:none}.dg{color:#eee;font:11px 'Lucida Grande', sans-serif;text-shadow:0 -1px 0 #111}.dg.main::-webkit-scrollbar{width:5px;background:#1a1a1a}.dg.main::-webkit-scrollbar-corner{height:0;display:none}.dg.main::-webkit-scrollbar-thumb{border-radius:5px;background:#676767}.dg li:not(.folder){background:#1a1a1a;border-bottom:1px solid #2c2c2c}.dg li.save-row{line-height:25px;background:#dad5cb;border:0}.dg li.save-row select{margin-left:5px;width:108px}.dg li.save-row .button{margin-left:5px;margin-top:1px;border-radius:2px;font-size:9px;line-height:7px;padding:4px 4px 5px 4px;background:#c5bdad;color:#fff;text-shadow:0 1px 0 #b0a58f;box-shadow:0 -1px 0 #b0a58f;cursor:pointer}.dg li.save-row .button.gears{background:#c5bdad url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAANCAYAAAB/9ZQ7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQJJREFUeNpiYKAU/P//PwGIC/ApCABiBSAW+I8AClAcgKxQ4T9hoMAEUrxx2QSGN6+egDX+/vWT4e7N82AMYoPAx/evwWoYoSYbACX2s7KxCxzcsezDh3evFoDEBYTEEqycggWAzA9AuUSQQgeYPa9fPv6/YWm/Acx5IPb7ty/fw+QZblw67vDs8R0YHyQhgObx+yAJkBqmG5dPPDh1aPOGR/eugW0G4vlIoTIfyFcA+QekhhHJhPdQxbiAIguMBTQZrPD7108M6roWYDFQiIAAv6Aow/1bFwXgis+f2LUAynwoIaNcz8XNx3Dl7MEJUDGQpx9gtQ8YCueB+D26OECAAQDadt7e46D42QAAAABJRU5ErkJggg==) 2px 1px no-repeat;height:7px;width:8px}.dg li.save-row .button:hover{background-color:#bab19e;box-shadow:0 -1px 0 #b0a58f}.dg li.folder{border-bottom:0}.dg li.title{padding-left:16px;background:#000 url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlI+hKgFxoCgAOw==) 6px 10px no-repeat;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.2)}.dg .closed li.title{background-image:url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlGIWqMCbWAEAOw==)}.dg .cr.boolean{border-left:3px solid #806787}.dg .cr.color{border-left:3px solid}.dg .cr.function{border-left:3px solid #e61d5f}.dg .cr.number{border-left:3px solid #2FA1D6}.dg .cr.number input[type=text]{color:#2FA1D6}.dg .cr.string{border-left:3px solid #1ed36f}.dg .cr.string input[type=text]{color:#1ed36f}.dg .cr.function:hover,.dg .cr.boolean:hover{background:#111}.dg .c input[type=text]{background:#303030;outline:none}.dg .c input[type=text]:hover{background:#3c3c3c}.dg .c input[type=text]:focus{background:#494949;color:#fff}.dg .c .slider{background:#303030;cursor:ew-resize}.dg .c .slider-fg{background:#2FA1D6;max-width:100%}.dg .c .slider:hover{background:#3c3c3c}.dg .c .slider:hover .slider-fg{background:#44abda}\n" );
+var styleSheet = ___$insertStyle( '.dg ul{list-style:none;margin:0;padding:0;width:100%;clear:both}.dg.ac{position:fixed;top:0;left:0;right:0;height:0;z-index:0}.dg:not(.ac) .main{overflow:hidden}.dg.main{-webkit-transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;transition:opacity .1s linear}.dg.main.taller-than-window{overflow-y:auto}.dg.main.taller-than-window .close-button{opacity:1;margin-top:-1px;border-top:1px solid #2c2c2c}.dg.main ul.closed .close-button{opacity:1 !important}.dg.main:hover .close-button,.dg.main .close-button.drag{opacity:1}.dg.main .close-button{-webkit-transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;transition:opacity .1s linear;border:0;line-height:19px;height:20px;cursor:pointer;text-align:center;background-color:#000}.dg.main .close-button.close-top{position:relative}.dg.main .close-button.close-bottom{position:absolute}.dg.main .close-button:hover{background-color:#111}.dg.a{float:right;margin-right:15px;overflow-y:visible}.dg.a.has-save>ul.close-top{margin-top:0}.dg.a.has-save>ul.close-bottom{margin-top:27px}.dg.a.has-save>ul.closed{margin-top:0}.dg.a .save-row{top:0;z-index:1002}.dg.a .save-row.close-top{position:relative}.dg.a .save-row.close-bottom{position:fixed}.dg li{-webkit-transition:height .1s ease-out;-o-transition:height .1s ease-out;-moz-transition:height .1s ease-out;transition:height .1s ease-out;-webkit-transition:overflow .1s linear;-o-transition:overflow .1s linear;-moz-transition:overflow .1s linear;transition:overflow .1s linear}.dg li:not(.folder){cursor:auto;height:27px;line-height:27px;padding:0 4px 0 5px}.dg li.folder{padding:0;border-left:4px solid rgba(0,0,0,0)}.dg li.title{cursor:pointer;margin-left:-4px}.dg .closed li:not(.title),.dg .closed ul li,.dg .closed ul li>*{height:0;overflow:hidden;border:0}.dg .cr{clear:both;padding-left:3px;height:27px;overflow:hidden}.dg .property-name{cursor:default;float:left;clear:left;width:40%;overflow:hidden;text-overflow:ellipsis}.dg .c{float:left;width:60%;position:relative}.dg .c input[type=text]{border:0;margin-top:4px;padding:3px;width:100%;float:right}.dg .has-slider input[type=text]{width:30%;margin-left:0}.dg .slider{float:left;width:66%;margin-left:-5px;margin-right:0;height:19px;margin-top:4px}.dg .slider-fg{height:100%}.dg .c input[type=checkbox]{margin-top:7px}.dg .c select{margin-top:5px}.dg .cr.function,.dg .cr.function .property-name,.dg .cr.function *,.dg .cr.boolean,.dg .cr.boolean *{cursor:pointer}.dg .cr.color{overflow:visible}.dg .selector{display:none;position:absolute;margin-left:-9px;margin-top:23px;z-index:10}.dg .c:hover .selector,.dg .selector.drag{display:block}.dg li.save-row{padding:0}.dg li.save-row .button{display:inline-block;padding:0px 6px}.dg.dialogue{background-color:#222;width:460px;padding:15px;font-size:13px;line-height:15px}#dg-new-constructor{padding:10px;color:#222;font-family:Monaco, monospace;font-size:10px;border:0;resize:none;box-shadow:inset 1px 1px 1px #888;word-wrap:break-word;margin:12px 0;display:block;width:440px;overflow-y:scroll;height:100px;position:relative}#dg-local-explain{display:none;font-size:11px;line-height:17px;border-radius:3px;background-color:#333;padding:8px;margin-top:10px}#dg-local-explain code{font-size:10px}#dat-gui-save-locally{display:none}.dg{color:#eee;font:11px \'Lucida Grande\', sans-serif;text-shadow:0 -1px 0 #111}.dg.main::-webkit-scrollbar{width:5px;background:#1a1a1a}.dg.main::-webkit-scrollbar-corner{height:0;display:none}.dg.main::-webkit-scrollbar-thumb{border-radius:5px;background:#676767}.dg li:not(.folder){background:#1a1a1a;border-bottom:1px solid #2c2c2c}.dg li.save-row{line-height:25px;background:#dad5cb;border:0}.dg li.save-row select{margin-left:5px;width:108px}.dg li.save-row .button{margin-left:5px;margin-top:1px;border-radius:2px;font-size:9px;line-height:7px;padding:4px 4px 5px 4px;background:#c5bdad;color:#fff;text-shadow:0 1px 0 #b0a58f;box-shadow:0 -1px 0 #b0a58f;cursor:pointer}.dg li.save-row .button.gears{background:#c5bdad url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAANCAYAAAB/9ZQ7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQJJREFUeNpiYKAU/P//PwGIC/ApCABiBSAW+I8AClAcgKxQ4T9hoMAEUrxx2QSGN6+egDX+/vWT4e7N82AMYoPAx/evwWoYoSYbACX2s7KxCxzcsezDh3evFoDEBYTEEqycggWAzA9AuUSQQgeYPa9fPv6/YWm/Acx5IPb7ty/fw+QZblw67vDs8R0YHyQhgObx+yAJkBqmG5dPPDh1aPOGR/eugW0G4vlIoTIfyFcA+QekhhHJhPdQxbiAIguMBTQZrPD7108M6roWYDFQiIAAv6Aow/1bFwXgis+f2LUAynwoIaNcz8XNx3Dl7MEJUDGQpx9gtQ8YCueB+D26OECAAQDadt7e46D42QAAAABJRU5ErkJggg==) 2px 1px no-repeat;height:7px;width:8px}.dg li.save-row .button:hover{background-color:#bab19e;box-shadow:0 -1px 0 #b0a58f}.dg li.folder{border-bottom:0}.dg li.title{padding-left:16px;background:#000 url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlI+hKgFxoCgAOw==) 6px 10px no-repeat;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.2)}.dg .closed li.title{background-image:url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlGIWqMCbWAEAOw==)}.dg .cr.boolean{border-left:3px solid #806787}.dg .cr.color{border-left:3px solid}.dg .cr.function{border-left:3px solid #e61d5f}.dg .cr.number{border-left:3px solid #2FA1D6}.dg .cr.number input[type=text]{color:#2FA1D6}.dg .cr.string{border-left:3px solid #1ed36f}.dg .cr.string input[type=text]{color:#1ed36f}.dg .cr.function:hover,.dg .cr.boolean:hover{background:#111}.dg .c input[type=text]{background:#303030;outline:none}.dg .c input[type=text]:hover{background:#3c3c3c}.dg .c input[type=text]:focus{background:#494949;color:#fff}.dg .c .slider{background:#303030;cursor:ew-resize}.dg .c .slider-fg{background:#2FA1D6;max-width:100%}.dg .c .slider:hover{background:#3c3c3c}.dg .c .slider:hover .slider-fg{background:#44abda}\n' );
 
 css.inject( styleSheet );
 var CSS_NAMESPACE = 'dg';
@@ -2370,17 +2482,20 @@ var GUI = function GUI( pars ) {
 		params.load = { preset: DEFAULT_DEFAULT_PRESET_NAME };
 
 	}
+
 	if ( Common.isUndefined( params.parent ) && params.hideable ) {
 
 		hideableGuis.push( this );
 
 	}
+
 	params.resizable = Common.isUndefined( params.parent ) && params.resizable;
 	if ( params.autoPlace && Common.isUndefined( params.scrollable ) ) {
 
 		params.scrollable = true;
 
 	}
+
 	var useLocalStorage = SUPPORTS_LOCAL_STORAGE && localStorage.getItem( getLocalStorageHash( this, 'isLocal' ) ) === 'true';
 	var saveToLocalStorage = void 0;
 	var titleRow = void 0;
@@ -2422,6 +2537,7 @@ var GUI = function GUI( pars ) {
 						return _this.getRoot().preset;
 
 					}
+
 					return params.load.preset;
 
 				},
@@ -2436,6 +2552,7 @@ var GUI = function GUI( pars ) {
 						params.load.preset = v;
 
 					}
+
 					setPresetSelectIndex( this );
 					_this.revert();
 
@@ -2489,6 +2606,7 @@ var GUI = function GUI( pars ) {
 						dom.removeClass( _this.__ul, GUI.CLASS_CLOSED );
 
 					}
+
 					this.onResize();
 					if ( _this.__closeButton ) {
 
@@ -2525,6 +2643,7 @@ var GUI = function GUI( pars ) {
 							dom.unbind( window, 'unload', saveToLocalStorage );
 
 						}
+
 						localStorage.setItem( getLocalStorageHash( _this, 'isLocal' ), bool );
 
 					}
@@ -2552,6 +2671,7 @@ var GUI = function GUI( pars ) {
 			}
 
 		}
+
 		this.__closeButton = document.createElement( 'div' );
 		this.__closeButton.innerHTML = GUI.TEXT_CLOSED;
 		dom.addClass( this.__closeButton, GUI.CLASS_CLOSE_BUTTON );
@@ -2566,6 +2686,7 @@ var GUI = function GUI( pars ) {
 			this.domElement.appendChild( this.__closeButton );
 
 		}
+
 		dom.bind( this.__closeButton, 'click', function () {
 
 			_this.closed = ! _this.closed;
@@ -2579,6 +2700,7 @@ var GUI = function GUI( pars ) {
 			params.closed = true;
 
 		}
+
 		var titleRowName = document.createTextNode( params.name );
 		dom.addClass( titleRowName, 'controller-name' );
 		titleRow = addRow( _this, titleRowName );
@@ -2589,6 +2711,7 @@ var GUI = function GUI( pars ) {
 			return false;
 
 		};
+
 		dom.addClass( this.__ul, GUI.CLASS_CLOSED );
 		dom.addClass( titleRow, 'title' );
 		dom.bind( titleRow, 'click', onClickTitle );
@@ -2599,6 +2722,7 @@ var GUI = function GUI( pars ) {
 		}
 
 	}
+
 	if ( params.autoPlace ) {
 
 		if ( Common.isUndefined( params.parent ) ) {
@@ -2612,10 +2736,12 @@ var GUI = function GUI( pars ) {
 				autoPlaceVirgin = false;
 
 			}
+
 			autoPlaceContainer.appendChild( this.domElement );
 			dom.addClass( this.domElement, GUI.CLASS_AUTO_PLACE );
 
 		}
+
 		if ( ! this.parent ) {
 
 			setWidth( _this, params.width );
@@ -2623,11 +2749,13 @@ var GUI = function GUI( pars ) {
 		}
 
 	}
+
 	this.__resizeHandler = function () {
 
 		_this.onResizeDebounced();
 
 	};
+
 	dom.bind( window, 'resize', this.__resizeHandler );
 	dom.bind( this.__ul, 'webkitTransitionEnd', this.__resizeHandler );
 	dom.bind( this.__ul, 'transitionend', this.__resizeHandler );
@@ -2638,6 +2766,7 @@ var GUI = function GUI( pars ) {
 		addResizeHandle( this );
 
 	}
+
 	saveToLocalStorage = function saveToLocalStorage() {
 
 		if ( SUPPORTS_LOCAL_STORAGE && localStorage.getItem( getLocalStorageHash( _this, 'isLocal' ) ) === 'true' ) {
@@ -2647,6 +2776,7 @@ var GUI = function GUI( pars ) {
 		}
 
 	};
+
 	this.saveToLocalStorageIfPossible = saveToLocalStorage;
 	function resetWidth() {
 
@@ -2659,6 +2789,7 @@ var GUI = function GUI( pars ) {
 		} );
 
 	}
+
 	if ( ! params.parent ) {
 
 		resetWidth();
@@ -2666,6 +2797,7 @@ var GUI = function GUI( pars ) {
 	}
 
 };
+
 GUI.toggleHide = function () {
 
 	hide = ! hide;
@@ -2676,6 +2808,7 @@ GUI.toggleHide = function () {
 	} );
 
 };
+
 GUI.CLASS_AUTO_PLACE = 'a';
 GUI.CLASS_AUTO_PLACE_CONTAINER = 'ac';
 GUI.CLASS_MAIN = 'main';
@@ -2698,6 +2831,7 @@ GUI._keydownHandler = function ( e ) {
 	}
 
 };
+
 dom.bind( window, 'keydown', GUI._keydownHandler, false );
 Common.extend( GUI.prototype,
 	{
@@ -2734,11 +2868,13 @@ Common.extend( GUI.prototype,
 				throw new Error( 'Only the root GUI should be removed with .destroy(). ' + 'For subfolders, use gui.removeFolder(folder) instead.' );
 
 			}
+
 			if ( this.autoPlace ) {
 
 				autoPlaceContainer.removeChild( this.domElement );
 
 			}
+
 			var _this = this;
 			Common.each( this.__folders, function ( subfolder ) {
 
@@ -2756,6 +2892,7 @@ Common.extend( GUI.prototype,
 				throw new Error( 'You already have a folder in this GUI by the' + ' name "' + name + '"' );
 
 			}
+
 			var newGuiParams = { name: name, parent: this };
 			newGuiParams.autoPlace = this.autoPlace;
 			if ( this.load &&
@@ -2766,6 +2903,7 @@ Common.extend( GUI.prototype,
 				newGuiParams.load = this.load.folders[ name ];
 
 			}
+
 			var gui = new GUI( newGuiParams );
 			this.__folders[ name ] = gui;
 			var li = addRow( this, gui.domElement );
@@ -2784,6 +2922,7 @@ Common.extend( GUI.prototype,
 				delete this.load.folders[ folder.name ];
 
 			}
+
 			removeListeners( folder );
 			var _this = this;
 			Common.each( folder.__folders, function ( subfolder ) {
@@ -2847,6 +2986,7 @@ Common.extend( GUI.prototype,
 				}
 
 			}
+
 			if ( root.__resize_handle ) {
 
 				Common.defer( function () {
@@ -2856,6 +2996,7 @@ Common.extend( GUI.prototype,
 				} );
 
 			}
+
 			if ( root.__closeButton ) {
 
 				root.__closeButton.style.width = root.width + 'px';
@@ -2876,11 +3017,13 @@ Common.extend( GUI.prototype,
 				SAVE_DIALOGUE.domElement.innerHTML = saveDialogContents;
 
 			}
+
 			if ( this.parent ) {
 
 				throw new Error( 'You can only call remember on a top level GUI.' );
 
 			}
+
 			var _this = this;
 			Common.each( Array.prototype.slice.call( arguments ), function ( object ) {
 
@@ -2889,6 +3032,7 @@ Common.extend( GUI.prototype,
 					addSaveMenu( _this );
 
 				}
+
 				if ( _this.__rememberedObjects.indexOf( object ) === - 1 ) {
 
 					_this.__rememberedObjects.push( object );
@@ -2911,6 +3055,7 @@ Common.extend( GUI.prototype,
 				gui = gui.parent;
 
 			}
+
 			return gui;
 
 		},
@@ -2926,9 +3071,11 @@ Common.extend( GUI.prototype,
 					toReturn.remembered = {};
 
 				}
+
 				toReturn.remembered[ this.preset ] = getCurrentPreset( this );
 
 			}
+
 			toReturn.folders = {};
 			Common.each( this.__folders, function ( element, key ) {
 
@@ -2945,6 +3092,7 @@ Common.extend( GUI.prototype,
 				this.load.remembered = {};
 
 			}
+
 			this.load.remembered[ this.preset ] = getCurrentPreset( this );
 			markPresetModified( this, false );
 			this.saveToLocalStorageIfPossible();
@@ -2958,6 +3106,7 @@ Common.extend( GUI.prototype,
 				this.load.remembered[ DEFAULT_DEFAULT_PRESET_NAME ] = getCurrentPreset( this, true );
 
 			}
+
 			this.load.remembered[ presetName ] = getCurrentPreset( this );
 			this.preset = presetName;
 			addPresetOption( this, presetName, true );
@@ -2977,6 +3126,7 @@ Common.extend( GUI.prototype,
 					recallSavedValue( gui || this.getRoot(), controller );
 
 				}
+
 				if ( controller.__onFinishChange ) {
 
 					controller.__onFinishChange.call( controller, controller.getValue() );
@@ -3030,6 +3180,7 @@ function addRow( gui, newDom, liBefore ) {
 		li.appendChild( newDom );
 
 	}
+
 	if ( liBefore ) {
 
 		gui.__ul.insertBefore( li, liBefore );
@@ -3039,10 +3190,12 @@ function addRow( gui, newDom, liBefore ) {
 		gui.__ul.appendChild( li );
 
 	}
+
 	gui.onResize();
 	return li;
 
 }
+
 function removeListeners( gui ) {
 
 	dom.unbind( window, 'resize', gui.__resizeHandler );
@@ -3053,6 +3206,7 @@ function removeListeners( gui ) {
 	}
 
 }
+
 function markPresetModified( gui, modified ) {
 
 	var opt = gui.__preset_select[ gui.__preset_select.selectedIndex ];
@@ -3067,6 +3221,7 @@ function markPresetModified( gui, modified ) {
 	}
 
 }
+
 function augmentController( gui, li, controller ) {
 
 	controller.__li = li;
@@ -3084,6 +3239,7 @@ function augmentController( gui, li, controller ) {
 				} );
 
 			}
+
 			if ( Common.isArray( _options ) || Common.isObject( _options ) ) {
 
 				var _nextSibling = controller.__li.nextElementSibling;
@@ -3152,9 +3308,11 @@ function augmentController( gui, li, controller ) {
 				return newController;
 
 			}
+
 			return returned;
 
 		};
+
 		controller.min = Common.compose( r, controller.min );
 		controller.max = Common.compose( r, controller.max );
 
@@ -3201,6 +3359,7 @@ function augmentController( gui, li, controller ) {
 		controller.updateDisplay();
 
 	}
+
 	controller.setValue = Common.compose( function ( val ) {
 
 		if ( gui.getRoot().__preset_select && controller.isModified() ) {
@@ -3208,11 +3367,13 @@ function augmentController( gui, li, controller ) {
 			markPresetModified( gui.getRoot(), true );
 
 		}
+
 		return val;
 
 	}, controller.setValue );
 
 }
+
 function recallSavedValue( gui, controller ) {
 
 	var root = gui.getRoot();
@@ -3226,6 +3387,7 @@ function recallSavedValue( gui, controller ) {
 			root.__rememberedObjectIndecesToControllers[ matchedIndex ] = controllerMap;
 
 		}
+
 		controllerMap[ controller.property ] = controller;
 		if ( root.load && root.load.remembered ) {
 
@@ -3244,6 +3406,7 @@ function recallSavedValue( gui, controller ) {
 				return;
 
 			}
+
 			if ( preset[ matchedIndex ] && preset[ matchedIndex ][ controller.property ] !== undefined ) {
 
 				var value = preset[ matchedIndex ][ controller.property ];
@@ -3257,6 +3420,7 @@ function recallSavedValue( gui, controller ) {
 	}
 
 }
+
 function _add( gui, object, property, params ) {
 
 	if ( object[ property ] === undefined ) {
@@ -3264,6 +3428,7 @@ function _add( gui, object, property, params ) {
 		throw new Error( 'Object "' + object + '" has no property "' + property + '"' );
 
 	}
+
 	var controller = void 0;
 	if ( params.color ) {
 
@@ -3275,11 +3440,13 @@ function _add( gui, object, property, params ) {
 		controller = ControllerFactory.apply( gui, factoryArgs );
 
 	}
+
 	if ( params.before instanceof Controller ) {
 
 		params.before = params.before.__li;
 
 	}
+
 	recallSavedValue( gui, controller );
 	dom.addClass( controller.domElement, 'c' );
 	var name = document.createElement( 'span' );
@@ -3299,16 +3466,19 @@ function _add( gui, object, property, params ) {
 		dom.addClass( li, _typeof( controller.getValue() ) );
 
 	}
+
 	augmentController( gui, li, controller );
 	gui.__controllers.push( controller );
 	return controller;
 
 }
+
 function getLocalStorageHash( gui, key ) {
 
 	return document.location.href + '.' + key;
 
 }
+
 function addPresetOption( gui, name, setSelected ) {
 
 	var opt = document.createElement( 'option' );
@@ -3322,11 +3492,13 @@ function addPresetOption( gui, name, setSelected ) {
 	}
 
 }
+
 function showHideExplain( gui, explain ) {
 
 	explain.style.display = gui.useLocalStorage ? 'block' : 'none';
 
 }
+
 function addSaveMenu( gui ) {
 
 	var div = gui.__save_row = document.createElement( 'li' );
@@ -3362,6 +3534,7 @@ function addSaveMenu( gui ) {
 		addPresetOption( gui, DEFAULT_DEFAULT_PRESET_NAME, false );
 
 	}
+
 	dom.bind( select, 'change', function () {
 
 		for ( var index = 0; index < gui.__preset_select.length; index ++ ) {
@@ -3369,6 +3542,7 @@ function addSaveMenu( gui ) {
 			gui.__preset_select[ index ].innerHTML = gui.__preset_select[ index ].value;
 
 		}
+
 		gui.preset = this.value;
 
 	} );
@@ -3388,6 +3562,7 @@ function addSaveMenu( gui ) {
 			localStorageCheckBox.setAttribute( 'checked', 'checked' );
 
 		}
+
 		showHideExplain( gui, explain );
 		dom.bind( localStorageCheckBox, 'change', function () {
 
@@ -3397,6 +3572,7 @@ function addSaveMenu( gui ) {
 		} );
 
 	}
+
 	var newConstructorTextArea = document.getElementById( 'dg-new-constructor' );
 	dom.bind( newConstructorTextArea, 'keydown', function ( e ) {
 
@@ -3437,6 +3613,7 @@ function addSaveMenu( gui ) {
 	} );
 
 }
+
 function addResizeHandle( gui ) {
 
 	var pmouseX = void 0;
@@ -3457,6 +3634,7 @@ function addResizeHandle( gui ) {
 		return false;
 
 	}
+
 	function dragStop() {
 
 		dom.removeClass( gui.__closeButton, GUI.CLASS_DRAG );
@@ -3464,6 +3642,7 @@ function addResizeHandle( gui ) {
 		dom.unbind( window, 'mouseup', dragStop );
 
 	}
+
 	function dragStart( e ) {
 
 		e.preventDefault();
@@ -3474,11 +3653,13 @@ function addResizeHandle( gui ) {
 		return false;
 
 	}
+
 	dom.bind( gui.__resize_handle, 'mousedown', dragStart );
 	dom.bind( gui.__closeButton, 'mousedown', dragStart );
 	gui.domElement.insertBefore( gui.__resize_handle, gui.domElement.firstElementChild );
 
 }
+
 function setWidth( gui, w ) {
 
 	gui.domElement.style.width = w + 'px';
@@ -3487,6 +3668,7 @@ function setWidth( gui, w ) {
 		gui.__save_row.style.width = w + 'px';
 
 	}
+
 	if ( gui.__closeButton ) {
 
 		gui.__closeButton.style.width = w + 'px';
@@ -3494,6 +3676,7 @@ function setWidth( gui, w ) {
 	}
 
 }
+
 function getCurrentPreset( gui, useInitialValues ) {
 
 	var toReturn = {};
@@ -3512,6 +3695,7 @@ function getCurrentPreset( gui, useInitialValues ) {
 	return toReturn;
 
 }
+
 function setPresetSelectIndex( gui ) {
 
 	for ( var index = 0; index < gui.__preset_select.length; index ++ ) {
@@ -3525,6 +3709,7 @@ function setPresetSelectIndex( gui ) {
 	}
 
 }
+
 function updateDisplays( controllerArray ) {
 
 	if ( controllerArray.length !== 0 ) {
@@ -3536,6 +3721,7 @@ function updateDisplays( controllerArray ) {
 		} );
 
 	}
+
 	Common.each( controllerArray, function ( c ) {
 
 		c.updateDisplay();

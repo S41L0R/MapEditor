@@ -1,8 +1,8 @@
 ace.define("ace/theme/monokai-custom",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = true;
-exports.cssClass = "ace-monokai-custom";
-exports.cssText = ".ace-monokai-custom .ace_gutter {\
+	exports.isDark = true;
+	exports.cssClass = "ace-monokai-custom";
+	exports.cssText = ".ace-monokai-custom .ace_gutter {\
 background: #3c434d;\
 color: #8F908A\
 }\
@@ -100,12 +100,12 @@ color: #75715E\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWPQ0FD0ZXBzd/wPAAjVAoxeSgNeAAAAAElFTkSuQmCC) right repeat-y\
 }";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+	var dom = require("../lib/dom");
+	dom.importCssString(exports.cssText, exports.cssClass);
 });                (function() {
-                    ace.require(["ace/theme/monokai-custom"], function(m) {
-                        if (typeof module == "object" && typeof exports == "object" && module) {
-                            module.exports = m;
-                        }
-                    });
-                })();
+	ace.require(["ace/theme/monokai-custom"], function(m) {
+		if (typeof module == "object" && typeof exports == "object" && module) {
+			module.exports = m;
+		}
+	});
+})();

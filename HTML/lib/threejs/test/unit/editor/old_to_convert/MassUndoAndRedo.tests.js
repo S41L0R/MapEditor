@@ -1,7 +1,7 @@
 
-QUnit.module( "MassUndoAndRedo" );
+QUnit.module( 'MassUndoAndRedo' );
 
-QUnit.test( "MassUndoAndRedo (stress test)", function( assert ) {
+QUnit.test( 'MassUndoAndRedo (stress test)', function ( assert ) {
 
 	var editor = new Editor();
 
@@ -21,7 +21,7 @@ QUnit.test( "MassUndoAndRedo (stress test)", function( assert ) {
 	}
 
 	assert.ok( editor.scene.children.lenght = MAX_OBJECTS,
-		"OK, " + MAX_OBJECTS + " objects have been added" );
+		'OK, ' + MAX_OBJECTS + ' objects have been added' );
 
 	// remove all objects
 	i = 0;
@@ -34,7 +34,7 @@ QUnit.test( "MassUndoAndRedo (stress test)", function( assert ) {
 
 
 	assert.ok( editor.scene.children.length == 0,
-		"OK, all objects have been removed by undos" );
+		'OK, all objects have been removed by undos' );
 
 
 	i = 0;
@@ -46,6 +46,6 @@ QUnit.test( "MassUndoAndRedo (stress test)", function( assert ) {
 	}
 
 	assert.ok( editor.scene.children.lenght = MAX_OBJECTS,
-		"OK, " + MAX_OBJECTS + " objects have been added again by redos" );
+		'OK, ' + MAX_OBJECTS + ' objects have been added again by redos' );
 
 } );
