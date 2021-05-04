@@ -342,24 +342,13 @@ def setDarkMode(variant):
 def save(sectionPath):
     with open(sectionPath, 'rt') as readSectionJSON:
         dataToSave = readSectionJSON.read()
-        print(dataToSave)
+        #print(dataToSave)
     loadedData = json.loads(dataToSave)
+    print(f'currentSection: {currentSection}')
     loadedData.update({'Section': currentSection})
     smubinWriter.writeMapFile(loadedData)
     print('File saved successfully! :)')
     return
-
-"""
-def save():
-    #print(dataToSave)
-    dataToSave = sys.stdin.readlines()
-    #raise Exception(dataToSave[0])
-    loadedData = json.loads(dataToSave[0])
-    loadedData.update({'Section': currentSection})
-    smubinWriter.writeMapFile(loadedData)
-    print('Saved!')
-    return
-"""
 
 def checkSetupPy():
     with open('./version.txt', 'rt') as readVer:
