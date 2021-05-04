@@ -78,6 +78,7 @@ function vobjCreateVertices( factor, offsets ) {
 		output += 'v ' + x + ' ' + y + ' ' + z + '\n';
 
 	}
+
 	return output;
 
 }
@@ -92,6 +93,7 @@ function vobjCreateUvs() {
 		output += 'vt ' + x + ' ' + y + '\n';
 
 	}
+
 	return output;
 
 }
@@ -107,6 +109,7 @@ function vobjCreateNormals() {
 		output += 'vn ' + x + ' ' + y + ' ' + z + '\n';
 
 	}
+
 	return output;
 
 }
@@ -130,6 +133,7 @@ function vobjCreateCubeV( offsets, groups, usemtls ) {
 		output += 'f ' + f0 + ' ' + f1 + ' ' + f2 + ' ' + f3 + '\n';
 
 	}
+
 	return output;
 
 }
@@ -153,6 +157,7 @@ function vobjCreateCubeVVn( offsets, groups, usemtls ) {
 		output += 'f ' + f0 + ' ' + f1 + ' ' + f2 + ' ' + f3 + '\n';
 
 	}
+
 	return output;
 
 }
@@ -176,6 +181,7 @@ function vobjCreateCubeVVt( offsets, groups, usemtls ) {
 		output += 'f ' + f0 + ' ' + f1 + ' ' + f2 + ' ' + f3 + '\n';
 
 	}
+
 	return output;
 
 }
@@ -199,6 +205,7 @@ function vobjCreateCubeVVnVt( offsets, groups, usemtls ) {
 		output += 'f ' + f0 + ' ' + f1 + ' ' + f2 + ' ' + f3 + '\n';
 
 	}
+
 	return output;
 
 }

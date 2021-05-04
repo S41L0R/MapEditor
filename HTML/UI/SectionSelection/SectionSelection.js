@@ -1,35 +1,35 @@
-var ipc = require('electron').ipcRenderer;
+var ipc = require("electron").ipcRenderer
 
-var scene = document.getElementById('scene')
+var scene = document.getElementById("scene")
 window.pz = panzoom(scene, {autocenter: true, bounds: true, transformOrigin: {x: 0.5, y: 0.5}, minZoom: 1})
 
 var selectedSection = ""
-var safeToSelect = true;
-var lastMouseX = 0;
-var lastMouseY = 0;
-var startPosX;
-var startPosY;
-var timeout = setTimeout(function(){}, 500);
+var safeToSelect = true
+var lastMouseX = 0
+var lastMouseY = 0
+var startPosX
+var startPosY
+var timeout = setTimeout(function(){}, 500)
 
 
 
 
 function selectSection(sectionName) {
-  if (safeToSelect) {
-    //document.getElementById(sectionName).style["box-shadow"] = "inset 0 0 100px black";
-    //console.log("hi")
-    document.getElementById(sectionName + "-Box").style["visibility"] = "visible";
+	if (safeToSelect) {
+		//document.getElementById(sectionName).style["box-shadow"] = "inset 0 0 100px black";
+		//console.log("hi")
+		document.getElementById(sectionName + "-Box").style["visibility"] = "visible"
 
 
-    if (selectedSection != "") {
-      document.getElementById(selectedSection + "-Box").style["visibility"] = "hidden";
-    }
-    selectedSection = sectionName;
-    console.log(selectedSection)
- }
+		if (selectedSection != "") {
+			document.getElementById(selectedSection + "-Box").style["visibility"] = "hidden"
+		}
+		selectedSection = sectionName
+		console.log(selectedSection)
+	}
 
 
-   /*
+	/*
    top = document.getElementById(sectionName).style["top"]
    left = document.getElementById(sectionName).style["left"]
 
@@ -57,8 +57,8 @@ function selectSection(sectionName) {
 }
 
 function openSection() {
-  ipc.send("loadHTML", ["./Editor.html", selectedSection])
-  console.log("loading")
+	ipc.send("loadHTML", ["./Editor.html", selectedSection])
+	console.log("loading")
 }
 
 /*
@@ -77,17 +77,17 @@ document.onmousemove = function(e){
 */
 
 document.onmousedown = function(e){
-  startPosX = e.pageX
-  startPosY = e.pageY
+	startPosX = e.pageX
+	startPosY = e.pageY
 }
 
 document.onmouseup = function(e){
-  console.log("hi")
-  if (Math.abs(e.pageX - startPosX) > 0.25 && (Math.abs(e.pageY - startPosY) > 0.25)) {
-    safeToSelect = false;
-  }
-  else {
-    safeToSelect = true;
-  }
+	console.log("hi")
+	if (Math.abs(e.pageX - startPosX) > 0.25 && (Math.abs(e.pageY - startPosY) > 0.25)) {
+		safeToSelect = false
+	}
+	else {
+		safeToSelect = true
+	}
 
 }

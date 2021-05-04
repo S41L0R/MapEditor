@@ -1,7 +1,7 @@
 
-QUnit.module( "SetScaleCommand" );
+QUnit.module( 'SetScaleCommand' );
 
-QUnit.test( "Test SetScaleCommand (Undo and Redo)", function( assert ) {
+QUnit.test( 'Test SetScaleCommand (Undo and Redo)', function ( assert ) {
 
 	// setup
 	var editor = new Editor();
@@ -18,7 +18,7 @@ QUnit.test( "Test SetScaleCommand (Undo and Redo)", function( assert ) {
 
 	];
 
-	scales.map( function( scale ) {
+	scales.map( function ( scale ) {
 
 		var newScale = new THREE.Vector3( scale.x, scale.y, scale.z );
 		var cmd = new SetScaleCommand( box, newScale );
@@ -27,21 +27,21 @@ QUnit.test( "Test SetScaleCommand (Undo and Redo)", function( assert ) {
 
 	} );
 
-	assert.ok( box.scale.x == scales[ scales.length - 1 ].x, "OK, setting X scale value was successful" );
-	assert.ok( box.scale.y == scales[ scales.length - 1 ].y, "OK, setting Y scale value was successful" );
-	assert.ok( box.scale.z == scales[ scales.length - 1 ].z, "OK, setting Z scale value was successful" );
+	assert.ok( box.scale.x == scales[ scales.length - 1 ].x, 'OK, setting X scale value was successful' );
+	assert.ok( box.scale.y == scales[ scales.length - 1 ].y, 'OK, setting Y scale value was successful' );
+	assert.ok( box.scale.z == scales[ scales.length - 1 ].z, 'OK, setting Z scale value was successful' );
 
 
 	editor.undo();
-	assert.ok( box.scale.x == scales[ scales.length - 2 ].x, "OK, X scale is correct after undo" );
-	assert.ok( box.scale.y == scales[ scales.length - 2 ].y, "OK, Y scale is correct after undo" );
-	assert.ok( box.scale.z == scales[ scales.length - 2 ].z, "OK, Z scale is correct after undo" );
+	assert.ok( box.scale.x == scales[ scales.length - 2 ].x, 'OK, X scale is correct after undo' );
+	assert.ok( box.scale.y == scales[ scales.length - 2 ].y, 'OK, Y scale is correct after undo' );
+	assert.ok( box.scale.z == scales[ scales.length - 2 ].z, 'OK, Z scale is correct after undo' );
 
 
 	editor.redo();
-	assert.ok( box.scale.x == scales[ scales.length - 1 ].x, "OK, X scale is correct after redo" );
-	assert.ok( box.scale.y == scales[ scales.length - 1 ].y, "OK, Y scale is correct after redo" );
-	assert.ok( box.scale.z == scales[ scales.length - 1 ].z, "OK, Z scale is correct after redo" );
+	assert.ok( box.scale.x == scales[ scales.length - 1 ].x, 'OK, X scale is correct after redo' );
+	assert.ok( box.scale.y == scales[ scales.length - 1 ].y, 'OK, Y scale is correct after redo' );
+	assert.ok( box.scale.z == scales[ scales.length - 1 ].z, 'OK, Z scale is correct after redo' );
 
 
 } );

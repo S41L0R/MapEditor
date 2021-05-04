@@ -1,7 +1,7 @@
 
-QUnit.module( "Serialization" );
+QUnit.module( 'Serialization' );
 
-QUnit.test( "Test Serialization", function( assert ) {
+QUnit.test( 'Test Serialization', function ( assert ) {
 
 	assert.timeout( 1000 );
 
@@ -15,7 +15,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 	} );
 
-	var green   = 12581843; // bffbd3
+	var green = 12581843; // bffbd3
 
 	var addObject = function () {
 
@@ -28,7 +28,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 		editor.execute( cmd );
 
-		return "addObject";
+		return 'addObject';
 
 	};
 
@@ -42,12 +42,12 @@ QUnit.test( "Test Serialization", function( assert ) {
 		var cmd = new AddObjectCommand( box );
 		editor.execute( cmd );
 
-		var cmd = new AddScriptCommand( box, { "name": "test", "source": "console.log(\"hello world\");" } );
+		var cmd = new AddScriptCommand( box, { 'name': 'test', 'source': 'console.log("hello world");' } );
 		cmd.updatable = false;
 
 		editor.execute( cmd );
 
-		return "addScript";
+		return 'addScript';
 
 	};
 
@@ -55,9 +55,9 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 		// create some objects
 		var anakinsName = 'Anakin Skywalker';
-		var lukesName   = 'Luke Skywalker';
+		var lukesName = 'Luke Skywalker';
 		var anakinSkywalker = aSphere( anakinsName );
-		var lukeSkywalker   = aBox( lukesName );
+		var lukeSkywalker = aBox( lukesName );
 
 		editor.execute( new AddObjectCommand( anakinSkywalker ) );
 		editor.execute( new AddObjectCommand( lukeSkywalker ) );
@@ -65,7 +65,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		// Tell Luke, Anakin is his father
 		editor.execute( new MoveObjectCommand( lukeSkywalker, anakinSkywalker ) );
 
-		return "moveObject";
+		return 'moveObject';
 
 	};
 
@@ -74,7 +74,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		var box = aBox( 'Box with no script' );
 		editor.execute( new AddObjectCommand( box ) );
 
-		var script = { "name": "test", "source": "console.log(\"hello world\");" } ;
+		var script = { 'name': 'test', 'source': 'console.log("hello world");' };
 		var cmd = new AddScriptCommand( box, script );
 		cmd.updatable = false;
 
@@ -83,20 +83,20 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd = new RemoveScriptCommand( box, script );
 		editor.execute( cmd );
 
-		return "removeScript";
+		return 'removeScript';
 
 	};
 
 	var setColor = function () {
 
-		var pointLight = aPointlight( "The light Light" );
+		var pointLight = aPointlight( 'The light Light' );
 
 		editor.execute( new AddObjectCommand( pointLight ) );
 		var cmd = new SetColorCommand( pointLight, 'color', green );
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setColor";
+		return 'setColor';
 
 	};
 
@@ -107,15 +107,15 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 		editor.execute( new AddObjectCommand( box ) );
 
-		var cmd = new SetGeometryCommand( box, getGeometry( "BoxGeometry", boxGeometry ) );
+		var cmd = new SetGeometryCommand( box, getGeometry( 'BoxGeometry', boxGeometry ) );
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setGeometry";
+		return 'setGeometry';
 
 	};
 
-	var setGeometryValue = function() {
+	var setGeometryValue = function () {
 
 		var box = aBox( 'Geometry Value Box' );
 		editor.execute( new AddObjectCommand( box ) );
@@ -124,7 +124,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setGeometryValue";
+		return 'setGeometryValue';
 
 	};
 
@@ -138,7 +138,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setMaterial";
+		return 'setMaterial';
 
 	};
 
@@ -151,7 +151,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setMaterialColor";
+		return 'setMaterialColor';
 
 	};
 
@@ -172,7 +172,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setMaterialMap";
+		return 'setMaterialMap';
 
 	};
 
@@ -185,7 +185,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setMaterialValue";
+		return 'setMaterialValue';
 
 	};
 
@@ -199,7 +199,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setPosition";
+		return 'setPosition';
 
 	};
 
@@ -211,9 +211,9 @@ QUnit.test( "Test Serialization", function( assert ) {
 		var newRotation = new THREE.Euler( 0.3, - 1.7, 2 );
 		var cmd = new SetRotationCommand( box, newRotation );
 		cmd.updatable = false;
-		editor.execute ( cmd );
+		editor.execute( cmd );
 
-		return "setRotation";
+		return 'setRotation';
 
 	};
 
@@ -227,7 +227,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setScale";
+		return 'setScale';
 
 	};
 
@@ -235,15 +235,15 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 		var box = aBox( 'Box with script' );
 		editor.execute( new AddObjectCommand( box ) );
-		var script = { name: "Alert", source: "alert( null );" };
+		var script = { name: 'Alert', source: 'alert( null );' };
 		editor.execute( new AddScriptCommand( box, script ) );
 
-		var newScript = { name: "Console", source: "console.log( null );" };
+		var newScript = { name: 'Console', source: 'console.log( null );' };
 		var cmd = new SetScriptValueCommand( box, script, 'source', newScript.source, 0 );
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setScriptValue";
+		return 'setScriptValue';
 
 	};
 
@@ -256,7 +256,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setUuid";
+		return 'setUuid';
 
 	};
 
@@ -269,7 +269,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 		cmd.updatable = false;
 		editor.execute( cmd );
 
-		return "setValue";
+		return 'setValue';
 
 	};
 
@@ -299,7 +299,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 		// Forward tests
 
-		for ( var i = 0; i < setups.length ; i ++ ) {
+		for ( var i = 0; i < setups.length; i ++ ) {
 
 			var name = setups[ i ]();
 
@@ -319,7 +319,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 			var history2 = JSON.stringify( editor.history.toJSON() );
 
-			assert.ok( history == history2, "OK, forward serializing was successful for " + name );
+			assert.ok( history == history2, 'OK, forward serializing was successful for ' + name );
 
 			editor.clear();
 
@@ -327,7 +327,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 		// Backward tests
 
-		for ( var i = 0; i < setups.length ; i ++ ) {
+		for ( var i = 0; i < setups.length; i ++ ) {
 
 			var name = setups[ i ]();
 
@@ -344,7 +344,7 @@ QUnit.test( "Test Serialization", function( assert ) {
 
 			var history2 = JSON.stringify( editor.history.toJSON() );
 
-			assert.ok( history == history2, "OK, backward serializing was successful for " + name );
+			assert.ok( history == history2, 'OK, backward serializing was successful for ' + name );
 
 			editor.clear();
 

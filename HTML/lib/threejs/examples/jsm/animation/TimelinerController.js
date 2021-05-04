@@ -3,7 +3,7 @@ import {
 	AnimationMixer,
 	AnimationUtils,
 	PropertyBinding
-} from "../../../build/three.module.js";
+} from '../../../build/three.module.js';
 /**
  * Controller class for the Timeliner GUI.
  *

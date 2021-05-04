@@ -1,10 +1,10 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('three-full/builds/Three.cjs.js')) :
-	typeof define === 'function' && define.amd ? define(['three-full/builds/Three.cjs.js'], factory) :
-	(global.THREECapsuleBufferGeometry = factory(global.THREE));
-}(this, (function (Three_cjs) { 'use strict';
+	typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory(require("three-full/builds/Three.cjs.js")) :
+		typeof define === "function" && define.amd ? define(["three-full/builds/Three.cjs.js"], factory) :
+			(global.THREECapsuleBufferGeometry = factory(global.THREE));
+}(this, (function (Three_cjs) { "use strict";
 
-	Three_cjs = Three_cjs && Three_cjs.hasOwnProperty('default') ? Three_cjs['default'] : Three_cjs;
+	Three_cjs = Three_cjs && Three_cjs.hasOwnProperty("default") ? Three_cjs["default"] : Three_cjs;
 
 	/**
 	 * @author maximequiblier
@@ -13,7 +13,7 @@
 
 		Three_cjs.BufferGeometry.call( this );
 
-		this.type = 'CapsuleBufferGeometry';
+		this.type = "CapsuleBufferGeometry";
 
 		this.parameters = {
 			radiusTop: radiusTop,
@@ -63,9 +63,9 @@
 		// build geometry
 
 		this.setIndex( indices );
-		this.addAttribute( 'position', vertices );
-		this.addAttribute( 'normal', normals );
-		this.addAttribute( 'uv', uvs );
+		this.addAttribute( "position", vertices );
+		this.addAttribute( "normal", normals );
+		this.addAttribute( "uv", uvs );
 
 		// helper functions
 

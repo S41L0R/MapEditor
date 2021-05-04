@@ -28,39 +28,39 @@ export default QUnit.module( 'Core', () => {
 		}
 
 		// INSTANCING
-		QUnit.todo( "Instancing", ( assert ) => {
+		QUnit.todo( 'Instancing', ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			assert.ok( false, 'everything\'s gonna be alright' );
 
 		} );
 
 		// PUBLIC STUFF
-		QUnit.todo( "start", ( assert ) => {
+		QUnit.todo( 'start', ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
-
-		} );
-
-		QUnit.todo( "stop", ( assert ) => {
-
-			assert.ok( false, "everything's gonna be alright" );
+			assert.ok( false, 'everything\'s gonna be alright' );
 
 		} );
 
-		QUnit.todo( "getElapsedTime", ( assert ) => {
+		QUnit.todo( 'stop', ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			assert.ok( false, 'everything\'s gonna be alright' );
 
 		} );
 
-		QUnit.todo( "getDelta", ( assert ) => {
+		QUnit.todo( 'getElapsedTime', ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			assert.ok( false, 'everything\'s gonna be alright' );
+
+		} );
+
+		QUnit.todo( 'getDelta', ( assert ) => {
+
+			assert.ok( false, 'everything\'s gonna be alright' );
 
 		} );
 
 		// OTHERS
-		QUnit.test( "clock with performance", ( assert ) => {
+		QUnit.test( 'clock with performance', ( assert ) => {
 
 			if ( typeof performance === 'undefined' ) {
 
@@ -76,15 +76,15 @@ export default QUnit.module( 'Core', () => {
 			clock.start();
 
 			self.performance.next( 123 );
-			assert.numEqual( clock.getElapsedTime(), 0.123, "okay" );
+			assert.numEqual( clock.getElapsedTime(), 0.123, 'okay' );
 
 			self.performance.next( 100 );
-			assert.numEqual( clock.getElapsedTime(), 0.223, "okay" );
+			assert.numEqual( clock.getElapsedTime(), 0.223, 'okay' );
 
 			clock.stop();
 
 			self.performance.next( 1000 );
-			assert.numEqual( clock.getElapsedTime(), 0.223, "don't update time if the clock was stopped" );
+			assert.numEqual( clock.getElapsedTime(), 0.223, 'don\'t update time if the clock was stopped' );
 
 		} );
 
