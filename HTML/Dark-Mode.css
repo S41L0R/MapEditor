@@ -51,7 +51,9 @@
 }
 
 
-
+.StaticOrDynamicPromptOption {
+  background: #008CBA;
+}
 
 
 #selectedActorsList {
