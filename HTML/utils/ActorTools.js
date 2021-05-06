@@ -1,4 +1,42 @@
+// DOCS
+// =============================================================================
+
+// removeActors
+// // Takes:
+// // // hashIDList, scenelike, maplike, transformControlLike
+// // Removes an actor from the scene and from a map file.
+// // Flags:
+// // // NeedsConvertToGlobal
+
+// removeDataActors
+// // Takes:
+// // // hashIDList, maplike
+// // Removes actors from a map file in bulk via hashIDList.
+// // Flags:
+// // // NeedsConvertToGlobal
+
+// removeDataActorByDummy
+// // Takes:
+// // // dummy
+// // Removes an actor from the global sectionData via a dummy.
+
+// removeObjectActorByDummy
+// // Takes:
+// // // dummy
+// // Removes an actor from the scene via a dummy.
+
+// updateDataActor
+// // Takes:
+// // // dummy
+// // Updates the actor in the map file via the object properties.
+
+
+
+// =============================================================================
+
 const SelectionTools = require("./SelectionTools.js")
+const SceneTools = require("./SceneTools.js")
+const ModelTools = require("./ModelTools.js")
 
 // Deletion Tools:
 // -----------------------------------------------------------------------------
@@ -8,6 +46,73 @@ const SelectionTools = require("./SelectionTools.js")
 const removeActors = async function(hashIDList, scenelike, maplike, transformControlLike) {
 	removeObjectActors(hashIDList, scenelike, transformControlLike)
 	removeDataActors(hashIDList, maplike)
+}
+
+
+
+
+
+// General manager for all dynamic actor creation (not including just generally adding actors to the scene during scene initialization.)
+const addDynamicActors = async function(unitConfigName, position, scenelike, maplike, intersectables) {
+
+	let actor = addDynamicDataActor(unitConfigName, position)
+	addObjectActor(actor, scenelike, intersectables)
+}
+
+// General manager for all static actor creation (not including just generally adding actors to the scene during scene initialization.)
+const addStaticActors = async function(unitConfigName, position, scenelike, maplike, intersectables) {
+
+	let actor = addStaticDataActor(unitConfigName, position)
+	addObjectActor(actor, scenelike, intersectables)
+}
+
+
+
+
+function addObjectActor(actor, scenelike, intersectables) {
+	let currentIndex = ModelTools.modelDict[unitConfigName].count + 1
+	ModelTools.modelDict[unitConfigName].count = ModelTools.modelDict[unitConfigName].count + 1
+
+	SceneTools.addActorToScene(actor, scenelike, intersectables, currentIndex)
+}
+
+
+
+
+
+function addDynamicDataActor(unitConfigName, position) {
+	// The first thing we've got to do is create the actual actor.
+	let actor = {}
+	actor.UnitConfigName.value = unitConfigName
+	actor.Translate[0].value = position.x
+	actor.Translate[1].value = position.y
+	actor.Translate[2].value = position.z
+	global.sectionData.Static.Objs.push(actor)
+	return actor
+}
+
+
+
+function addStaticDataActor(unitConfigName, position) {
+	// The first thing we've got to do is create the actual actor.
+	let actor = {}
+	actor.UnitConfigName.value = unitConfigName
+	actor.Translate[0].value = position.x
+	actor.Translate[1].value = position.y
+	actor.Translate[2].value = position.z
+	global.sectionData.Static.Objs.push(actor)
+	return actor
+}
+
+function addDynamicDataActor(unitConfigName) {
+	// The first thing we've got to do is create the actual actor.
+	let actor = {}
+	actor.UnitConfigName.value = unitConfigName
+	actor.Translate[0].value = position.x
+	actor.Translate[1].value = position.y
+	actor.Translate[2].value = position.z
+	global.sectionData.Dynamic.Objs.push(actor)
+
 }
 
 
@@ -26,28 +131,7 @@ const removeDataActors = async function(hashIDList, maplike) {
 	}
 }
 
-// Function used to remove objects from the scene or a scenelike dict via HashID.
-// Probably does not work with instancedMesh support
-const removeObjectActors = async function(hashIDList, scenelike, transformControlLike) {
-	let indexCounter = 0
-	for (const i of scenelike.children) {
-		console.warn(indexCounter)
-		if (hashIDList.includes(i.HashID)) {
-			if (transformControlLike.object == i && transformControlLike.enabled == true) {
-				transformControlLike.detach()
-			}
-			let meshArray = findMeshesFromObject(i)
-			for (const x of meshArray) {
-				x.geometry.dispose()
-				x.material.dispose()
-			}
-			scenelike.children.splice(indexCounter, 1)
 
-
-		}
-		indexCounter++
-	}
-}
 
 const removeDataActorByDummy = async function(dummy) {
 	removeDataActors([dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index]], global.sectionData)
@@ -80,16 +164,6 @@ const removeObjectActorByDummy = async function(dummy) {
 		swapInstancedMeshIndicesInInstanceMatrix(instancedMesh, index, lastIndex)
 	}
 
-	/*
-	findDummyFromInstancedMeshesAndIndex(dummy.userData.instancedMeshes, lastIndex).then((lastIndexDummy) => {
-		console.warn("HELLO")
-		console.error("HELLO")
-		console.log("HELLO")
-		console.error(lastIndexDummy)
-		swapInstancedMeshIndicesInReferences(dummy, lastIndexDummy)
-	})
-	*/
-
 	const lastIndexDummy = findDummyFromInstancedMeshesAndIndex(dummy.userData.instancedMeshes, lastIndex)
 	swapInstancedMeshIndicesInReferences(dummy, lastIndexDummy)
 
@@ -106,27 +180,9 @@ const removeObjectActorByDummy = async function(dummy) {
 
 
 function findDummyFromInstancedMeshesAndIndex(instancedMeshArray, index) {
-		console.warn(instancedMeshArray)
-		console.warn(index)
-		/*
-		for (const dummy of SelectionTools.objectDummys) {
-			if (dummy.userData.index === index) {
-				console.warn(dummy.userData.index)
-				console.warn(dummy.userData.instancedMeshes)
-				if (dummy.userData.instancedMeshes == instancedMeshArray) {
-					console.warn("Hi")
-					resolve(dummy)
-				}
-			}
-		}
-		*/
-		console.error(SelectionTools.objectDummys.length)
 		for (let dummy of SelectionTools.objectDummys) {
 			if (dummy.userData.instancedMeshes == instancedMeshArray) {
-				console.warn(instancedMeshArray)
-				console.warn(dummy.userData.instancedMeshes)
 				if (dummy.userData.index === index) {
-					console.warn("Hi")
 					return(dummy)
 				}
 			}
@@ -163,6 +219,7 @@ function swapInstancedMeshIndicesInInstanceMatrix(InstancedMesh, index1, index2)
 }
 
 
+// Updates the actor in the map file
 const updateDataActor = async function(dummy) {
 	let firstInstancedMesh = dummy.userData.instancedMeshes[0]
 	let instancedMeshIndex = dummy.userData.index
@@ -183,10 +240,7 @@ const updateDataActor = async function(dummy) {
 
 
 	if (rotationE.x !== 0 && rotationE.y !== 0 && rotationE.z !== 0) {
-		console.error("test")
-		console.error(rotationE)
 		if (rotationE.x !== 0 && rotationE.z !== 0) {
-			console.error("test2")
 			actor.Rotate = [
 				{
 					"type": 300,
@@ -203,7 +257,6 @@ const updateDataActor = async function(dummy) {
 			]
 		}
 		else {
-			console.error("test3")
 			actor.Rotate = {
 				"type": 300,
 				"value": rotateE.y
@@ -242,7 +295,34 @@ const updateDataActor = async function(dummy) {
 
 }
 
-// Does not work with InstancedMesh support:
+// Deprecated
+
+
+// Does not work well with instancedMesh support
+// -----------------------------------------------------------------------------
+
+// Function used to remove objects from the scene or a scenelike dict via HashID.
+const removeObjectActors = async function(hashIDList, scenelike, transformControlLike) {
+	let indexCounter = 0
+	for (const i of scenelike.children) {
+		if (hashIDList.includes(i.HashID)) {
+			if (transformControlLike.object == i && transformControlLike.enabled == true) {
+				transformControlLike.detach()
+			}
+			let meshArray = findMeshesFromObject(i)
+			for (const x of meshArray) {
+				x.geometry.dispose()
+				x.material.dispose()
+			}
+			scenelike.children.splice(indexCounter, 1)
+
+
+		}
+		indexCounter++
+	}
+}
+
+// Find meshes inside an object
 function findMeshesFromObject(object) {
 	let meshArray = []
 	for (const i of object.children) {
@@ -253,9 +333,11 @@ function findMeshesFromObject(object) {
 			meshArray.push(i)
 		}
 	}
-	console.warn(meshArray)
 	return(meshArray)
 }
+
+
+// -----------------------------------------------------------------------------
 
 module.exports = {
 	removeActors: removeActors,

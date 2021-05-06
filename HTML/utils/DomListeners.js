@@ -6,6 +6,8 @@ const initListeners = async function(document, editorControls, transformControl)
 	initCameraSpeedControls(document, editorControls)
 	initTransformModeButtons(document, transformControl)
 	initDeleteActorEvent(document)
+	initAddActorButton(document)
+	initAddActorOfTypeDialog(document)
 }
 
 async function initCameraSpeedControls(document, editorControls) {
@@ -37,7 +39,46 @@ async function initTransformModeButtons(document, transformControl) {
 	})
 }
 
+async function initAddActorButton(document) {
+	document.getElementById("addActorButton").addEventListener("click", () => {
+		let staticOrDynamicPrompt = document.getElementById("StaticOrDynamicPrompt")
 
+		staticOrDynamicPrompt.style.opacity = "100%"
+		staticOrDynamicPrompt.style["pointer-events"] = "auto"
+	})
+}
+
+
+async function initAddActorOfTypeDialog(document) {
+	let ignoreClick
+	let staticOrDynamicPrompt = document.getElementById("StaticOrDynamicPrompt")
+	let staticOrDynamicPrompt_Label = document.getElementById("StaticOrDynamicPrompt_Label")
+	let staticOrDynamicPrompt_OptionContainer = document.getElementById("StaticOrDynamicPrompt_OptionContainer")
+	let staticOrDynamicPrompt_Description = document.getElementById("StaticOrDynamicPrompt_Description")
+
+	document.addEventListener("mousedown", () => {
+
+		staticOrDynamicPrompt_Label.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+		staticOrDynamicPrompt_OptionContainer.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+		staticOrDynamicPrompt_Description.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+
+		if (ignoreClick === false) {
+			staticOrDynamicPrompt.style.opacity = "0%"
+			staticOrDynamicPrompt.style["pointer-events"] = "none"
+		}
+
+	})
+
+	document.addEventListener("mouseup", () => {
+		ignoreClick = false
+	})
+}
 
 async function initDeleteActorEvent(document) {
 	document.addEventListener("keydown", (e) => {
