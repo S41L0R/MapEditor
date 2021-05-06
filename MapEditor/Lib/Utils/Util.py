@@ -223,20 +223,29 @@ class compressByml:
     def __init__(self, mapDictIn):
         self.compressedData = self.compressAll(mapDictIn)
 
-    def compressAll(self, dictIn):
+    def compressAll(self, dictIn, compress=True):
         subList = []
         subDict = {}
         dictOut = {}
+        print(f'DictIn: {dictIn}\n')
         if isinstance(dictIn, dict):
             if 'type' in dictIn.keys() and 'value' in dictIn.keys():
+                print('type conversion')
                 return(self.convertDataType(dictIn))
             else:
                 for key in dictIn.keys():
-                    #print(f'dictType {key}')
-                    subDict = self.compressAll(dictIn.get(key))
-                    dictOut.update({key: subDict})
-                    #print(dictOut)
-                return((dictOut))
+                    if key == '!Parameters' or key == 'Translate':
+                        subDict = self.compressAll(dictIn.get(key), False)
+                        dictOut.update({key: subDict})
+                        print(f'DictOut: {dictOut}\n')
+                    else:
+                        subDict = self.compressAll(dictIn.get(key))
+                        dictOut.update({key: subDict})
+                        print(f'DictOut: {dictOut}\n')
+                if compress == False:
+                    return(dictOut)
+                else:
+                    return(oead.byml.Hash(dictOut))
 
         elif isinstance(dictIn, list):
             for item in dictIn:
@@ -244,12 +253,12 @@ class compressByml:
                 newItem = self.compressAll(item)
                 subList.append(newItem)
                 #print(f'subList {subList}')
-            try:
-                return(oead.byml.Hash(subList))
-            except:
+            if compress == False:
                 return(subList)
-
+            else:
+                return(oead.byml.Array(subList))
         else:
+            print('Was not a list or dict', dictIn)
             return(dictIn)
 
     def convertDataType(self, dataIn: dict):
@@ -258,6 +267,7 @@ class compressByml:
         mainType = int(str(dataType)[0])
         subType = int(str(dataType)[-1])
         if mainType == 1:
+            dataVal = int(dataVal)
             if subType == 0:
                 # Handle U8
                 valOut = oead.U8(dataVal)
@@ -269,12 +279,13 @@ class compressByml:
                 valOut = oead.U32(dataVal)
             elif subType == 3:
                 # Handle U64
-                valOut = oead.S64(dataVal)
+                valOut = oead.U64(dataVal)
             else:
                 # Raise error about invalid subType
                 print('Error')
                 return
         elif mainType == 2:
+            dataVal = int(dataVal)
             if subType == 0:
                 # Handle S8
                 valOut = oead.S8(dataVal)
@@ -292,6 +303,7 @@ class compressByml:
                 print('Error')
                 return
         elif mainType == 3:
+            dataVal = float(dataVal)
             if subType == 0:
                 # Handle F32
                 valOut = oead.F32(dataVal)
@@ -301,12 +313,14 @@ class compressByml:
             else:
                 print('Error')
         elif mainType == 4:
+            dataVal = str(dataVal)
             if subType == 0:
                 # Handle Strings
                 valOut = str(dataVal)
             else:
                 print('Error')
         elif mainType == 5:
+            dataVal = bool(dataVal)
             if subType == 0:
                 # Handle Bools
                 valOut = bool(dataVal)
@@ -321,6 +335,7 @@ class compressByml:
         else:
             # Throw Error about unassociated data-type or invalid arg
             print('Error...')
+        return(dataVal)
         return(dataVal)
 
 def findUniqueActors(mapDataIn, listIn=list([])):
