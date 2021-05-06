@@ -20,43 +20,16 @@ validMapFileExts = ['smubin', 'mubin']
 
 # Opens and reads a map file; returns a dict containing the map file data.
 def writeMapFile(jsonData):
-
-    def formatMapFileData(mapData: dict):
-        formattedData = {}
-        if 'Objs' in mapData.keys():
-            objList = []
-            for entry in mapData['Objs']:
-                objList.append((entry))
-            formattedData.update({'Objs': objList})
-        else:
-            pass
-
-        if 'Rails' in mapData.keys():
-            railList = []
-            for rail in mapData['Rails']:
-                print(rail)
-                railList.append(oead.byml.Hash(rail))
-            formattedData.update({'Rails': railList})
-        else:
-            pass
-
-        print(type(formattedData))
-        return(formattedData)
-
-
-    #sectionName = jsonData.get('Section')
-    sectionName = 'J-8'
+    sectionName = jsonData.get('Section')
     staticMapData = util.compressByml(dict(jsonData.get('Static'))).compressedData
     dynamicMapData = util.compressByml(dict(jsonData.get('Dynamic'))).compressedData
-    formattedStaticData = formatMapFileData(staticMapData)
-    bigEndian = bool(findBigEndian())
+    print(staticMapData)
+    x = list(staticMapData)
+    print(x)
+    bigEndian = findBigEndian()
     filePath = util.findMKDir(f'{saveDir}/{sectionName}')
-    #print(staticMapData)
-    #print(type(staticMapData))
     with open(pathlib.Path(f'{filePath}/{sectionName}_Static.smubin'), 'wb') as writeStatic:
-        writeStatic.write(oead.yaz0.compress(oead.byml.to_binary(formattedStaticData, big_endian=bigEndian)))
-        print('saved Static')
+        writeStatic.write(oead.yaz0.compress(oead.byml.to_binary(staticMapData, big_endian=bool(bigEndian))))
     with open(pathlib.Path(f'{filePath}/{sectionName}_Dynamic.smubin'), 'wb') as writeDynamic:
-        writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(oead.byml.from_text(str(dynamicMapData)), big_endian=bigEndian)))
-        print('saved Dynamic')
-    #return
+        writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(dynamicMapData, big_endian=bool(bigEndian))))
+    return
