@@ -6,13 +6,6 @@
   background-color: #2b2b31;
 }
 
-#darkModeToggle {
-  background-color: #9147ff;
-  color: white;
-}
-#darkModeToggle:hover {
-  background-color: #6a34bd;
-}
 
 
 .cardButton {
@@ -31,7 +24,7 @@
 
 
 #cameraSlider {
-  background: #9147ff;
+  background: #7289da;
 }
 #cameraSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -39,15 +32,15 @@
   background: #FFFFFF;
 }
 #cameraSlider:hover {
-  background: #9e5ffc;
+  background: #3c4873;
 }
 .button {
-  background-color: #008CBA;
+  background-color: #7289da;
   color: white;
 }
 
 .button:hover {
-  background-color: #002836;
+  background-color: #3c4873;
 }
 
 

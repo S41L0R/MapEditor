@@ -272,14 +272,15 @@ async function loadDarkMode() {
 DomListners.initListeners(document, editorControls, transformControl)
 
 ipc.on("loadSection", async (event, sectionName) => {
-	await loadDarkMode()
-	await loadSection(sectionName)
+	loadDarkMode()
+	loadSection(sectionName)
 });
 
 var perfEntries = performance.getEntriesByType('navigation')
 
 if (perfEntries[0].type == 'reload') {
 	console.log('Page Reloaded')
-	await loadSection()
+	loadDarkMode()
+	loadSection()
 }
 else {}
