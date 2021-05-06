@@ -326,6 +326,7 @@ def showActorInfo():
 def getDarkMode():
     settings = LoadSettings.LoadSettings()
     darkMode = settings.get('DarkMode')
+    print("!startData"+str(json.dumps(darkMode))+"!endData")
     return(darkMode)
 
 # Sets darkMode to enabled or disabled depending on whether or not the user has it enabled

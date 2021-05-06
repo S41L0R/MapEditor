@@ -213,23 +213,13 @@ const styleSheet = document.getElementById("styleSheet")
 
 darkModeToggle.addEventListener("click", function () {
 	if (styleSheet.getAttribute("href") == "HTML/Light-Mode.css") {
-<<<<<<< HEAD
-		styleSheet.href = "HTML/Dark-Mode.css";
-		scene.background = customDarkSkyColor;
-		PythonTools.loadPython("setDarkMode", "dark");
-	} else {
-		styleSheet.href = "HTML/Light-Mode.css";
-		scene.background = customSkyColor;
-		PythonTools.loadPython("setDarkMode", "light");
-=======
 		styleSheet.href = "HTML/Dark-Mode.css"
 		scene.background = customDarkSkyColor
-		PythonTools.loadPython(function (s) { console.log(s) }, "setDarkMode", "dark")
+		PythonTools.loadPython("setDarkMode", "dark")
 	} else {
 		styleSheet.href = "HTML/Light-Mode.css"
 		scene.background = customSkyColor
-		PythonTools.loadPython(function (s) { console.log(s) }, "setDarkMode", "light")
->>>>>>> 6aafeb01910299bd4465ca524ff21759f2436b65
+		PythonTools.loadPython("setDarkMode", "light")
 	}
 })
 // -----------------------------------------------------------------------------
@@ -267,7 +257,7 @@ async function loadSection(sectionName) {
 
 async function loadDarkMode() {
 	// Sets dark mode/light mode based on settings
-	let darkMode = await PythonTools.loadPython('getDarkMode')
+	let darkMode = await PythonTools.loadPython('getDarkMode', null)
 	console.error(darkMode)
 	if (darkMode == true){
 		styleSheet.href = "HTML/Dark-Mode.css";
@@ -282,14 +272,15 @@ async function loadDarkMode() {
 DomListners.initListeners(document, editorControls, transformControl)
 
 ipc.on("loadSection", async (event, sectionName) => {
-	await loadDarkMode()
-	await loadSection(sectionName)
+	loadDarkMode()
+	loadSection(sectionName)
 });
 
 var perfEntries = performance.getEntriesByType('navigation')
 
 if (perfEntries[0].type == 'reload') {
 	console.log('Page Reloaded')
-	await loadSection()
+	loadDarkMode()
+	loadSection()
 }
 else {}

@@ -129,9 +129,7 @@ const addActorToScene = async function(actor, scenelike, intersectables) {
 }
 */
 
-const reloadActor = async function(actor, scenelike, intersectables) {
 
-}
 
 const addActorToScene = async function(actor, scenelike, intersectables, currentIndex) {
 	if (ModelTools.modelDict[actor.UnitConfigName.value] !== undefined) {
@@ -256,9 +254,6 @@ const addActorToScene = async function(actor, scenelike, intersectables, current
 	}
 }
 
-const removeActorFromScene = async function (actor, scenelike, intersectables) {
-  
-}
 
 
 const addInstancedMeshes = async function (scenelike) {
