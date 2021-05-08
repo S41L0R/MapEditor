@@ -35,7 +35,6 @@
 // =============================================================================
 
 const SelectionTools = require("./SelectionTools.js")
-const SceneTools = require("./SceneTools.js")
 const ModelTools = require("./ModelTools.js")
 
 // Deletion Tools:
@@ -53,27 +52,198 @@ const removeActors = async function(hashIDList, scenelike, maplike, transformCon
 
 
 // General manager for all dynamic actor creation (not including just generally adding actors to the scene during scene initialization.)
-const addDynamicActors = async function(unitConfigName, position, scenelike, maplike, intersectables) {
+const addDynamicActor = async function(unitConfigName, position, scenelike, maplike, intersectables) {
 
 	let actor = addDynamicDataActor(unitConfigName, position)
-	addObjectActor(actor, scenelike, intersectables)
+	addObjectActor(actor, scenelike, intersectables, unitConfigName)
 }
 
 // General manager for all static actor creation (not including just generally adding actors to the scene during scene initialization.)
-const addStaticActors = async function(unitConfigName, position, scenelike, maplike, intersectables) {
+const addStaticActor = async function(unitConfigName, position, scenelike, maplike, intersectables) {
 
 	let actor = addStaticDataActor(unitConfigName, position)
-	addObjectActor(actor, scenelike, intersectables)
+	addObjectActor(actor, scenelike, intersectables, unitConfigName)
 }
 
 
 
-
-function addObjectActor(actor, scenelike, intersectables) {
-	let currentIndex = ModelTools.modelDict[unitConfigName].count + 1
-	ModelTools.modelDict[unitConfigName].count = ModelTools.modelDict[unitConfigName].count + 1
+/*
+function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
+	let currentIndex
+	if (ModelTools.modelDict[unitConfigName] !== undefined) {
+		currentIndex = ModelTools.modelDict[unitConfigName].count + 1
+		ModelTools.modelDict[unitConfigName].count = ModelTools.modelDict[unitConfigName].count + 1
+	}
+	else {
+		currentIndex = ModelTools.basicMeshDict["basicCube"].count + 1
+		ModelTools.basicMeshDict["basicCube"].count = ModelTools.basicMeshDict["basicCube"].count + 1
+	}
 
 	SceneTools.addActorToScene(actor, scenelike, intersectables, currentIndex)
+}
+*/
+
+
+const setupObjectActor = async function(actor) {
+	switch (ModelTools.modelDict[actor.UnitConfigName.value]) {
+		case undefined:
+			switch (actor.UnitConfigName.value) {
+				case "Area":
+					switch (actor["!Parameters"].Shape.value) {
+						case "Sphere":
+							setupBasicMeshActor(actor, "areaSphere").then((actorModelData) => {
+								return(actorModelData)
+							})
+						case "Capsule":
+						setupBasicMeshActor(actor, "areaCapsule").then((actorModelData) => {
+							return(actorModelData)
+						})
+						// Still need to add capsule support back
+						default:
+							setupBasicMeshActor(actor, "areaBox").then((actorModelData) => {
+								return(actorModelData)
+							})
+					}
+					break
+				case "LinkTagAnd":
+					// Do something
+					break
+				case "LinkTagOr":
+					// Do something
+					break
+				case "LinkTagNAnd":
+					// Do something
+					break
+				case "LinkTagNOr":
+					// Do something
+					break
+				case "LinkTagXOr":
+					// Do something
+					break
+				case "LinkTagCount":
+					// Do something
+					break
+				case "LinkTagPulse":
+					// Do something
+					break
+				case "LinkTagNone":
+					// Do something
+					break
+				default:
+					// Just give it a basic cube model.
+					setupBasicMeshActor(actor, "basicCube").then((actorModelData) => {
+						return(actorModelData)
+					})
+			}
+			break
+		default:
+			setupModelDictActor(actor).then((actorModelData) => {
+				return(actorModelData)
+			})
+	}
+}
+
+async function setupBasicMeshActor(actor, basicMeshKey) {
+	// First up, we need to check on whether there are already too many instanced
+	// mesh indices.
+	if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey].instanceMatrix.count) {
+		// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+	}
+	else {
+		// Okay, we're good.
+		console.warn(ModelTools.basicMeshDict[basicMeshKey])
+		let actorModel = ModelTools.basicMeshDict[basicMeshKey]
+		let index = actorModel.count
+		actorModel.count = actorModel.count + 1
+		createActorMatrix(actor).then((actorMatrix) => {
+			actorModel.setMatrixAt(index, actorMatrix)
+			actorModel.instanceMatrix.needsUpdate = true
+			SelectionTools.createObjectDummy([actorModel], index, global.THREE, global.scene)
+
+			actorModel.userData.actorList[index] = actor
+		})
+	}
+	return([[actorModel], index])
+}
+
+
+async function setupModelDictActor(actor) {
+	createActorMatrix(actor).then((actorMatrix) => {
+		// Get the actor name and store it as the key we'll be using to access the model:
+		let modelDictKey = actor.UnitConfigName.value
+		// Eh.. all instancedMeshes of the same type should have the same index.. I think?
+		let index = ModelTools.modelDict[modelDictKey][0].count
+
+		for (const actorModel of ModelTools.modelDict[modelDictKey]) {
+			// First up, we need to check on whether there are already too many instanced
+			// mesh indices.
+			if (actorModel.count === actorModel.instanceMatrix.count) {
+				// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+
+				// Right now we'll just return
+				return
+			}
+			else {
+				// Okay, we're good.
+				actorModel.count = actorModel.count + 1
+
+				actorModel.setMatrixAt(index, actorMatrix)
+				actorModel.instanceMatrix.needsUpdate = true
+
+				actorModel.userData.actorList[index] = actor
+
+			}
+		}
+		SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
+		return([ModelTools.modelDict[modelDictKey], index])
+	})
+}
+
+
+async function createActorMatrix(actor) {
+	// Set actorModel transform:
+	let actorMatrix = new global.THREE.Matrix4()
+
+	let position = new global.THREE.Vector3(0, 0, 0)
+	let rotation = new global.THREE.Quaternion(0, 0, 0, 0)
+	let scale = new global.THREE.Vector3(1, 1, 1)
+
+	position.set(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value)
+
+	// Try to apply rotation from global.THREE-dimensional param, if only one dimension exists apply that instead.
+	try {
+		rotation.setFromEuler(new global.THREE.Euler(actor.Rotate[0].value, actor.Rotate[1].value, actor.Rotate[2].value, "ZYX"))
+	}
+	catch {
+
+		// Just in case it's 1D rotation
+		try {
+			rotation.setFromEuler(new global.THREE.Euler(0, actor.Rotate.value, 0, "ZYX"))
+		}
+
+		// In case there is no rotation.
+		catch {
+			rotation.setFromEuler(new THREE.Euler(0, 0, 0, "ZYX"))
+		}
+	}
+
+	// Try to apply scale, if it doesn't exist add some.
+	try {
+		scale.set(actor.Scale[0].value, actor.Scale[1].value, actor.Scale[2].value)
+	}
+	catch {
+		// This could also mean that there's only 1 scale value, try that first.
+		try {
+			scale.set(actor.Scale.value, actor.Scale.value, actor.Scale.value)
+		}
+		catch {
+			scale.set(1, 1, 1)
+		}
+	}
+	actorMatrix.compose(position, rotation, scale)
+	//actorMatrix.compose(new global.THREE.Vector3(0, 0, 0), new global.THREE.Quaternion(0, 0, 0, 0).setFromEuler(new global.THREE.Euler(0, 0, 0, "ZYX")), new global.THREE.Vector3(1, 1, 1))
+
+	return(actorMatrix)
 }
 
 
@@ -95,7 +265,10 @@ function addDynamicDataActor(unitConfigName, position) {
 
 function addStaticDataActor(unitConfigName, position) {
 	// The first thing we've got to do is create the actual actor.
-	let actor = {}
+	let actor = {
+		"UnitConfigName": {},
+		"Translate": [{},{},{}]
+	}
 	actor.UnitConfigName.value = unitConfigName
 	actor.Translate[0].value = position.x
 	actor.Translate[1].value = position.y
@@ -345,5 +518,8 @@ module.exports = {
 	removeObjectActors: removeObjectActors,
 	updateDataActor: updateDataActor,
 	removeObjectActorByDummy: removeObjectActorByDummy,
-	removeDataActorByDummy: removeDataActorByDummy
+	removeDataActorByDummy: removeDataActorByDummy,
+	addDynamicActor: addDynamicActor,
+	addStaticActor: addStaticActor,
+	setupObjectActor: setupObjectActor
 }
