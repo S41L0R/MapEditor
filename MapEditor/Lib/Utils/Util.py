@@ -227,25 +227,25 @@ class compressByml:
         subList = []
         subDict = {}
         dictOut = {}
-        print(f'DictIn: {dictIn}\n')
+        #print(f'DictIn: {dictIn}\n')
         if isinstance(dictIn, dict):
             if 'type' in dictIn.keys() and 'value' in dictIn.keys():
-                print('type conversion')
+                #print('type conversion')
                 return(self.convertDataType(dictIn))
             else:
                 for key in dictIn.keys():
                     if key == '!Parameters' or key == 'Translate':
                         subDict = self.compressAll(dictIn.get(key), False)
                         dictOut.update({key: subDict})
-                        print(f'DictOut: {dictOut}\n')
+                        #print(f'DictOut: {dictOut}\n')
                     else:
                         subDict = self.compressAll(dictIn.get(key))
                         dictOut.update({key: subDict})
-                        print(f'DictOut: {dictOut}\n')
+                        #print(f'DictOut: {dictOut}\n')
                 if compress == False:
-                    return(dictOut)
+                    return(dict(dictOut))
                 else:
-                    return(oead.byml.Hash(dictOut))
+                    return(oead.byml.Hash(dict(dictOut)))
 
         elif isinstance(dictIn, list):
             for item in dictIn:
@@ -254,9 +254,9 @@ class compressByml:
                 subList.append(newItem)
                 #print(f'subList {subList}')
             if compress == False:
-                return(subList)
+                return(list(subList))
             else:
-                return(oead.byml.Array(subList))
+                return(oead.byml.Array(list(subList)))
         else:
             print('Was not a list or dict', dictIn)
             return(dictIn)
@@ -266,6 +266,7 @@ class compressByml:
         dataVal = dataIn['value']
         mainType = int(str(dataType)[0])
         subType = int(str(dataType)[-1])
+
         if mainType == 1:
             dataVal = int(dataVal)
             if subType == 0:
@@ -332,11 +333,7 @@ class compressByml:
                 valOut = dataVal
             else:
                 print('Error')
-        else:
-            # Throw Error about unassociated data-type or invalid arg
-            print('Error...')
-        return(dataVal)
-        return(dataVal)
+        return(valOut)
 
 def findUniqueActors(mapDataIn, listIn=list([])):
     for actor in mapDataIn.get('Objs'):
