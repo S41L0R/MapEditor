@@ -1,6 +1,7 @@
 const SelectionTools = require("./SelectionTools.js")
 const ActorTools = require("./ActorTools.js")
 const DataEditorTools = require("./DataEditorTools.js")
+const RayCastTools = require("./RayCastTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -77,6 +78,18 @@ async function initAddActorOfTypeDialog(document) {
 
 	document.addEventListener("mouseup", () => {
 		ignoreClick = false
+	})
+
+
+
+
+
+
+	let staticButton = document.getElementById("StaticOrDynamicPrompt_StaticButton")
+	let dynamicButton = document.getElementById("StaticOrDynamicPrompt_DynamicButton")
+
+	staticButton.addEventListener("click", () => {
+		ActorTools.addStaticActor("Area", new global.THREE.Vector3(0,0,0), global.scene, global.sectionData, RayCastTools.intersectables)
 	})
 }
 

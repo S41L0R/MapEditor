@@ -20,6 +20,8 @@ let basicMeshDict = {}
 // Imported stuff
 // -----------------------------------------------------------------------------
 const basicCubeTexturePath = "./Assets/Textures/CubeTexture.png"
+const areaTexturePath_Box = "./Assets/Textures/AreaTexture - Box.png"
+const areaTexturePath_Sphere = "./Assets/Textures/AreaTexture - Sphere.png"
 
 // -----------------------------------------------------------------------------
 
@@ -100,7 +102,6 @@ const getBoneNormalTransform = (function () {
 const loadModels = async function(sectionData, BufferGeometryUtils, colladaLoader, sectionName, THREE) {
 	// We get all of the model paths, with the actor name as the key and the path as the value.
 	return PythonTools.loadPython("newGetActorModelPaths", sectionName).then(async (modelPathList) => {
-		console.warn(modelPathList)
 		let promises = []
 
 		for (const [name, path] of Object.entries(modelPathList)) {
@@ -118,6 +119,9 @@ const loadModels = async function(sectionData, BufferGeometryUtils, colladaLoade
 			promises.push(loadModelByActorName(name, BufferGeometryUtils, colladaLoader, sectionName, path, modelNum))
 		}
 		promises.push(setupCubeMesh(THREE))
+		promises.push(setupBoxAreaMesh(THREE))
+		promises.push(setupSphereAreaMesh(THREE))
+		promises.push(setupCapsuleAreaMesh(THREE))
 
 		await Promise.all(promises)
 
@@ -146,14 +150,97 @@ const setupCubeMesh = async function (THREE) {
 		basicMeshDict["basicCube"] = basicCubeMesh
 
 
+		// Set the count to 0 for logic later:
+		basicCubeMesh.count = 0
+
+
+		resolve()
+	})
+}
+
+const setupBoxAreaMesh = async function (THREE) {
+	return new Promise((resolve) => {
+		const cubeGeometry = new THREE.BoxBufferGeometry()
+		const cubeTexLoader = new THREE.TextureLoader()
+		const texture = cubeTexLoader.load(areaTexturePath_Box)
+		const material = new THREE.MeshStandardMaterial({
+			emissiveMap: texture,
+			map: texture,
+			emissive: new THREE.Color("#FFFFFF"),
+			transparent: true,
+			alphaTest: 0.35,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		})
+		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
+		boxAreaMesh.userData.actorList = []
+		basicMeshDict["areaBox"] = boxAreaMesh
+
+
+		// Set the count to 0 for logic later:
+		boxAreaMesh.count = 0
+
+
+		resolve()
+	})
+}
+
+const setupSphereAreaMesh = async function (THREE) {
+	return new Promise((resolve) => {
+		const sphereGeometry = new THREE.SphereBufferGeometry()
+		const cubeTexLoader = new THREE.TextureLoader()
+		const texture = cubeTexLoader.load(areaTexturePath_Sphere)
+		const material = new THREE.MeshStandardMaterial({
+			emissiveMap: texture,
+			map: texture,
+			emissive: new THREE.Color("#FFFFFF"),
+			transparent: true,
+			alphaTest: 0.35,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		})
+		sphereAreaMesh = new THREE.InstancedMesh(sphereGeometry, material, 9999)
+		sphereAreaMesh.userData.actorList = []
+		basicMeshDict["areaSphere"] = sphereAreaMesh
+
+
+		// Set the count to 0 for logic later:
+		sphereAreaMesh.count = 0
+
+
+		resolve()
+	})
+}
+
+
+const setupCapsuleAreaMesh = async function (THREE) {
+	return new Promise((resolve) => {
+		const capsuleGeometry = new THREE.CapsuleBufferGeometry()
+		const cubeTexLoader = new THREE.TextureLoader()
+		const texture = cubeTexLoader.load(areaTexturePath_Sphere)
+		const material = new THREE.MeshStandardMaterial({
+			emissiveMap: texture,
+			map: texture,
+			emissive: new THREE.Color("#FFFFFF"),
+			transparent: true,
+			alphaTest: 0.35,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		})
+		capsuleAreaMesh = new THREE.InstancedMesh(capsuleGeometry, material, 9999)
+		capsuleAreaMesh.userData.actorList = []
+		basicMeshDict["areaCapsule"] = capsuleAreaMesh
+
+
+		// Set the count to 0 for logic later:
+		capsuleAreaMesh.count = 0
+
+
 		resolve()
 	})
 }
 
 const loadModelByActorName = async function (actorName, BufferGeometryUtils, colladaLoader, sectionName, modelPath, modelNum) {
-
-	// NOT ACCESSABLE HERE
-
 
 	return new Promise((resolve) => {
 
@@ -196,6 +283,10 @@ const colladaOnLoad = function (collada, actorName, resolve, BufferGeometryUtils
 
 			let colladaInstancedMesh = new THREE.InstancedMesh(colladaGeometry, colladaMaterial, modelNum)
 			colladaInstancedMesh.userData.actorList = []
+
+			// Set the count to 0 for logic later:
+			colladaInstancedMesh.count = 0
+
 			colladaMeshArray.push(colladaInstancedMesh)
 		}
 	})
