@@ -55,6 +55,7 @@ renderer.toneMappingExposure = 2.3
 document.body.appendChild(renderer.domElement)
 
 const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000)
+global.camera = camera
 
 const scene = new THREE.Scene()
 global.scene = scene
