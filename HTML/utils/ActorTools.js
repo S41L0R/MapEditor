@@ -37,6 +37,10 @@
 const SelectionTools = require("./SelectionTools.js")
 const ModelTools = require("./ModelTools.js")
 
+
+
+let nextHashID
+
 // Deletion Tools:
 // -----------------------------------------------------------------------------
 
@@ -55,14 +59,14 @@ const removeActors = async function(hashIDList, scenelike, maplike, transformCon
 const addDynamicActor = async function(unitConfigName, position, scenelike, maplike, intersectables) {
 
 	let actor = addDynamicDataActor(unitConfigName, position)
-	addObjectActor(actor, scenelike, intersectables, unitConfigName)
+	setupObjectActor(actor)
 }
 
 // General manager for all static actor creation (not including just generally adding actors to the scene during scene initialization.)
 const addStaticActor = async function(unitConfigName, position, scenelike, maplike, intersectables) {
 
 	let actor = addStaticDataActor(unitConfigName, position)
-	addObjectActor(actor, scenelike, intersectables, unitConfigName)
+	setupObjectActor(actor)
 }
 
 
@@ -89,20 +93,33 @@ const setupObjectActor = async function(actor) {
 		case undefined:
 			switch (actor.UnitConfigName.value) {
 				case "Area":
-					switch (actor["!Parameters"].Shape.value) {
-						case "Sphere":
-							setupBasicMeshActor(actor, "areaSphere").then((actorModelData) => {
-								return(actorModelData)
-							})
-						case "Capsule":
-						setupBasicMeshActor(actor, "areaCapsule").then((actorModelData) => {
-							return(actorModelData)
-						})
-						// Still need to add capsule support back
-						default:
+					if ("!Parameters" in actor) {
+						if ("Shape" in actor["!Parameters"]) {
+							switch (actor["!Parameters"].Shape.value) {
+								case "Sphere":
+									setupBasicMeshActor(actor, "areaSphere").then((actorModelData) => {
+										return(actorModelData)
+									})
+								case "Capsule":
+									setupBasicMeshActor(actor, "areaCapsule").then((actorModelData) => {
+										return(actorModelData)
+									})
+								default:
+									setupBasicMeshActor(actor, "areaBox").then((actorModelData) => {
+										return(actorModelData)
+									})
+							}
+						}
+						else {
 							setupBasicMeshActor(actor, "areaBox").then((actorModelData) => {
 								return(actorModelData)
 							})
+						}
+					}
+					else {
+						setupBasicMeshActor(actor, "areaBox").then((actorModelData) => {
+							return(actorModelData)
+						})
 					}
 					break
 				case "LinkTagAnd":
@@ -252,12 +269,22 @@ async function createActorMatrix(actor) {
 
 function addDynamicDataActor(unitConfigName, position) {
 	// The first thing we've got to do is create the actual actor.
-	let actor = {}
+	let actor = {
+		"UnitConfigName": {},
+		"Translate": [{},{},{}],
+		"HashId": {}
+	}
 	actor.UnitConfigName.value = unitConfigName
+	actor.UnitConfigName.type = 400
 	actor.Translate[0].value = position.x
+	actor.Translate[0].type = 300
 	actor.Translate[1].value = position.y
+	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
-	global.sectionData.Static.Objs.push(actor)
+	actor.Translate[2].type = 300
+	actor.HashId.value = generateHashID()
+	actor.HashId.type = 102
+	global.sectionData.Dynamic.Objs.push(actor)
 	return actor
 }
 
@@ -267,25 +294,43 @@ function addStaticDataActor(unitConfigName, position) {
 	// The first thing we've got to do is create the actual actor.
 	let actor = {
 		"UnitConfigName": {},
-		"Translate": [{},{},{}]
+		"Translate": [{},{},{}],
+		"HashId": {}
 	}
 	actor.UnitConfigName.value = unitConfigName
+	actor.UnitConfigName.type = 400
 	actor.Translate[0].value = position.x
+	actor.Translate[0].type = 300
 	actor.Translate[1].value = position.y
+	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
+	actor.Translate[2].type = 300
+	actor.HashId.value = generateHashID()
+	actor.HashId.type = 102
 	global.sectionData.Static.Objs.push(actor)
 	return actor
 }
 
-function addDynamicDataActor(unitConfigName) {
-	// The first thing we've got to do is create the actual actor.
-	let actor = {}
-	actor.UnitConfigName.value = unitConfigName
-	actor.Translate[0].value = position.x
-	actor.Translate[1].value = position.y
-	actor.Translate[2].value = position.z
-	global.sectionData.Dynamic.Objs.push(actor)
 
+function generateHashID() {
+	// If we don't already have the next HashID, we generate it.
+	if (nextHashID === undefined) {
+		let currentNextHashID = 0
+		for (actor of global.sectionData.Static.Objs) {
+			if (actor.HashId.value > currentNextHashID) {
+				currentNextHashID = actor.HashId.value + 1
+			}
+		}
+		for (actor of global.sectionData.Dynamic.Objs) {
+			if (actor.HashId.value > currentNextHashID) {
+				currentNextHashID = actor.HashId.value + 1
+			}
+		}
+		nextHashID = currentNextHashID
+	}
+	let thisHashID = nextHashID
+	nextHashID = nextHashID + 1
+	return(thisHashID)
 }
 
 
@@ -521,5 +566,6 @@ module.exports = {
 	removeDataActorByDummy: removeDataActorByDummy,
 	addDynamicActor: addDynamicActor,
 	addStaticActor: addStaticActor,
-	setupObjectActor: setupObjectActor
+	setupObjectActor: setupObjectActor,
+	nextHashID: nextHashID
 }

@@ -89,7 +89,11 @@ async function initAddActorOfTypeDialog(document) {
 	let dynamicButton = document.getElementById("StaticOrDynamicPrompt_DynamicButton")
 
 	staticButton.addEventListener("click", () => {
-		ActorTools.addStaticActor("Area", new global.THREE.Vector3(0,0,0), global.scene, global.sectionData, RayCastTools.intersectables)
+		ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+	})
+
+	dynamicButton.addEventListener("click", () => {
+		ActorTools.addDynamicActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
 	})
 }
 
