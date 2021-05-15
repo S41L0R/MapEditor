@@ -18,14 +18,78 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 	const dummyObject = new THREE.Group()
 	dummyObject.userData.instancedMeshes = instancedMeshes
 	dummyObject.userData.index = index
+	console.error(instancedMeshes[0].instanceMatrix)
+	console.error(index)
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrix)
+	instancedMeshes[0].getMatrixAt(index, dummyObject.matrixWorld)
+
+	/*
+	for (let i = 0; i <= 16; i++) {
+		console.error(instancedMeshes[0].instanceMatrix.array)
+		let num = instancedMeshes[0].instanceMatrix.array[index + i]
+		dummyObject.matrix.elements[i] = num
+	}
+	*/
+	console.error(instancedMeshes[0].instanceMatrix)
+	console.error(dummyObject.matrix)
 	dummyObject.matrixAutoUpdate = false
+	console.error(dummyObject.matrix)
 	objectDummys.push(dummyObject)
+	console.error(dummyObject.matrix)
 	scenelike.add(dummyObject)
+	console.error(dummyObject.matrix)
+
+
+
+	const dummyVisualizerGeo = new THREE.BufferGeometry();
+	dummyVisualizerGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
+	const dummyVisualizerMat = new THREE.PointsMaterial(
+		{
+			size:10,
+			sizeAttenuation: false,
+			color: 0xff0000
+		}
+	);
+	const dummyVisualizer = new THREE.Points(dummyVisualizerGeo, dummyVisualizerMat);
+	dummyObject.add(dummyVisualizer)
+
+
+
+
+	return(dummyObject)
 }
 const initSelectionTools = async function (THREE, scenelike) {
 	groupSelector = new THREE.Group()
+
+	const groupSelectorVisualizerGeo = new THREE.BufferGeometry();
+	groupSelectorVisualizerGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
+	const groupSelectorVisualizerMat = new THREE.PointsMaterial(
+		{
+			size:10,
+			sizeAttenuation: false,
+			color: 0x00ff00
+		}
+	);
+	const groupSelectorVisualizer = new THREE.Points(groupSelectorVisualizerGeo, groupSelectorVisualizerMat);
+	groupSelector.add(groupSelectorVisualizer)
+
+
+
 	scenelike.add(groupSelector)
+}
+
+
+const removeDummy = function (dummy) {
+	const selectedDummysDummyIndex = selectedDummys.indexOf(dummy)
+	selectedDummys.splice(selectedDummysDummyIndex, 1)
+	const objectDummysDummyIndex = objectDummys.indexOf(dummy)
+	objectDummys.splice(objectDummysDummyIndex, 1)
+	groupSelector.remove(dummy)
+	global.scene.remove(dummy)
+	updateGroupSelectorPos(THREE, transformControl)
+
+	// Don't know if this does anything but we'll do it anyway:
+	delete dummy
 }
 
 const selectObject = async function (instancedMesh, index, transformControl, THREE) {
@@ -33,6 +97,7 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
 		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
 			if (dummy.userData.index === index) {
 				console.error("FOUND")
+				console.error(dummy)
 				if (!selectedDummys.includes(dummy)) {
 					selectedDummys.push(dummy)
 					groupSelector.add(dummy)
@@ -61,6 +126,33 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
 	}
 }
 
+const selectObjectByDummy = async function (dummy, transformControl, THREE) {
+	if (!selectedDummys.includes(dummy)) {
+		selectedDummys.push(dummy)
+		groupSelector.add(dummy)
+		/*
+	  for (selectedDummy of selectedDummys) {
+	    groupSelector.remove(selectedDummy)
+	  }
+	  */
+		updateGroupSelectorPos(THREE, transformControl)
+		console.error(groupSelector)
+		/*
+	  for (selectedDummy of selectedDummys) {
+	    if (selectedDummy !== dummy) {
+	      groupSelector.add(selectedDummy)
+	    }
+	  }
+	  groupSelector.attach(dummy)
+	  */
+		//groupSelector.attach(dummy);
+		updateSelectedDummys(THREE)
+		displaySelection(dummy, THREE)
+		transformControl.attach(groupSelector)
+
+	}
+}
+
 
 const deselectObject = async function (instancedMesh, index, transformControl, THREE) {
 	for (const dummy of objectDummys) {
@@ -69,6 +161,7 @@ const deselectObject = async function (instancedMesh, index, transformControl, T
 				console.error("FOUND")
 				if (selectedDummys.includes(dummy)) {
 					selectedDummys.splice(selectedDummys.indexOf(dummy), 1)
+					console.error(selectedDummys)
 					groupSelector.remove(dummy)
 					updateGroupSelectorPos(THREE, transformControl)
 					updateSelectedDummys(THREE)
@@ -80,6 +173,17 @@ const deselectObject = async function (instancedMesh, index, transformControl, T
 	}
 }
 
+const deselectObjectByDummy = async function (dummy, transformControl, THREE) {
+	if (selectedDummys.includes(dummy)) {
+		selectedDummys.splice(selectedDummys.indexOf(dummy), 1)
+		groupSelector.remove(dummy)
+		updateGroupSelectorPos(THREE, transformControl)
+		updateSelectedDummys(THREE)
+		undisplaySelection(dummy, THREE)
+		transformControl.attach(groupSelector)
+	}
+}
+
 
 const deselectAll = async function (transformControl, THREE) {
 	for (const dummy of selectedDummys) {
@@ -88,7 +192,7 @@ const deselectAll = async function (transformControl, THREE) {
 		resetGroupSelectorPos()
 	}
 	global.transformControl.detach(groupSelector)
-	selectedDummys = []
+	selectedDummys.splice(0, selectedDummys.length)
 }
 
 
@@ -119,6 +223,8 @@ function updateGroupSelectorPos(THREE, transformControl) {
 	for (const dummy of selectedDummys) {
 		console.error(dummy)
 		const pos = new THREE.Vector3().setFromMatrixPosition(dummy.matrixWorld)
+		console.error(dummy.matrixWorld)
+		console.error(pos)
 		midX += pos.x
 		midY += pos.y
 		midZ += pos.z
@@ -181,7 +287,7 @@ function toLocalSpace(object, THREE) {
 	//object.matrix.setScale(scaleX, scaleY, scaleZ)
 }
 
-async function displaySelection(dummy, THREE) {
+const displaySelection = async function(dummy, THREE) {
 	/*
   // Should make things look red but doesn't work.
   console.error(dummy)
@@ -212,7 +318,7 @@ async function displaySelection(dummy, THREE) {
 	}
 }
 
-function undisplaySelection(dummy, THREE) {
+const undisplaySelection = async function(dummy, THREE) {
 	for (instancedMesh of dummy.userData.instancedMeshes) {
 		for (wireframe of instancedMesh.children) {
 			if (wireframe.userData.index === dummy.userData.index) {
@@ -234,10 +340,16 @@ function updateObjectSelectionDisplay(instancedMesh, index) {
 
 module.exports = {
 	selectObject: selectObject,
+	selectObjectByDummy: selectObjectByDummy,
 	deselectObject: deselectObject,
+	deselectObjectByDummy: deselectObjectByDummy,
 	deselectAll: deselectAll,
 	createObjectDummy: createObjectDummy,
 	updateSelectedObjs: updateSelectedObjs,
+	displaySelection: displaySelection,
+	undisplaySelection: undisplaySelection,
+	removeDummy: removeDummy,
+
 
 	initSelectionTools: initSelectionTools,
 
