@@ -93,7 +93,7 @@ async function initAddActorOfTypeDialog(document) {
 	})
 
 	dynamicButton.addEventListener("click", () => {
-		ActorTools.addDynamicActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		ActorTools.addDynamicActor("Obj_TreeBroadleaf_A_LL_02", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
 	})
 }
 

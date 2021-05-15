@@ -281,7 +281,7 @@ const colladaOnLoad = function (collada, actorName, resolve, BufferGeometryUtils
 
 			let colladaMaterial = item.material
 
-			let colladaInstancedMesh = new THREE.InstancedMesh(colladaGeometry, colladaMaterial, modelNum)
+			let colladaInstancedMesh = new THREE.InstancedMesh(colladaGeometry, colladaMaterial, modelNum + 999)
 			colladaInstancedMesh.userData.actorList = []
 
 			// Set the count to 0 for logic later:
