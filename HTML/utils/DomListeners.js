@@ -1,6 +1,7 @@
 const SelectionTools = require("./SelectionTools.js")
 const ActorTools = require("./ActorTools.js")
 const DataEditorTools = require("./DataEditorTools.js")
+const RayCastTools = require("./RayCastTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -78,12 +79,30 @@ async function initAddActorOfTypeDialog(document) {
 	document.addEventListener("mouseup", () => {
 		ignoreClick = false
 	})
+
+
+
+
+
+
+	let staticButton = document.getElementById("StaticOrDynamicPrompt_StaticButton")
+	let dynamicButton = document.getElementById("StaticOrDynamicPrompt_DynamicButton")
+
+	staticButton.addEventListener("click", () => {
+		ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+	})
+
+	dynamicButton.addEventListener("click", () => {
+		ActorTools.addDynamicActor("Obj_TreeBroadleaf_A_LL_02", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+	})
 }
 
 async function initDeleteActorEvent(document) {
 	document.addEventListener("keydown", (e) => {
 		if (e.keyCode === 46 || e.keyCode === 8) {
-			let selectedDummys = SelectionTools.getSelectedDummys()
+			//let selectedDummys = SelectionTools.getSelectedDummys()
+			let selectedDummys = [ ...SelectionTools.selectedDummys ]
+			console.error(selectedDummys)
 			SelectionTools.deselectAll()
 			DataEditorTools.removeAllActorsFromSelectedActorsList(document)
 			for (const dummy of selectedDummys) {

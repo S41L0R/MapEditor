@@ -2,12 +2,16 @@ global.THREE = THREE
 // Imports
 // -----------------------------------------------------------------------------
 import { FirstPersonControls } from "./lib/threejs/examples/jsm/controls/EditorControls.js"
+global.FirstPersonControls = FirstPersonControls
 
 import { ColladaLoader } from "./lib/threejs/examples/jsm/loaders/ColladaLoader.js"
+global.ColladaLoader = ColladaLoader
 
 import { BufferGeometryUtils } from "./lib/threejs/examples/jsm/utils/BufferGeometryUtils.js"
+global.BufferGeometryUtils = BufferGeometryUtils
 
 import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js"
+global.TransformControls = TransformControls
 // -----------------------------------------------------------------------------
 
 // Requires
@@ -37,6 +41,7 @@ let cameraSpeed = 150
 let cameraLookSpeed = 0.1
 
 const colladaLoader = new ColladaLoader()
+global.colladaLoader = colladaLoader
 // -----------------------------------------------------------------------------
 
 // Renderer initialization
@@ -50,8 +55,10 @@ renderer.toneMappingExposure = 2.3
 document.body.appendChild(renderer.domElement)
 
 const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000)
+global.camera = camera
 
 const scene = new THREE.Scene()
+global.scene = scene
 
 scene.add(camera)
 // -----------------------------------------------------------------------------
@@ -226,14 +233,13 @@ darkModeToggle.addEventListener("click", function () {
 
 
 async function loadSection(sectionName) {
-		// Just in case we hit reload and want to see something
-	var section = sectionName
+	// Just in case we hit reload and want to see something
 	if (sectionName === undefined) {
-		section = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
+		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
 	}
-	console.log(section)
+	global.sectionName = sectionName
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
-	PythonTools.loadPython("main", section).then((sectionData) => {
+	PythonTools.loadPython("main", sectionName).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
 		DomListners.initSaveButton(document, SaveTools.saveData, sectionData)
@@ -246,7 +252,7 @@ async function loadSection(sectionName) {
 		RailTools.createRails(sectionData, scene, [])
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"
-	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, section, THREE).then(()=>{
+	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
 				document.getElementById("loadingDisplay").style.opacity = 0
 			})
 
