@@ -60,6 +60,7 @@ async function loadPython (func, arg) {
   				}
   			} else {
   				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func} Arg: ${arg}`)
+				alert(dataBuffer.toString())
   			}
 
   		})
