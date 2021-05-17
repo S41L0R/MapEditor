@@ -106,8 +106,10 @@ def createProject(projectName):
 
 # returns a project path
 def openProject(projectName):
+    global currentProject
     project = projectHandling.Project(projectName)
     print(project.getProject())
+    currentProject = project.getProject()
     return(project.getProject())
 
 # Deletes a project and removes it from the datbase
@@ -365,13 +367,14 @@ def setDarkMode(variant):
     WriteSettings.WriteSettings(settings)
 
 def save(sectionPath):
+    currentProject = 'TestA'
     with open(sectionPath, 'rt') as readSectionJSON:
         dataToSave = readSectionJSON.read()
         #print(dataToSave)
     loadedData = json.loads(dataToSave)
     print(f'currentSection: {currentSection}')
     loadedData.update({'Section': currentSection})
-    smubinWriter.writeMapFile(loadedData)
+    smubinWriter.writeMapFile(loadedData, currentProject)
     print('File saved successfully! :)')
     return
 
