@@ -20,6 +20,7 @@ import Lib.Utils.Util as utils
 import Loaders.FromGame.sbfres as sbfres
 import Loaders.FromGame.actorinfo as ActorInfo
 import Loaders.FromGame.sarc as sarc
+import Lib.Utils.ProjectHandler as projectHandling
 from Writers.ToCache.actorinfo import cacheActorInfo
 
 #Set CWD
@@ -95,6 +96,29 @@ def setSettings(newSettings):
 # this exists so js can not be stupid
 def getCurrentSection():
     print(f'!startData{json.dumps(currentSection)}!endData')
+    return
+
+# Creates a project and returns its path
+def createProject(projectName):
+    project = projectHandling.Project(projectName)
+    project.create()
+    return(project.getProject())
+
+# returns a project path
+def openProject(projectName):
+    project = projectHandling.Project(projectName)
+    print(project.getProject())
+    return(project.getProject())
+
+# Deletes a project and removes it from the datbase
+def deleteProject(projectName):
+    project = projectHandling.Project(projectName)
+    project.deleteProject()
+    return
+
+# Clears all projects and empties the project database; ONLY USE IF YOU WANT TO DELETE EVERYTHING
+def clearProjects():
+    projectHandling.clearDB_and_projectDir()
     return
 
 # Load map file

@@ -20,8 +20,8 @@ validMapFileExts = ['smubin', 'mubin']
 
 # Opens and reads a map file; returns a dict containing the map file data.
 def writeMapFile(jsonData):
-    #sectionName = jsonData.get('Section')
-    sectionName = 'J-8'
+    sectionName = jsonData.get('Section')
+    #sectionName = 'J-8'
     staticMapData = util.compressByml(dict(jsonData.get('Static'))).compressedData
     dynamicMapData = util.compressByml(dict(jsonData.get('Dynamic'))).compressedData
     bigEndian = bool(findBigEndian())
