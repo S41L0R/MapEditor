@@ -1,3 +1,5 @@
+const ActorTools = require("./ActorTools.js")
+
 const ipc = require("electron").ipcRenderer
 const initActorEditorTools = async function (sectionData) {
 	ipc.on("fromActorEditor", (event, message, HashId, type, isEditingRail) => {
@@ -5,6 +7,7 @@ const initActorEditorTools = async function (sectionData) {
 			if (actor.HashId.value == HashId) {
 				// Set the actor data to the returned data:
 				Object.assign(sectionData.Static.Objs[index], message)
+				ActorTools.reloadObjectActor(actor)
 				return
 			}
 		}
@@ -12,6 +15,7 @@ const initActorEditorTools = async function (sectionData) {
 			if (actor.HashId.value == HashId) {
 				// Set the actor data to the returned data:
 				Object.assign(sectionData.Dynamic.Objs[index], message)
+				ActorTools.reloadObjectActor(actor)
 				return
 			}
 		}

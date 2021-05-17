@@ -24,7 +24,7 @@ const addActorToSelectedActorsList = async function(actor, document) {
 	}
 	let newElement = document.createElement("div")
 	newElement.innerHTML = `
-    <strong>${actor.UnitConfigName.value}</strong> ${actor.HashId.value}
+    <strong>${actor.UnitConfigName.value}</strong><br>${actor.HashId.value}
   `
 	newElement.className = "selectedActorListItem"
 	newElement.id = `selectedActor_${actor.HashId.value}`
