@@ -11,7 +11,7 @@ const drawHelpers = async function(rail, scenelike, intersectables) {
 	}
 }
 
-const removeControlPointHelpersByRailHashID = async function(hashID, scenelike) {
+const removeControlPointHelpersByRailHashID = async function(hashID, scenelike, intersectables) {
 	// We first loop through the scene:
 	for (const item of scenelike.children) {
 		// Then if it has the matching hashID we get rid of it:
@@ -19,9 +19,10 @@ const removeControlPointHelpersByRailHashID = async function(hashID, scenelike) 
 			if (item.relevantType == "ControlPoint") {
 				//console.error(hashID);
 				//console.error("bye");
-				item.geometry.dispose();
-				item.material.dispose();
-				scenelike.remove(item);
+				item.geometry.dispose()
+				item.material.dispose()
+				scenelike.remove(item)
+				intersectables.splice(intersectables.indexOf(item), 1)
 				delete item;
 				//renderer.renderLists.dispose();
 			}
@@ -32,10 +33,11 @@ const removeControlPointHelpersByRailHashID = async function(hashID, scenelike) 
 
 const reloadRailPointHelpersByRailHashID = async function(hashID, scenelike, maplike, intersectables) {
 	for (item of scenelike.children) {
-		if (item.CorrespondingRailHashID == hashID) {
-			item.geometry.dispose();
-			item.material.dispose();
+		if (item.CorrespondingRailHashID === hashID) {
+			item.geometry.dispose()
+			item.material.dispose()
 			scenelike.remove(item)
+			intersectables.splice(intersectables.indexOf(item), 1)
 		}
 	}
 	for (const rail of maplike.Static.Rails) {
