@@ -40,7 +40,7 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 	console.error(dummyObject.matrix)
 
 
-
+	/* Dummy visualizer
 	const dummyVisualizerGeo = new THREE.BufferGeometry();
 	dummyVisualizerGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
 	const dummyVisualizerMat = new THREE.PointsMaterial(
@@ -52,7 +52,7 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 	);
 	const dummyVisualizer = new THREE.Points(dummyVisualizerGeo, dummyVisualizerMat);
 	dummyObject.add(dummyVisualizer)
-
+	*/
 
 
 
@@ -61,6 +61,7 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 const initSelectionTools = async function (THREE, scenelike) {
 	groupSelector = new THREE.Group()
 
+	/* groupSelector visualizer
 	const groupSelectorVisualizerGeo = new THREE.BufferGeometry();
 	groupSelectorVisualizerGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
 	const groupSelectorVisualizerMat = new THREE.PointsMaterial(
@@ -72,7 +73,7 @@ const initSelectionTools = async function (THREE, scenelike) {
 	);
 	const groupSelectorVisualizer = new THREE.Points(groupSelectorVisualizerGeo, groupSelectorVisualizerMat);
 	groupSelector.add(groupSelectorVisualizer)
-
+	*/
 
 
 	scenelike.add(groupSelector)
@@ -179,7 +180,9 @@ const deselectObjectByDummy = async function (dummy, transformControl, THREE) {
 		groupSelector.remove(dummy)
 		updateGroupSelectorPos(THREE, transformControl)
 		updateSelectedDummys(THREE)
-		undisplaySelection(dummy, THREE)
+		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint")) {
+			undisplaySelection(dummy, THREE)
+		}
 		transformControl.attach(groupSelector)
 	}
 }
@@ -188,21 +191,53 @@ const deselectObjectByDummy = async function (dummy, transformControl, THREE) {
 const deselectAll = async function (transformControl, THREE) {
 	for (const dummy of selectedDummys) {
 		groupSelector.remove(dummy)
-		undisplaySelection(dummy, global.THREE)
+		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint")) {
+			undisplaySelection(dummy, global.THREE)
+		}
+		else {
+			// We need to make sure that the matrixWorld also carries over to the pos and the normal matrix
+			dummy.matrix = dummy.matrixWorld
+			dummy.position.setFromMatrixPosition(dummy.matrixWorld)
+			global.scene.add(dummy)
+		}
 		resetGroupSelectorPos()
 	}
 	global.transformControl.detach(groupSelector)
 	selectedDummys.splice(0, selectedDummys.length)
 }
 
+const selectRail = async function (helper) {
+	groupSelector.add(helper)
+	global.transformControl.attach(groupSelector)
+	selectedDummys.push(helper)
+	updateGroupSelectorPos(global.THREE, global.transformControl)
+	updateSelectedDummys(global.THREE)
+	
+	
+
+
+
+	
+}
+
+const deselectRail = async function (helper) {
+	selectedDummys.splice(selectedDummys.indexOf(helper), 1)
+	groupSelector.remove(helper)
+	updateGroupSelectorPos(global.THREE, global.transformControl)
+	updateSelectedDummys(global.THREE)
+	transformControl.attach(groupSelector)
+}
+
 
 const updateSelectedObjs = function() {
 	for (const dummy of selectedDummys) {
-		for (instancedMesh of dummy.userData.instancedMeshes) {
-			instancedMesh.setMatrixAt(dummy.userData.index, dummy.matrixWorld)
-			instancedMesh.instanceMatrix.needsUpdate = true
+		if (dummy.userData.instancedMeshes !== undefined) {
+			for (instancedMesh of dummy.userData.instancedMeshes) {
+				instancedMesh.setMatrixAt(dummy.userData.index, dummy.matrixWorld)
+				instancedMesh.instanceMatrix.needsUpdate = true
 
-			updateObjectSelectionDisplay(instancedMesh, dummy.userData.index)
+				updateObjectSelectionDisplay(instancedMesh, dummy.userData.index)
+			}
 		}
 	}
 }
@@ -284,6 +319,7 @@ function toLocalSpace(object, THREE) {
 	//object.matrix.makeRotationFromEuler(newRotEuler)
 	//object.matrix.compose(newPosVector, new THREE.Quaternion().setFromRotationMatrix(object.matrix), newScaleVector)
 	object.matrix.setPosition(posX, posY, posZ)
+	object.position.set(posX, posY, posZ)
 	//object.matrix.setScale(scaleX, scaleY, scaleZ)
 }
 
@@ -349,6 +385,7 @@ module.exports = {
 	displaySelection: displaySelection,
 	undisplaySelection: undisplaySelection,
 	removeDummy: removeDummy,
+	selectRail: selectRail,
 
 
 	initSelectionTools: initSelectionTools,
