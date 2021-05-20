@@ -96,6 +96,16 @@ document.getElementById("SettingsButton").addEventListener("click", function() {
 
 });
 
+var createProject = document.getElementById('create');
+var openProject = document.getElementById('open');
+
+createProject.addEventListener('click', function() {
+  // Do stuff here to spawn a window for project creation
+})
+
+openProject.addEventListener('click', function() {
+  // Add code to spawn new window for project selection
+})
 
 //console.error(__dirname)
 //console.error(path.join(__dirname, "../../../MapEditor/Process.py"))

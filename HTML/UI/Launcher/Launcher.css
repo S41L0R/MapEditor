@@ -50,6 +50,30 @@
 
 #Title {
   position:relative;
+  margin-bottom: 0px;
+  height: fit-content;
+  display: block;
+}
+
+#projectManagement {
+  display: block;
+  height: fit-content;
+  width: fit-content;
+  margin: 0px;
+  padding: 0px;
+}
+
+.projectButton {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 20%;
+  font-size: 25px;
+}
+
+.projectButton:hover {
+  cursor: pointer;
+
 }
 
 #container {
