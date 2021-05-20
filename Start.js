@@ -108,6 +108,7 @@ const template = [
       },
       {
         label: 'Togglges dve tols',
+	accelerator: "F12",
         role: 'toggleDevTools'
       },
       { type: 'separator' },

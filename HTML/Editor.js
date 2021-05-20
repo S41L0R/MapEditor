@@ -249,7 +249,7 @@ async function loadSection(sectionName) {
 		// -----------------------------------------------------------------------------
 		document.getElementById("loadingStatus").innerHTML = "Creating Rails"
 		console.log("rails")
-		RailTools.createRails(sectionData, scene, [])
+		RailTools.createRails(sectionData, scene, RayCastTools.intersectables)
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"
 	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{

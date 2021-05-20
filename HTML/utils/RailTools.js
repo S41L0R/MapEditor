@@ -32,11 +32,7 @@ const reloadRails = async function(scenelike) {
 
 // This function reloads a specific rail by destroying and creating it via hashID:
 const reloadRail = async function(hashID, maplike, scenelike) {
-	//console.error(hashID);
-	//console.error(maplike);
-	//console.error(scenelike);
 	removeRail(hashID, scenelike);
-	//RailHelperTools.removeControlPointHelpersByRailHashID(hashID, scenelike);
 	addRail(hashID, maplike, scenelike);
 }
 
@@ -48,8 +44,6 @@ const removeRail = async function(hashID, scenelike) {
 	for (item of scenelike.children) {
 		// Then if it has the matching hashID we get rid of it:
 		if (item.HashID == hashID) {
-			//console.error(hashID);
-			//console.error("bye");
 			for (object of item.children) {
 				object.geometry.dispose();
 				object.material.dispose();
@@ -138,10 +132,6 @@ async function createBezierRailPath(pointArray, scenelike, RailHashID) {
 		// I'm gonna go on the assumption that controlPoints are offsets from points on a linear path
 		// So let's create a line and find the world space positions for those offsets:
 		GeneralRailTools.getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[i+1], pointArray[i+2]).then((worldSpaceControlPointPositions) => {
-			//console.error(worldSpaceControlPointPositions);
-			//console.error(pointArray)
-			//console.error(pointArray[i]);
-			//const worldSpaceControlPointPositions = getWorldSpaceControlPoints(pointArray[i], pointArray[i+3], pointArray[1+1], pointArray[i+2]);
 			const curve = new THREE.CubicBezierCurve3(worldSpaceControlPointPositions[0], worldSpaceControlPointPositions[1], worldSpaceControlPointPositions[2], worldSpaceControlPointPositions[3]);
 			const points = curve.getPoints( RAIL_RES );
 			const geometry = new THREE.BufferGeometry().setFromPoints( points );

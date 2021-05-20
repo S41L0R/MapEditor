@@ -811,7 +811,7 @@ body {
 
 #F-5-Box {
   top:calc(5*(100%/10));
-  left:calc(4*(100%/10));
+  left:calc(6*(100%/12));
 }
 
 #G-5-Box {

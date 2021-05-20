@@ -249,7 +249,7 @@ const loadModelByActorName = async function (actorName, BufferGeometryUtils, col
 			// Okay, good it's not
 
 
-			// This is REALLY slow. We should get all actorModelPaths at once and feed it in, only relying on this if the paths aren't fed in.
+			// This is REALLY slow. Because of this we get all actorModelPaths at once and feed it in, only relying on this if the paths aren't fed in.
 			if (modelPath === undefined) {
 				return PythonTools.loadPython("getActorModelPath", actorName + " " + sectionName).then((resultingModelPath) => {
 					colladaLoader.load(resultingModelPath, (collada) => {colladaOnLoad(collada, actorName, resolve, BufferGeometryUtils, modelNum)}, colladaOnProgress, colladaOnError)
