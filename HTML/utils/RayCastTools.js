@@ -33,9 +33,23 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 						let selectedObject = raycast(TransformControls, camera)
 						console.error(selectedObject)
 						if (selectedObject !== undefined) {
-							SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
+							if (selectedObject.object.relevantType !== "RailPoint" && selectedObject.object.relevantType !== "ControlPoint") {
+								SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
 
-							DataEditorTools.addActorToSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
+								DataEditorTools.addActorToSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
+							}
+							else {
+								SelectionTools.selectRail(selectedObject.object)
+
+								// Okay, so now what we want to do is set things up so that the rail appears in the selected items list.
+							
+								// First thing that we'll need to do right now is find the actual rail.
+								for (const rail of global.sectionData.Static.Rails) {
+									if (rail.HashId.value === selectedObject.object.CorrespondingRailHashID) {
+										DataEditorTools.addActorToSelectedActorsList(rail, global.document) // Yes, I know that this is currently called "AddActorToSelectedActorsList". Maybe later we can split actor and rail lists?
+									}
+								}
+							}
 						}
 					}
 				}
@@ -262,21 +276,21 @@ function raycast (TransformControls, camera) {
 		})
 	}
 	if (unconfirmedSelectedObject != null) {
-		selectedObject = unconfirmedSelectedObject
+		let selectedObject = unconfirmedSelectedObject
 		if (selectedObject.object.parent.type == "Group") {
 			return(selectedObject)
-			transformControlAttached = true
-			showActorData(selectedObject.object.parent.HashID, selectedObject.parent.Type)
+			//transformControlAttached = true
+			//showActorData(selectedObject.object.parent.HashID, selectedObject.parent.Type)
 		} else {
-			if (selectedObject.object.relevantType == "ControlPoint" || selectedObject.relevantType == "RailPoint") {
+			if (selectedObject.object.relevantType === "ControlPoint" || selectedObject.relevantType === "RailPoint") {
 				return(selectedObject)
-				transformControlAttached = true
-				showRailData(selectedObject.object.CorrespondingRailHashID)
+				//transformControlAttached = true
+				//showRailData(selectedObject.object.CorrespondingRailHashID)
 			}
 			else {
 				return(selectedObject)
-				transformControlAttached = true
-				showActorData(selectedObject.object.HashID, selectedObject.object.Type)
+				//transformControlAttached = true
+				//showActorData(selectedObject.object.HashID, selectedObject.object.Type)
 			}
 		}
 	}
