@@ -10,12 +10,12 @@
 
 .cardButton {
   color: #32353b;
-  background-color: #7289da;
+  background-color: #8844d6;
 }
 
 .cardButton:hover {
   color: white;
-  background-color: #3c4873;
+  background-color: #6735a0
 }
 
 .cardButtonsImg {
