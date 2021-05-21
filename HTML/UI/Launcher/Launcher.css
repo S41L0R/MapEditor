@@ -76,6 +76,33 @@
 
 }
 
+.popup {
+  --popup-width: 20vw;
+  --popup-height: 20vw;
+  --horizontal_margin: calc(50vw - calc(var(--popup-width) / 2));
+  --vertical_margin: calc(50vh - calc(var(--popup-height) / 2));
+  display: none;
+  padding: 5px;
+  z-index: 2;
+  position: absolute;
+  width: var(--popup-width);
+  height: var(--popup-height);
+  left: var(--horizontal_margin);
+  right: var(--horizontal_margin);
+  top: var(--vertical_margin);
+  bottom: var(--vertical_margin);
+  border-radius: 10px;
+  background-color: black;
+  color: white;
+}
+
+.projectPopupButton {
+  display: inline-block;
+  border: none;
+  border-radius: 2px;
+
+}
+
 #container {
   display: flex;
   /*flex-flow: column;*/
