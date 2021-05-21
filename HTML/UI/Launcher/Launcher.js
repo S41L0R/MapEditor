@@ -7,6 +7,7 @@ const PythonTools = require("../../utils/PythonTools")
 
 
 var setup = await PythonTools.loadPython('checkSetupPy')
+var projectPath;
 console.log(setup)
 if (setup['NeedsRestart'] == true) {
   ipc.send('runSetup')
@@ -99,11 +100,89 @@ document.getElementById("SettingsButton").addEventListener("click", function() {
 var createProject = document.getElementById('create');
 var openProject = document.getElementById('open');
 
-createProject.addEventListener('click', function() {
+async function openProjectDialogue(windowType) {
+  let popup = document.getElementById('PopupContainer');
+
+  if (windowType == 'open') {
+
+    popup.innerHTML = `
+      <form id='openProject'>
+        <select id="projectSelection"></select>
+        <button id="submit" type="button" class="projectPopupButton">Open Project</button>
+        <button id="cancel" type="button" class="projectPopupButton">Cancel</button>
+      </form>
+    `
+    let form = document.forms['openProject'];
+    let selectBox = document.getElementById('projectSelection')
+    let submitButton = document.getElementById('submit');
+    let cancelButton = document.getElementById('cancel');
+    let projects = await PythonTools.loadPython('getProjects');
+    let projectList = projects[0]
+    console.log(projectList);
+    for (var project in projectList) {
+      let option = document.createElement('option');
+      option.text = projectList[project];
+      selectBox.add(option);
+      console.log(selectBox)
+    }
+    submitButton.addEventListener('click', async function() {
+      let projectName = document.getElementById('projectSelection').value;
+      console.log(projectName)
+      if (projectName.length != 0) {
+        projectPath = await PythonTools.loadPython('openProject', projectName)
+        popup.style.display = 'none'
+      }
+      else {
+        alert("Please select a project")
+      }
+    })
+    cancelButton.addEventListener('click', function() {
+      popup.style.display = 'none'
+      popup.innerHTML = ''
+    })
+    popup.style.display = 'block';
+  }
+
+  else if (windowType == 'create'){
+    popup.innerHTML = `
+      <form id='createProject'>
+        <input type="text" id="projectName" name="projectName" placeholder="Project Name">
+        <button id="submit" type="button" class="projectPopupButton">Create Project</button>
+        <button id="cancel" type="button" class="projectPopupButton">Cancel</button>
+      </form>
+    `
+    let form = document.forms['createProject'];
+    let submitButton = document.getElementById('submit');
+    let cancelButton = document.getElementById('cancel')
+    submitButton.addEventListener('click', async function() {
+      let projectName = form.projectName.value;
+      if (projectName.length != 0) {
+        projectPath = await PythonTools.loadPython('createProject', projectName)
+        popup.style.display = 'none'
+      }
+      else {
+        alert("Project name can NOT be blank!")
+      }
+    })
+    cancelButton.addEventListener('click', function() {
+      popup.style.display = 'none'
+      popup.innerHTML = ''
+    })
+    popup.style.display = 'block';
+  }
+
+  else {
+    projectPath = null
+  }
+}
+
+createProject.addEventListener('click', async function() {
   // Do stuff here to spawn a window for project creation
+  await openProjectDialogue('create')
 })
 
-openProject.addEventListener('click', function() {
+openProject.addEventListener('click', async function() {
+  await openProjectDialogue('open')
   // Add code to spawn new window for project selection
 })
 
