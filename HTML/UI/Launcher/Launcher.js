@@ -117,11 +117,10 @@ async function openProjectDialogue(windowType) {
     let submitButton = document.getElementById('submit');
     let cancelButton = document.getElementById('cancel');
     let projects = await PythonTools.loadPython('getProjects');
-    let projectList = projects[0]
-    console.log(projectList);
-    for (var project in projectList) {
+    console.log(projects);
+    for (var project in projects) {
       let option = document.createElement('option');
-      option.text = projectList[project];
+      option.text = projects[project];
       selectBox.add(option);
       console.log(selectBox)
     }
