@@ -121,8 +121,8 @@ def deleteProject(projectName):
     return
 
 def getProjects():
-    projectList, projectDB = projectHandling.getProjects_and_DB()
-    print(f'!startData{json.dumps([projectList, projectDB])}!endData')
+    projectList = projectHandling.getProjects()
+    print(f'!startData{json.dumps(projectList)}!endData')
     return
 
 # Clears all projects and empties the project database; ONLY USE IF YOU WANT TO DELETE EVERYTHING
