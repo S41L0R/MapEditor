@@ -32,13 +32,20 @@ const removeControlPointHelpersByRailHashID = async function(hashID, scenelike, 
 
 
 const reloadRailPointHelpersByRailHashID = async function(hashID, scenelike, maplike, intersectables) {
+	let removeList = []
 	for (item of scenelike.children) {
 		if (item.CorrespondingRailHashID === hashID) {
-			item.geometry.dispose()
-			item.material.dispose()
-			scenelike.remove(item)
-			intersectables.splice(intersectables.indexOf(item), 1)
+			if (item.relevantType == "RailPoint") {
+				console.error("test")
+				item.geometry.dispose()
+				item.material.dispose()
+				removeList.push(item)
+				intersectables.splice(intersectables.indexOf(item), 1)
+			}
 		}
+	}
+	for (const item of removeList) {
+		scenelike.remove(item)
 	}
 	for (const rail of maplike.Static.Rails) {
 		if (rail.HashId.value == hashID) {
@@ -49,7 +56,7 @@ const reloadRailPointHelpersByRailHashID = async function(hashID, scenelike, map
 
 
 const reloadControlPointHelpersByRailHashID = async function(hashID, scenelike, maplike, intersectables) {
-	//removeControlPointHelpersByRailHashID(hashID, scenelike);
+	//removeControlPointHelpersByRailHashID(hashID, scenelike, intersectables);
 	for (const rail of maplike.Static.Rails) {
 		if (rail.HashId.value == hashID) {
 			generateControlPointHelpers(rail, scenelike, intersectables);
@@ -169,6 +176,9 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 
 }
 function generateControlPointHelpers(rail, scenelike, intersectables) {
+	console.error(rail)
+	console.error(scenelike)
+	console.error(intersectables)
 
 	// Okay, we'll just assume for a second that there's not an error elsewhere in the code, and that there aren't multiple instances of the same rail hashID
 	//
@@ -196,7 +206,7 @@ function generateControlPointHelpers(rail, scenelike, intersectables) {
 
 	// We'll loop through our railPoints
 	for ([railPointIndex, railPoint] of rail.RailPoints.entries()) {
-		if (railPoint.ControlPoints != undefined) {
+		if (railPoint.ControlPoints !== undefined) {
 			// And our controlPoints (if they exist)
 			for ([controlPointIndex, controlPoint] of railPoint.ControlPoints.entries()) {
 				if (!(controlPointsToIgnore.includes(controlPoint))) {

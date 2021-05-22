@@ -41,7 +41,7 @@ const reloadRail = async function(hashID, maplike, scenelike) {
 // This function removes a rail from the scene.
 const removeRail = async function(hashID, scenelike) {
 	// We first loop through the scene:
-	for (item of scenelike.children) {
+	for (const item of scenelike.children) {
 		// Then if it has the matching hashID we get rid of it:
 		if (item.HashID == hashID) {
 			for (object of item.children) {
