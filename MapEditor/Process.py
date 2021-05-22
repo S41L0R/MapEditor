@@ -102,6 +102,7 @@ def getCurrentSection():
 def createProject(projectName):
     project = projectHandling.Project(projectName)
     project.create()
+    print(f'!startData{json.dumps(project.getProject())}!endData')
     return(project.getProject())
 
 # returns a project path
@@ -110,12 +111,18 @@ def openProject(projectName):
     project = projectHandling.Project(projectName)
     print(project.getProject())
     currentProject = project.getProject()
-    return(project.getProject())
+    print(f'!startData{json.dumps(currentProject)}!endData')
+    return(currentProject)
 
 # Deletes a project and removes it from the datbase
 def deleteProject(projectName):
     project = projectHandling.Project(projectName)
     project.deleteProject()
+    return
+
+def getProjects():
+    projectList = projectHandling.getProjects()
+    print(f'!startData{json.dumps(projectList)}!endData')
     return
 
 # Clears all projects and empties the project database; ONLY USE IF YOU WANT TO DELETE EVERYTHING
