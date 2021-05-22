@@ -212,12 +212,12 @@ const selectRail = async function (helper) {
 	selectedDummys.push(helper)
 	updateGroupSelectorPos(global.THREE, global.transformControl)
 	updateSelectedDummys(global.THREE)
-	
-	
 
 
 
-	
+
+
+
 }
 
 const deselectRail = async function (helper) {
