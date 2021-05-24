@@ -9,6 +9,8 @@ const initListeners = async function(document, editorControls, transformControl)
 	initDeleteActorEvent(document)
 	initAddActorButton(document)
 	initAddActorOfTypeDialog(document)
+	initAddRailButton(document)
+	initAddRailDialog(document)
 }
 
 async function initCameraSpeedControls(document, editorControls) {
@@ -16,7 +18,12 @@ async function initCameraSpeedControls(document, editorControls) {
 	const cameraSpeedSlider = document.getElementById("cameraSlider")
 	const cameraSpeedSliderValue = document.getElementById("sliderValue")
 	cameraSpeedSlider.oninput = function () {
-  	cameraSpeedSliderValue.innerHTML = this.value
+		if (this.value >= 300) {
+			cameraSpeedSliderValue.innerHTML = "Ludicrous Speeeeeed"
+		}
+		else {
+			cameraSpeedSliderValue.innerHTML = this.value
+		}
   	editorControls.movementSpeed = this.value
 	}
 }
@@ -43,6 +50,15 @@ async function initTransformModeButtons(document, transformControl) {
 async function initAddActorButton(document) {
 	document.getElementById("addActorButton").addEventListener("click", () => {
 		let staticOrDynamicPrompt = document.getElementById("StaticOrDynamicPrompt")
+
+		staticOrDynamicPrompt.style.opacity = "100%"
+		staticOrDynamicPrompt.style["pointer-events"] = "auto"
+	})
+}
+
+async function initAddRailButton(document) {
+	document.getElementById("addRailButton").addEventListener("click", () => {
+		let staticOrDynamicPrompt = document.getElementById("AddRailPrompt")
 
 		staticOrDynamicPrompt.style.opacity = "100%"
 		staticOrDynamicPrompt.style["pointer-events"] = "auto"
@@ -93,6 +109,53 @@ async function initAddActorOfTypeDialog(document) {
 	})
 
 	dynamicButton.addEventListener("click", () => {
+		ActorTools.addDynamicActor("Obj_TreeBroadleaf_A_LL_02", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+	})
+}
+
+async function initAddRailDialog(document) {
+	let ignoreClick
+	let addRailPrompt = document.getElementById("AddRailPrompt")
+	let addRailPrompt_Label = document.getElementById("AddRailPrompt_Label")
+	let addRailPrompt_OptionContainer = document.getElementById("AddRailPrompt_OptionContainer")
+	let addRailPrompt_Description = document.getElementById("AddRailPrompt_Description")
+
+	document.addEventListener("mousedown", () => {
+
+		addRailPrompt_Label.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+		addRailPrompt_OptionContainer.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+		addRailPrompt_Description.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+
+		if (ignoreClick === false) {
+			addRailPrompt.style.opacity = "0%"
+			addRailPrompt.style["pointer-events"] = "none"
+		}
+
+	})
+
+	document.addEventListener("mouseup", () => {
+		ignoreClick = false
+	})
+
+
+
+
+
+
+	let linearButton = document.getElementById("AddRailPrompt_LinearButton")
+	let bezierButton = document.getElementById("AddRailPrompt_BezierButton")
+
+	linearButton.addEventListener("click", () => {
+		ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+	})
+
+	bezierButton.addEventListener("click", () => {
 		ActorTools.addDynamicActor("Obj_TreeBroadleaf_A_LL_02", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
 	})
 }
