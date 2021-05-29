@@ -2,6 +2,7 @@ const SelectionTools = require("./SelectionTools.js")
 const ActorTools = require("./ActorTools.js")
 const DataEditorTools = require("./DataEditorTools.js")
 const RayCastTools = require("./RayCastTools.js")
+const RailTools = require("./RailTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -11,6 +12,7 @@ const initListeners = async function(document, editorControls, transformControl)
 	initAddActorOfTypeDialog(document)
 	initAddRailButton(document)
 	initAddRailDialog(document)
+	initRailPointSlider(document)
 }
 
 async function initCameraSpeedControls(document, editorControls) {
@@ -119,6 +121,8 @@ async function initAddRailDialog(document) {
 	let addRailPrompt_Label = document.getElementById("AddRailPrompt_Label")
 	let addRailPrompt_OptionContainer = document.getElementById("AddRailPrompt_OptionContainer")
 	let addRailPrompt_Description = document.getElementById("AddRailPrompt_Description")
+	let addRailPrompt_PointSlider = document.getElementById("AddRailPrompt_PointSlider")
+	let addRailPrompt_PointSlider_Value = document.getElementById("AddRailPrompt_PointSlider_Value")
 
 	document.addEventListener("mousedown", () => {
 
@@ -129,6 +133,12 @@ async function initAddRailDialog(document) {
 			ignoreClick = true
 		})
 		addRailPrompt_Description.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+		addRailPrompt_PointSlider.addEventListener("mousedown", () => {
+			ignoreClick = true
+		})
+		addRailPrompt_PointSlider_Value.addEventListener("mousedown", () => {
 			ignoreClick = true
 		})
 
@@ -152,12 +162,28 @@ async function initAddRailDialog(document) {
 	let bezierButton = document.getElementById("AddRailPrompt_BezierButton")
 
 	linearButton.addEventListener("click", () => {
-		ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		RailTools.createNewLinearRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, RayCastTools.intersectables)
 	})
 
 	bezierButton.addEventListener("click", () => {
-		ActorTools.addDynamicActor("Obj_TreeBroadleaf_A_LL_02", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		RailTools.createNewBezierRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, RayCastTools.intersectables)
 	})
+}
+
+async function initRailPointSlider(document) {
+	const pointSlider = document.getElementById("AddRailPrompt_PointSlider")
+	const pointSliderValue = document.getElementById("AddRailPrompt_PointSlider_Value")
+	pointSlider.oninput = function () {
+		if (this.value >= 50 && this.value < 100) {
+			pointSliderValue.innerHTML = `No, your computer is not a potato. You made it one. (${this.value} Points)`
+		}
+		else if (this.value >= 100) {
+			pointSliderValue.innerHTML = `DEATH. (${this.value} Points)`
+		}
+		else {
+			pointSliderValue.innerHTML = `${this.value} Points`
+		}
+	}
 }
 
 async function initDeleteActorEvent(document) {

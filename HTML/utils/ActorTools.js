@@ -342,7 +342,7 @@ function addStaticDataActor(unitConfigName, position) {
 }
 
 
-function generateHashID() {
+const generateHashID = function() {
 	// If we don't already have the next HashID, we generate it.
 	if (nextHashID === undefined) {
 		let currentNextHashID = 0
@@ -601,5 +601,6 @@ module.exports = {
 	addStaticActor: addStaticActor,
 	setupObjectActor: setupObjectActor,
 	nextHashID: nextHashID,
-	reloadObjectActor: reloadObjectActor
+	reloadObjectActor: reloadObjectActor,
+	generateHashID: generateHashID
 }

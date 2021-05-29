@@ -60,6 +60,7 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 }
 const initSelectionTools = async function (THREE, scenelike) {
 	groupSelector = new THREE.Group()
+	groupSelector.userData.type = "GroupSelector"
 
 	/* groupSelector visualizer
 	const groupSelectorVisualizerGeo = new THREE.BufferGeometry();
