@@ -35,6 +35,8 @@ async function initDraggingChanged(transformControl) {
 							const pos = new global.THREE.Vector3().setFromMatrixPosition(selectedObject.matrixWorld)
 							RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, pos)
 							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
+							// We also gotta calc NextDistance and PrevDistance for proper game function:
+							RailTools.reloadNextAndPrevDistance(rail)
 						}
 					}
 				}
@@ -53,7 +55,7 @@ const onTransformControlDrag = async function (transformControl) {
 		}
 
 		else {
-	
+
 
 			if (dummy.relevantType == "RailPoint") {
 				for (const rail of sectionData.Static.Rails) {
@@ -62,8 +64,15 @@ const onTransformControlDrag = async function (transformControl) {
 						rail.RailPoints[dummy.railPointIndex].Translate[0].value = pos.x
 						rail.RailPoints[dummy.railPointIndex].Translate[1].value = pos.y
 						rail.RailPoints[dummy.railPointIndex].Translate[2].value = pos.z
+
+
+
+
+
 						RailTools.reloadRail(dummy.CorrespondingRailHashID, sectionData, scene, RayCastTools.intersectables)
-						RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, scene, sectionData, RayCastTools.intersectables)
+						if (rail.RailType === "Bezier") {
+							RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, scene, sectionData, RayCastTools.intersectables)
+						}
 					}
 				}
 			}
@@ -76,7 +85,7 @@ const onTransformControlDrag = async function (transformControl) {
 						//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][1].value = selectedObject.position.y;
 						//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][2].value = selectedObject.position.z;
 						RailTools.reloadRail(dummy.CorrespondingRailHashID, sectionData, scene, RayCastTools.intersectables)
-			
+
 					}
 				}
 			}

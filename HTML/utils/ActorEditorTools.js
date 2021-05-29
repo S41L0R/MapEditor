@@ -37,19 +37,11 @@ const initActorEditorTools = async function (sectionData) {
 				}
 
 
-
-
 				await SelectionTools.deselectAll(global.transformControl, global.THREE)
-
-
-
 				await RailTools.reloadRail(HashId, global.sectionData, global.scene)
-
-
-
-				await RailHelperTools.reloadControlPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
-
-
+				if (rail.RailType.value === "Bezier") {
+					await RailHelperTools.reloadControlPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
+				}
 				await RailHelperTools.reloadRailPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
 
 				return
