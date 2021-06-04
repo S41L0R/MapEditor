@@ -36,10 +36,11 @@
 
 const SelectionTools = require("./SelectionTools.js")
 const ModelTools = require("./ModelTools.js")
+const MapTools = require("./MapTools.js")
 
 
 
-let nextHashID
+
 
 // Deletion Tools:
 // -----------------------------------------------------------------------------
@@ -119,7 +120,9 @@ const setupObjectActor = async function(actor) {
 						if ("Shape" in actor["!Parameters"]) {
 							switch (actor["!Parameters"].Shape.value) {
 								case "Sphere":
+									console.error("test")
 									actorModelData = await setupBasicMeshActor(actor, "areaSphere")
+									console.error(actorModelData)
 									return(actorModelData)
 								case "Capsule":
 									actorModelData = await setupBasicMeshActor(actor, "areaCapsule")
@@ -205,7 +208,7 @@ async function setupBasicMeshActor(actor, basicMeshKey) {
 
 				actorModel.userData.actorList[index] = actor
 
-				return([[actorModel], index, dummy])
+				resolve([[actorModel], index, dummy])
 			})
 		}
 	})
@@ -312,7 +315,7 @@ function addDynamicDataActor(unitConfigName, position) {
 	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
 	actor.Translate[2].type = 300
-	actor.HashId.value = generateHashID()
+	actor.HashId.value = MapTools.generateHashID()
 	actor.HashId.type = 102
 	global.sectionData.Dynamic.Objs.push(actor)
 	return actor
@@ -335,32 +338,10 @@ function addStaticDataActor(unitConfigName, position) {
 	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
 	actor.Translate[2].type = 300
-	actor.HashId.value = generateHashID()
+	actor.HashId.value = MapTools.generateHashID()
 	actor.HashId.type = 102
 	global.sectionData.Static.Objs.push(actor)
 	return actor
-}
-
-
-const generateHashID = function() {
-	// If we don't already have the next HashID, we generate it.
-	if (nextHashID === undefined) {
-		let currentNextHashID = 0
-		for (actor of global.sectionData.Static.Objs) {
-			if (actor.HashId.value > currentNextHashID) {
-				currentNextHashID = actor.HashId.value + 1
-			}
-		}
-		for (actor of global.sectionData.Dynamic.Objs) {
-			if (actor.HashId.value > currentNextHashID) {
-				currentNextHashID = actor.HashId.value + 1
-			}
-		}
-		nextHashID = currentNextHashID
-	}
-	let thisHashID = nextHashID
-	nextHashID = nextHashID + 1
-	return(thisHashID)
 }
 
 
@@ -546,6 +527,21 @@ const updateDataActor = async function(dummy) {
 
 }
 
+
+// Returns an actor from its HashID:
+const getActorFromHashID = function(HashID) {
+	for (const actor of global.sectionData.Dynamic.Objs) {
+		if (actor.HashId.value === HashID) {
+			return actor
+		}
+	}
+	for (const actor of global.sectionData.Static.Objs) {
+		if (actor.HashId.value === HashID) {
+			return actor
+		}
+	}
+}
+
 // Deprecated
 
 
@@ -600,7 +596,6 @@ module.exports = {
 	addDynamicActor: addDynamicActor,
 	addStaticActor: addStaticActor,
 	setupObjectActor: setupObjectActor,
-	nextHashID: nextHashID,
 	reloadObjectActor: reloadObjectActor,
-	generateHashID: generateHashID
+	getActorFromHashID: getActorFromHashID
 }

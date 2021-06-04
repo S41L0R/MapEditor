@@ -3,12 +3,6 @@ let groupSelector
 let selectedDummys = []
 
 
-// TO DO:
-// As it turns out, there's a massive error in how I did some of this. Instead
-// of using one dummy obj per object, we need one per actor, with an array
-// of InstancedMeshes and their indexes. I'll need to modify SceneTools to do
-// that, and then modify this document to accept those changes.
-
 
 
 

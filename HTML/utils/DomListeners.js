@@ -3,6 +3,8 @@ const ActorTools = require("./ActorTools.js")
 const DataEditorTools = require("./DataEditorTools.js")
 const RayCastTools = require("./RayCastTools.js")
 const RailTools = require("./RailTools.js")
+const RailHelperTools = require("./RailHelperTools.js")
+const ClipboardTools = require("./ClipboardTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -13,6 +15,7 @@ const initListeners = async function(document, editorControls, transformControl)
 	initAddRailButton(document)
 	initAddRailDialog(document)
 	initRailPointSlider(document)
+	initCopyPasteActorEvent(document)
 }
 
 async function initCameraSpeedControls(document, editorControls) {
@@ -111,7 +114,7 @@ async function initAddActorOfTypeDialog(document) {
 	})
 
 	dynamicButton.addEventListener("click", () => {
-		ActorTools.addDynamicActor("Obj_TreeBroadleaf_A_LL_02", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		ActorTools.addDynamicActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
 	})
 }
 
@@ -195,8 +198,76 @@ async function initDeleteActorEvent(document) {
 			SelectionTools.deselectAll()
 			DataEditorTools.removeAllActorsFromSelectedActorsList(document)
 			for (const dummy of selectedDummys) {
-				ActorTools.removeObjectActorByDummy(dummy)
-				ActorTools.removeDataActorByDummy(dummy)
+				if (dummy.relevantType === "RailPoint") {
+					let rail = RailTools.getRailFromHashID(dummy.CorrespondingRailHashID)
+					rail.RailPoints.splice(dummy.railPointIndex, 1)
+
+					SelectionTools.deselectAll(global.transformControl, global.THREE)
+					RailTools.reloadRail(dummy.CorrespondingRailHashID, global.sectionData, global.scene)
+					if (rail.RailType.value === "Bezier") {
+						RailHelperTools.removeUnusedControlPointHelpers(rail, global.scene, RayCastTools.intersectables).then(() => {
+							RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+						})
+					}
+					RailHelperTools.reloadRailPointHelpersByRailHashID(dummy.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+				}
+				else {
+					ActorTools.removeObjectActorByDummy(dummy)
+					ActorTools.removeDataActorByDummy(dummy)
+				}
+			}
+		}
+	})
+}
+
+
+async function initCopyPasteActorEvent(document) {
+	let ctrlDown = false
+	document.addEventListener("keydown", (e) => {
+		if (e.keyCode === 17 || e.keyCode === 91) {
+			ctrlDown = true
+		}
+	})
+	document.addEventListener("keyup", (e) => {
+		if (e.keyCode === 17 || e.keyCode === 91) {
+			ctrlDown = false
+		}
+	})
+
+	document.addEventListener("keydown", (e) => {
+		if (e.keyCode === 67) {
+			if (ctrlDown) {
+				// Copy the actors
+				let actorDict = {"Static": [], "Dynamic": []}
+				for (const dummy of SelectionTools.selectedDummys) {
+					if (dummy.relevantType !== "ControlPoint" && dummy.relevantType !== "RailPoint") {
+						// We know that this dummy refers to an actor.
+						const actor = dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index]
+
+						// Okay, lets build up the data to copy
+						// For that, we'll need to know if this actor is a static or dynamic actor.
+						// I don't store that data anywhere, so.............................
+						// Whatever, optimization is just a side effect of good code and I don't write that anyway.
+
+						// Plus, this isn't much slower anyway.
+						if (global.sectionData.Static.Objs.indexOf(actor) !== -1) {
+							actorDict.Static.push(actor)
+						}
+						else if (global.sectionData.Dynamic.Objs.indexOf(actor) !== -1) {
+							actorDict.Dynamic.push(actor)
+						}
+
+					}
+				}
+				ClipboardTools.copyActors(actorDict)
+			}
+		}
+	})
+	document.addEventListener("keydown", (e) => {
+		if (e.keyCode === 86) {
+			if (ctrlDown) {
+				// Paste the actors
+				ClipboardTools.pasteActors()
 			}
 		}
 	})

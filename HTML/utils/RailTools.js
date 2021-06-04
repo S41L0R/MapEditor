@@ -9,8 +9,7 @@
 //
 // We only need to do it if we're moving a railPoint.
 
-// We use this for generateHashID, but later I'll migrate that function to a general-purpose map utils file.
-const ActorTools = require("./ActorTools.js")
+const MapTools = require("./MapTools.js")
 
 
 const RAIL_RES = 50;
@@ -52,7 +51,7 @@ const createNewBezierRail = async function(pos, pointNum, XZMultiplier, scenelik
 	let rail = {
 		"HashId": {
 			"type": 102,
-			"value": ActorTools.generateHashID()
+			"value": MapTools.generateHashID()
 		},
 		"IsClosed": {
 			"type": 500,
@@ -191,7 +190,7 @@ const createNewLinearRail = async function(pos, pointNum, XZMultiplier, scenelik
 	let rail = {
 		"HashId": {
 			"type": 102,
-			"value": ActorTools.generateHashID()
+			"value": MapTools.generateHashID()
 		},
 		"IsClosed": {
 			"type": 500,
@@ -635,6 +634,15 @@ const setControlPointPos = async function(rail, railPointIndex, controlPointInde
 	}
 }
 
+
+const getRailFromHashID = function(HashId) {
+	for (const rail of global.sectionData.Static.Rails) {
+		if (rail.HashId.value === HashId) {
+			return(rail)
+		}
+	}
+}
+
 module.exports = {
 	createRails: createRails,
 	reloadRails: reloadRails,
@@ -644,5 +652,6 @@ module.exports = {
 	setControlPointPos: setControlPointPos,
 	reloadNextAndPrevDistance: reloadNextAndPrevDistance,
 	createNewBezierRail: createNewBezierRail,
-	createNewLinearRail: createNewLinearRail
+	createNewLinearRail: createNewLinearRail,
+	getRailFromHashID: getRailFromHashID
 }
