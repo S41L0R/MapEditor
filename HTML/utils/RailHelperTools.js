@@ -317,9 +317,39 @@ function drawControlPointHelpers(point1, point2, controlPoint1, railPointIndex, 
 	});
 }
 
+const removeUnusedControlPointHelpers = async function(rail, scenelike, intersectables) {
+	let controlPointHelpersToRemove = []
+	let controlPointIndexArray = []
+	for (const railPoint of rail.RailPoints) {
+		for (const helper of controlPointObjects) {
+			// Okay, we're only going to remove matching railPoints if they're part of the rail we sent in. Also, otherwise it would be harder to figure out if the controlPoint is needed.
+			if (helper.CorrespondingRailHashID === rail.HashId.value) {
+				// First off, we can check if the controlPoint it's referencing exists.
+				if (typeof railPoint.ControlPoints[helper.controlPointIndex] === 'undefined') {
+					controlPointHelpersToRemove.push(helper)
+				}
+
+				// We also need to check for duplicate references, and delete accordingly.
+				if (controlPointIndexArray[helper.controlPointIndex] !== undefined) {
+					controlPointHelpersToRemove.push(helper)
+				}
+				else {
+					controlPointIndexArray[helper.controlPointIndex] = "I exist!"
+				}
+			}
+		}
+	}
+	for (const helper of controlPointHelpersToRemove) {
+		controlPointObjects.splice(controlPointObjects.indexOf(helper), 1)
+		scenelike.remove(helper)
+		intersectables.splice(intersectables.indexOf(helper), 1)
+	}
+}
+
 module.exports = {
 	drawHelpers: drawHelpers,
 	removeControlPointHelpersByRailHashID: removeControlPointHelpersByRailHashID,
 	reloadControlPointHelpersByRailHashID: reloadControlPointHelpersByRailHashID,
-	reloadRailPointHelpersByRailHashID: reloadRailPointHelpersByRailHashID
+	reloadRailPointHelpersByRailHashID: reloadRailPointHelpersByRailHashID,
+	removeUnusedControlPointHelpers: removeUnusedControlPointHelpers
 }

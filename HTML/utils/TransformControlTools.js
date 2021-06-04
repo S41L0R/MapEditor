@@ -26,6 +26,8 @@ async function initDraggingChanged(transformControl) {
 							rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = pos.z
 							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
 							RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+							// We also gotta calc NextDistance and PrevDistance for proper game function:
+							RailTools.reloadNextAndPrevDistance(rail)
 						}
 					}
 				}
@@ -35,8 +37,6 @@ async function initDraggingChanged(transformControl) {
 							const pos = new global.THREE.Vector3().setFromMatrixPosition(selectedObject.matrixWorld)
 							RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, pos)
 							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
-							// We also gotta calc NextDistance and PrevDistance for proper game function:
-							RailTools.reloadNextAndPrevDistance(rail)
 						}
 					}
 				}
