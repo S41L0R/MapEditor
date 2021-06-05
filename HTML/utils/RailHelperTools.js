@@ -7,11 +7,8 @@ let railPointObjects = []
 let railHelperObjects = []
 
 const drawHelpers = async function(rail, scenelike, intersectables) {
-	//console.error("test");
 	drawRailPointHelpers(rail, scenelike, intersectables);
-	//console.error("test");
 	if (rail.RailType.value == "Bezier") {
-		//console.error("test")
 		generateControlPointHelpers(rail, scenelike, intersectables);
 	}
 }
@@ -22,8 +19,6 @@ const removeControlPointHelpersByRailHashID = async function(hashID, scenelike, 
 		// Then if it has the matching hashID we get rid of it:
 		if (item.CorrespondingRailHashID == hashID) {
 			if (item.relevantType == "ControlPoint") {
-				//console.error(hashID);
-				//console.error("bye");
 				item.geometry.dispose()
 				item.material.dispose()
 				scenelike.remove(item)
@@ -41,7 +36,6 @@ const reloadRailPointHelpersByRailHashID = async function(hashID, scenelike, map
 	for (item of scenelike.children) {
 		if (item.CorrespondingRailHashID === hashID) {
 			if (item.relevantType == "RailPoint") {
-				console.error("test")
 				item.geometry.dispose()
 				item.material.dispose()
 				removeList.push(item)
@@ -179,9 +173,6 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 
 }
 function generateControlPointHelpers(rail, scenelike, intersectables) {
-	console.error(rail)
-	console.error(scenelike)
-	console.error(intersectables)
 
 	// Okay, we'll just assume for a second that there's not an error elsewhere in the code, and that there aren't multiple instances of the same rail hashID
 	//

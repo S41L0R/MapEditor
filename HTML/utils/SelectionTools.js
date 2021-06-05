@@ -12,8 +12,6 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 	const dummyObject = new THREE.Group()
 	dummyObject.userData.instancedMeshes = instancedMeshes
 	dummyObject.userData.index = index
-	console.error(instancedMeshes[0].instanceMatrix)
-	console.error(index)
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrix)
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrixWorld)
 
@@ -24,14 +22,9 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 		dummyObject.matrix.elements[i] = num
 	}
 	*/
-	console.error(instancedMeshes[0].instanceMatrix)
-	console.error(dummyObject.matrix)
 	dummyObject.matrixAutoUpdate = false
-	console.error(dummyObject.matrix)
 	objectDummys.push(dummyObject)
-	console.error(dummyObject.matrix)
 	scenelike.add(dummyObject)
-	console.error(dummyObject.matrix)
 
 
 	/* Dummy visualizer
@@ -92,8 +85,6 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
 	for (const dummy of objectDummys) {
 		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
 			if (dummy.userData.index === index) {
-				console.error("FOUND")
-				console.error(dummy)
 				if (!selectedDummys.includes(dummy)) {
 					selectedDummys.push(dummy)
 					groupSelector.add(dummy)
@@ -132,7 +123,6 @@ const selectObjectByDummy = async function (dummy, transformControl, THREE) {
 	  }
 	  */
 		updateGroupSelectorPos(THREE, transformControl)
-		console.error(groupSelector)
 		/*
 	  for (selectedDummy of selectedDummys) {
 	    if (selectedDummy !== dummy) {
@@ -154,10 +144,8 @@ const deselectObject = async function (instancedMesh, index, transformControl, T
 	for (const dummy of objectDummys) {
 		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
 			if (dummy.userData.index === index) {
-				console.error("FOUND")
 				if (selectedDummys.includes(dummy)) {
 					selectedDummys.splice(selectedDummys.indexOf(dummy), 1)
-					console.error(selectedDummys)
 					groupSelector.remove(dummy)
 					updateGroupSelectorPos(THREE, transformControl)
 					updateSelectedDummys(THREE)
@@ -249,17 +237,12 @@ function updateGroupSelectorPos(THREE, transformControl) {
 	midX = 0
 	midY = 0
 	midZ = 0
-	console.error(selectedDummys)
 	for (const dummy of selectedDummys) {
-		console.error(dummy)
 		const pos = new THREE.Vector3().setFromMatrixPosition(dummy.matrixWorld)
-		console.error(dummy.matrixWorld)
-		console.error(pos)
 		midX += pos.x
 		midY += pos.y
 		midZ += pos.z
 	}
-	console.error(midX)
 	midX = midX / selectedDummys.length
 	midY = midY / selectedDummys.length
 	midZ = midZ / selectedDummys.length
@@ -278,9 +261,7 @@ function resetGroupSelectorPos() {
 }
 
 function toLocalSpace(object, THREE) {
-	console.error(object)
 	let oldPosVector = new THREE.Vector3().setFromMatrixPosition(object.matrixWorld)
-	console.error(oldPosVector)
 	let posX = oldPosVector.x - groupSelector.position.x
 	let posY = oldPosVector.y - groupSelector.position.y
 	let posZ = oldPosVector.z - groupSelector.position.z
@@ -299,13 +280,6 @@ function toLocalSpace(object, THREE) {
 	let scaleZ = oldScaleVector.z - groupSelector.scale.z
 	let newScaleVector = new THREE.Vector3(scaleX, scaleY, scaleZ)
 
-	console.error(posX)
-	console.error(posY)
-	console.error(posZ)
-
-	console.error(newPosVector)
-	console.error(newRotEuler)
-	console.error(newScaleVector)
 
 	//object.position.set(newPosVector.x, newPosVector.y, newPosVector.z);
 	//object.rotation.set(rotX, rotY, rotZ);
