@@ -31,7 +31,6 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 				if (!transformControl.dragging) {
 					if (doObjectSelect) {
 						let selectedObject = raycast(TransformControls, camera)
-						console.error(selectedObject)
 						if (selectedObject !== undefined) {
 							if (selectedObject.object.relevantType !== "RailPoint" && selectedObject.object.relevantType !== "ControlPoint") {
 								SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
@@ -42,7 +41,7 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 								SelectionTools.selectRail(selectedObject.object)
 
 								// Okay, so now what we want to do is set things up so that the rail appears in the selected items list.
-							
+
 								// First thing that we'll need to do right now is find the actual rail.
 								for (const rail of global.sectionData.Static.Rails) {
 									if (rail.HashId.value === selectedObject.object.CorrespondingRailHashID) {
@@ -95,7 +94,6 @@ function raycast (TransformControls, camera) {
 
 			//Check if the object is even visible. This is really important as we don't want the user to select stuff they can't even see.
 			if (intersect.object.visible) {
-			//console.error("i")
 
 				let foundTransformBreak = false
 				let foundTransformReturn = false
@@ -122,7 +120,6 @@ function raycast (TransformControls, camera) {
 				    }
 				}
 				catch {
-				//console.error("hi")
 					if (transformControlsPass) {
 						return
 					}
@@ -163,7 +160,6 @@ function raycast (TransformControls, camera) {
 					}
 				}
 				catch {
-				//console.error("hi")
 					if (transformControlsPass) {
 						return
 					}
@@ -203,7 +199,6 @@ function raycast (TransformControls, camera) {
 					}
 				}
 				catch {
-				//console.error("hi")
 					if (transformControlsPass) {
 						return
 					}
@@ -213,7 +208,6 @@ function raycast (TransformControls, camera) {
 					if (foundTransformReturn) {
 						return
 					}
-					//console.error("Couldn't find next parent.")
 
 					//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
 					unconfirmedSelectedObject = intersect
@@ -243,7 +237,6 @@ function raycast (TransformControls, camera) {
 					}
 				}
 				catch {
-				//console.error("hi")
 					if (transformControlsPass) {
 						return
 					}
@@ -254,7 +247,6 @@ function raycast (TransformControls, camera) {
 						return
 					}
 
-					//console.error("Couldn't find next parent.")
 
 					//Start a search for transformControls pass - this is for if transformControls isn't the first element in the raycast result.
 					unconfirmedSelectedObject = intersect

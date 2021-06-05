@@ -135,9 +135,25 @@ class mapFile:
     def __init__(self):
         self.settings, self.content, self.aoc = getSettings()
 
-        pathStrStatic = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Static.smubin')
-        pathStrDy = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Dynamic.smubin')
-        pathStrTeraTree = (f'{self.settings["GameDump"]}/{self.aoc}/Map/Mainfield/{currentSection}/{currentSection}_TeraTree.sblwp')
+        # I'm gonna implement something to load a test section.
+        # I'm sick of loading more data than I need to and waiting for it.
+        # I don't feel like inserting my test section into my game save,
+        # So I'm gonna make some custom logic to have it seperate.
+
+
+        # Also, I have no idea how this worked without this line:
+        global currentSection
+
+        if (currentSection.startswith("TestSection_")):
+            currentSection = currentSection.replace("TestSection_", "")
+            pathStrStatic = (f'./Test/{currentSection}/{currentSection}_Static.smubin')
+            pathStrDy = (f'./Test/{currentSection}/{currentSection}_Dynamic.smubin')
+            pathStrTeraTree = (f'./Test/{currentSection}/{currentSection}_TeraTree.sblwp')
+
+        else:
+            pathStrStatic = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Static.smubin')
+            pathStrDy = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Dynamic.smubin')
+            pathStrTeraTree = (f'{self.settings["GameDump"]}/{self.aoc}/Map/Mainfield/{currentSection}/{currentSection}_TeraTree.sblwp')
 
         self.pathStatic = pathlib.Path(pathStrStatic)
         self.pathDy = pathlib.Path(pathStrDy)

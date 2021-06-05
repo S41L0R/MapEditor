@@ -20,7 +20,6 @@ const GeneralRailTools = require("./GeneralRailTools.js");
 // This function creates all the rails in a scene based on a maplike.
 const createRails = async function(maplike, scenelike, intersectables) {
 	for (const rail of maplike.Static.Rails) {
-		console.error(rail)
 		drawRail(rail, scenelike)
 		RailHelperTools.drawHelpers(rail, scenelike, intersectables)
 	}

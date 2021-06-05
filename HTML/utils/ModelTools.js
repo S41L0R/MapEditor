@@ -170,7 +170,7 @@ const setupBoxAreaMesh = async function (THREE) {
 			emissive: new THREE.Color("#FFFFFF"),
 			transparent: true,
 			alphaTest: 0.35,
-			opacity: 0.2,
+			opacity: 0.5,
 			side: THREE.DoubleSide,
 		})
 		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)

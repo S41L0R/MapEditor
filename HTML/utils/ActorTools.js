@@ -120,9 +120,7 @@ const setupObjectActor = async function(actor) {
 						if ("Shape" in actor["!Parameters"]) {
 							switch (actor["!Parameters"].Shape.value) {
 								case "Sphere":
-									console.error("test")
 									actorModelData = await setupBasicMeshActor(actor, "areaSphere")
-									console.error(actorModelData)
 									return(actorModelData)
 								case "Capsule":
 									actorModelData = await setupBasicMeshActor(actor, "areaCapsule")

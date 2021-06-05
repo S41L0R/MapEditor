@@ -22,7 +22,9 @@ const pasteActors = function() {
   // Okay, so now we're actually gonna want to deselect all currently selected objects/actors. This is so that the user can easily start moving around what they just pasted.
   SelectionTools.deselectAll(global.transformControl, global.THREE).then(() => {
     DataEditorTools.removeAllActorsFromSelectedActorsList(global.document).then(() => {
-      for (const actor of actorClipboard.Static) {
+      for (const refActor of actorClipboard.Static) {
+        // UGGGH I JUYSYT RELIAIZED THATRY I NEED TO MAKRE COPYT OF OBJECTE AND NTOT REFERERENCE OR ENLSE MESS UP.
+        let actor = JSON.parse(JSON.stringify(refActor))
         // We're gonna want to get a new HashID for the actor:
         actor.HashId.value = MapTools.generateHashID()
         // Then make sure it's in sectionData:
@@ -34,7 +36,9 @@ const pasteActors = function() {
         })
         DataEditorTools.addActorToSelectedActorsList(actor, global.document)
       }
-      for (const actor of actorClipboard.Dynamic) {
+      for (const refActor of actorClipboard.Dynamic) {
+        // UGGGH I JUYSYT RELIAIZED THATRY I NEED TO MAKRE COPYT OF OBJECTE AND NTOT REFERERENCE OR ENLSE MESS UP.
+        let actor = JSON.parse(JSON.stringify(refActor))
         // We're gonna want to get a new HashID for the actor:
         actor.HashId.value = MapTools.generateHashID()
         // Then make sure it's in sectionData:

@@ -194,7 +194,6 @@ async function initDeleteActorEvent(document) {
 		if (e.keyCode === 46 || e.keyCode === 8) {
 			//let selectedDummys = SelectionTools.getSelectedDummys()
 			let selectedDummys = [ ...SelectionTools.selectedDummys ]
-			console.error(selectedDummys)
 			SelectionTools.deselectAll()
 			DataEditorTools.removeAllActorsFromSelectedActorsList(document)
 			for (const dummy of selectedDummys) {
