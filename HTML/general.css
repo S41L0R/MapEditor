@@ -354,20 +354,55 @@
     font-family: "Noto Sans TC", "sans-serif";
   }
 
-  #devDisplay {
+  #BottomMenu_FlexBox {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 20%;
+    width: 85%;
+    bottom: 0%;
+    right: 15%;
     position: fixed;
-    background-color: black;
-    width: 15em;
-    height: 10%;
-    right: 16%;
-    bottom: 10px;
     z-index: 999;
+  }
+
+  #BottomMenu_FlexBox_PushDummyObj {
+    min-height: 0;
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+
+  #devDisplay {
+    background-color: black;
+    width: 15%;
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-left: 85%;
+    max-height: 50%;
   }
 
   #renderStats {
     color: white;
     padding: 0.5em;
     margin: 0;
+  }
+
+  #VisibilityDisplay {
+    background-color: black;
+    flex-grow: 0.0000000001;
+    flex-basis: 0;
+    min-height: 0;
+    display: block;
+  }
+
+  .VisibilityDisplay_Toggle {
+    padding: 0.5%;
+    padding-bottom: 0.1%;
+    padding-top: 0.1%;
+  }
+
+  .VisibilityDisplay_Label {
+    color: white;
   }
 
   #selectedActorsList {

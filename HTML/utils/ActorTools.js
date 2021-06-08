@@ -188,27 +188,32 @@ const setupObjectActor = async function(actor) {
 
 async function setupBasicMeshActor(actor, basicMeshKey) {
 	return new Promise((resolve) => {
-		// First up, we need to check on whether there are already too many instanced
-		// mesh indices.
-		if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey].instanceMatrix.count) {
-			// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
-		}
-		else {
-			// Okay, we're good.
-			console.warn(ModelTools.basicMeshDict[basicMeshKey])
-			let actorModel = ModelTools.basicMeshDict[basicMeshKey]
-			let index = actorModel.count
-			actorModel.count = actorModel.count + 1
-			createActorMatrix(actor).then(async (actorMatrix) => {
+		createActorMatrix(actor).then(async (actorMatrix) => {
+			// First up, we need to check on whether there are already too many instanced
+			// mesh indices.
+			if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey][0].instanceMatrix.count) {
+				// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+
+				return
+			}
+			else {
+				// Okay, we're good.
+				console.warn(ModelTools.basicMeshDict[basicMeshKey])
+				let actorModelArray = ModelTools.basicMeshDict[basicMeshKey]
+				// With basicMeshes, there is only one element. It is an array for other reasons.
+				let actorModel = actorModelArray[0]
+				let index = actorModel.count
+				actorModel.count = actorModel.count + 1
 				actorModel.setMatrixAt(index, actorMatrix)
 				actorModel.instanceMatrix.needsUpdate = true
-				let dummy = await SelectionTools.createObjectDummy([actorModel], index, global.THREE, global.scene)
 
 				actorModel.userData.actorList[index] = actor
 
-				resolve([[actorModel], index, dummy])
-			})
-		}
+				let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
+
+				resolve([actorModelArray, index, dummy])
+			}
+		})
 	})
 }
 
@@ -410,13 +415,13 @@ const removeObjectActorByDummy = async function(dummy) {
 
 
 function findDummyFromInstancedMeshesAndIndex(instancedMeshArray, index) {
-		for (let dummy of SelectionTools.objectDummys) {
-			if (dummy.userData.instancedMeshes == instancedMeshArray) {
-				if (dummy.userData.index === index) {
-					return(dummy)
-				}
+	for (let dummy of SelectionTools.objectDummys) {
+		if (dummy.userData.instancedMeshes === instancedMeshArray) {
+			if (dummy.userData.index === index) {
+				return(dummy)
 			}
 		}
+	}
 }
 async function swapInstancedMeshIndicesInReferences(dummy1, dummy2) {
 	const temporarySwapStorage = dummy1.userData.index

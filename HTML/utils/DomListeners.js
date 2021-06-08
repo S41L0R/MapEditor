@@ -15,8 +15,13 @@ const initListeners = async function(document, editorControls, transformControl)
 	initAddRailButton(document)
 	initAddRailDialog(document)
 	initRailPointSlider(document)
+	initCtrlListener(document)
 	initCopyPasteActorEvent(document)
+	initShowVisibilityDisplay(document)
 }
+
+
+let ctrlDown = false
 
 async function initCameraSpeedControls(document, editorControls) {
 	// Changes the camera speed when the slider's value changes
@@ -219,9 +224,7 @@ async function initDeleteActorEvent(document) {
 	})
 }
 
-
-async function initCopyPasteActorEvent(document) {
-	let ctrlDown = false
+function initCtrlListener(document) {
 	document.addEventListener("keydown", (e) => {
 		if (e.keyCode === 17 || e.keyCode === 91) {
 			ctrlDown = true
@@ -232,6 +235,9 @@ async function initCopyPasteActorEvent(document) {
 			ctrlDown = false
 		}
 	})
+}
+async function initCopyPasteActorEvent(document) {
+
 
 	document.addEventListener("keydown", (e) => {
 		if (e.keyCode === 67) {
@@ -267,6 +273,28 @@ async function initCopyPasteActorEvent(document) {
 			if (ctrlDown) {
 				// Paste the actors
 				ClipboardTools.pasteActors()
+			}
+		}
+	})
+}
+
+async function initShowVisibilityDisplay(document) {
+	let opened = false;
+	document.addEventListener("keydown", (e) => {
+		if (e.keyCode === 86 ) {
+			if (!ctrlDown) {
+				let visibilityDisplay = document.getElementById("VisibilityDisplay")
+				let pushDummyObj = document.getElementById("BottomMenu_FlexBox_PushDummyObj")
+				if (opened) {
+					visibilityDisplay.style["flex-grow"] = 0.00001
+					pushDummyObj.style["flex-grow"] = 1
+					opened = false
+				}
+				else {
+					visibilityDisplay.style["flex-grow"] = 1
+					pushDummyObj.style["flex-grow"] = 0.00001
+					opened = true
+				}
 			}
 		}
 	})
