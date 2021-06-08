@@ -147,7 +147,8 @@ const setupCubeMesh = async function (THREE) {
 		})
 		basicCubeMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
 		basicCubeMesh.userData.actorList = []
-		basicMeshDict["basicCube"] = basicCubeMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["basicCube"] = [basicCubeMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -163,6 +164,7 @@ const setupBoxAreaMesh = async function (THREE) {
 		const cubeGeometry = new THREE.BoxBufferGeometry()
 		const cubeTexLoader = new THREE.TextureLoader()
 		const texture = cubeTexLoader.load(areaTexturePath_Box)
+		texture.magFilter = THREE.NearestFilter
 		const material = new THREE.MeshStandardMaterial({
 			emissiveMap: texture,
 			map: texture,
@@ -170,11 +172,12 @@ const setupBoxAreaMesh = async function (THREE) {
 			transparent: true,
 			alphaTest: 0.35,
 			opacity: 0.5,
-			side: THREE.DoubleSide
+			side: THREE.DoubleSide,
 		})
 		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
 		boxAreaMesh.userData.actorList = []
-		basicMeshDict["areaBox"] = boxAreaMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["areaBox"] = [boxAreaMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -187,21 +190,26 @@ const setupBoxAreaMesh = async function (THREE) {
 
 const setupSphereAreaMesh = async function (THREE) {
 	return new Promise((resolve) => {
-		const sphereGeometry = new THREE.SphereBufferGeometry()
+		const sphereGeometry = new THREE.SphereBufferGeometry(1, 32, 32)
 		const cubeTexLoader = new THREE.TextureLoader()
 		const texture = cubeTexLoader.load(areaTexturePath_Sphere)
+		texture.wrapS = THREE.RepeatWrapping
+		texture.wrapT = THREE.RepeatWrapping
+		texture.repeat.set(15, 15)
+		texture.magFilter = THREE.NearestFilter
 		const material = new THREE.MeshStandardMaterial({
 			emissiveMap: texture,
 			map: texture,
 			emissive: new THREE.Color("#FFFFFF"),
 			transparent: true,
 			alphaTest: 0.35,
-			opacity: 0.5,
+			opacity: 1,
 			side: THREE.DoubleSide
 		})
 		sphereAreaMesh = new THREE.InstancedMesh(sphereGeometry, material, 9999)
 		sphereAreaMesh.userData.actorList = []
-		basicMeshDict["areaSphere"] = sphereAreaMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["areaSphere"] = [sphereAreaMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -229,7 +237,8 @@ const setupCapsuleAreaMesh = async function (THREE) {
 		})
 		capsuleAreaMesh = new THREE.InstancedMesh(capsuleGeometry, material, 9999)
 		capsuleAreaMesh.userData.actorList = []
-		basicMeshDict["areaCapsule"] = capsuleAreaMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["areaCapsule"] = [capsuleAreaMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -249,7 +258,7 @@ const loadModelByActorName = async function (actorName, BufferGeometryUtils, col
 			// Okay, good it's not
 
 
-			// This is REALLY slow. Because of this we get all actorModelPaths at once and feed it in, only relying on this if the paths aren't fed in.
+			// Without the if statement, this is REALLY slow. Because of this we get all actorModelPaths at once and feed it in, only relying on this if the paths aren't fed in.
 			if (modelPath === undefined) {
 				return PythonTools.loadPython("getActorModelPath", actorName + " " + sectionName).then((resultingModelPath) => {
 					colladaLoader.load(resultingModelPath, (collada) => {colladaOnLoad(collada, actorName, resolve, BufferGeometryUtils, modelNum)}, colladaOnProgress, colladaOnError)

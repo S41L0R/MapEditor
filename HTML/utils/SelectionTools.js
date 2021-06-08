@@ -3,12 +3,6 @@ let groupSelector
 let selectedDummys = []
 
 
-// TO DO:
-// As it turns out, there's a massive error in how I did some of this. Instead
-// of using one dummy obj per object, we need one per actor, with an array
-// of InstancedMeshes and their indexes. I'll need to modify SceneTools to do
-// that, and then modify this document to accept those changes.
-
 
 
 
@@ -18,29 +12,14 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 	const dummyObject = new THREE.Group()
 	dummyObject.userData.instancedMeshes = instancedMeshes
 	dummyObject.userData.index = index
-	console.error(instancedMeshes[0].instanceMatrix)
-	console.error(index)
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrix)
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrixWorld)
-
-	/*
-	for (let i = 0; i <= 16; i++) {
-		console.error(instancedMeshes[0].instanceMatrix.array)
-		let num = instancedMeshes[0].instanceMatrix.array[index + i]
-		dummyObject.matrix.elements[i] = num
-	}
-	*/
-	console.error(instancedMeshes[0].instanceMatrix)
-	console.error(dummyObject.matrix)
 	dummyObject.matrixAutoUpdate = false
-	console.error(dummyObject.matrix)
 	objectDummys.push(dummyObject)
-	console.error(dummyObject.matrix)
 	scenelike.add(dummyObject)
-	console.error(dummyObject.matrix)
 
 
-	/* Dummy visualizer
+	/* Dummy visualizer -- Uncomment for debug
 	const dummyVisualizerGeo = new THREE.BufferGeometry();
 	dummyVisualizerGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
 	const dummyVisualizerMat = new THREE.PointsMaterial(
@@ -60,8 +39,9 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 }
 const initSelectionTools = async function (THREE, scenelike) {
 	groupSelector = new THREE.Group()
+	groupSelector.userData.type = "GroupSelector"
 
-	/* groupSelector visualizer
+	/* groupSelector visualizer -- Uncomment for debug
 	const groupSelectorVisualizerGeo = new THREE.BufferGeometry();
 	groupSelectorVisualizerGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
 	const groupSelectorVisualizerMat = new THREE.PointsMaterial(
@@ -97,26 +77,10 @@ const selectObject = async function (instancedMesh, index, transformControl, THR
 	for (const dummy of objectDummys) {
 		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
 			if (dummy.userData.index === index) {
-				console.error("FOUND")
-				console.error(dummy)
 				if (!selectedDummys.includes(dummy)) {
 					selectedDummys.push(dummy)
 					groupSelector.add(dummy)
-					/*
-          for (selectedDummy of selectedDummys) {
-            groupSelector.remove(selectedDummy)
-          }
-          */
 					updateGroupSelectorPos(THREE, transformControl)
-					/*
-          for (selectedDummy of selectedDummys) {
-            if (selectedDummy !== dummy) {
-              groupSelector.add(selectedDummy)
-            }
-          }
-          groupSelector.attach(dummy)
-          */
-					//groupSelector.attach(dummy);
 					updateSelectedDummys(THREE)
 					displaySelection(dummy, THREE)
 					transformControl.attach(groupSelector)
@@ -131,22 +95,7 @@ const selectObjectByDummy = async function (dummy, transformControl, THREE) {
 	if (!selectedDummys.includes(dummy)) {
 		selectedDummys.push(dummy)
 		groupSelector.add(dummy)
-		/*
-	  for (selectedDummy of selectedDummys) {
-	    groupSelector.remove(selectedDummy)
-	  }
-	  */
 		updateGroupSelectorPos(THREE, transformControl)
-		console.error(groupSelector)
-		/*
-	  for (selectedDummy of selectedDummys) {
-	    if (selectedDummy !== dummy) {
-	      groupSelector.add(selectedDummy)
-	    }
-	  }
-	  groupSelector.attach(dummy)
-	  */
-		//groupSelector.attach(dummy);
 		updateSelectedDummys(THREE)
 		displaySelection(dummy, THREE)
 		transformControl.attach(groupSelector)
@@ -159,10 +108,8 @@ const deselectObject = async function (instancedMesh, index, transformControl, T
 	for (const dummy of objectDummys) {
 		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
 			if (dummy.userData.index === index) {
-				console.error("FOUND")
 				if (selectedDummys.includes(dummy)) {
 					selectedDummys.splice(selectedDummys.indexOf(dummy), 1)
-					console.error(selectedDummys)
 					groupSelector.remove(dummy)
 					updateGroupSelectorPos(THREE, transformControl)
 					updateSelectedDummys(THREE)
@@ -212,12 +159,12 @@ const selectRail = async function (helper) {
 	selectedDummys.push(helper)
 	updateGroupSelectorPos(global.THREE, global.transformControl)
 	updateSelectedDummys(global.THREE)
-	
-	
 
 
 
-	
+
+
+
 }
 
 const deselectRail = async function (helper) {
@@ -254,17 +201,12 @@ function updateGroupSelectorPos(THREE, transformControl) {
 	midX = 0
 	midY = 0
 	midZ = 0
-	console.error(selectedDummys)
 	for (const dummy of selectedDummys) {
-		console.error(dummy)
 		const pos = new THREE.Vector3().setFromMatrixPosition(dummy.matrixWorld)
-		console.error(dummy.matrixWorld)
-		console.error(pos)
 		midX += pos.x
 		midY += pos.y
 		midZ += pos.z
 	}
-	console.error(midX)
 	midX = midX / selectedDummys.length
 	midY = midY / selectedDummys.length
 	midZ = midZ / selectedDummys.length
@@ -272,6 +214,7 @@ function updateGroupSelectorPos(THREE, transformControl) {
 	groupSelector.position.set(midX, midY, midZ)
 
 	// Just some meh code to make sure the transformControl doesn't glitch out
+	// Umm... I have no idea why this is commented, but it works anyway.
 	//transformControl.detach();
 	//transformControl.attach(groupSelector);
 }
@@ -283,9 +226,7 @@ function resetGroupSelectorPos() {
 }
 
 function toLocalSpace(object, THREE) {
-	console.error(object)
 	let oldPosVector = new THREE.Vector3().setFromMatrixPosition(object.matrixWorld)
-	console.error(oldPosVector)
 	let posX = oldPosVector.x - groupSelector.position.x
 	let posY = oldPosVector.y - groupSelector.position.y
 	let posZ = oldPosVector.z - groupSelector.position.z
@@ -304,13 +245,6 @@ function toLocalSpace(object, THREE) {
 	let scaleZ = oldScaleVector.z - groupSelector.scale.z
 	let newScaleVector = new THREE.Vector3(scaleX, scaleY, scaleZ)
 
-	console.error(posX)
-	console.error(posY)
-	console.error(posZ)
-
-	console.error(newPosVector)
-	console.error(newRotEuler)
-	console.error(newScaleVector)
 
 	//object.position.set(newPosVector.x, newPosVector.y, newPosVector.z);
 	//object.rotation.set(rotX, rotY, rotZ);
@@ -324,16 +258,6 @@ function toLocalSpace(object, THREE) {
 }
 
 const displaySelection = async function(dummy, THREE) {
-	/*
-  // Should make things look red but doesn't work.
-  console.error(dummy)
-  let instancedMesh = dummy.userData.instancedMeshes;
-  let index = dummy.userData.index;
-
-  instancedMesh.setColorAt(index, new THREE.Color("#FF0000"));
-  instancedMesh.instanceColor.needsUpdate = true;
-
-  */
 
 	for (instancedMesh of dummy.userData.instancedMeshes) {
 		const wireframeGeo = new THREE.WireframeGeometry( instancedMesh.geometry )

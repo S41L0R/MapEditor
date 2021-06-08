@@ -43,8 +43,8 @@ async function addInstancedMeshes () {
 		}
 	}
 	for (let key in ModelTools.basicMeshDict) {
-		RayCastTools.intersectables.push(ModelTools.basicMeshDict[key])
-		global.scene.add(ModelTools.basicMeshDict[key])
+		RayCastTools.intersectables.push(ModelTools.basicMeshDict[key][0])
+		global.scene.add(ModelTools.basicMeshDict[key][0])
 	}
 }
 

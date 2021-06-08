@@ -6,7 +6,7 @@ const SelectionTools = require("./SelectionTools.js")
 
 const ipc = require("electron").ipcRenderer
 const initActorEditorTools = async function (sectionData) {
-	ipc.on("fromActorEditor", (event, message, HashId, type, isEditingRail) => {
+	ipc.on("fromActorEditor", async (event, message, HashId, type, isEditingRail) => {
 		for (const [index, actor] of sectionData.Static.Objs.entries()) {
 			if (actor.HashId.value == HashId) {
 				// Set the actor data to the returned data:
@@ -27,16 +27,23 @@ const initActorEditorTools = async function (sectionData) {
 			if (rail.HashId.value === HashId) {
 				// Set the rail data to the returned data:
 				Object.assign(sectionData.Static.Rails[index], message)
+
+
+
 				for (const helper of global.scene.children) {
 					if (helper.CorrespondingRailHashID === HashId) {
-						SelectionTools.deselectObjectByDummy(helper, global.transformControl, global.THREE)
+						await SelectionTools.deselectObjectByDummy(helper, global.transformControl, global.THREE)
 					}
 				}
-				SelectionTools.deselectAll(global.transformControl, global.THREE)
-				RailTools.reloadRail(HashId, global.sectionData, global.scene)
 
-				RailHelperTools.reloadControlPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
-				RailHelperTools.reloadRailPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
+
+				await SelectionTools.deselectAll(global.transformControl, global.THREE)
+				await RailTools.reloadRail(HashId, global.sectionData, global.scene)
+				if (rail.RailType.value === "Bezier") {
+					await RailHelperTools.reloadControlPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
+				}
+				await RailHelperTools.reloadRailPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
+
 				return
 			}
 		}
