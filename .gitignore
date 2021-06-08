@@ -12,3 +12,4 @@ release/
 dist/
 *.egg-info/
 temp/
+*.cache
