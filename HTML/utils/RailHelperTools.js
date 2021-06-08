@@ -1,12 +1,14 @@
 // Get Friends
 const GeneralRailTools = require("./GeneralRailTools.js");
 
+
+let controlPointObjects = []
+let railPointObjects = []
+let railHelperObjects = []
+
 const drawHelpers = async function(rail, scenelike, intersectables) {
-	//console.error("test");
 	drawRailPointHelpers(rail, scenelike, intersectables);
-	//console.error("test");
 	if (rail.RailType.value == "Bezier") {
-		//console.error("test")
 		generateControlPointHelpers(rail, scenelike, intersectables);
 	}
 }
@@ -17,8 +19,6 @@ const removeControlPointHelpersByRailHashID = async function(hashID, scenelike, 
 		// Then if it has the matching hashID we get rid of it:
 		if (item.CorrespondingRailHashID == hashID) {
 			if (item.relevantType == "ControlPoint") {
-				//console.error(hashID);
-				//console.error("bye");
 				item.geometry.dispose()
 				item.material.dispose()
 				scenelike.remove(item)
@@ -32,13 +32,19 @@ const removeControlPointHelpersByRailHashID = async function(hashID, scenelike, 
 
 
 const reloadRailPointHelpersByRailHashID = async function(hashID, scenelike, maplike, intersectables) {
+	let removeList = []
 	for (item of scenelike.children) {
 		if (item.CorrespondingRailHashID === hashID) {
-			item.geometry.dispose()
-			item.material.dispose()
-			scenelike.remove(item)
-			intersectables.splice(intersectables.indexOf(item), 1)
+			if (item.relevantType == "RailPoint") {
+				item.geometry.dispose()
+				item.material.dispose()
+				removeList.push(item)
+				intersectables.splice(intersectables.indexOf(item), 1)
+			}
 		}
+	}
+	for (const item of removeList) {
+		scenelike.remove(item)
 	}
 	for (const rail of maplike.Static.Rails) {
 		if (rail.HashId.value == hashID) {
@@ -49,7 +55,7 @@ const reloadRailPointHelpersByRailHashID = async function(hashID, scenelike, map
 
 
 const reloadControlPointHelpersByRailHashID = async function(hashID, scenelike, maplike, intersectables) {
-	//removeControlPointHelpersByRailHashID(hashID, scenelike);
+	//removeControlPointHelpersByRailHashID(hashID, scenelike, intersectables);
 	for (const rail of maplike.Static.Rails) {
 		if (rail.HashId.value == hashID) {
 			generateControlPointHelpers(rail, scenelike, intersectables);
@@ -89,6 +95,10 @@ async function drawRailPointHelpers(rail, scenelike, intersectables) {
 		// And add it to the scene
 		scenelike.add(helperObject);
 
+		// Add it to all the relevant helper lists
+		railPointObjects.push(helperObject)
+		railHelperObjects.push(helperObject)
+
 		// And add it to our list of intersectable objects
 		intersectables.push(helperObject);
 	}
@@ -106,12 +116,6 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 
 
 			GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
-				//console.warn(worldSpaceControlPointPositions[4][0]);
-				//console.warn(worldSpaceControlPointPositions[4][1]);
-				//console.warn(worldSpaceControlPointPositions[4][2]);
-				//console.warn(worldSpaceControlPointPositions[4][3])
-				//console.warn(worldSpaceControlPointPositions[1]);
-				//object.position = worldSpaceControlPointPositions[1];
 				object.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z);
 			});
 		}
@@ -172,21 +176,22 @@ function generateControlPointHelpers(rail, scenelike, intersectables) {
 
 	// Okay, we'll just assume for a second that there's not an error elsewhere in the code, and that there aren't multiple instances of the same rail hashID
 	//
-	// We'll just loop through the scene, and look for controlPoint helpers to see if they already exist.
+	// We'll just loop through all the controlPoints, and look for relevant controlPoint helpers to see if they already exist.
 	// If so, we can just move them.
-
 	let controlPointsToIgnore = [];
 	for (const [railPointIndex, railPoint] of rail.RailPoints.entries()) {
 		for (const [controlPointIndex, controlPoint] of railPoint.ControlPoints.entries()) {
-			for (const item of scenelike.children) {
-				if (item.CorrespondingRailHashID == rail.HashId.value) {
-					if (item.relevantType == "ControlPoint") {
-						if (item.railPointIndex == railPointIndex) {
-							if (item.controlPointIndex == controlPointIndex) {
-								console.warn(rail)
-								moveControlPointHelper(item, controlPoint, rail, railPointIndex, controlPointIndex);
-								controlPointsToIgnore.push(controlPoint);
+			for (const helper of controlPointObjects) {
+				if (helper.CorrespondingRailHashID === rail.HashId.value) {
+					if (helper.railPointIndex === railPointIndex) {
+						if (helper.controlPointIndex === controlPointIndex) {
+							// Of course, we want to make sure we don't move a controlPoint helper if it's already being moved by the user!
+							// That would create a weird amplification effect.
+							// Don't ask me why I know.
+							if (!(helper.parent.userData.type === "GroupSelector")) {
+								moveControlPointHelper(helper, controlPoint, rail, railPointIndex, controlPointIndex);
 							}
+							controlPointsToIgnore.push(controlPoint);
 						}
 					}
 				}
@@ -196,7 +201,7 @@ function generateControlPointHelpers(rail, scenelike, intersectables) {
 
 	// We'll loop through our railPoints
 	for ([railPointIndex, railPoint] of rail.RailPoints.entries()) {
-		if (railPoint.ControlPoints != undefined) {
+		if (railPoint.ControlPoints !== undefined) {
 			// And our controlPoints (if they exist)
 			for ([controlPointIndex, controlPoint] of railPoint.ControlPoints.entries()) {
 				if (!(controlPointsToIgnore.includes(controlPoint))) {
@@ -254,8 +259,8 @@ function drawControlPointHelpers(point1, point2, controlPoint1, railPointIndex, 
 	// (And make sure to pass in the indexes so we can remember where we were)
 	GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0, [railPointIndex, controlPointIndex]).then((worldSpaceControlPointPositions) => {
 		// Set up the basic geometry:
-		const geometry = new THREE.BufferGeometry();
-		geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3));
+		const geometry = new THREE.BufferGeometry()
+		geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3))
 		const material = new THREE.PointsMaterial(
 			{
 				size:10,
@@ -263,45 +268,79 @@ function drawControlPointHelpers(point1, point2, controlPoint1, railPointIndex, 
 				color: 0x0000ff
 			}
 		);
-		const helperObject = new THREE.Points(geometry, material);
-		geometry.computeBoundingSphere();
+		const helperObject = new THREE.Points(geometry, material)
+		geometry.computeBoundingSphere()
 		// Set up positions
-		helperObject.position = worldSpaceControlPointPositions[1];
+		helperObject.position = worldSpaceControlPointPositions[1]
 
 		// Hack on a hashID in order to find the corresponding rail later:
-		helperObject.CorrespondingRailHashID = rail.HashId.value;
+		helperObject.CorrespondingRailHashID = rail.HashId.value
 
 		// And hack on a rail index in order to find the railPoint later:
 		// (We passed in the railPointIndex, so we can just retreive it)
-		helperObject.railPointIndex = worldSpaceControlPointPositions[4][0];
+		helperObject.railPointIndex = worldSpaceControlPointPositions[4][0]
 
 		// Plus a controlPoint index too:
 		// (Again, retrieving the index)
-		helperObject.controlPointIndex = worldSpaceControlPointPositions[4][1];
+		helperObject.controlPointIndex = worldSpaceControlPointPositions[4][1]
 
 		// Just hack on an identifying label:
-		helperObject.relevantType = "ControlPoint";
+		helperObject.relevantType = "ControlPoint"
 
 		// And add it to the scene
-		scenelike.add(helperObject);
+		scenelike.add(helperObject)
+
+		// Add it to all relevant helper lists
+		controlPointObjects.push(helperObject)
+		railHelperObjects.push(helperObject)
 
 		// And add it to our list of intersectable objects
-		intersectables.push(helperObject);
+		intersectables.push(helperObject)
 
 
 		// And because there are two controlPoints per railPoint, we'll just do this again:
-		helperObject.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z);
+		helperObject.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z)
 		//helperObject.position = worldSpaceControlPointPositions[1];
-		helperObject.CorrespondingRailHashID = rail.HashId.value;
-		helperObject.relevantType = "ControlPoint";
-		scenelike.add(helperObject);
-		intersectables.push(helperObject);
+		helperObject.CorrespondingRailHashID = rail.HashId.value
+		helperObject.relevantType = "ControlPoint"
+		scenelike.add(helperObject)
+		intersectables.push(helperObject)
 	});
+}
+
+const removeUnusedControlPointHelpers = async function(rail, scenelike, intersectables) {
+	let controlPointHelpersToRemove = []
+	let controlPointIndexArray = []
+	for (const railPoint of rail.RailPoints) {
+		for (const helper of controlPointObjects) {
+			// Okay, we're only going to remove matching railPoints if they're part of the rail we sent in. Also, otherwise it would be harder to figure out if the controlPoint is needed.
+			if (helper.CorrespondingRailHashID === rail.HashId.value) {
+				// First off, we can check if the controlPoint it's referencing exists.
+				if (typeof railPoint.ControlPoints[helper.controlPointIndex] === 'undefined') {
+					controlPointHelpersToRemove.push(helper)
+				}
+
+				// We also need to check for duplicate references, and delete accordingly.
+				if (controlPointIndexArray[helper.controlPointIndex] !== undefined) {
+					controlPointHelpersToRemove.push(helper)
+				}
+				else {
+					controlPointIndexArray[helper.controlPointIndex] = "I exist!"
+				}
+			}
+		}
+	}
+	for (const helper of controlPointHelpersToRemove) {
+		controlPointObjects.splice(controlPointObjects.indexOf(helper), 1)
+		scenelike.remove(helper)
+		intersectables.splice(intersectables.indexOf(helper), 1)
+	}
 }
 
 module.exports = {
 	drawHelpers: drawHelpers,
 	removeControlPointHelpersByRailHashID: removeControlPointHelpersByRailHashID,
 	reloadControlPointHelpersByRailHashID: reloadControlPointHelpersByRailHashID,
-	reloadRailPointHelpersByRailHashID: reloadRailPointHelpersByRailHashID
+	reloadRailPointHelpersByRailHashID: reloadRailPointHelpersByRailHashID,
+	removeUnusedControlPointHelpers: removeUnusedControlPointHelpers
 }

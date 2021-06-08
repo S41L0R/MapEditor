@@ -61,6 +61,13 @@ function openSection() {
 	console.log("loading")
 }
 
+function openTestSection() {
+	selectedSection = `TestSection_${document.getElementById("TestSectionInput").value}`
+	console.warn(selectedSection)
+	ipc.send("loadHTML", ["./Editor.html", selectedSection])
+	console.log("loading")
+}
+
 /*
 document.onmousemove = function(e){
   console.log("hi")

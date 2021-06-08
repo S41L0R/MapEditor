@@ -36,10 +36,11 @@
 
 const SelectionTools = require("./SelectionTools.js")
 const ModelTools = require("./ModelTools.js")
+const MapTools = require("./MapTools.js")
 
 
 
-let nextHashID
+
 
 // Deletion Tools:
 // -----------------------------------------------------------------------------
@@ -187,27 +188,32 @@ const setupObjectActor = async function(actor) {
 
 async function setupBasicMeshActor(actor, basicMeshKey) {
 	return new Promise((resolve) => {
-		// First up, we need to check on whether there are already too many instanced
-		// mesh indices.
-		if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey].instanceMatrix.count) {
-			// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
-		}
-		else {
-			// Okay, we're good.
-			console.warn(ModelTools.basicMeshDict[basicMeshKey])
-			let actorModel = ModelTools.basicMeshDict[basicMeshKey]
-			let index = actorModel.count
-			actorModel.count = actorModel.count + 1
-			createActorMatrix(actor).then(async (actorMatrix) => {
+		createActorMatrix(actor).then(async (actorMatrix) => {
+			// First up, we need to check on whether there are already too many instanced
+			// mesh indices.
+			if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey][0].instanceMatrix.count) {
+				// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+
+				return
+			}
+			else {
+				// Okay, we're good.
+				console.warn(ModelTools.basicMeshDict[basicMeshKey])
+				let actorModelArray = ModelTools.basicMeshDict[basicMeshKey]
+				// With basicMeshes, there is only one element. It is an array for other reasons.
+				let actorModel = actorModelArray[0]
+				let index = actorModel.count
+				actorModel.count = actorModel.count + 1
 				actorModel.setMatrixAt(index, actorMatrix)
 				actorModel.instanceMatrix.needsUpdate = true
-				let dummy = await SelectionTools.createObjectDummy([actorModel], index, global.THREE, global.scene)
 
 				actorModel.userData.actorList[index] = actor
 
-				return([[actorModel], index, dummy])
-			})
-		}
+				let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
+
+				resolve([actorModelArray, index, dummy])
+			}
+		})
 	})
 }
 
@@ -312,7 +318,7 @@ function addDynamicDataActor(unitConfigName, position) {
 	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
 	actor.Translate[2].type = 300
-	actor.HashId.value = generateHashID()
+	actor.HashId.value = MapTools.generateHashID()
 	actor.HashId.type = 102
 	global.sectionData.Dynamic.Objs.push(actor)
 	return actor
@@ -335,32 +341,10 @@ function addStaticDataActor(unitConfigName, position) {
 	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
 	actor.Translate[2].type = 300
-	actor.HashId.value = generateHashID()
+	actor.HashId.value = MapTools.generateHashID()
 	actor.HashId.type = 102
 	global.sectionData.Static.Objs.push(actor)
 	return actor
-}
-
-
-function generateHashID() {
-	// If we don't already have the next HashID, we generate it.
-	if (nextHashID === undefined) {
-		let currentNextHashID = 0
-		for (actor of global.sectionData.Static.Objs) {
-			if (actor.HashId.value > currentNextHashID) {
-				currentNextHashID = actor.HashId.value + 1
-			}
-		}
-		for (actor of global.sectionData.Dynamic.Objs) {
-			if (actor.HashId.value > currentNextHashID) {
-				currentNextHashID = actor.HashId.value + 1
-			}
-		}
-		nextHashID = currentNextHashID
-	}
-	let thisHashID = nextHashID
-	nextHashID = nextHashID + 1
-	return(thisHashID)
 }
 
 
@@ -431,13 +415,13 @@ const removeObjectActorByDummy = async function(dummy) {
 
 
 function findDummyFromInstancedMeshesAndIndex(instancedMeshArray, index) {
-		for (let dummy of SelectionTools.objectDummys) {
-			if (dummy.userData.instancedMeshes == instancedMeshArray) {
-				if (dummy.userData.index === index) {
-					return(dummy)
-				}
+	for (let dummy of SelectionTools.objectDummys) {
+		if (dummy.userData.instancedMeshes === instancedMeshArray) {
+			if (dummy.userData.index === index) {
+				return(dummy)
 			}
 		}
+	}
 }
 async function swapInstancedMeshIndicesInReferences(dummy1, dummy2) {
 	const temporarySwapStorage = dummy1.userData.index
@@ -546,6 +530,21 @@ const updateDataActor = async function(dummy) {
 
 }
 
+
+// Returns an actor from its HashID:
+const getActorFromHashID = function(HashID) {
+	for (const actor of global.sectionData.Dynamic.Objs) {
+		if (actor.HashId.value === HashID) {
+			return actor
+		}
+	}
+	for (const actor of global.sectionData.Static.Objs) {
+		if (actor.HashId.value === HashID) {
+			return actor
+		}
+	}
+}
+
 // Deprecated
 
 
@@ -600,6 +599,6 @@ module.exports = {
 	addDynamicActor: addDynamicActor,
 	addStaticActor: addStaticActor,
 	setupObjectActor: setupObjectActor,
-	nextHashID: nextHashID,
-	reloadObjectActor: reloadObjectActor
+	reloadObjectActor: reloadObjectActor,
+	getActorFromHashID: getActorFromHashID
 }

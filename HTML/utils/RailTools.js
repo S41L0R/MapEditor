@@ -9,6 +9,7 @@
 //
 // We only need to do it if we're moving a railPoint.
 
+const MapTools = require("./MapTools.js")
 
 
 const RAIL_RES = 50;
@@ -19,11 +20,297 @@ const GeneralRailTools = require("./GeneralRailTools.js");
 // This function creates all the rails in a scene based on a maplike.
 const createRails = async function(maplike, scenelike, intersectables) {
 	for (const rail of maplike.Static.Rails) {
-		drawRail(rail, scenelike);
-		RailHelperTools.drawHelpers(rail, scenelike, intersectables);
+		drawRail(rail, scenelike)
+		RailHelperTools.drawHelpers(rail, scenelike, intersectables)
 	}
 
 }
+
+
+// This function creates a basic circular rail with bezier points & adds it to sectionData. It also adds it to the scene.
+// It takes in the position (THREE.Vector3) for all the rail points to be centered on.
+// It takes in a number (int) of points to be in the circle.
+// The other thing it takes in is the scale (float), to scale up the rail by.
+const createNewBezierRail = async function(pos, pointNum, XZMultiplier, scenelike, maplike, intersectables) {
+	// First thing we have to do is make the actual rail data.
+
+	// To start off, we'll calculate all of the positions
+	let positionArray = []
+	const angleIncrement = (2 * Math.PI)/pointNum
+	for (let index = 0; index < pointNum; index++) {
+		const angle = angleIncrement * index
+		const posX = Math.sin(angle)
+		const posZ = Math.cos(angle)
+		const pointPos = new global.THREE.Vector3((XZMultiplier * posX) + pos.x, pos.y, (XZMultiplier * posZ) + pos.z)
+		positionArray.push(pointPos)
+	}
+
+	// Phew, the complicated math is done. Now we get the pleasure of putting that data in a template.
+
+	let rail = {
+		"HashId": {
+			"type": 102,
+			"value": MapTools.generateHashID()
+		},
+		"IsClosed": {
+			"type": 500,
+			"value": (positionArray.length > 2)
+		},
+		"RailPoints": [
+		],
+		"RailType": {
+			"type": 400,
+			"value": "Bezier"
+		},
+		"Translate": [
+			{
+				"type": 300,
+				"value": pos.x
+			},
+			{
+				"type": 300,
+				"value": pos.y
+			},
+			{
+				"type": 300,
+				"value": pos.z
+			}
+		],
+		"UnitConfigName": {
+			"type": 400,
+			"value": "Guide"
+		}
+	}
+
+	for (const position of positionArray) {
+		let railPointJSON = {
+			"!Parameters": {
+				"IsAdjustPosAndDirToPoint": {
+					"type": 500,
+					"value": false
+				},
+				"WaitFrame": {
+					"type": 300,
+					"value": 60.00000
+				}
+			},
+			"ControlPoints": [
+				[
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": 1
+					},
+					{
+						"type": 300,
+						"value": 0
+					}
+				],
+				[
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": -1
+					},
+					{
+						"type": 300,
+						"value": 0
+					}
+				]
+			],
+			"NextDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"PrevDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"Translate": [
+				{
+					"type": 300,
+					"value": position.x
+				},
+				{
+					"type": 300,
+					"value": position.y
+				},
+				{
+					"type": 300,
+					"value": position.z
+				}
+			],
+			"UnitConfigName": {
+				"type": 400,
+				"value": "GuidePoint"
+			}
+		}
+
+
+
+		rail.RailPoints.push(railPointJSON)
+
+	}
+
+	maplike.Static.Rails.push(rail)
+
+	reloadNextAndPrevDistance(rail)
+	drawRail(rail, scenelike)
+	RailHelperTools.drawHelpers(rail, scenelike, intersectables)
+}
+
+
+// This function creates a basic circular rail without bezier points & adds it to sectionData. It also adds it to the scene.
+// It takes in the position (THREE.Vector3) for all the rail points to be centered on.
+// It takes in a number (int) of points to be in the circle.
+// The other thing it takes in is the scale (float), to scale up the rail by.
+const createNewLinearRail = async function(pos, pointNum, XZMultiplier, scenelike, maplike, intersectables) {
+	// First thing we have to do is make the actual rail data.
+
+	// To start off, we'll calculate all of the positions
+	let positionArray = []
+	const angleIncrement = (2 * Math.PI)/pointNum
+	for (let index = 0; index < pointNum; index++) {
+		const angle = angleIncrement * index
+		const posX = Math.sin(angle)
+		const posZ = Math.cos(angle)
+		const pointPos = new global.THREE.Vector3((XZMultiplier * posX) + pos.x, pos.y, (XZMultiplier * posZ) + pos.z)
+		positionArray.push(pointPos)
+	}
+
+	// Phew, the complicated math is done. Now we get the pleasure of putting that data in a template.
+
+	let rail = {
+		"HashId": {
+			"type": 102,
+			"value": MapTools.generateHashID()
+		},
+		"IsClosed": {
+			"type": 500,
+			"value": (positionArray.length > 2)
+		},
+		"RailPoints": [
+		],
+		"RailType": {
+			"type": 400,
+			"value": "Linear"
+		},
+		"Translate": [
+			{
+				"type": 300,
+				"value": pos.x
+			},
+			{
+				"type": 300,
+				"value": pos.y
+			},
+			{
+				"type": 300,
+				"value": pos.z
+			}
+		],
+		"UnitConfigName": {
+			"type": 400,
+			"value": "Guide"
+		}
+	}
+
+	for (const position of positionArray) {
+		let railPointJSON = {
+			"!Parameters": {
+				"IsAdjustPosAndDirToPoint": {
+					"type": 500,
+					"value": false
+				},
+				"WaitFrame": {
+					"type": 300,
+					"value": 60.00000
+				}
+			},
+			"NextDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"PrevDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"Translate": [
+				{
+					"type": 300,
+					"value": position.x
+				},
+				{
+					"type": 300,
+					"value": position.y
+				},
+				{
+					"type": 300,
+					"value": position.z
+				}
+			],
+			"UnitConfigName": {
+				"type": 400,
+				"value": "GuidePoint"
+			}
+		}
+
+
+
+		rail.RailPoints.push(railPointJSON)
+
+	}
+
+	maplike.Static.Rails.push(rail)
+
+	reloadNextAndPrevDistance(rail)
+	drawRail(rail, scenelike)
+	RailHelperTools.drawHelpers(rail, scenelike, intersectables)
+}
+
+
+
+
+const reloadNextAndPrevDistance = async function(rail) {
+	if (rail.IsClosed.value === true) {
+		for (const [index, railPoint] of rail.RailPoints.entries()) {
+			const nextDistIndex = (index + 1) % rail.RailPoints.length
+			const prevDistIndex = (rail.RailPoints.length + index - 1) % rail.RailPoints.length
+			railPoint.NextDistance.value = Math.sqrt(Math.pow((rail.RailPoints[nextDistIndex].Translate[0].value - railPoint.Translate[0].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[1].value - railPoint.Translate[1].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[2].value - railPoint.Translate[2].value), 2))
+			railPoint.PrevDistance.value = Math.sqrt(Math.pow((rail.RailPoints[prevDistIndex].Translate[0].value - railPoint.Translate[0].value), 2) + Math.pow((rail.RailPoints[prevDistIndex].Translate[1].value - railPoint.Translate[1].value), 2) + Math.pow((rail.RailPoints[prevDistIndex].Translate[2].value - railPoint.Translate[2].value), 2))
+		}
+	}
+	else {
+		for (const [index, railPoint] of rail.RailPoints.entries()) {
+			if (index === rail.RailPoints.length - 1) {
+				const prevDistIndex = index - 1
+				railPoint.NextDistance.value = 0
+				railPoint.PrevDistance.value = Math.sqrt(Math.pow((rail.RailPoints[prevDistIndex].Translate[0].value - railPoint.Translate[0].value), 2) + Math.pow((rail.RailPoints[prevDistIndex].Translate[1].value - railPoint.Translate[1].value), 2) + Math.pow((rail.RailPoints[prevDistIndex].Translate[2].value - railPoint.Translate[2].value), 2))
+
+
+			}
+			else if (index === 0) {
+				const nextDistIndex = index + 1
+				railPoint.NextDistance.value = Math.sqrt(Math.pow((rail.RailPoints[nextDistIndex].Translate[0].value - railPoint.Translate[0].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[1].value - railPoint.Translate[1].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[2].value - railPoint.Translate[2].value), 2))
+
+				railPoint.PrevDistance.value = 0
+			}
+			else {
+				const nextDistIndex = index + 1
+				const prevDistIndex = index - 1
+				railPoint.NextDistance.value = Math.sqrt(Math.pow((rail.RailPoints[nextDistIndex].Translate[0].value - railPoint.Translate[0].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[1].value - railPoint.Translate[1].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[2].value - railPoint.Translate[2].value), 2))
+				railPoint.PrevDistance.value = Math.sqrt(Math.pow((rail.RailPoints[nextDistIndex].Translate[0].value - railPoint.Translate[0].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[1].value - railPoint.Translate[1].value), 2) + Math.pow((rail.RailPoints[nextDistIndex].Translate[2].value - railPoint.Translate[2].value), 2))
+			}
+		}
+	}
+}
+
 
 // This function reloads all rails in the scene:
 const reloadRails = async function(scenelike) {
@@ -41,7 +328,7 @@ const reloadRail = async function(hashID, maplike, scenelike) {
 // This function removes a rail from the scene.
 const removeRail = async function(hashID, scenelike) {
 	// We first loop through the scene:
-	for (item of scenelike.children) {
+	for (const item of scenelike.children) {
 		// Then if it has the matching hashID we get rid of it:
 		if (item.HashID == hashID) {
 			for (object of item.children) {
@@ -346,11 +633,24 @@ const setControlPointPos = async function(rail, railPointIndex, controlPointInde
 	}
 }
 
+
+const getRailFromHashID = function(HashId) {
+	for (const rail of global.sectionData.Static.Rails) {
+		if (rail.HashId.value === HashId) {
+			return(rail)
+		}
+	}
+}
+
 module.exports = {
 	createRails: createRails,
 	reloadRails: reloadRails,
 	reloadRail: reloadRail,
 	createBezierRailPointArray: createBezierRailPointArray,
 	createLinearRailPointArray: createLinearRailPointArray,
-	setControlPointPos: setControlPointPos
+	setControlPointPos: setControlPointPos,
+	reloadNextAndPrevDistance: reloadNextAndPrevDistance,
+	createNewBezierRail: createNewBezierRail,
+	createNewLinearRail: createNewLinearRail,
+	getRailFromHashID: getRailFromHashID
 }

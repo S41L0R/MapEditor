@@ -119,14 +119,14 @@ body {
 }
 .FloatingButton {
   display: block;
-  background-color: SlateGrey;
+  background-color: slategrey;
   width:10%;
   height: 30%;
   vertical-align: middle;
   display: table;
   margin: 1%;
   border-radius: 5px;
-
+  color: black;
 }
 
 .FloatingButton p {
