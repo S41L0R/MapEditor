@@ -147,7 +147,8 @@ const setupCubeMesh = async function (THREE) {
 		})
 		basicCubeMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
 		basicCubeMesh.userData.actorList = []
-		basicMeshDict["basicCube"] = basicCubeMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["basicCube"] = [basicCubeMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -175,7 +176,8 @@ const setupBoxAreaMesh = async function (THREE) {
 		})
 		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
 		boxAreaMesh.userData.actorList = []
-		basicMeshDict["areaBox"] = boxAreaMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["areaBox"] = [boxAreaMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -206,7 +208,8 @@ const setupSphereAreaMesh = async function (THREE) {
 		})
 		sphereAreaMesh = new THREE.InstancedMesh(sphereGeometry, material, 9999)
 		sphereAreaMesh.userData.actorList = []
-		basicMeshDict["areaSphere"] = sphereAreaMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["areaSphere"] = [sphereAreaMesh]
 
 
 		// Set the count to 0 for logic later:
@@ -234,7 +237,8 @@ const setupCapsuleAreaMesh = async function (THREE) {
 		})
 		capsuleAreaMesh = new THREE.InstancedMesh(capsuleGeometry, material, 9999)
 		capsuleAreaMesh.userData.actorList = []
-		basicMeshDict["areaCapsule"] = capsuleAreaMesh
+		// This is stored as an array for consistency and ref comparison later.
+		basicMeshDict["areaCapsule"] = [capsuleAreaMesh]
 
 
 		// Set the count to 0 for logic later:

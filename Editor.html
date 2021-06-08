@@ -91,8 +91,30 @@
   </div>
 
 
-  <div id="devDisplay">
-    <p id="renderStats"></p>
+  <div id="BottomMenu_FlexBox">
+    <div id="BottomMenu_FlexBox_PushDummyObj"></div>
+    <div id="devDisplay">
+      <p id="renderStats"></p>
+    </div>
+
+    <div id="VisibilityDisplay">
+      <div class="VisibilityDisplay_Toggle">
+        <label for="VisibilityDisplay_InvActorsToggle" class="VisibilityDisplay_Label">Invisible Actors</label>
+        <input id="VisibilityDisplay_InvActorsToggle" type="checkbox"></input>
+        <div class="VisibilityDisplay_Toggle">
+          <label for="VisibilityDisplay_AreaActorsToggle" class="VisibilityDisplay_Label">Areas</label>
+          <input id="VisibilityDisplay_AreaActorsToggle" type="checkbox"></input>
+        </div>
+        <div class="VisibilityDisplay_Toggle">
+          <label for="VisibilityDisplay_LinkTagActorsToggle" class="VisibilityDisplay_Label">LinkTags</label>
+          <input id="VisibilityDisplay_LinkTagActorsToggle" type="checkbox"></input>
+        </div>
+        <div class="VisibilityDisplay_Toggle">
+          <label for="VisibilityDisplay_OtherInvActorsToggle" class="VisibilityDisplay_Label">Other</label>
+          <input id="VisibilityDisplay_OtherInvActorsToggle" type="checkbox"></input>
+        </div>
+      </div>
+    </div>
   </div>
 
   <canvas id="viewport">3D stuff goes here but apparently not because either me, SDarkMagic(ow), or you did something dumb.</canvas>
