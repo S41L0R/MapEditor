@@ -125,6 +125,7 @@ def getProjects():
     print(f'!startData{json.dumps(projectList)}!endData')
     return
 
+
 # Clears all projects and empties the project database; ONLY USE IF YOU WANT TO DELETE EVERYTHING
 def clearProjects():
     projectHandling.clearDB_and_projectDir()
@@ -374,14 +375,15 @@ def setDarkMode(variant):
     WriteSettings.WriteSettings(settings)
 
 def save(sectionPath):
-    currentProject = 'TestA'
     with open(sectionPath, 'rt') as readSectionJSON:
         dataToSave = readSectionJSON.read()
         #print(dataToSave)
     loadedData = json.loads(dataToSave)
-    print(f'currentSection: {currentSection}')
-    loadedData.update({'Section': currentSection})
-    smubinWriter.writeMapFile(loadedData, currentProject)
+    currentProject = loadedData['ProjectName']
+    projectPath = projectHandling.Project(currentProject).getProject()
+    print(currentProject)
+    print(projectPath)
+    smubinWriter.writeMapFile(loadedData, projectPath)
     print('File saved successfully! :)')
     return
 

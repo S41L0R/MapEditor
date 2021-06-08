@@ -285,6 +285,7 @@
   .StaticOrDynamicPromptOption:hover {
     box-shadow: none;
     transform: translateY(4px) translateX(4px);
+    cursor: pointer;
   }
 
 
