@@ -5,6 +5,7 @@ const RayCastTools = require("./RayCastTools.js")
 const RailTools = require("./RailTools.js")
 const RailHelperTools = require("./RailHelperTools.js")
 const ClipboardTools = require("./ClipboardTools.js")
+const VisibilityTools = require("./VisibilityTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -18,6 +19,7 @@ const initListeners = async function(document, editorControls, transformControl)
 	initCtrlListener(document)
 	initCopyPasteActorEvent(document)
 	initShowVisibilityDisplay(document)
+	initVisibilityDisplayControls(document)
 }
 
 
@@ -298,6 +300,100 @@ async function initShowVisibilityDisplay(document) {
 			}
 		}
 	})
+}
+
+async function initVisibilityDisplayControls(document) {
+	const invisActorsToggle = document.getElementById("VisibilityDisplay_InvActorsToggle")
+	invisActorsToggle.addEventListener("change", (e) => {
+		if (invisActorsToggle.checked) {
+			// Okay, we'll make all in-game invis actors visible
+			VisibilityTools.changeActorGroupVisibility("invis", true)
+
+			// Also, we know that this has child checkbox elements, so we'll make sure those aren't greyed out.
+			const parentContainer = document.getElementById("VisibilityDisplay_InvActorsCollectionToggleContainer")
+			unGreyOutChildrenVisibilityCheckboxesByContainer(parentContainer)
+		}
+		else {
+			// Okay, we'll make all in-game invis actors actually invisible
+			VisibilityTools.changeActorGroupVisibility("invis", false)
+
+			// Also, we know that this has child checkbox elements, so we'll grey those out.
+			const parentContainer = document.getElementById("VisibilityDisplay_InvActorsCollectionToggleContainer")
+			greyOutChildrenVisibilityCheckboxesByContainer(parentContainer)
+		}
+	})
+	const areaActorsToggle = document.getElementById("VisibilityDisplay_AreaActorsToggle")
+	areaActorsToggle.addEventListener("change", (e) => {
+		if (areaActorsToggle.checked) {
+			// Okay, we'll make all in-game invis actors visible
+			VisibilityTools.changeActorGroupVisibility("areas", true)
+		}
+		else {
+			// Okay, we'll make all in-game invis actors actually invisible
+			VisibilityTools.changeActorGroupVisibility("areas", false)
+		}
+	})
+	const linkTagActorsToggle = document.getElementById("VisibilityDisplay_LinkTagActorsToggle")
+	linkTagActorsToggle.addEventListener("change", (e) => {
+		if (linkTagActorsToggle.checked) {
+			// Okay, we'll make all in-game invis actors visible
+			VisibilityTools.changeActorGroupVisibility("linktags", true)
+		}
+		else {
+			// Okay, we'll make all in-game invis actors actually invisible
+			VisibilityTools.changeActorGroupVisibility("linktags", false)
+		}
+	})
+	const otherInvActorsToggle = document.getElementById("VisibilityDisplay_OtherInvActorsToggle")
+	otherInvActorsToggle.addEventListener("change", (e) => {
+		if (otherInvActorsToggle.checked) {
+			// Okay, we'll make all in-game invis actors visible
+			VisibilityTools.changeActorGroupVisibility("otherInvis", true)
+		}
+		else {
+			// Okay, we'll make all in-game invis actors actually invisible
+			VisibilityTools.changeActorGroupVisibility("otherInvis", false)
+		}
+	})
+}
+
+async function greyOutChildrenVisibilityCheckboxesByContainer(container) {
+	for (const element of container.children) {
+		if (element.classList.contains("VisibilityDisplay_Toggle")) {
+			greyOutVisibilityCheckboxesAndChildrenByContainer(element)
+		}
+	}
+}
+
+async function greyOutVisibilityCheckboxesAndChildrenByContainer(container) {
+	for (const element of container.children) {
+		if (element.classList.contains("VisibilityDisplay_Toggle")) {
+			// Ah.. I love recursion. It makes things so much easier sometimes.
+			greyOutVisibilityCheckboxesAndChildrenByContainer(element)
+		}
+		if (element.type === "checkbox") {
+			element.disabled = true;
+		}
+	}
+}
+
+async function unGreyOutChildrenVisibilityCheckboxesByContainer(container) {
+	for (const element of container.children) {
+		if (element.classList.contains("VisibilityDisplay_Toggle")) {
+			unGreyOutVisibilityCheckboxesAndChildrenByContainer(element)
+		}
+	}
+}
+
+async function unGreyOutVisibilityCheckboxesAndChildrenByContainer(container) {
+	for (const element of container.children) {
+		if (element.classList.contains("VisibilityDisplay_Toggle")) {
+			unGreyOutVisibilityCheckboxesAndChildrenByContainer(element)
+		}
+		if (element.type === "checkbox") {
+			element.disabled = false;
+		}
+	}
 }
 
 

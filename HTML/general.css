@@ -400,6 +400,10 @@
     padding: 0.5%;
     padding-bottom: 0.1%;
     padding-top: 0.1%;
+    border-left: 1px dashed grey;
+  }
+  .VisibilityDisplay_Toggle_TopLevel {
+    border-left: none;
   }
 
   .VisibilityDisplay_Label {
