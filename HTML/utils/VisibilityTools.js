@@ -2,6 +2,38 @@
 // Think about whether it would make sense to add actor groups to arrays.
 // Maybe replace the switch statements with that.
 
+const actorGroups = {
+  "invisActors": {
+    "areas": [
+      "Area"
+    ],
+    "linktags": [
+      "LinkTagAnd",
+      "LinkTagOr",
+      "LinkTagNAnd",
+      "LinkTagNOr",
+      "LinkTagXOr",
+      "LinkTagCount",
+      "LinkTagPulse",
+      "LinkTagNone"
+    ],
+    "other": [
+      "EventTag",
+      "BottomTag",
+      "SpotBgmTag",
+      "AreaCulling_OuterNPCMementary",
+      "AreaCulling_InnerHide",
+      "DestinationAnchor",
+      "AirWallCurseGanon",
+      "CastleBarrier",
+      "TerrainHideCenterTag",
+      "AreaCulling_InnerOn",
+      "NoUseDRCAppTag",
+      "AirWallHorse"
+    ]
+  }
+}
+
 
 const SelectionTools = require("./SelectionTools.js")
 const ActorTools = require("./ActorTools.js")
@@ -48,201 +80,45 @@ const getActorsOfType = function(type) {
     case "invis":
       // We're gonna need to get a whole bunch of actors.
       for (const actor of global.sectionData.Static.Objs.concat(global.sectionData.Dynamic.Objs)) {
-        switch(actor.UnitConfigName.value) {
-          case "Area":
+        for (const [key, type] of Object.entries(actorGroups.invisActors)) {
+          if (type.includes(actor.UnitConfigName.value)) {
             // Pass this actor
             actorsArray.push(actor)
-            break
-          case "LinkTagAnd":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagOr":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagNAnd":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagNOr":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagXOr":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagCount":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagPulse":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagNone":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "EventTag":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "BottomTag":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "SpotBgmTag":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "AreaCulling_OuterNPCMementary":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "AreaCulling_InnerHide":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "DestinationAnchor":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "AirWallCurseGanon":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "CastleBarrier":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "TerrainHideCenterTag":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          case "AreaCulling_InnerOn":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          case "NoUseDRCAppTag":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          case "AirWallHorse":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          default:
-            // Move on
+          }
         }
       }
       break
     case "areas":
       for (const actor of global.sectionData.Static.Objs.concat(global.sectionData.Dynamic.Objs)) {
-        switch(actor.UnitConfigName.value) {
-          case "Area":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
+        if (actorGroups.invisActors.areas.includes(actor.UnitConfigName.value)) {
+          // Pass this actor
+          actorsArray.push(actor)
         }
       }
       break
     case "linktags":
       for (const actor of global.sectionData.Static.Objs.concat(global.sectionData.Dynamic.Objs)) {
-        switch(actor.UnitConfigName.value) {
-          case "LinkTagAnd":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagOr":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagNAnd":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagNOr":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagXOr":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagCount":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagPulse":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "LinkTagNone":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          default:
-            // Move on
+        if (actorGroups.invisActors.linktags.includes(actor.UnitConfigName.value)) {
+          // Pass this actor
+          actorsArray.push(actor)
         }
       }
       break
     case "otherInvis":
       for (const actor of global.sectionData.Static.Objs.concat(global.sectionData.Dynamic.Objs)) {
-        switch(actor.UnitConfigName.value) {
-          case "EventTag":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "BottomTag":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "SpotBgmTag":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "AreaCulling_OuterNPCMementary":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "AreaCulling_InnerHide":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "DestinationAnchor":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "AirWallCurseGanon":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "CastleBarrier":
-            // Pass this actor
-            actorsArray.push(actor)
-            break
-          case "TerrainHideCenterTag":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          case "AreaCulling_InnerOn":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          case "NoUseDRCAppTag":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          case "AirWallHorse":
-            // Pass the actor
-            actorsArray.push(actor)
-            break
-          default:
-            // Move on
+        if (actorGroups.invisActors.other.includes(actor.UnitConfigName.value)) {
+          // Pass this actor
+          actorsArray.push(actor)
         }
       }
+      break
+    case "static":
+      // Okay, so we'll just return the static obj array.
+      return(global.sectionData.Static.Objs)
+      break
+    case "dynamic":
+      // Okay, so we'll just return the dynamic obj array.
+      return(global.sectionData.Dynamic.Objs)
       break
   }
   return(actorsArray)

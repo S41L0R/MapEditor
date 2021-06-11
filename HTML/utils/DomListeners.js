@@ -335,6 +335,7 @@ async function initVisibilityDisplayControls(document) {
 			greyOutChildrenVisibilityCheckboxesByContainer(parentContainer)
 		}
 	})
+
 	const areaActorsToggle = document.getElementById("VisibilityDisplay_AreaActorsToggle")
 	areaActorsToggle.addEventListener("change", (e) => {
 		if (areaActorsToggle.checked) {
@@ -346,6 +347,7 @@ async function initVisibilityDisplayControls(document) {
 			VisibilityTools.changeActorGroupVisibility("areas", false)
 		}
 	})
+
 	const linkTagActorsToggle = document.getElementById("VisibilityDisplay_LinkTagActorsToggle")
 	linkTagActorsToggle.addEventListener("change", (e) => {
 		if (linkTagActorsToggle.checked) {
@@ -357,6 +359,7 @@ async function initVisibilityDisplayControls(document) {
 			VisibilityTools.changeActorGroupVisibility("linktags", false)
 		}
 	})
+
 	const otherInvActorsToggle = document.getElementById("VisibilityDisplay_OtherInvActorsToggle")
 	otherInvActorsToggle.addEventListener("change", (e) => {
 		if (otherInvActorsToggle.checked) {
@@ -366,6 +369,30 @@ async function initVisibilityDisplayControls(document) {
 		else {
 			// Okay, we'll make all in-game invis actors actually invisible
 			VisibilityTools.changeActorGroupVisibility("otherInvis", false)
+		}
+	})
+
+	const staticActorsToggle = document.getElementById("VisibilityDisplay_StaticActorsToggle")
+	staticActorsToggle.addEventListener("change", (e) => {
+		if (staticActorsToggle.checked) {
+			// Okay, we'll make all in-game invis actors visible
+			VisibilityTools.changeActorGroupVisibility("static", true)
+		}
+		else {
+			// Okay, we'll make all in-game invis actors actually invisible
+			VisibilityTools.changeActorGroupVisibility("static", false)
+		}
+	})
+
+	const dynamicActorsToggle = document.getElementById("VisibilityDisplay_DynamicActorsToggle")
+	dynamicActorsToggle.addEventListener("change", (e) => {
+		if (dynamicActorsToggle.checked) {
+			// Okay, we'll make all in-game invis actors visible
+			VisibilityTools.changeActorGroupVisibility("dynamic", true)
+		}
+		else {
+			// Okay, we'll make all in-game invis actors actually invisible
+			VisibilityTools.changeActorGroupVisibility("dynamic", false)
 		}
 	})
 }
