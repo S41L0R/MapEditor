@@ -154,17 +154,15 @@ const deselectAll = async function (transformControl, THREE) {
 }
 
 const selectRail = async function (helper) {
-	groupSelector.add(helper)
-	global.transformControl.attach(groupSelector)
-	selectedDummys.push(helper)
-	updateGroupSelectorPos(global.THREE, global.transformControl)
-	updateSelectedDummys(global.THREE)
-
-
-
-
-
-
+	// So I was thinking things through, and I think it makes sense to first check
+	// whether the rail is already selected or not.
+	if (!groupSelector.children.includes(helper)) {
+		groupSelector.add(helper)
+		global.transformControl.attach(groupSelector)
+		selectedDummys.push(helper)
+		updateGroupSelectorPos(global.THREE, global.transformControl)
+		updateSelectedDummys(global.THREE)
+	}
 }
 
 const deselectRail = async function (helper) {

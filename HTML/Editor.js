@@ -37,8 +37,8 @@ const customDarkSkyColor = new THREE.Color("#2b2b31")
 
 const clock = new THREE.Clock()
 
-let cameraSpeed = 150
-let cameraLookSpeed = 0.1
+const defaultCameraSpeed = 150
+const defaultCameraLookSpeed = 0.1
 
 const colladaLoader = new ColladaLoader()
 global.colladaLoader = colladaLoader
@@ -148,8 +148,8 @@ function resizeCanvasToDisplaySize () {
 // Control setup
 // -----------------------------------------------------------------------------
 const editorControls = new FirstPersonControls(camera, renderer.domElement)
-editorControls.movementSpeed = cameraSpeed
-editorControls.lookSpeed = cameraLookSpeed
+editorControls.movementSpeed = defaultCameraSpeed
+editorControls.lookSpeed = defaultCameraLookSpeed
 // -----------------------------------------------------------------------------
 
 // Setup Selection
