@@ -394,16 +394,23 @@
     flex-basis: 0;
     min-height: 0;
     display: block;
+    display: flex;
   }
 
   .VisibilityDisplay_Toggle {
-    padding: 0.5%;
+    padding-left: 1%;
     padding-bottom: 0.1%;
     padding-top: 0.1%;
     border-left: 1px dashed grey;
+    flex-grow: 1;
   }
   .VisibilityDisplay_Toggle_TopLevel {
     border-left: none;
+    padding-left: 0%;
+    margin-left: 0.5%;
+  }
+  .VisibilityDisplay_ColumnContainer {
+    flex-grow: 1;
   }
 
   .VisibilityDisplay_Label {
