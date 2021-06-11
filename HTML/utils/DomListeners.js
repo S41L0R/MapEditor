@@ -27,8 +27,8 @@ let ctrlDown = false
 
 async function initCameraSpeedControls(document, editorControls) {
 	// Changes the camera speed when the slider's value changes
-	const cameraSpeedSlider = document.getElementById("cameraSlider")
-	const cameraSpeedSliderValue = document.getElementById("sliderValue")
+	const cameraSpeedSlider = document.getElementById("cameraSpeedSlider")
+	const cameraSpeedSliderValue = document.getElementById("cameraSpeedSliderValue")
 	cameraSpeedSlider.oninput = function () {
 		if (this.value >= 300) {
 			cameraSpeedSliderValue.innerHTML = "Ludicrous Speeeeeed"
@@ -37,6 +37,19 @@ async function initCameraSpeedControls(document, editorControls) {
 			cameraSpeedSliderValue.innerHTML = this.value
 		}
   	editorControls.movementSpeed = this.value
+	}
+
+	// Changes the camera look speed when the slider's value changes
+	const cameraLookSpeedSlider = document.getElementById("cameraLookSpeedSlider")
+	const cameraLookSpeedSliderValue = document.getElementById("cameraLookSpeedSliderValue")
+	cameraLookSpeedSlider.oninput = function () {
+		if (this.value >= 300) {
+			cameraLookSpeedSliderValue.innerHTML = "Ludicrous Speeeeeed"
+		}
+		else {
+			cameraLookSpeedSliderValue.innerHTML = this.value
+		}
+  	editorControls.lookSpeed = this.value
 	}
 }
 
