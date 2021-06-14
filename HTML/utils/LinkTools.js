@@ -1,0 +1,208 @@
+const ActorTools = require("./ActorTools.js")
+
+// These are simply object-like vars indexed by actor objects.
+// forwardLinks stores links by actors
+// backwardLinks stores links by linked actors
+let forwardLinks = new Map()
+let backwardLinks = new Map()
+
+// Array to store the actual link objects
+let linkObjects = []
+
+
+
+const createLinks = async function() {
+  storeLinks()
+  addLinksToScene()
+}
+
+const addLinksToScene = async function() {
+  // We don't need to iterate through backwardLinks because it stores the same data
+  for (const [actor, links] of forwardLinks.entries()) {
+    for (const linkData of links) {
+      addLinkToScene(actor, linkData.LinkedActor)
+    }
+  }
+}
+
+const removeLinksFromScene = async function() {
+  let linkObjectsToRemove = []
+  for (const linkObject of linkObjects) {
+    global.scene.remove(linkObject)
+
+    // schedule for removal from linkObjects
+    linkObjectsToRemove.push(linkObject)
+  }
+  for (const linkObject of linkObjectsToRemove) {
+    linkObjects.splice(linkObjects.indexOf(linkObject), 1)
+  }
+}
+
+
+const reloadRelevantLinkObjects = async function(actor) {
+  removeLinkObjectsFromSceneByIncludedActor(actor)
+  addRelevantLinkObjectsByIncludedActor(actor)
+}
+
+const addRelevantLinkObjectsByIncludedActor = async function(actor) {
+  const forwardLinkDataList = forwardLinks.get(actor)
+  if (forwardLinkDataList !== undefined) {
+    for (const forwardLinkData of forwardLinkDataList) {
+      const linkedActor = forwardLinkData.LinkedActor
+      addLinkToScene(actor, linkedActor)
+    }
+
+    // We need to also find actors that link to the relevant actor
+    for (const backwardLinkData of backwardLinks.get(actor)) {
+      addLinkToScene(backwardLinkData.LinkedActor, actor)
+    }
+  }
+}
+
+const addLinkToScene = async function(actor, linkedActor) {
+  // Convert the actor positions to THREE.Vector3
+  actorPos = new global.THREE.Vector3(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value)
+  linkedActorPos = new global.THREE.Vector3(linkedActor.Translate[0].value, linkedActor.Translate[1].value, linkedActor.Translate[2].value)
+
+
+
+  // Build up the line geometry
+  const curve = new global.THREE.LineCurve3(actorPos, linkedActorPos)
+  const points = curve.getPoints( 2 );
+  const geometry = new global.THREE.BufferGeometry().setFromPoints( points )
+
+
+  const colors = new Float32Array([
+    0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0,
+    1.0, 1.0, 0.0
+  ]);
+  geometry.addAttribute('color', new global.THREE.BufferAttribute(colors,3));
+
+  // Set up the line material
+  const material = new THREE.LineBasicMaterial({
+    vertexColors: global.THREE.VertexColors,
+    lineWidth: 10
+  })
+
+  // Set up the link object
+  const linkObject = new THREE.Line( geometry, material )
+
+  linkObject.userData.actor = actor
+  linkObject.userData.linkedActor = linkedActor
+
+
+  // Add it to the linkObject array
+  linkObjects.push(linkObject)
+
+  // Add it to the scene
+  global.scene.add(linkObject)
+}
+
+
+
+
+
+// Basic function to loop through all linkObjects and delete relevant ones.
+const removeLinkObjectsFromSceneByIncludedActor = async function(actor) {
+  let linkObjectsForRemoval = []
+  for (const linkObject of linkObjects) {
+    if (linkObject.userData.actor === actor || linkObject.userData.linkedActor === actor) {
+      // Schedule the linkObject for removal
+      linkObjectsForRemoval.push(linkObject)
+      global.scene.remove(linkObject)
+    }
+  }
+  // Remove relevant linkObjects from linkObjects
+  for (const linkObject of linkObjectsForRemoval) {
+    linkObjects.splice(linkObjects.indexOf(linkObject), 1)
+  }
+}
+
+// The reason linkObjects is plural in this function title is to account for
+// when two links come from and arrive at the same actors as each other.
+
+// UNTESTED & CURRENTLY UNUSED - Probably works
+const removeLinkObjectsFromSceneByConnectionActors = async function(actor, linkedActor) {
+  let linkObjectsForRemoval = []
+  for (const linkObject of linkObjects) {
+    if (linkObject.userData.actor === actor) {
+      if (linkObject.userData.linkedActor === linkedActor) {
+        // Schedule the linkObject for removal
+        linkObjectsForRemoval.push(linkObject)
+        global.scene.remove(linkObject)
+      }
+    }
+  }
+  // Remove relevant linkObjects from linkObjects
+  for (const linkObject of linkObjectsForRemoval) {
+    linkObjects.splice(linkObjects.indexOf(linkObject), 1)
+  }
+}
+
+
+// Just a function to find all links and store them in a more efficient format.
+const storeLinks = function() {
+  // Only static actors can be linked.
+  for (const actor of global.sectionData.Static.Objs) {
+    storeLink(actor)
+  }
+}
+
+const storeLink = function(actor) {
+  if ("LinksToObj" in actor) {
+    for (const link of actor.LinksToObj) {
+      const linkedActor = ActorTools.getActorFromHashID(link.DestUnitHashId.value)
+
+      // Store the link for this actor.
+      const actorLinkData = {
+        "DefinitionName": link.DefinitionName.value,
+        "LinkedActor": linkedActor
+      }
+      if (forwardLinks.get(actor) !== undefined) {
+        forwardLinks.get(actor).push(actorLinkData)
+      }
+      else {
+        forwardLinks.set(actor, [actorLinkData])
+      }
+
+      // Store the link for the referenced actor
+      const linkedActorLinkData = {
+        "DefinitionName": link.DefinitionName.value,
+        "LinkedActor": actor
+      }
+      if (backwardLinks.get(linkedActor) !== undefined) {
+        backwardLinks.get(linkedActor).push(linkedActorLinkData)
+      }
+      else {
+        backwardLinks.set(linkedActor, [linkedActorLinkData])
+      }
+    }
+  }
+}
+
+// Function to remove links relevant to the actor provided from the links map.
+const removeRelevantLinksFromMap = async function(actor) {
+  const forwardLinkDataList = forwardLinks.get(actor)
+  for (const forwardLinkData of forwardLinkDataList) {
+    const linkedActor = forwardLinkData.LinkedActor
+    forwardLinks.delete(actor)
+    backwardLinks.delete(linkedActor)
+  }
+}
+
+
+
+module.exports = {
+  storeLinks: storeLinks,
+  storeLink: storeLink,
+  addLinksToScene: addLinksToScene,
+  removeLinksFromScene: removeLinksFromScene,
+  addLinkToScene: addLinkToScene,
+  createLinks: createLinks,
+  removeLinkObjectsFromSceneByConnectionActors: removeLinkObjectsFromSceneByConnectionActors,
+  removeRelevantLinksFromMap: removeRelevantLinksFromMap,
+  reloadRelevantLinkObjects: reloadRelevantLinkObjects,
+  removeLinkObjectsFromSceneByIncludedActor: removeLinkObjectsFromSceneByIncludedActor,
+  addRelevantLinkObjectsByIncludedActor: addRelevantLinkObjectsByIncludedActor
+}

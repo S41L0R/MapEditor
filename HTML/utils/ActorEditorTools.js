@@ -3,6 +3,7 @@ const RailTools = require("./RailTools.js")
 const RailHelperTools = require("./RailHelperTools.js")
 const RayCastTools = require("./RayCastTools.js")
 const SelectionTools = require("./SelectionTools.js")
+const LinkTools = require("./LinkTools.js")
 
 const ipc = require("electron").ipcRenderer
 const initActorEditorTools = async function (sectionData) {
@@ -12,6 +13,9 @@ const initActorEditorTools = async function (sectionData) {
 				// Set the actor data to the returned data:
 				Object.assign(sectionData.Static.Objs[index], message)
 				ActorTools.reloadObjectActor(actor)
+				// A reminder that only static actors can be linked.
+				LinkTools.storeLink(actor)
+				LinkTools.reloadRelevantLinkObjects(actor)
 				return
 			}
 		}

@@ -26,6 +26,13 @@ const createRails = async function(maplike, scenelike, intersectables) {
 
 }
 
+const removeRails = async function(maplike, scenelike, intersectables) {
+	for (const rail of maplike.Static.Rails) {
+		removeRail(rail.HashId.value, scenelike)
+		RailHelperTools.removeControlPointHelpersByRailHashID(rail.HashId.value, scenelike, intersectables)
+	}
+}
+
 
 // This function creates a basic circular rail with bezier points & adds it to sectionData. It also adds it to the scene.
 // It takes in the position (THREE.Vector3) for all the rail points to be centered on.
@@ -444,13 +451,13 @@ async function createLinearRailPath(pointArray, scenelike, RailHashID) {
 	// And again, with a hashID connected:
 	railGroup.HashID = RailHashID;
 	for (i=0; i < pointArray.length-1; i++) {
-	        const curve = new THREE.LineCurve3(pointArray[i], pointArray[i+1]);
-	        const points = curve.getPoints( 2 );
-	        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+		const curve = new THREE.LineCurve3(pointArray[i], pointArray[i+1]);
+		const points = curve.getPoints( 2 );
+		const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-	        const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+		const curveMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
-	        // Create the final object to add to the scene
+		// Create the final object to add to the scene
 		const curveObject = new THREE.Line( geometry, curveMat );
 
 		// And add it to the group
@@ -644,6 +651,7 @@ const getRailFromHashID = function(HashId) {
 
 module.exports = {
 	createRails: createRails,
+	removeRails: removeRails,
 	reloadRails: reloadRails,
 	reloadRail: reloadRail,
 	createBezierRailPointArray: createBezierRailPointArray,

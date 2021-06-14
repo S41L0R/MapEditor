@@ -37,13 +37,37 @@ const actorGroups = {
 
 const SelectionTools = require("./SelectionTools.js")
 const ActorTools = require("./ActorTools.js")
+const LinkTools = require("./LinkTools.js")
+const RailTools = require("./RailTools.js")
+const RailHelperTools = require("./RailHelperTools.js")
+const RayCastTools = require("./RayCastTools.js")
 
 
 // A function that takes a type of actor (string) and sets its visibility based on the passed bool value
 const changeActorGroupVisibility = async function(type, visibility) {
-  actorsArray = getActorsOfType(type)
-  for (const actor of actorsArray) {
-    changeActorVisibility(actor, visibility)
+  // Links aren't actors so we have special logic for that
+  if (type === "links") {
+    if (visibility) {
+      LinkTools.addLinksToScene()
+    }
+    else {
+      LinkTools.removeLinksFromScene()
+    }
+  }
+  // Same with rails
+  else if (type === "rails") {
+    if (visibility) {
+      RailTools.createRails(global.sectionData, global.scene, RayCastTools.intersectables)
+    }
+    else {
+      RailTools.removeRails(global.sectionData, global.scene, RayCastTools.intersectables)
+    }
+  }
+  else {
+    actorsArray = getActorsOfType(type)
+    for (const actor of actorsArray) {
+      changeActorVisibility(actor, visibility)
+    }
   }
 }
 
