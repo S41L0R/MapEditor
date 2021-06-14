@@ -3,6 +3,7 @@ const ActorTools = require("./ActorTools.js")
 const RailTools = require("./RailTools.js")
 const RailHelperTools = require("./RailHelperTools.js")
 const RayCastTools = require("./RayCastTools.js")
+const LinkTools = require("./LinkTools.js")
 
 
 const initTransformControlListeners = async function (transformControl) {
@@ -52,6 +53,7 @@ const onTransformControlDrag = async function (transformControl) {
 	for (dummy of groupSelector.children) {
 		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint")) {
 			ActorTools.updateDataActor(dummy)
+			LinkTools.reloadRelevantLinkObjects(dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index])
 		}
 
 		else {

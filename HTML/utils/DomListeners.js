@@ -6,6 +6,7 @@ const RailTools = require("./RailTools.js")
 const RailHelperTools = require("./RailHelperTools.js")
 const ClipboardTools = require("./ClipboardTools.js")
 const VisibilityTools = require("./VisibilityTools.js")
+const LinkTools = require("./LinkTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -130,7 +131,10 @@ async function initAddActorOfTypeDialog(document) {
 	let dynamicButton = document.getElementById("StaticOrDynamicPrompt_DynamicButton")
 
 	staticButton.addEventListener("click", () => {
-		ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		const actor = ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		// A reminder that only static actors can be linked.
+		LinkTools.storeLink(actor)
+		LinkTools.addRelevantLinkObjectsByIncludedActor(actor)
 	})
 
 	dynamicButton.addEventListener("click", () => {
@@ -233,6 +237,7 @@ async function initDeleteActorEvent(document) {
 				else {
 					ActorTools.removeObjectActorByDummy(dummy)
 					ActorTools.removeDataActorByDummy(dummy)
+					LinkTools.removeLinkObjectsFromSceneByIncludedActor(dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index])
 				}
 			}
 		}
@@ -386,14 +391,24 @@ async function initVisibilityDisplayControls(document) {
 
 	const dynamicActorsToggle = document.getElementById("VisibilityDisplay_DynamicActorsToggle")
 	dynamicActorsToggle.addEventListener("change", (e) => {
-		if (dynamicActorsToggle.checked) {
-			// Okay, we'll make all in-game invis actors visible
-			VisibilityTools.changeActorGroupVisibility("dynamic", true)
-		}
-		else {
-			// Okay, we'll make all in-game invis actors actually invisible
-			VisibilityTools.changeActorGroupVisibility("dynamic", false)
-		}
+		// Okay, we'll set the visibility
+		VisibilityTools.changeActorGroupVisibility("dynamic", dynamicActorsToggle.checked)
+	})
+
+	const linkObjectsToggle = document.getElementById("VisibilityDisplay_LinkObjectsToggle")
+	linkObjectsToggle.addEventListener("change", (e) => {
+		// Okay, we'll make all in-game invis actors visible
+
+		// I really need to rename this function
+		VisibilityTools.changeActorGroupVisibility("links", linkObjectsToggle.checked)
+	})
+
+	const railObjectsToggle = document.getElementById("VisibilityDisplay_RailObjectsToggle")
+	railObjectsToggle.addEventListener("change", (e) => {
+		// Okay, we'll make all in-game invis actors visible
+
+		// I really need to rename this function
+		VisibilityTools.changeActorGroupVisibility("rails", railObjectsToggle.checked)
 	})
 }
 

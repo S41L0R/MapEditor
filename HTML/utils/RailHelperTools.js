@@ -180,6 +180,48 @@ function generateControlPointHelpers(rail, scenelike, intersectables) {
 	// If so, we can just move them.
 	let controlPointsToIgnore = [];
 	for (const [railPointIndex, railPoint] of rail.RailPoints.entries()) {
+		if (railPoint.ControlPoints === undefined) {
+			console.error(railPoint)
+			console.error(rail)
+		}
+		// Okay, so someone at nintendo decided that if a set of controlPoints aren't modified they aren't listed.
+		// This is good, I guess, but it makes my job a few lines harder.
+
+
+		// I figure I'll just add the controlPoint, shouldn't break anything.
+		if (railPoint.ControlPoints === undefined) {
+			railPoint.ControlPoints = [
+				[
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": 0
+					},
+				],
+				[
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": 0
+					},
+				],
+			]
+		}
+
 		for (const [controlPointIndex, controlPoint] of railPoint.ControlPoints.entries()) {
 			for (const helper of controlPointObjects) {
 				if (helper.CorrespondingRailHashID === rail.HashId.value) {
@@ -188,6 +230,7 @@ function generateControlPointHelpers(rail, scenelike, intersectables) {
 							// Of course, we want to make sure we don't move a controlPoint helper if it's already being moved by the user!
 							// That would create a weird amplification effect.
 							// Don't ask me why I know.
+
 							if (!(helper.parent.userData.type === "GroupSelector")) {
 								moveControlPointHelper(helper, controlPoint, rail, railPointIndex, controlPointIndex);
 							}

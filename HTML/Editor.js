@@ -24,6 +24,7 @@ const SelectionTools = require("./HTML/utils/SelectionTools.js")
 const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
 const SaveTools = require('./HTML/utils/SaveTools.js')
 const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
+const LinkTools = require("./HTML/utils/LinkTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -53,6 +54,8 @@ renderer.toneMapping = THREE.ReinhardToneMapping
 renderer.toneMappingExposure = 2.3
 //renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement)
+
+global.renderer = renderer
 
 const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000)
 global.camera = camera
@@ -255,6 +258,7 @@ async function loadSection(sectionName) {
 	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
 				document.getElementById("loadingDisplay").style.opacity = 0
 			})
+			LinkTools.createLinks()
 
 
 	  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)
