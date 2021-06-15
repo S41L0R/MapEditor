@@ -51,9 +51,12 @@ const addRelevantLinkObjectsByIncludedActor = async function(actor) {
       const linkedActor = forwardLinkData.LinkedActor
       addLinkToScene(actor, linkedActor)
     }
+  }
 
-    // We need to also find actors that link to the relevant actor
-    for (const backwardLinkData of backwardLinks.get(actor)) {
+  // We need to also find actors that link to the relevant actor
+  const backwardLinkDataList = backwardLinks.get(actor)
+  if (backwardLinkDataList !== undefined) {
+    for (const backwardLinkData of backwardLinkDataList) {
       addLinkToScene(backwardLinkData.LinkedActor, actor)
     }
   }
@@ -69,7 +72,16 @@ const addLinkToScene = async function(actor, linkedActor) {
   // Build up the line geometry
   const curve = new global.THREE.LineCurve3(actorPos, linkedActorPos)
   const points = curve.getPoints( 2 );
-  const geometry = new global.THREE.BufferGeometry().setFromPoints( points )
+  //const geometry = new global.THREE.BufferGeometry().setFromPoints( points )
+  const positions = [
+    points[0].x, points[0].y, points[0].z,
+    points[1].x, points[1].y, points[1].z,
+    points[2].x, points[2].y, points[2].z
+  ]
+
+  const geometry = new global.LineGeometry()
+
+  geometry.setPositions(positions)
 
 
   const colors = new Float32Array([
@@ -77,16 +89,22 @@ const addLinkToScene = async function(actor, linkedActor) {
     0.0, 0.0, 1.0,
     1.0, 1.0, 0.0
   ]);
-  geometry.addAttribute('color', new global.THREE.BufferAttribute(colors,3));
+  geometry.setColors(colors)
+  //geometry.addAttribute('color', new global.THREE.BufferAttribute(colors,3));
 
   // Set up the line material
-  const material = new THREE.LineBasicMaterial({
-    vertexColors: global.THREE.VertexColors,
-    lineWidth: 10
+  const material = new global.LineMaterial({
+					linewidth: 1, // in pixels
+					vertexColors: true,
+					dashed: false,
+					alphaToCoverage: true,
   })
+  material.resolution.set(window.innerWidth, window.innerHeight)
 
   // Set up the link object
-  const linkObject = new THREE.Line( geometry, material )
+  const linkObject = new global.Line2( geometry, material )
+  linkObject.computeLineDistances()
+  linkObject.scale.set(1,1,1)
 
   linkObject.userData.actor = actor
   linkObject.userData.linkedActor = linkedActor
