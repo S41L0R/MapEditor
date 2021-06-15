@@ -1,10 +1,13 @@
 const ActorTools = require("./ActorTools.js")
+const RailTools = require("./RailTools.js")
 
 // These are simply object-like vars indexed by actor objects.
 // forwardLinks stores links by actors
 // backwardLinks stores links by linked actors
 let forwardLinks = new Map()
 let backwardLinks = new Map()
+
+let forwardRailLinks = new Map()
 
 // Array to store the actual link objects
 let linkObjects = []
@@ -21,6 +24,12 @@ const addLinksToScene = async function() {
   for (const [actor, links] of forwardLinks.entries()) {
     for (const linkData of links) {
       addLinkToScene(actor, linkData.LinkedActor)
+    }
+  }
+
+  for (const [actor, links] of forwardRailLinks.entries()) {
+    for (const linkData of links) {
+      addLinkToScene(actor, linkData.LinkedRail)
     }
   }
 }
@@ -58,6 +67,14 @@ const addRelevantLinkObjectsByIncludedActor = async function(actor) {
   if (backwardLinkDataList !== undefined) {
     for (const backwardLinkData of backwardLinkDataList) {
       addLinkToScene(backwardLinkData.LinkedActor, actor)
+    }
+  }
+
+  // Rails are important too!
+  const forwardRailLinkDataList = forwardRailLinks.get(actor)
+  if (forwardRailLinkDataList !== undefined) {
+    for (const forwardRailLinkData of forwardRailLinkDataList) {
+      addLinkToScene(actor, forwardRailLinkData.LinkedRail)
     }
   }
 }
@@ -194,6 +211,21 @@ const storeLink = function(actor) {
       }
       else {
         backwardLinks.set(linkedActor, [linkedActorLinkData])
+      }
+    }
+  }
+  // We also want to check if it links to a rail
+  if ("LinksToRail" in actor) {
+    for (const link of actor.LinksToRail) {
+      const actorRailLinkData = {
+        "DefinitionName": link.DefinitionName.value,
+        "LinkedRail": RailTools.getRailFromHashID(link.DestUnitHashId.value)
+      }
+      if (forwardRailLinks.get(actor) !== undefined) {
+        forwardRailLinks.get(actor).push(actorRailLinkData)
+      }
+      else {
+        forwardRailLinks.set(actor, [actorRailLinkData])
       }
     }
   }
