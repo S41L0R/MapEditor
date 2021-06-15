@@ -12,6 +12,15 @@ global.BufferGeometryUtils = BufferGeometryUtils
 
 import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js"
 global.TransformControls = TransformControls
+
+import {Line2} from "./lib/threejs/examples/jsm/lines/Line2.js"
+global.Line2 = Line2
+
+import {LineGeometry} from "./lib/threejs/examples/jsm/lines/LineGeometry.js"
+global.LineGeometry = LineGeometry
+
+import {LineMaterial} from "./lib/threejs/examples/jsm/lines/LineMaterial.js"
+global.LineMaterial = LineMaterial
 // -----------------------------------------------------------------------------
 
 // Requires
