@@ -1,7 +1,7 @@
 const pythonTools = require('./PythonTools.js')
 const fs = require('fs')
 
-function saveData(sectionData, currentSection, project){
+function saveData(sectionData, currentSection){
     console.log('Called "saveData!"')
     var sectionPath = './temp/SectionData.json'
     try {
@@ -16,7 +16,6 @@ function saveData(sectionData, currentSection, project){
         return
     }
     sectionData['Section'] = currentSection
-    sectionData['ProjectName'] = project
     let sectionDataStr = JSON.stringify(sectionData)
     fs.writeFileSync(sectionPath, sectionDataStr, function (err) {
         if (err){

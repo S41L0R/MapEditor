@@ -54,9 +54,9 @@ async function initCameraSpeedControls(document, editorControls) {
 	}
 }
 
-async function initSaveButton(document, saveFunction, sectionData, sectionName, project) {
+async function initSaveButton(document, saveFunction, sectionData, sectionName) {
   document.getElementById('saveButton').addEventListener('click', () => {
-    saveFunction(sectionData, sectionName, project)
+    saveFunction(sectionData, sectionName)
     console.error('S A V I N G !')
   })
 }
