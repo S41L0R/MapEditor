@@ -40,6 +40,7 @@ const clock = new THREE.Clock()
 let cameraSpeed = 150
 let cameraLookSpeed = 0.1
 
+
 const colladaLoader = new ColladaLoader()
 global.colladaLoader = colladaLoader
 // -----------------------------------------------------------------------------
@@ -242,7 +243,8 @@ async function loadSection(sectionName) {
 	PythonTools.loadPython("main", sectionName).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
-		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName, )
+		ipc.send('getCurrentProject')
+		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName, projectName)
 		// Setup ActorEditor
 		// -----------------------------------------------------------------------------
 		ActorEditorTools.initActorEditorTools(sectionData)
@@ -276,6 +278,11 @@ async function loadDarkMode() {
 }
 
 DomListners.initListeners(document, editorControls, transformControl)
+
+ipc.on('projectName', async(event, project) => {
+	global.projectName = project
+	console.log(`Project successfully set to "${projectName}"`)
+})
 
 ipc.on("loadSection", async (event, sectionName) => {
 	loadDarkMode()
