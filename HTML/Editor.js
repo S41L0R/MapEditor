@@ -254,7 +254,7 @@ async function loadSection(sectionName) {
 	PythonTools.loadPython("main", sectionName).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
-		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName, )
+		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName)
 		// Setup ActorEditor
 		// -----------------------------------------------------------------------------
 		ActorEditorTools.initActorEditorTools(sectionData)
