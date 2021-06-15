@@ -26,7 +26,9 @@ async function initDraggingChanged(transformControl) {
 							rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = pos.y
 							rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = pos.z
 							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
-							RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+							if (rail.RailType.value === "Bezier") {
+								RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+							}
 							// We also gotta calc NextDistance and PrevDistance for proper game function:
 							RailTools.reloadNextAndPrevDistance(rail)
 						}
