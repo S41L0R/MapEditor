@@ -172,6 +172,16 @@ ipc.on('toMainWindowFromVisibilityEditor', (event, message) => {
   win.webContents.send('fromVisibilityEditor', message)
 })
 
+var currentProject = 'Default';
+
+ipc.on('setCurrentProject', (event, message) => {
+  currentProject = message
+  console.log(currentProject)
+})
+
+ipc.on('getCurrentProject', (event) => {
+  win.webContents.send('projectName', currentProject)
+})
 
 ipc.on('loadHTML', (event, message) => {
   if (message[1] == null) {
