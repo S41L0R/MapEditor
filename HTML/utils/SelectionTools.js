@@ -145,6 +145,7 @@ const deselectAll = async function (transformControl, THREE) {
 			// We need to make sure that the matrixWorld also carries over to the pos and the normal matrix
 			dummy.matrix = dummy.matrixWorld
 			dummy.position.setFromMatrixPosition(dummy.matrixWorld)
+			dummy.rotation.setFromRotationMatrix(dummy.matrixWorld)
 			global.scene.add(dummy)
 		}
 		resetGroupSelectorPos()

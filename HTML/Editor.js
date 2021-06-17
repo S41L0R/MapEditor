@@ -260,7 +260,6 @@ async function loadSection(sectionName) {
 		ActorEditorTools.initActorEditorTools(sectionData)
 		// -----------------------------------------------------------------------------
 		document.getElementById("loadingStatus").innerHTML = "Creating Rails"
-		console.log("rails")
 		RailTools.createRails(sectionData, scene, RayCastTools.intersectables)
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"

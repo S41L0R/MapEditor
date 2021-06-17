@@ -101,6 +101,41 @@ async function drawRailPointHelpers(rail, scenelike, intersectables) {
 
 		// And add it to our list of intersectable objects
 		intersectables.push(helperObject);
+
+
+		// Okay, if there's rotation, we also want to show a line pointing in the correct direction
+		if ("Rotate" in railPoint) {
+			const lineDirectionGeometry = new global.LineGeometry()
+
+			lineDirectionGeometry.setPositions([
+				0, 0, 0,
+				0, -1, 0
+			])
+
+			const lineDirectionMaterial = new global.LineMaterial({
+							linewidth: 3, // in pixels
+							color: 0xff00ff,
+							dashed: false,
+							alphaToCoverage: true,
+		  })
+			lineDirectionMaterial.resolution.set(window.innerWidth, window.innerHeight)
+
+
+			const lineDirectionObj = new global.Line2( lineDirectionGeometry, lineDirectionMaterial )
+		  lineDirectionObj.computeLineDistances()
+		  lineDirectionObj.scale.set(1,1,1)
+			// Botw is stupid so we have to do this:
+			lineDirectionObj.rotation.order = "ZYX"
+			// Account for rotation possibly being 3D/1D
+			if (Array.isArray(railPoint.Rotate)) {
+				lineDirectionObj.rotation.set(railPoint.Rotate[0].value, railPoint.Rotate[1].value, railPoint.Rotate[2].value)
+			}
+			else {
+				lineDirectionObj.rotation.set(0, railPoint.Rotate.value, 0)
+			}
+
+			helperObject.add(lineDirectionObj)
+		}
 	}
 }
 

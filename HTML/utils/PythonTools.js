@@ -53,11 +53,8 @@ async function loadPython (func, arg) {
   					document.getElementById("progressBar").style.width=`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`
 
   				}
-  				else {
-  					document.getElementById("progressBar").style.visibility="hidden"
-  					document.getElementById("ProgressContainerDiv").style.visibility="hidden"
-  					document.getElementById("loadStatus").style.visibility="hidden"
-  				}
+				} else if (dataBuffer.toString().includes("!startModelCachedData")) {
+					
   			} else {
   				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func} Arg: ${arg}`)
 				alert(dataBuffer.toString())
