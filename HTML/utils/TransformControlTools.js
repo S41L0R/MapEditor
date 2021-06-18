@@ -20,13 +20,44 @@ async function initDraggingChanged(transformControl) {
 			if (selectedObject.type === "Points") {
 				if (selectedObject.relevantType === "RailPoint") {
 					for (const rail of global.sectionData.Static.Rails) {
-						const pos = new global.THREE.Vector3().setFromMatrixPosition(selectedObject.matrixWorld)
+						const pos = new global.THREE.Vector3()
+						const rot = new global.THREE.Euler(0, 0, 0, "ZYX")
+						// We just have scale for fun
+						const scale = new global.THREE.Vector3()
+						selectedObject.matrixWorld.decompose(pos, rot, scale)
 						if (rail.HashId.value === selectedObject.CorrespondingRailHashID) {
 							rail.RailPoints[selectedObject.railPointIndex].Translate[0].value = pos.x
 							rail.RailPoints[selectedObject.railPointIndex].Translate[1].value = pos.y
 							rail.RailPoints[selectedObject.railPointIndex].Translate[2].value = pos.z
+
+							if ("Rotate" in rail.RailPoints[selectedObject.railPointIndex]) {
+								// We ensure it's 3D rotation:
+								if (Array.isArray(rail.RailPoints[selectedObject.railPointIndex])) {
+									rail.RailPoints[selectedObject.railPointIndex].Rotate[0].value = rot.x
+									rail.RailPoints[selectedObject.railPointIndex].Rotate[1].value = rot.y
+									rail.RailPoints[selectedObject.railPointIndex].Rotate[2].value = rot.z
+								}
+								else {
+									rail.RailPoints[selectedObject.railPointIndex].Rotate = [
+										{
+											"type": 300,
+											"value": rot.x
+										},
+										{
+											"type": 300,
+											"value": rot.y
+										},
+										{
+											"type": 300,
+											"value": rot.z
+										}
+									]
+								}
+							}
 							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
-							RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+							if (rail.RailType.value === "Bezier") {
+								RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+							}
 							// We also gotta calc NextDistance and PrevDistance for proper game function:
 							RailTools.reloadNextAndPrevDistance(rail)
 						}

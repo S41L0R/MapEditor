@@ -9,8 +9,7 @@ const ActorTools = require("./ActorTools.js")
 const addActorsToScene = async function() {
 let sectionData = global.sectionData
 let intersectables = RayCastTools.intersectables
-
-	return ModelTools.loadModels(global.sectionData, global.BufferGeometryUtils, global.colladaLoader, global.sectionName, THREE).then(() => {
+	return ModelTools.loadGameModelsBySection(global.sectionName).then(() => {
 		addInstancedMeshes()
 		sectionData.Static.Objs.forEach((actor) => {
 			ActorTools.setupObjectActor(actor).then((actorModelData) => {
@@ -36,6 +35,7 @@ let intersectables = RayCastTools.intersectables
 
 async function addInstancedMeshes () {
 	for (let key in ModelTools.modelDict) {
+		console.error(key)
 
 		for (actorModel of ModelTools.modelDict[key]) {
 			RayCastTools.intersectables.push(actorModel)

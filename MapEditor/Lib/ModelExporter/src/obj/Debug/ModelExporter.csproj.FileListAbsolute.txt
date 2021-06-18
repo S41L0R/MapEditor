@@ -15,37 +15,3 @@ C:\Users\Greenlord\Downloads\ModelExporter\src\obj\Debug\ModelExporter.csproj.Co
 C:\Users\Greenlord\Downloads\ModelExporter\src\obj\Debug\ModelExporter.csproj.CopyComplete
 C:\Users\Greenlord\Downloads\ModelExporter\src\obj\Debug\ModelExporter.exe
 C:\Users\Greenlord\Downloads\ModelExporter\src\obj\Debug\ModelExporter.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\obj\Debug\ModelExporter.csprojAssemblyReference.cache
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\obj\Debug\ModelExporter.csproj.CoreCompileInputs.cache
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\obj\Debug\ModelExporter.exe
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\obj\Debug\ModelExporter.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\Plugins\CafeLibrary.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\ModelExporter.exe.config
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\ModelExporter.exe
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\ModelExporter.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\BfresLibrary.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\OpenTK.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\Syroot.BinaryData.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\Syroot.Maths.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\Syroot.NintenTools.NSW.Bntx.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\Toolbox.Core.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\BfresLibrary.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\bin\Debug\Toolbox.Core.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter\src\obj\Debug\ModelExporter.csproj.CopyComplete
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\Plugins\CafeLibrary.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\ModelExporter.exe.config
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\ModelExporter.exe
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\ModelExporter.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\BfresLibrary.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\OpenTK.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\Syroot.BinaryData.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\Syroot.Maths.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\Syroot.NintenTools.NSW.Bntx.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\Toolbox.Core.dll
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\BfresLibrary.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\bin\Debug\Toolbox.Core.pdb
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\obj\Debug\ModelExporter.csprojAssemblyReference.cache
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\obj\Debug\ModelExporter.csproj.CoreCompileInputs.cache
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\obj\Debug\ModelExporter.csproj.CopyComplete
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\obj\Debug\ModelExporter.exe
-C:\Users\Greenlord\Desktop\MapEditor\MapEditor\Lib\ModelExporter - No Armature\src\obj\Debug\ModelExporter.pdb

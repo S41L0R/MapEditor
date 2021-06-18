@@ -14,6 +14,11 @@ const generateHashID = function() {
 				currentNextHashID = actor.HashId.value + 1
 			}
 		}
+		for (rail of global.sectionData.Static.Rails) {
+			if (rail.HashId.value > currentNextHashID) {
+				currentNextHashID = rail.HashId.value + 1
+			}
+		}
 		nextHashID = currentNextHashID
 	}
 	let thisHashID = nextHashID
