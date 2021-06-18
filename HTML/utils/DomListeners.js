@@ -10,6 +10,7 @@ const LinkTools = require("./LinkTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
+	initExposureControls(document)
 	initTransformModeButtons(document, transformControl)
 	initDeleteActorEvent(document)
 	initAddActorButton(document)
@@ -51,6 +52,16 @@ async function initCameraSpeedControls(document, editorControls) {
 			cameraLookSpeedSliderValue.innerHTML = this.value
 		}
   	editorControls.lookSpeed = this.value
+	}
+}
+
+async function initExposureControls(document) {
+	// Changes the tone mapping exposure when the slider's value changes
+	const exposureSlider = document.getElementById("exposureSlider")
+	const exposureSliderValue = document.getElementById("exposureSliderValue")
+	exposureSlider.oninput = function () {
+		exposureSliderValue.innerHTML = this.value
+  	global.renderer.toneMappingExposure = this.value
 	}
 }
 
