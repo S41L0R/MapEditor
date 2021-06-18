@@ -61,7 +61,7 @@ const viewport = document.getElementById("viewport")
 const renderer = new THREE.WebGLRenderer({ canvas: viewport, powerPreference: "high-performance" })
 renderer.setSize( renderer.domElement.clientWidth, renderer.domElement, false )
 renderer.toneMapping = THREE.ReinhardToneMapping
-renderer.toneMappingExposure = 2.3
+renderer.toneMappingExposure = 6
 //renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement)
 
@@ -261,7 +261,6 @@ async function loadSection(sectionName) {
 		ActorEditorTools.initActorEditorTools(sectionData)
 		// -----------------------------------------------------------------------------
 		document.getElementById("loadingStatus").innerHTML = "Creating Rails"
-		console.log("rails")
 		RailTools.createRails(sectionData, scene, RayCastTools.intersectables)
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"

@@ -29,7 +29,10 @@ const actorGroups = {
       "TerrainHideCenterTag",
       "AreaCulling_InnerOn",
       "NoUseDRCAppTag",
-      "AirWallHorse"
+      "AirWallHorse",
+      "FarModelCullingArea",
+      "Obj_SweepCollision",
+      "AirWallForE3"
     ]
   }
 }

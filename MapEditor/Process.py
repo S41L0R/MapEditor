@@ -338,23 +338,17 @@ def newGetActorModelPaths(sectionName):
 
 
 
-def getActorModelPath(actorName, sectionName):
-    global currentSection
-    currentSection = sectionName
-
-    mapFileData = mapFile()
-
-    fullUniqueActors = mapFileData.fullUniqueActors
+def getActorModelPath(actorName):
 
     settings, content, aoc = getSettings()
+
     actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
     actorinfoCache = cacheActorInfo(actorinfoPath)
     with open(actorinfoCache, 'rt') as readActorCache:
         actorModelData = json.loads(readActorCache.read())
 
-    print("!startData"+f'Cache/Model/{actorModelData[actorName]["bfres"]}/{actorModelData[actorName]["mainmodel"]}.dae'+"!endData")
-
-
+    output = f'Cache/Model/{actorModelData[actorName]["bfres"]}/{actorModelData[actorName]["mainmodel"]}.dae'
+    print("!startData"+output+"!endData")
     sys.stdout.flush()
 
 
