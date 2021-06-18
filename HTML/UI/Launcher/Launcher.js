@@ -129,6 +129,7 @@ async function openProjectDialogue(windowType) {
       console.log(projectName)
       if (projectName.length != 0) {
         projectPath = await PythonTools.loadPython('openProject', projectName)
+        ipc.send('setCurrentProject', projectName)
         popup.style.display = 'none'
       }
       else {
@@ -157,6 +158,7 @@ async function openProjectDialogue(windowType) {
       let projectName = form.projectName.value;
       if (projectName.length != 0) {
         projectPath = await PythonTools.loadPython('createProject', projectName)
+        ipc.send('setCurrentProject', projectName)
         popup.style.display = 'none'
       }
       else {

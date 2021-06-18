@@ -52,6 +52,7 @@ const clock = new THREE.Clock()
 const defaultCameraSpeed = 150
 const defaultCameraLookSpeed = 0.1
 
+
 const colladaLoader = new ColladaLoader()
 global.colladaLoader = colladaLoader
 // -----------------------------------------------------------------------------
@@ -290,6 +291,11 @@ async function loadDarkMode() {
 }
 
 DomListners.initListeners(document, editorControls, transformControl)
+
+ipc.on('projectName', async(event, project) => {
+	global.projectName = project
+	console.log(`Project successfully set to "${projectName}"`)
+})
 
 ipc.on("loadSection", async (event, sectionName) => {
 	loadDarkMode()
