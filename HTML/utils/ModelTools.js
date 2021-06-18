@@ -18,6 +18,9 @@ const BasicMeshModelSetup = require("./BasicMeshModelSetup.js")
 let modelDict = {}
 let basicMeshDict = {}
 let modelNumDict = {}
+
+let modelDictByPath = {}
+let latestModelPathList = []
 // -----------------------------------------------------------------------------
 
 
@@ -69,6 +72,9 @@ const loadModelByActorName = function (actorName) {
 const loadGameModelsBySection = function(sectionName) {
   return new Promise ((resolve) => {
     PythonTools.loadPython("newGetActorModelPaths", sectionName).then((modelPathList) => {
+      // Might as well store the modelPathList for later:
+      latestModelPathList = modelPathList
+
       let promises = []
 
       for (const [actorName, modelPath] of Object.entries(modelPathList)) {
@@ -97,14 +103,20 @@ function loadModel(actorName, modelPath) {
         modelNumDict[actorName] = modelNumDict[actorName] + 1
       }
     }
-    global.colladaLoader.load(modelPath, (collada) => {colladaOnLoad(collada, actorName, resolve, modelNumDict[actorName])}, (collada) => {colladaOnProgress(collada, actorName)}, (error) => {colladaOnError(error, actorName, resolve)})
+    // Check if this model has already been loaded for another actor
+    // If so, just copy the data over.
+    if (modelDictByPath[modelPath] !== undefined) {
+      modelDict[actorName] = modelDictByPath[modelPath]
+      resolve()
+    }
+    global.colladaLoader.load(modelPath, (collada) => {colladaOnLoad(collada, actorName, modelPath, resolve, modelNumDict[actorName])}, (collada) => {colladaOnProgress(collada, actorName)}, (error) => {colladaOnError(error, actorName, resolve)})
   })
 }
 
 
 
 
-const colladaOnLoad = function (collada, actorName, resolve, modelNum) {
+const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum) {
 	// General logic for when the collada file is loaded.
 	// This includes model manipulation in order to serve our purposes.
 	colladaModel = collada.scene
@@ -133,9 +145,8 @@ const colladaOnLoad = function (collada, actorName, resolve, modelNum) {
 	// We send this out like so:
 	modelDict[actorName] = colladaMeshArray
 
-	console.warn(modelDict)
-
-	console.warn("This loaded")
+  // For optimiation purposes:
+  modelDictByPath[modelPath] = colladaMeshArray
 
 	resolve()
 }
@@ -182,5 +193,6 @@ module.exports = {
   loadGameModelsBySection: loadGameModelsBySection,
 
   modelDict: modelDict,
-  basicMeshDict: basicMeshDict
+  basicMeshDict: basicMeshDict,
+  latestModelPathList: latestModelPathList
 }

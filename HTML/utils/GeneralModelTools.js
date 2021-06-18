@@ -45,7 +45,7 @@ const getBoneNormalTransform = (function () {
 		skinIndex.fromBufferAttribute( geometry.attributes.skinIndex, index )
 		skinWeight.fromBufferAttribute( geometry.attributes.skinWeight, index )
 
-		baseNormal.fromBufferAttribute( geometry.attributes.normal, index ).applyNormalMatrix( global.THREE.Matrix3.getNormalMatrix(this.bindMatrix) )
+		baseNormal.fromBufferAttribute( geometry.attributes.normal, index ).applyNormalMatrix( Matrix3.getNormalMatrix(this.bindMatrix) )
 
 		target.set( 0, 0, 0 )
 
@@ -59,13 +59,13 @@ const getBoneNormalTransform = (function () {
 
 				matrix.multiplyMatrices( skeleton.bones[ boneIndex ].matrixWorld, skeleton.boneInverses[ boneIndex ] )
 
-				target.addScaledVector( vector.copy( baseNormal ).applyNormalMatrix( global.THREE.Matrix3.getNormalMatrix(matrix) ), weight )
+				target.addScaledVector( vector.copy( baseNormal ).applyNormalMatrix( Matrix3.getNormalMatrix(matrix) ), weight )
 
 			}
 
 		}
-		global.THREE.Matrix3.getNormalMatrix(this.bindMatrixInverse)
-		return target.applyNormalMatrix( global.THREE.Matrix3 )
+		Matrix3.getNormalMatrix(this.bindMatrixInverse)
+		return target.applyNormalMatrix( Matrix3 )
 
 	}
 

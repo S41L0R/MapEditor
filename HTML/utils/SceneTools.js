@@ -9,9 +9,7 @@ const ActorTools = require("./ActorTools.js")
 const addActorsToScene = async function() {
 let sectionData = global.sectionData
 let intersectables = RayCastTools.intersectables
-	//return ModelTools.loadModels(global.sectionData, global.BufferGeometryUtils, global.colladaLoader, global.sectionName, THREE).then(() => {
 	return ModelTools.loadGameModelsBySection(global.sectionName).then(() => {
-	//return ModelTools.setupBasicMeshModels().then(() => {
 		addInstancedMeshes()
 		sectionData.Static.Objs.forEach((actor) => {
 			ActorTools.setupObjectActor(actor).then((actorModelData) => {
