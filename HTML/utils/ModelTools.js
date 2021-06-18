@@ -6,6 +6,7 @@ const CacheTools = require("./CacheTools.js")
 const PythonTools = require("./PythonTools.js")
 const GeneralModelTools = require("./GeneralModelTools.js")
 const BasicMeshModelSetup = require("./BasicMeshModelSetup.js")
+const RayCastTools = require("./RayCastTools.js")
 
 const path = require('path')
 const fs = require('fs')
@@ -190,6 +191,7 @@ const loadNewCachedModels = function(modelsPath, callback) {
           loadModel(actorName, modelPath).then(() => {
             for (const model of modelDict[actorName]) {
               global.scene.add(model)
+              RayCastTools.intersectables.push(model)
             }
             callback(actorName)
           })
