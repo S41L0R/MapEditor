@@ -188,6 +188,9 @@ const loadNewCachedModels = function(modelsPath, callback) {
       for (const listedModelPath of modelPaths) {
         if (path.resolve(modelPath) === path.resolve(listedModelPath)) {
           loadModel(actorName, modelPath).then(() => {
+            for (const model of modelDict[actorName]) {
+              global.scene.add(model)
+            }
             callback(actorName)
           })
         }
