@@ -60,7 +60,7 @@ const viewport = document.getElementById("viewport")
 const renderer = new THREE.WebGLRenderer({ canvas: viewport, powerPreference: "high-performance" })
 renderer.setSize( renderer.domElement.clientWidth, renderer.domElement, false )
 renderer.toneMapping = THREE.ReinhardToneMapping
-renderer.toneMappingExposure = 2.3
+renderer.toneMappingExposure = 5.3
 //renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement)
 
