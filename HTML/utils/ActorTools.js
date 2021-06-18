@@ -61,6 +61,8 @@ const addDynamicActor = async function(unitConfigName, position, scenelike, mapl
 
 	let actor = addDynamicDataActor(unitConfigName, position)
 	setupObjectActor(actor)
+	// In case we need to use it:
+	return(actor)
 }
 
 // General manager for all static actor creation (not including just generally adding actors to the scene during scene initialization.)
@@ -68,6 +70,8 @@ const addStaticActor = async function(unitConfigName, position, scenelike, mapli
 
 	let actor = addStaticDataActor(unitConfigName, position)
 	setupObjectActor(actor)
+	// In case we need to use it:
+	return(actor)
 }
 
 
@@ -141,28 +145,49 @@ const setupObjectActor = async function(actor) {
 					}
 					break
 				case "LinkTagAnd":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagAnd")
+					return(actorModelData)
+
 					break
 				case "LinkTagOr":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagOr")
+					return(actorModelData)
+
 					break
 				case "LinkTagNAnd":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagNAnd")
+					return(actorModelData)
+
 					break
 				case "LinkTagNOr":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagNOr")
+					return(actorModelData)
+
 					break
 				case "LinkTagXOr":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagXOr")
+					return(actorModelData)
+
 					break
 				case "LinkTagCount":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagCount")
+					return(actorModelData)
+
 					break
 				case "LinkTagPulse":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagPulse")
+					return(actorModelData)
+
 					break
 				case "LinkTagNone":
-					// Do something
+					actorModelData = await setupBasicMeshActor(actor, "linkTagNone")
+					return(actorModelData)
+
+					break
+				case "BoxWater":
+					actorModelData = await setupBasicMeshActor(actor, "water")
+					return(actorModelData)
+
 					break
 				default:
 					// Just give it a basic cube model.

@@ -98,20 +98,38 @@
     </div>
 
     <div id="VisibilityDisplay">
-      <div class="VisibilityDisplay_Toggle">
+      <div class="VisibilityDisplay_ColumnContainer">
+        <div class="VisibilityDisplay_Toggle VisibilityDisplay_Toggle_TopLevel">
+          <label for="VisibilityDisplay_StaticActorsToggle" class="VisibilityDisplay_Label">Static</label>
+          <input id="VisibilityDisplay_StaticActorsToggle" type="checkbox" checked></input>
+        </div>
+        <div class="VisibilityDisplay_Toggle VisibilityDisplay_Toggle_TopLevel">
+          <label for="VisibilityDisplay_DynamicActorsToggle" class="VisibilityDisplay_Label">Dynamic</label>
+          <input id="VisibilityDisplay_DynamicActorsToggle" type="checkbox" checked></input>
+        </div>
+      </div>
+      <div class="VisibilityDisplay_Toggle VisibilityDisplay_Toggle_TopLevel">
+        <label for="VisibilityDisplay_LinkObjectsToggle" class="VisibilityDisplay_Label">Links</label>
+        <input id="VisibilityDisplay_LinkObjectsToggle" type="checkbox" checked></input>
+      </div>
+      <div class="VisibilityDisplay_Toggle VisibilityDisplay_Toggle_TopLevel">
+        <label for="VisibilityDisplay_RailObjectsToggle" class="VisibilityDisplay_Label">Rails (DO NOT USE THIS -  IT IS BROKEN)</label>
+        <input id="VisibilityDisplay_RailObjectsToggle" type="checkbox" checked></input>
+      </div>
+      <div class="VisibilityDisplay_Toggle VisibilityDisplay_Toggle_TopLevel" id="VisibilityDisplay_InvActorsCollectionToggleContainer">
         <label for="VisibilityDisplay_InvActorsToggle" class="VisibilityDisplay_Label">Invisible Actors</label>
-        <input id="VisibilityDisplay_InvActorsToggle" type="checkbox"></input>
+        <input id="VisibilityDisplay_InvActorsToggle" type="checkbox" checked></input>
         <div class="VisibilityDisplay_Toggle">
           <label for="VisibilityDisplay_AreaActorsToggle" class="VisibilityDisplay_Label">Areas</label>
-          <input id="VisibilityDisplay_AreaActorsToggle" type="checkbox"></input>
+          <input id="VisibilityDisplay_AreaActorsToggle" type="checkbox" checked></input>
         </div>
         <div class="VisibilityDisplay_Toggle">
           <label for="VisibilityDisplay_LinkTagActorsToggle" class="VisibilityDisplay_Label">LinkTags</label>
-          <input id="VisibilityDisplay_LinkTagActorsToggle" type="checkbox"></input>
+          <input id="VisibilityDisplay_LinkTagActorsToggle" type="checkbox" checked></input>
         </div>
         <div class="VisibilityDisplay_Toggle">
           <label for="VisibilityDisplay_OtherInvActorsToggle" class="VisibilityDisplay_Label">Other</label>
-          <input id="VisibilityDisplay_OtherInvActorsToggle" type="checkbox"></input>
+          <input id="VisibilityDisplay_OtherInvActorsToggle" type="checkbox" checked></input>
         </div>
       </div>
     </div>
@@ -143,8 +161,13 @@
     <button id="darkModeToggle" class="button">Dark Mode Toggle</button>
     <div class='cameraSlideContainer'>
       <div id='cameraSliderText'>Camera Speed</div>
-      <input type="range" min="1" max="300" value=100 id="cameraSlider">
-      <div id='sliderValue'></div>
+      <input type="range" min="1" max="300" value=150 id="cameraSpeedSlider" class="cameraSlider">
+      <div id='cameraSpeedSliderValue'>150</div>
+    </div>
+    <div class='cameraSlideContainer'>
+      <div id='cameraLookSliderText'>Camera Look Speed</div>
+      <input type="range" min="0" max="0.5" value=0.1 step=0.01 id="cameraLookSpeedSlider" class="cameraSlider">
+      <div id='cameraLookSpeedSliderValue'>0.1</div>
     </div>
 
     <button id="addActorButton" class="button">Add Actor</button>

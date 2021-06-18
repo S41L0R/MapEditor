@@ -12,6 +12,15 @@ global.BufferGeometryUtils = BufferGeometryUtils
 
 import { TransformControls } from "./lib/threejs/examples/jsm/controls/TransformControls.js"
 global.TransformControls = TransformControls
+
+import {Line2} from "./lib/threejs/examples/jsm/lines/Line2.js"
+global.Line2 = Line2
+
+import {LineGeometry} from "./lib/threejs/examples/jsm/lines/LineGeometry.js"
+global.LineGeometry = LineGeometry
+
+import {LineMaterial} from "./lib/threejs/examples/jsm/lines/LineMaterial.js"
+global.LineMaterial = LineMaterial
 // -----------------------------------------------------------------------------
 
 // Requires
@@ -24,6 +33,7 @@ const SelectionTools = require("./HTML/utils/SelectionTools.js")
 const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
 const SaveTools = require('./HTML/utils/SaveTools.js')
 const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
+const LinkTools = require("./HTML/utils/LinkTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -37,8 +47,8 @@ const customDarkSkyColor = new THREE.Color("#2b2b31")
 
 const clock = new THREE.Clock()
 
-let cameraSpeed = 150
-let cameraLookSpeed = 0.1
+const defaultCameraSpeed = 150
+const defaultCameraLookSpeed = 0.1
 
 
 const colladaLoader = new ColladaLoader()
@@ -54,6 +64,8 @@ renderer.toneMapping = THREE.ReinhardToneMapping
 renderer.toneMappingExposure = 2.3
 //renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement)
+
+global.renderer = renderer
 
 const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000)
 global.camera = camera
@@ -149,8 +161,8 @@ function resizeCanvasToDisplaySize () {
 // Control setup
 // -----------------------------------------------------------------------------
 const editorControls = new FirstPersonControls(camera, renderer.domElement)
-editorControls.movementSpeed = cameraSpeed
-editorControls.lookSpeed = cameraLookSpeed
+editorControls.movementSpeed = defaultCameraSpeed
+editorControls.lookSpeed = defaultCameraLookSpeed
 // -----------------------------------------------------------------------------
 
 // Setup Selection
@@ -243,8 +255,7 @@ async function loadSection(sectionName) {
 	PythonTools.loadPython("main", sectionName).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
-		ipc.send('getCurrentProject')
-		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName, projectName)
+		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName)
 		// Setup ActorEditor
 		// -----------------------------------------------------------------------------
 		ActorEditorTools.initActorEditorTools(sectionData)
@@ -257,6 +268,7 @@ async function loadSection(sectionName) {
 	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
 				document.getElementById("loadingDisplay").style.opacity = 0
 			})
+			LinkTools.createLinks()
 
 
 	  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)

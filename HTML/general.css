@@ -106,7 +106,7 @@
     width: 100%;
   }
 
-  #cameraSlider {
+  .cameraSlider {
     -webkit-appearance: none;
     appearance: none;
     width: 95%;
@@ -117,7 +117,7 @@
     border-radius: 5px;
     box-shadow: 0px 10px 5px #00000038;
   }
-  #cameraSlider::-webkit-slider-thumb {
+  .cameraSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 15px;
     height: 15px;
@@ -394,12 +394,23 @@
     flex-basis: 0;
     min-height: 0;
     display: block;
+    display: flex;
   }
 
   .VisibilityDisplay_Toggle {
-    padding: 0.5%;
+    padding-left: 1%;
     padding-bottom: 0.1%;
     padding-top: 0.1%;
+    border-left: 1px dashed grey;
+    flex-grow: 1;
+  }
+  .VisibilityDisplay_Toggle_TopLevel {
+    border-left: none;
+    padding-left: 0%;
+    margin-left: 0.5%;
+  }
+  .VisibilityDisplay_ColumnContainer {
+    flex-grow: 1;
   }
 
   .VisibilityDisplay_Label {

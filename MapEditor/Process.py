@@ -107,6 +107,11 @@ def createProject(projectName):
 
 # returns a project path
 def openProject(projectName):
+    # so... we'll need to save what project we had opened:
+    settings, content, aoc = getSettings()
+    settings["ProjectName"] = projectName
+    WriteSettings.WriteSettings(settings)
+
     global currentProject
     project = projectHandling.Project(projectName)
     print(project.getProject())
@@ -395,7 +400,8 @@ def save(sectionPath):
         dataToSave = readSectionJSON.read()
         #print(dataToSave)
     loadedData = json.loads(dataToSave)
-    currentProject = loadedData['ProjectName']
+    currentProject = LoadSettings.LoadSettings().get("ProjectName")
+    #currentProject = loadedData['ProjectName']
     projectPath = projectHandling.Project(currentProject).getProject()
     print(currentProject)
     print(projectPath)
