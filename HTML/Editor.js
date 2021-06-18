@@ -34,6 +34,8 @@ const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
 const SaveTools = require('./HTML/utils/SaveTools.js')
 const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
 const LinkTools = require("./HTML/utils/LinkTools.js")
+const ModelTools = require("./HTML/utils/ModelTools.js")
+const ActorTools = require("./HTML/utils/ActorTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -251,7 +253,7 @@ async function loadSection(sectionName) {
 	}
 	global.sectionName = sectionName
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
-	PythonTools.loadPython("main", sectionName).then((sectionData) => {
+	PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
 		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName)
@@ -302,3 +304,19 @@ if (perfEntries[0].type == 'reload') {
 	loadSection()
 }
 else {}
+
+
+
+
+
+
+
+function onPythonData(dataType, data) {
+	switch(dataType) {
+		case "modelCachedData":
+			ModelTools.loadNewCachedModels(data, ActorTools.reloadObjectActorByName)
+			break
+		default:
+			console.error(`loadPython callback dataType not supported: ${dataType}`)
+	}
+}

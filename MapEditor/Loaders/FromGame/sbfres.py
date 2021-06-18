@@ -32,10 +32,10 @@ def cacheModels(modelList, modelPath):
             print(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(modelPath, str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
             print(os.getcwd())
             print(i["bfres"])
-            print("!startModelCachedData"+str(i["bfres"])+"!endModelCachedData")
+            print("!startModelCachedData"+f"Cache/Model/{str(i['bfres'])}/"+"!endModelCachedData", flush=True)
         cachedModels.append(i)
         cachedModelsNum = cachedModelsNum + 1
-        print("!startProgressData"+str(cachedModelsNum)+"!endProgressData")
+        print("!startProgressData"+str(cachedModelsNum)+"!endProgressData", flush=True)
 
     return(cachedModels)
 

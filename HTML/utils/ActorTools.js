@@ -114,6 +114,19 @@ const reloadObjectActor = async function (actor) {
 
 }
 
+const reloadObjectActorByName = async function(actorName) {
+	for (const actor of global.sectionData.Static.Objs) {
+		if (actor.UnitConfigName.value === actorName) {
+			reloadObjectActor(actor)
+		}
+	}
+	for (const actor of global.sectionData.Dynamic.Objs) {
+		if (actor.UnitConfigName.value === actorName) {
+			reloadObjectActor(actor)
+		}
+	}
+}
+
 const setupObjectActor = async function(actor) {
 	let actorModelData
 	switch (ModelTools.modelDict[actor.UnitConfigName.value]) {
@@ -625,5 +638,6 @@ module.exports = {
 	addStaticActor: addStaticActor,
 	setupObjectActor: setupObjectActor,
 	reloadObjectActor: reloadObjectActor,
-	getActorFromHashID: getActorFromHashID
+	getActorFromHashID: getActorFromHashID,
+	reloadObjectActorByName: reloadObjectActorByName
 }
