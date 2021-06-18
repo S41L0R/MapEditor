@@ -23,15 +23,15 @@
 }
 
 
-#cameraSlider {
+.cameraSlider {
   background: #7289da;
 }
-#cameraSlider::-webkit-slider-thumb {
+.cameraSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
   background: #6a34bd;
   background: #FFFFFF;
 }
-#cameraSlider:hover {
+.cameraSlider:hover {
   background: #3c4873;
 }
 .button {
