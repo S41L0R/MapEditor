@@ -110,6 +110,7 @@ def findMKDir(checkDir):
         return checkDir
 
 def checkBymlDataType_and_Type(valIn):
+
     # Unsigned Integers
     if isinstance(valIn, oead.U8):
         return({"type": 100, "value": oead.byml.get_uint(valIn)})
@@ -234,7 +235,7 @@ class compressByml:
                 return(self.convertDataType(dictIn))
             else:
                 for key in dictIn.keys():
-                    if key == '!Parameters' or key == 'Translate':
+                    if key == '!Parameters':
                         subDict = self.compressAll(dictIn.get(key), False)
                         dictOut.update({key: subDict})
                         #print(f'DictOut: {dictOut}\n')
@@ -283,7 +284,7 @@ class compressByml:
                 valOut = oead.U64(dataVal)
             else:
                 # Raise error about invalid subType
-                print('Error')
+                raise Exception("Invalid subType")
                 return
         elif mainType == 2:
             dataVal = int(dataVal)
@@ -301,7 +302,7 @@ class compressByml:
                 valOut = oead.S64(dataVal)
             else:
                 # Raise error about invalid subType
-                print('Error')
+                raise Exception("Invalid subType")
                 return
         elif mainType == 3:
             dataVal = float(dataVal)
@@ -312,27 +313,27 @@ class compressByml:
                 # Handle F64
                 valOut = oead.F64(dataVal)
             else:
-                print('Error')
+                raise Exception("Invalid subType")
         elif mainType == 4:
             dataVal = str(dataVal)
             if subType == 0:
                 # Handle Strings
                 valOut = str(dataVal)
             else:
-                print('Error')
+                raise Exception("Invalid subType")
         elif mainType == 5:
             dataVal = bool(dataVal)
             if subType == 0:
                 # Handle Bools
                 valOut = bool(dataVal)
             else:
-                print('Error')
+                raise Exception("Invalid subType")
         elif mainType == 6:
             if subType == 0:
                 # Handle Unkown data types
                 valOut = dataVal
             else:
-                print('Error')
+                raise Exception("Invalid subType")
         return(valOut)
 
 def findUniqueActors(mapDataIn, listIn=list([])):
