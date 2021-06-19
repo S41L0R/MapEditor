@@ -320,9 +320,10 @@ def newGetActorModelPaths(sectionName):
     print(actorModelData)
 
     for i in fullUniqueActors:
-        print(i)
-        print(actorModelData[i['value']])
-        outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+        try:
+            outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+        except:
+            print("Could not find model path for actor... moving on.")
         #
         #    "path": f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae',
         #    "name": i["value"]
