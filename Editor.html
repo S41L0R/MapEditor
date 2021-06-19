@@ -135,6 +135,54 @@
     </div>
   </div>
 
+  <div id="SideMenu_FlexBox" style="visibility:hidden">
+    <div id="SideMenuTabs">
+      <div class="SideMenuTabs_Tab" data-tab="SideMenuPanel_Interface">Interface</div>
+      <div class="SideMenuTabs_Tab" data-tab="SideMenuPanel_Renderer">Renderer</div>
+    </div>
+    <div id="SideMenuPanelContainer">
+      <div id="SideMenuPanel_Interface" class="SideMenuMainPanel" style="flex-grow: 1; opacity: 1;">
+        <p class="SideMenuPanel_Title">
+          Interface Settings
+        </p>
+
+        <hr class="lineBreak"></hr>
+
+        <br>
+        <div class='sidebarSlideContainer'>
+          <div id='translateSnappingSliderText'>Translation Snapping</div>
+          <input type="range" min="0" max="100" value=0 step=0.1 id="translateSnappingSlider" class="generalSlider">
+          <div id='translateSnappingSliderValue'>None</div>
+        </div>
+        <br>
+        <div class='sidebarSlideContainer'>
+          <div id='rotateSnappingSliderText'>Rotation Snapping</div>
+          <input type="range" min="0" max="3.14" value=0 step=0.1 id="rotateSnappingSlider" class="generalSlider">
+          <div id='rotateSnappingSliderValue'>None</div>
+        </div>
+        <br>
+        <div class='sidebarSlideContainer'>
+          <div id='scaleSnappingSliderText'>Scale Snapping</div>
+          <input type="range" min="0" max="100" value=0 step=0.1 id="scaleSnappingSlider" class="generalSlider">
+          <div id='scaleSnappingSliderValue'>None</div>
+        </div>
+      </div>
+      <div id="SideMenuPanel_Renderer" class="SideMenuMainPanel" style="flex-grow: 0.00001; opacity: 0;">
+        <p class="SideMenuPanel_Title">
+          Renderer Settings
+        </p>
+
+        <hr class="lineBreak"></hr>
+
+        <div class='sidebarSlideContainer'>
+          <div id='exposureSliderText'>Exposure</div>
+          <input type="range" min="0" max="10" value=6 step=0.1 id="exposureSlider" class="generalSlider">
+          <div id='exposureSliderValue'>6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <canvas id="viewport">3D stuff goes here but apparently not because either me, SDarkMagic(ow), or you did something dumb.</canvas>
   <script src="HTML/lib/stats/stats.min.js"></script>
   <script src="HTML/lib/capsuleGeo/three-js-capsule-geometry.js"></script>
@@ -159,23 +207,16 @@
     <hr class="lineBreak"></hr>
     <h1>Settings</h1>
     <button id="darkModeToggle" class="button">Dark Mode Toggle</button>
-    <div class='cameraSlideContainer'>
+    <div class='sidebarSlideContainer'>
       <div id='cameraSliderText'>Camera Speed</div>
-      <input type="range" min="1" max="300" value=150 id="cameraSpeedSlider" class="cameraSlider">
+      <input type="range" min="1" max="300" value=150 id="cameraSpeedSlider" class="generalSlider">
       <div id='cameraSpeedSliderValue'>150</div>
     </div>
-    <div class='cameraSlideContainer'>
+    <div class='sidebarSlideContainer'>
       <div id='cameraLookSliderText'>Camera Look Speed</div>
-      <input type="range" min="0" max="0.5" value=0.1 step=0.01 id="cameraLookSpeedSlider" class="cameraSlider">
+      <input type="range" min="0" max="0.5" value=0.1 step=0.01 id="cameraLookSpeedSlider" class="generalSlider">
       <div id='cameraLookSpeedSliderValue'>0.1</div>
     </div>
-    <!--
-    <div class='generalSliderContainer'>
-      <div id='exposureSliderText'>Exposure</div>
-      <input type="range" min="0" max="10" value=6 step=0.1 id="exposureSlider" class="generalSlider">
-      <div id='exposureSliderValue'>6</div>
-    </div>
-    !-->
 
     <button id="addActorButton" class="button">Add Actor</button>
     <button id="addRailButton" class ="button">Add Rail</button>

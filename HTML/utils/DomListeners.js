@@ -22,6 +22,9 @@ const initListeners = async function(document, editorControls, transformControl)
 	initCopyPasteActorEvent(document)
 	initShowVisibilityDisplay(document)
 	initVisibilityDisplayControls(document)
+	initShowSideMenu(document)
+	initSideMenuControls(document)
+	initTransformSnappingControls(document)
 }
 
 
@@ -458,6 +461,98 @@ async function unGreyOutVisibilityCheckboxesAndChildrenByContainer(container) {
 		}
 		if (element.type === "checkbox") {
 			element.disabled = false;
+		}
+	}
+}
+
+async function initShowSideMenu(document) {
+	let opened = false;
+	document.addEventListener("keydown", (e) => {
+		const sideMenu = document.getElementById("SideMenu_FlexBox")
+
+		if (e.keyCode === 84 ) {
+			if (!ctrlDown) {
+				if (opened) {
+					// SideMenu is open, close it
+					sideMenu.style.visibility = "hidden"
+					opened = false
+				}
+				else {
+					// SideMenu is closed, open it
+					sideMenu.style.visibility = "visible"
+					opened = true
+				}
+			}
+		}
+	})
+}
+
+async function initSideMenuControls(document) {
+	const tabs = document.getElementsByClassName("SideMenuTabs_Tab")
+	for (const tab of tabs) {
+		console.error(tab)
+		tab.addEventListener("click", () => {
+			const sideMenuPanelContainer = document.getElementById("SideMenuPanelContainer")
+			for (const panel of sideMenuPanelContainer.children) {
+				if (panel.id === tab.dataset.tab) {
+					// If this is the panel the tab is for, make it visible.
+					panel.style["flex-grow"] = 1
+					panel.style["opacity"] = 1
+				}
+				else {
+					// Otherwise, make it invisible.
+					panel.style["flex-grow"] = 0.00001
+					panel.style["opacity"] = 0
+				}
+			}
+		})
+	}
+}
+
+async function initTransformSnappingControls(document) {
+	const translateSnappingSlider = document.getElementById("translateSnappingSlider")
+	const translateSnappingText = document.getElementById("translateSnappingSliderText")
+
+	translateSnappingSlider.oninput = function () {
+		if (Math.round(this.value) === 0) {
+			translateSnappingSliderValue.innerHTML = "None"
+			global.transformControl.translationSnap = null
+		}
+		else {
+			translateSnappingSliderValue.innerHTML = this.value
+			global.transformControl.translationSnap = this.value
+		}
+	}
+
+	const rotateSnappingSlider = document.getElementById("rotateSnappingSlider")
+	const rotateSnappingSliderText = document.getElementById("rotateSnappingSliderText")
+
+	rotateSnappingSlider.oninput = function () {
+		if (Math.round(this.value) === 0) {
+			rotateSnappingSliderValue.innerHTML = "None"
+			global.transformControl.rotationSnap = null
+		}
+		else if (Math.round(this.value) === 3) {
+			rotateSnappingSliderValue.innerHTML = "3.14..."
+			global.transformControl.rotationSnap = Math.PI
+		}
+		else {
+			rotateSnappingSliderValue.innerHTML = this.value
+			global.transformControl.rotationSnap = this.value
+		}
+	}
+
+	const scaleSnappingSlider = document.getElementById("scaleSnappingSlider")
+	const scaleSnappingSliderText = document.getElementById("scaleSnappingSliderText")
+
+	scaleSnappingSlider.oninput = function () {
+		if (Math.round(this.value) === 0) {
+			scaleSnappingSliderValue.innerHTML = "None"
+			global.transformControl.scaleSnap = null
+		}
+		else {
+			scaleSnappingSliderValue.innerHTML = this.value
+			global.transformControl.scaleSnap = this.value
 		}
 	}
 }
