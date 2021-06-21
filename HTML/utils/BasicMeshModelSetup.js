@@ -56,7 +56,7 @@ const setupBoxAreaMesh = async function (THREE, basicMeshDict) {
 			transparent: true,
 			alphaTest: 0.35,
 			opacity: 0.5,
-			side: THREE.DoubleSide,
+			side: THREE.DoubleSide
 		})
 		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
 		boxAreaMesh.userData.actorList = []
