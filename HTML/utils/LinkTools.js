@@ -29,10 +29,8 @@ const linkPoints = []
 
 
 
-
 // Functions to init the link object
 const initLinkObject = function() {
-  linkGeometry = new global.LineSegmentsGeometry()
   linkGeometry.setPositions(linkPoints)
 
 
@@ -61,6 +59,10 @@ const initLinkObject = function() {
   linkObject = new global.LineSegments2(linkGeometry, material)
   linkObject.computeLineDistances()
   global.scene.add(linkObject)
+}
+
+const reloadLinkObjectResolution = function() {
+  linkObject.material.resolution.set(window.innerWidth, window.innerHeight)
 }
 
 const removeLinkObject = function() {
@@ -350,5 +352,6 @@ module.exports = {
   removeRelevantLinksFromMap: removeRelevantLinksFromMap,
   reloadRelevantLinkObjects: reloadRelevantLinkObjects,
   removeLinkObjectsFromSceneByIncludedActor: removeLinkObjectsFromSceneByIncludedActor,
-  addRelevantLinkObjectsByIncludedActor: addRelevantLinkObjectsByIncludedActor
+  addRelevantLinkObjectsByIncludedActor: addRelevantLinkObjectsByIncludedActor,
+  reloadLinkObjectResolution: reloadLinkObjectResolution
 }
