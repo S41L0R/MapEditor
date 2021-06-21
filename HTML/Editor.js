@@ -159,7 +159,7 @@ function resizeCanvasToDisplaySize () {
 		camera.far = 100000
 		camera.updateProjectionMatrix()
 
-		// update any render target sizes here
+		LinkTools.reloadLinkObjectResolution()
 	}
 }
 
