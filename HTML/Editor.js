@@ -21,6 +21,12 @@ global.LineGeometry = LineGeometry
 
 import {LineMaterial} from "./lib/threejs/examples/jsm/lines/LineMaterial.js"
 global.LineMaterial = LineMaterial
+
+import {LineSegmentsGeometry} from "./lib/threejs/examples/jsm/lines/LineSegmentsGeometry.js"
+global.LineSegmentsGeometry = LineSegmentsGeometry
+
+import {LineSegments2} from "./lib/threejs/examples/jsm/lines/LineSegments2.js"
+global.LineSegments2 = LineSegments2
 // -----------------------------------------------------------------------------
 
 // Requires
