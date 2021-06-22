@@ -45,7 +45,7 @@ const setupCubeMesh = async function (THREE, basicMeshDict) {
 
 const setupBoxAreaMesh = async function (THREE, basicMeshDict) {
 	return new Promise((resolve) => {
-		const cubeGeometry = new THREE.BoxBufferGeometry()
+		const cubeGeometry = new THREE.BoxBufferGeometry(2, 2, 2)
 		const cubeTexLoader = new THREE.TextureLoader()
 		const texture = cubeTexLoader.load(areaTexturePath_Box)
 		texture.magFilter = THREE.NearestFilter
@@ -56,7 +56,7 @@ const setupBoxAreaMesh = async function (THREE, basicMeshDict) {
 			transparent: true,
 			alphaTest: 0.35,
 			opacity: 0.5,
-			side: THREE.DoubleSide,
+			side: THREE.DoubleSide
 		})
 		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
 		boxAreaMesh.userData.actorList = []

@@ -9,12 +9,79 @@ let backwardLinks = new Map()
 
 let forwardRailLinks = new Map()
 
-// Array to store the actual link objects
-let linkObjects = []
+// This stores link object geometry indices by the linking actor
+let linkObjectForwardMapping = new Map()
+
+// This stores link object geometry indices by the linked actor
+let linkObjectBackwardMapping = new Map()
+
+// Link object - all the links in one object
+let linkObject = new global.LineSegments2()
+
+// Link Geometry - stores all links
+let linkGeometry = new global.LineSegmentsGeometry()
+
+// Max number of links in the scene before link refresh:
+maxLinks = 1000
+
+// The list of points
+const linkPoints = []
+
+
+
+// Functions to init the link object
+const initLinkObject = function() {
+  linkGeometry.setPositions(linkPoints)
+
+
+  let colorsArray = []
+  for (let i = 0; i < linkPoints.length/2; i++) {
+    colorsArray.push(
+      0.0, 0.0, 1.0,
+      1.0, 1.0, 0.0
+    )
+  }
+  const colors = new Float32Array(colorsArray)
+
+  linkGeometry.setColors(colors)
+
+  // Link Material for all links
+
+  const material = new global.LineMaterial({
+          linewidth: 3,
+          vertexColors: true,
+          dashed: false,
+          alphaToCoverage: true,
+  })
+
+  material.resolution.set(window.innerWidth, window.innerHeight)
+
+  linkObject = new global.LineSegments2(linkGeometry, material)
+  linkObject.computeLineDistances()
+  global.scene.add(linkObject)
+}
+
+const reloadLinkObjectResolution = function() {
+  linkObject.material.resolution.set(window.innerWidth, window.innerHeight)
+}
+
+const removeLinkObject = function() {
+  global.scene.remove(linkObject)
+  linkObject.material.dispose()
+  linkObject.geometry.dispose()
+}
+
+const reloadLinkObject = function() {
+  removeLinkObject()
+  initLinkObject()
+}
+
+
 
 
 
 const createLinks = async function() {
+  initLinkObject()
   storeLinks()
   addLinksToScene()
 }
@@ -49,8 +116,31 @@ const removeLinksFromScene = async function() {
 
 
 const reloadRelevantLinkObjects = async function(actor) {
-  removeLinkObjectsFromSceneByIncludedActor(actor)
-  addRelevantLinkObjectsByIncludedActor(actor)
+  if (linkObjectForwardMapping.has(actor)) {
+    for (const forwardMappingData of linkObjectForwardMapping.get(actor)) {
+      linkPoints[forwardMappingData.LinkIndex    ] = actor.Translate[0].value
+      linkPoints[forwardMappingData.LinkIndex + 1] = actor.Translate[1].value
+      linkPoints[forwardMappingData.LinkIndex + 2] = actor.Translate[2].value
+
+      linkPoints[forwardMappingData.LinkIndex + 3] = forwardMappingData.LinkedActor.Translate[0].value
+      linkPoints[forwardMappingData.LinkIndex + 4] = forwardMappingData.LinkedActor.Translate[1].value
+      linkPoints[forwardMappingData.LinkIndex + 5] = forwardMappingData.LinkedActor.Translate[2].value
+    }
+  }
+  if (linkObjectBackwardMapping.has(actor)) {
+    for (const backwardMappingData of linkObjectBackwardMapping.get(actor)) {
+      linkPoints[backwardMappingData.LinkIndex    ] = backwardMappingData.LinkedActor.Translate[0].value
+      linkPoints[backwardMappingData.LinkIndex + 1] = backwardMappingData.LinkedActor.Translate[1].value
+      linkPoints[backwardMappingData.LinkIndex + 2] = backwardMappingData.LinkedActor.Translate[2].value
+
+      linkPoints[backwardMappingData.LinkIndex + 3] = actor.Translate[0].value
+      linkPoints[backwardMappingData.LinkIndex + 4] = actor.Translate[1].value
+      linkPoints[backwardMappingData.LinkIndex + 5] = actor.Translate[2].value
+    }
+  }
+
+  // Quick geometry edit
+  linkGeometry.setPositions(linkPoints)
 }
 
 const addRelevantLinkObjectsByIncludedActor = async function(actor) {
@@ -78,60 +168,30 @@ const addRelevantLinkObjectsByIncludedActor = async function(actor) {
     }
   }
 }
-
 const addLinkToScene = async function(actor, linkedActor) {
-  // Convert the actor positions to THREE.Vector3
-  actorPos = new global.THREE.Vector3(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value)
-  linkedActorPos = new global.THREE.Vector3(linkedActor.Translate[0].value, linkedActor.Translate[1].value, linkedActor.Translate[2].value)
+
+  linkPoints.push(actor.Translate[0].value, actor.Translate[1].value, actor.Translate[2].value)
+  linkPoints.push(linkedActor.Translate[0].value, linkedActor.Translate[1].value, linkedActor.Translate[2].value)
+
+  const index = linkPoints.length - 6
 
 
 
-  // Build up the line geometry
-  const curve = new global.THREE.LineCurve3(actorPos, linkedActorPos)
-  const points = curve.getPoints( 2 );
-  //const geometry = new global.THREE.BufferGeometry().setFromPoints( points )
-  const positions = [
-    points[0].x, points[0].y, points[0].z,
-    points[1].x, points[1].y, points[1].z,
-    points[2].x, points[2].y, points[2].z
-  ]
+  if (linkObjectForwardMapping.has(actor)) {
+    linkObjectForwardMapping.set(actor, linkObjectForwardMapping.get(actor).concat({"LinkIndex": index, "LinkedActor": linkedActor}))
+  }
+  else {
+    linkObjectForwardMapping.set(actor, [{"LinkIndex": index, "LinkedActor": linkedActor}])
+  }
 
-  const geometry = new global.LineGeometry()
+  if (linkObjectBackwardMapping.has(linkedActor)) {
+    linkObjectBackwardMapping.set(linkedActor, linkObjectBackwardMapping.get(linkedActor).concat({"LinkIndex": index, "LinkedActor": actor}))
+  }
+  else {
+    linkObjectBackwardMapping.set(linkedActor, [{"LinkIndex": index, "LinkedActor": actor}])
+  }
 
-  geometry.setPositions(positions)
-
-
-  const colors = new Float32Array([
-    0.0, 0.0, 1.0,
-    0.0, 0.0, 1.0,
-    1.0, 1.0, 0.0
-  ]);
-  geometry.setColors(colors)
-  //geometry.addAttribute('color', new global.THREE.BufferAttribute(colors,3));
-
-  // Set up the line material
-  const material = new global.LineMaterial({
-					linewidth: 1, // in pixels
-					vertexColors: true,
-					dashed: false,
-					alphaToCoverage: true,
-  })
-  material.resolution.set(window.innerWidth, window.innerHeight)
-
-  // Set up the link object
-  const linkObject = new global.Line2( geometry, material )
-  linkObject.computeLineDistances()
-  linkObject.scale.set(1,1,1)
-
-  linkObject.userData.actor = actor
-  linkObject.userData.linkedActor = linkedActor
-
-
-  // Add it to the linkObject array
-  linkObjects.push(linkObject)
-
-  // Add it to the scene
-  global.scene.add(linkObject)
+  reloadLinkObject()
 }
 
 
@@ -140,24 +200,62 @@ const addLinkToScene = async function(actor, linkedActor) {
 
 // Basic function to loop through all linkObjects and delete relevant ones.
 const removeLinkObjectsFromSceneByIncludedActor = async function(actor) {
-  let linkObjectsForRemoval = []
-  for (const linkObject of linkObjects) {
-    if (linkObject.userData.actor === actor || linkObject.userData.linkedActor === actor) {
-      // Schedule the linkObject for removal
-      linkObjectsForRemoval.push(linkObject)
-      global.scene.remove(linkObject)
+  let forwardIndicesToRemove = []
+  let backwardIndicesToRemove = []
+  if (forwardLinks.has(actor)) {
+    console.error(linkObjectBackwardMapping.get(actor))
+    for (const linkObjectForwardMappingData of linkObjectForwardMapping.get(actor)) {
+      const index = linkObjectForwardMappingData.LinkIndex
+      linkPoints.splice(index, 6)
+
+      // Umm... now we need to splice this index from linkObjectForwardMappingData
+      // We'll just store the index for now...
+      forwardIndicesToRemove.push(index)
     }
   }
-  // Remove relevant linkObjects from linkObjects
-  for (const linkObject of linkObjectsForRemoval) {
-    linkObjects.splice(linkObjects.indexOf(linkObject), 1)
+  if (backwardLinks.has(actor)) {
+    for (const linkObjectBackwardMappingData of linkObjectBackwardMapping.get(actor)) {
+      const index = linkObjectBackwardMappingData.LinkIndex
+      linkPoints.splice(index, 6)
+
+      // Umm... now we need to splice this index from linkObjectBackwardMappingData
+      // We'll just store the index for now...
+      backwardIndicesToRemove.push(index)
+
+    }
   }
+
+  for (const index of forwardIndicesToRemove) {
+    linkPoints.splice(index, 6)
+    for (const [actor, forwardMappingDataList] of linkObjectForwardMapping.entries()) {
+      for (const forwardMappingData of forwardMappingDataList) {
+        if (forwardMappingData.LinkIndex > index) {
+          forwardMappingData.LinkIndex = forwardMappingData.LinkIndex - 6
+        }
+      }
+    }
+  }
+
+  for (const index of backwardIndicesToRemove) {
+    linkPoints.splice(index, 6)
+    for (const [actor, backwardMappingDataList] of linkObjectBackwardMapping.entries()) {
+      for (const backwardMappingData of backwardMappingDataList) {
+        if (backwardMappingData.LinkIndex > index) {
+          backwardMappingData.LinkIndex = backwardMappingData.LinkIndex - 6
+        }
+      }
+    }
+  }
+  linkObjectForwardMapping.delete(actor)
+  linkObjectBackwardMapping.delete(actor)
+  reloadLinkObject()
 }
 
 // The reason linkObjects is plural in this function title is to account for
 // when two links come from and arrive at the same actors as each other.
 
-// UNTESTED & CURRENTLY UNUSED - Probably works
+// UNTESTED & CURRENTLY UNUSED - Probably works... Just kidding, I optimized things.
+// This does NOT WORK.
 const removeLinkObjectsFromSceneByConnectionActors = async function(actor, linkedActor) {
   let linkObjectsForRemoval = []
   for (const linkObject of linkObjects) {
@@ -254,5 +352,6 @@ module.exports = {
   removeRelevantLinksFromMap: removeRelevantLinksFromMap,
   reloadRelevantLinkObjects: reloadRelevantLinkObjects,
   removeLinkObjectsFromSceneByIncludedActor: removeLinkObjectsFromSceneByIncludedActor,
-  addRelevantLinkObjectsByIncludedActor: addRelevantLinkObjectsByIncludedActor
+  addRelevantLinkObjectsByIncludedActor: addRelevantLinkObjectsByIncludedActor,
+  reloadLinkObjectResolution: reloadLinkObjectResolution
 }

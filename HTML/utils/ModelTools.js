@@ -6,6 +6,10 @@ const CacheTools = require("./CacheTools.js")
 const PythonTools = require("./PythonTools.js")
 const GeneralModelTools = require("./GeneralModelTools.js")
 const BasicMeshModelSetup = require("./BasicMeshModelSetup.js")
+const RayCastTools = require("./RayCastTools.js")
+
+const path = require('path')
+const fs = require('fs')
 // -----------------------------------------------------------------------------
 
 // Usables
@@ -20,7 +24,8 @@ let basicMeshDict = {}
 let modelNumDict = {}
 
 let modelDictByPath = {}
-let latestModelPathList = []
+
+let mostRecentModelPathDict = {}
 // -----------------------------------------------------------------------------
 
 
@@ -71,13 +76,13 @@ const loadModelByActorName = function (actorName) {
 
 const loadGameModelsBySection = function(sectionName) {
   return new Promise ((resolve) => {
-    PythonTools.loadPython("newGetActorModelPaths", sectionName).then((modelPathList) => {
-      // Might as well store the modelPathList for later:
-      latestModelPathList = modelPathList
+    PythonTools.loadPython("newGetActorModelPaths", sectionName).then((modelPathDict) => {
+
+      mostRecentModelPathDict = modelPathDict
 
       let promises = []
 
-      for (const [actorName, modelPath] of Object.entries(modelPathList)) {
+      for (const [actorName, modelPath] of Object.entries(modelPathDict)) {
   			promises.push(loadModel(actorName, modelPath))
   		}
 
@@ -120,7 +125,9 @@ const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum
 	// General logic for when the collada file is loaded.
 	// This includes model manipulation in order to serve our purposes.
 	colladaModel = collada.scene
-	GeneralModelTools.bakeSkeleton(colladaModel)
+  // This is only needed on the old version of ModelExporter:
+	//GeneralModelTools.bakeSkeleton(colladaModel)
+
 	let colladaMeshArray = []
 	colladaModel.traverse((item) => {
 		if (item.isMesh) {
@@ -165,8 +172,34 @@ const colladaOnError = function (error, actorName, resolve) {
 
 
 
-
-
+// Function to apply cached models by extracted sbfres path:
+const loadNewCachedModels = function(modelsPath, callback) {
+  console.error(modelsPath)
+  let modelPaths = []
+  fs.readdir(modelsPath, (err, files) => {
+    for (const file of files) {
+      // Check if the file extension is dae.
+      const fileNameArray = file.split(".")
+      if (fileNameArray[1] === "dae") {
+        // If so, add it to modelPaths
+        modelPaths.push(path.join(modelsPath, file))
+      }
+    }
+    for (const [actorName, modelPath] of Object.entries(mostRecentModelPathDict)) {
+      for (const listedModelPath of modelPaths) {
+        if (path.resolve(modelPath) === path.resolve(listedModelPath)) {
+          loadModel(actorName, modelPath).then(() => {
+            for (const model of modelDict[actorName]) {
+              global.scene.add(model)
+              RayCastTools.intersectables.push(model)
+            }
+            callback(actorName)
+          })
+        }
+      }
+    }
+  })
+}
 
 
 
@@ -191,8 +224,9 @@ const colladaOnError = function (error, actorName, resolve) {
 module.exports = {
   setupBasicMeshModels: setupBasicMeshModels,
   loadGameModelsBySection: loadGameModelsBySection,
+  loadNewCachedModels: loadNewCachedModels,
 
   modelDict: modelDict,
-  basicMeshDict: basicMeshDict,
-  latestModelPathList: latestModelPathList
+  modelDictByPath: modelDictByPath,
+  basicMeshDict: basicMeshDict
 }

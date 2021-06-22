@@ -3,7 +3,7 @@
 To do in this file:
 ===================
 * Move progress bar updating to a seperate file
-
+* Same for model updating
 
 */
 
@@ -15,7 +15,7 @@ const path = require("path")
 
 
 
-async function loadPython (func, arg) {
+async function loadPython (func, arg, onData=()=>{}) {
 
 	const { spawn } = require("child_process")
 
@@ -43,9 +43,9 @@ async function loadPython (func, arg) {
   				if (func == "main") {
   					var sectionData = data
   				}
-  			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
+  			} if (dataBuffer.toString().includes("!startProgressDataTotal")) {
   				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
-  			} else if (dataBuffer.toString().includes("!startProgressData")) {
+  			} if (dataBuffer.toString().includes("!startProgressData")) {
   				if (modelsToCacheDone/modelsToCacheTotal < 1) {
   					document.getElementById("progressBar").style.visibility="visible"
   					document.getElementById("ProgressContainerDiv").style.visibility="visible"
@@ -53,11 +53,11 @@ async function loadPython (func, arg) {
   					document.getElementById("progressBar").style.width=`${100 * (modelsToCacheDone/modelsToCacheTotal)}%`
 
   				}
-				} else if (dataBuffer.toString().includes("!startModelCachedData")) {
-					
+				} if (dataBuffer.toString().includes("!startModelCachedData")) {
+					modelPath = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startModelCachedData") + 21, dataBuffer.toString().lastIndexOf("!startModelCachedData"))
+					onData("modelCachedData", path.join(__dirname, "../../", modelPath))
   			} else {
   				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func} Arg: ${arg}`)
-				alert(dataBuffer.toString())
   			}
 
   		})
@@ -90,9 +90,9 @@ async function loadPython (func, arg) {
   				if (func == "main") {
   					var sectionData = data
   				}
-  			} else if (dataBuffer.toString().includes("!startProgressDataTotal")) {
+  			} if (dataBuffer.toString().includes("!startProgressDataTotal")) {
   				modelsToCacheTotal = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressDataTotal") + 23, dataBuffer.toString().lastIndexOf("!endProgressDataTotal"))
-  			} else if (dataBuffer.toString().includes("!startProgressData")) {
+  			} if (dataBuffer.toString().includes("!startProgressData")) {
   				modelsToCacheDone = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startProgressData") + 18, dataBuffer.toString().lastIndexOf("!endProgressData"))
   				if (modelsToCacheDone/modelsToCacheTotal < 1) {
   					document.getElementById("progressBar").style.visibility="visible"
@@ -107,6 +107,9 @@ async function loadPython (func, arg) {
   					document.getElementById("loadStatus").style.visibility="hidden"
   				}
 
+				} if (dataBuffer.toString().includes("!startModelCachedData")) {
+					modelPath = dataBuffer.toString().substring(dataBuffer.toString().lastIndexOf("!startModelCachedData") + 21, dataBuffer.toString().lastIndexOf("!endModelCachedData"))
+					onData("modelCachedData", path.join(__dirname, "../../", modelPath))
   			} else {
 					console.log(dataBuffer.toString())
   				console.warn(`Could not find valid data markers in data from Python-side! Func: ${func}, Arg: ${arg}`)
