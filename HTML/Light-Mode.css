@@ -16,14 +16,14 @@
   color: #000000;
 }
 
-.cameraSlider {
+.generalSlider {
   background: #008CBA;
 }
-.cameraSlider::-webkit-slider-thumb {
+.generalSlider::-webkit-slider-thumb {
   background: #2628a3;
   background: #000000;
 }
-.cameraSlider:hover {
+.generalSlider:hover {
   background: #005773;
 }
 
