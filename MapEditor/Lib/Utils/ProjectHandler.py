@@ -78,4 +78,17 @@ def clearDB_and_projectDir():
     projectsDir = util.findMKDir(pathlib.Path(f'{util.get_data_dir()}/Projects'))
     os.system(f'rm -rf {projectsDir}')
 
+def getCurrentProject() -> str:
+    projectDir = util.findMKDir(pathlib.Path(f'{util.get_data_dir()}/Projects'))
+    with open(projectDir / 'CurrentProject.txt', 'rt') as readProjectName:
+        projectName = str(readProjectName.read())
+    return(projectName)
+
+def setCurrentProject(projectName: str):
+    projectDir = util.findMKDir(pathlib.Path(f'{util.get_data_dir()}/Projects'))
+    with open(projectDir / 'CurrentProject.txt', 'wt') as writeProjectName:
+        writeProjectName.write(str(projectName))
+    return
+
+
 initProjectsDir()
