@@ -102,15 +102,14 @@ def getCurrentSection():
 def createProject(projectName):
     project = projectHandling.Project(projectName)
     project.create()
+    projectHandling.setCurrentProject(projectName)
     print(f'!startData{json.dumps(project.getProject())}!endData')
     return(project.getProject())
 
 # returns a project path
 def openProject(projectName):
     # so... we'll need to save what project we had opened:
-    settings, content, aoc = getSettings()
-    settings["ProjectName"] = projectName
-    WriteSettings.WriteSettings(settings)
+    projectHandling.setCurrentProject(projectName)
 
     global currentProject
     project = projectHandling.Project(projectName)
@@ -406,8 +405,7 @@ def save(sectionPath):
         dataToSave = readSectionJSON.read()
         #print(dataToSave)
     loadedData = json.loads(dataToSave)
-    currentProject = LoadSettings.LoadSettings().get("ProjectName")
-    #currentProject = loadedData['ProjectName']
+    currentProject = projectHandling.getCurrentProject()
     projectPath = projectHandling.Project(currentProject).getProject()
     print(currentProject)
     print(projectPath)
