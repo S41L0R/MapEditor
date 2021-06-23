@@ -1,4 +1,6 @@
-/**
+( function () {
+
+	/**
  * parameters = {
  *  color: <hex>,
  *  linewidth: <float>,
@@ -11,28 +13,33 @@
  * }
  */
 
-THREE.UniformsLib.line = {
-
-	linewidth: { value: 1 },
-	resolution: { value: new THREE.Vector2( 1, 1 ) },
-	dashScale: { value: 1 },
-	dashSize: { value: 1 },
-	dashOffset: { value: 0 },
-	gapSize: { value: 1 }, // todo FIX - maybe change to totalSize
-	opacity: { value: 1 }
-
-};
-
-THREE.ShaderLib[ 'line' ] = {
-
-	uniforms: THREE.UniformsUtils.merge( [
-		THREE.UniformsLib.common,
-		THREE.UniformsLib.fog,
-		THREE.UniformsLib.line
-	] ),
-
-	vertexShader:
-		`
+	THREE.UniformsLib.line = {
+		linewidth: {
+			value: 1
+		},
+		resolution: {
+			value: new THREE.Vector2( 1, 1 )
+		},
+		dashScale: {
+			value: 1
+		},
+		dashSize: {
+			value: 1
+		},
+		dashOffset: {
+			value: 0
+		},
+		gapSize: {
+			value: 1
+		},
+		// todo FIX - maybe change to totalSize
+		opacity: {
+			value: 1
+		}
+	};
+	THREE.ShaderLib[ 'line' ] = {
+		uniforms: THREE.UniformsUtils.merge( [ THREE.UniformsLib.common, THREE.UniformsLib.fog, THREE.UniformsLib.line ] ),
+		vertexShader: `
 		#include <common>
 		#include <color_pars_vertex>
 		#include <fog_pars_vertex>
@@ -177,9 +184,7 @@ THREE.ShaderLib[ 'line' ] = {
 
 		}
 		`,
-
-	fragmentShader:
-		`
+		fragmentShader: `
 		uniform vec3 diffuse;
 		uniform float opacity;
 
@@ -257,212 +262,192 @@ THREE.ShaderLib[ 'line' ] = {
 
 		}
 		`
-};
+	};
 
-THREE.LineMaterial = function ( parameters ) {
+	class LineMaterial extends THREE.ShaderMaterial {
 
-	THREE.ShaderMaterial.call( this, {
+		constructor( parameters ) {
 
-		type: 'LineMaterial',
+			super( {
+				type: 'LineMaterial',
+				uniforms: THREE.UniformsUtils.clone( THREE.ShaderLib[ 'line' ].uniforms ),
+				vertexShader: THREE.ShaderLib[ 'line' ].vertexShader,
+				fragmentShader: THREE.ShaderLib[ 'line' ].fragmentShader,
+				clipping: true // required for clipping support
 
-		uniforms: THREE.UniformsUtils.clone( THREE.ShaderLib[ 'line' ].uniforms ),
+			} );
+			Object.defineProperties( this, {
+				color: {
+					enumerable: true,
+					get: function () {
 
-		vertexShader: THREE.ShaderLib[ 'line' ].vertexShader,
-		fragmentShader: THREE.ShaderLib[ 'line' ].fragmentShader,
+						return this.uniforms.diffuse.value;
 
-		clipping: true // required for clipping support
+					},
+					set: function ( value ) {
 
-	} );
+						this.uniforms.diffuse.value = value;
 
-	this.dashed = false;
+					}
+				},
+				linewidth: {
+					enumerable: true,
+					get: function () {
 
-	Object.defineProperties( this, {
+						return this.uniforms.linewidth.value;
 
-		color: {
+					},
+					set: function ( value ) {
 
-			enumerable: true,
+						this.uniforms.linewidth.value = value;
 
-			get: function () {
+					}
+				},
+				dashed: {
+					enumerable: true,
+					get: function () {
 
-				return this.uniforms.diffuse.value;
+						return Boolean( 'USE_DASH' in this.defines );
 
-			},
+					},
 
-			set: function ( value ) {
+					set( value ) {
 
-				this.uniforms.diffuse.value = value;
+						if ( Boolean( value ) !== Boolean( 'USE_DASH' in this.defines ) ) {
 
-			}
+							this.needsUpdate = true;
 
-		},
+						}
 
-		linewidth: {
+						if ( value === true ) {
 
-			enumerable: true,
+							this.defines.USE_DASH = '';
 
-			get: function () {
+						} else {
 
-				return this.uniforms.linewidth.value;
+							delete this.defines.USE_DASH;
 
-			},
+						}
 
-			set: function ( value ) {
+					}
 
-				this.uniforms.linewidth.value = value;
+				},
+				dashScale: {
+					enumerable: true,
+					get: function () {
 
-			}
+						return this.uniforms.dashScale.value;
 
-		},
+					},
+					set: function ( value ) {
 
-		dashScale: {
+						this.uniforms.dashScale.value = value;
 
-			enumerable: true,
+					}
+				},
+				dashSize: {
+					enumerable: true,
+					get: function () {
 
-			get: function () {
+						return this.uniforms.dashSize.value;
 
-				return this.uniforms.dashScale.value;
+					},
+					set: function ( value ) {
 
-			},
+						this.uniforms.dashSize.value = value;
 
-			set: function ( value ) {
+					}
+				},
+				dashOffset: {
+					enumerable: true,
+					get: function () {
 
-				this.uniforms.dashScale.value = value;
+						return this.uniforms.dashOffset.value;
 
-			}
+					},
+					set: function ( value ) {
 
-		},
+						this.uniforms.dashOffset.value = value;
 
-		dashSize: {
+					}
+				},
+				gapSize: {
+					enumerable: true,
+					get: function () {
 
-			enumerable: true,
+						return this.uniforms.gapSize.value;
 
-			get: function () {
+					},
+					set: function ( value ) {
 
-				return this.uniforms.dashSize.value;
+						this.uniforms.gapSize.value = value;
 
-			},
+					}
+				},
+				opacity: {
+					enumerable: true,
+					get: function () {
 
-			set: function ( value ) {
+						return this.uniforms.opacity.value;
 
-				this.uniforms.dashSize.value = value;
+					},
+					set: function ( value ) {
 
-			}
+						this.uniforms.opacity.value = value;
 
-		},
+					}
+				},
+				resolution: {
+					enumerable: true,
+					get: function () {
 
-		dashOffset: {
+						return this.uniforms.resolution.value;
 
-			enumerable: true,
+					},
+					set: function ( value ) {
 
-			get: function () {
+						this.uniforms.resolution.value.copy( value );
 
-				return this.uniforms.dashOffset.value;
+					}
+				},
+				alphaToCoverage: {
+					enumerable: true,
+					get: function () {
 
-			},
+						return Boolean( 'ALPHA_TO_COVERAGE' in this.defines );
 
-			set: function ( value ) {
+					},
+					set: function ( value ) {
 
-				this.uniforms.dashOffset.value = value;
+						if ( Boolean( value ) !== Boolean( 'ALPHA_TO_COVERAGE' in this.defines ) ) {
 
-			}
+							this.needsUpdate = true;
 
-		},
+						}
 
-		gapSize: {
+						if ( value === true ) {
 
-			enumerable: true,
+							this.defines.ALPHA_TO_COVERAGE = '';
+							this.extensions.derivatives = true;
 
-			get: function () {
+						} else {
 
-				return this.uniforms.gapSize.value;
+							delete this.defines.ALPHA_TO_COVERAGE;
+							this.extensions.derivatives = false;
 
-			},
+						}
 
-			set: function ( value ) {
-
-				this.uniforms.gapSize.value = value;
-
-			}
-
-		},
-
-		opacity: {
-
-			enumerable: true,
-
-			get: function () {
-
-				return this.uniforms.opacity.value;
-
-			},
-
-			set: function ( value ) {
-
-				this.uniforms.opacity.value = value;
-
-			}
-
-		},
-
-		resolution: {
-
-			enumerable: true,
-
-			get: function () {
-
-				return this.uniforms.resolution.value;
-
-			},
-
-			set: function ( value ) {
-
-				this.uniforms.resolution.value.copy( value );
-
-			}
-
-		},
-
-		alphaToCoverage: {
-
-			enumerable: true,
-
-			get: function () {
-
-				return Boolean( 'ALPHA_TO_COVERAGE' in this.defines );
-
-			},
-
-			set: function ( value ) {
-
-				if ( Boolean( value ) !== Boolean( 'ALPHA_TO_COVERAGE' in this.defines ) ) {
-
-					this.needsUpdate = true;
-
+					}
 				}
-
-				if ( value ) {
-
-					this.defines.ALPHA_TO_COVERAGE = '';
-					this.extensions.derivatives = true;
-
-				} else {
-
-					delete this.defines.ALPHA_TO_COVERAGE;
-					this.extensions.derivatives = false;
-
-				}
-
-			}
+			} );
+			this.setValues( parameters );
 
 		}
 
-	} );
+	}
 
-	this.setValues( parameters );
+	LineMaterial.prototype.isLineMaterial = true;
 
-};
+	THREE.LineMaterial = LineMaterial;
 
-THREE.LineMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
-THREE.LineMaterial.prototype.constructor = THREE.LineMaterial;
-
-THREE.LineMaterial.prototype.isLineMaterial = true;
+} )();

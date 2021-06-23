@@ -58,17 +58,45 @@ namespace ModelExporter
                                 });
                         }
                     }
-
-                    var file = STFileLoader.OpenFileFormat(arg);
-                    var scene = ((IModelSceneFormat)file).ToGeneric();
-                    foreach (var model in scene.Models)
+                    IFileFormat file;
+                    if (File.Exists(arg))
                     {
-                        DAE.Export($"{args[args.Length - 1]}{model.Name}.dae", new DAE.ExportSettings()
+                        file = STFileLoader.OpenFileFormat(arg);
+                        ExportModel(file, args);
+                    }
+                    else
+                    {
+                        // The file might be split into multiple files...
+                        var Exists = true;
+                        var Suffix = 0;
+                        while (Exists)
                         {
-                            ExportTextures = true,
-                        }, model, model.GetMappedTextures(), model.Skeleton);
+                            file = STFileLoader.OpenFileFormat(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00")));
+                            ExportModel(file, args);
+                            Suffix = Suffix + 1;
+                            if (!File.Exists(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00"))))
+                            {
+                                Exists = false;
+
+                                if (Suffix == 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        }
+        static void ExportModel(Toolbox.Core.IFileFormat file, String[] args)
+        {
+            var scene = ((IModelSceneFormat)file).ToGeneric();
+            foreach (var model in scene.Models)
+            {
+                DAE.Export($"{args[args.Length - 1]}{model.Name}.dae", new DAE.ExportSettings()
+                {
+                    ExportTextures = true,
+                }, model, model.GetMappedTextures(), model.Skeleton);
             }
         }
     }

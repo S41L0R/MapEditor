@@ -9,13 +9,15 @@ export default QUnit.module( 'Maths', () => {
 		// Since this is an abstract base class, we have to make it concrete in order
 		// to QUnit.test its functionality...
 
-		function Mock( parameterPositions, sampleValues, sampleSize, resultBuffer ) {
+		class Mock extends Interpolant {
 
-			Interpolant.call( this, parameterPositions, sampleValues, sampleSize, resultBuffer );
+			constructor( parameterPositions, sampleValues, sampleSize, resultBuffer ) {
+
+				super( parameterPositions, sampleValues, sampleSize, resultBuffer );
+
+			}
 
 		}
-
-		Mock.prototype = Object.create( Interpolant.prototype );
 
 		Mock.prototype.intervalChanged_ = function intervalChanged( i1, t0, t1 ) {
 
@@ -95,31 +97,31 @@ export default QUnit.module( 'Maths', () => {
 		// Tests
 
 		// INSTANCING
-		QUnit.todo( 'Instancing', ( assert ) => {
+		QUnit.todo( "Instancing", ( assert ) => {
 
-			assert.ok( false, 'everything\'s gonna be alright' );
+			assert.ok( false, "everything's gonna be alright" );
 
 		} );
 
 		// PUBLIC STUFF
-		QUnit.todo( 'evaluate', ( assert ) => {
+		QUnit.todo( "evaluate", ( assert ) => {
 
-			assert.ok( false, 'everything\'s gonna be alright' );
+			assert.ok( false, "everything's gonna be alright" );
 
 		} );
 
 		// PRIVATE STUFF
-		QUnit.test( 'copySampleValue_', ( assert ) => {
+		QUnit.test( "copySampleValue_", ( assert ) => {
 
 			var interpolant = new Mock( null, [ 1, 11, 2, 22, 3, 33 ], 2, [] );
 
-			assert.deepEqual( interpolant.copySampleValue_( 0 ), [ 1, 11 ], 'sample fetch (0)' );
-			assert.deepEqual( interpolant.copySampleValue_( 1 ), [ 2, 22 ], 'sample fetch (1)' );
-			assert.deepEqual( interpolant.copySampleValue_( 2 ), [ 3, 33 ], 'first sample (2)' );
+			assert.deepEqual( interpolant.copySampleValue_( 0 ), [ 1, 11 ], "sample fetch (0)" );
+			assert.deepEqual( interpolant.copySampleValue_( 1 ), [ 2, 22 ], "sample fetch (1)" );
+			assert.deepEqual( interpolant.copySampleValue_( 2 ), [ 3, 33 ], "first sample (2)" );
 
 		} );
 
-		QUnit.test( 'evaluate -> intervalChanged_ / interpolate_', ( assert ) => {
+		QUnit.test( "evaluate -> intervalChanged_ / interpolate_", ( assert ) => {
 
 			var actual, expect;
 
@@ -142,7 +144,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 12 ); // same interval
@@ -154,7 +156,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 22 ); // step forward
@@ -192,7 +194,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 20 ); // same interval
@@ -204,7 +206,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 43 ); // two steps forward
@@ -223,7 +225,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 12 ); // two steps back
@@ -242,7 +244,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 77 ); // random access
@@ -261,7 +263,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 80 ); // same interval
@@ -273,7 +275,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 36 ); // random access
@@ -292,7 +294,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 24 ); // fast reset / loop (2nd)
@@ -311,7 +313,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			Mock.calls = [];
 			interpolant.evaluate( 16 ); // fast reset / loop (2nd)
@@ -330,11 +332,11 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 		} );
 
-		QUnit.test( 'evaulate -> beforeStart_ [once]', ( assert ) => {
+		QUnit.test( "evaulate -> beforeStart_ [once]", ( assert ) => {
 
 			var actual, expect;
 
@@ -350,7 +352,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			// Check operation resumes normally and intervalChanged gets called
 			Mock.calls = [];
@@ -370,7 +372,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			// Back off-bounds
 			Mock.calls = [];
@@ -383,11 +385,11 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 		} );
 
-		QUnit.test( 'evaluate -> beforeStart_ [twice]', ( assert ) => {
+		QUnit.test( "evaluate -> beforeStart_ [twice]", ( assert ) => {
 
 			var actual, expect;
 
@@ -403,7 +405,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			Mock.calls = []; // again - consider changed state
 			interpolant.evaluate( 10 );
@@ -415,7 +417,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			// Check operation resumes normally and intervalChanged gets called
 			Mock.calls = [];
@@ -435,11 +437,11 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 		} );
 
-		QUnit.test( 'evaluate -> afterEnd_ [once]', ( assert ) => {
+		QUnit.test( "evaluate -> afterEnd_ [once]", ( assert ) => {
 
 			var actual, expect;
 
@@ -455,7 +457,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			// Check operation resumes normally and intervalChanged gets called
 			Mock.calls = [];
@@ -475,7 +477,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 			// Back off-bounds
 			Mock.calls = [];
@@ -488,11 +490,11 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 		} );
 
-		QUnit.test( 'evaluate -> afterEnd_ [twice]', ( assert ) => {
+		QUnit.test( "evaluate -> afterEnd_ [twice]", ( assert ) => {
 
 			var actual, expect;
 
@@ -508,7 +510,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			Mock.calls = []; // again - consider changed state
 			interpolant.evaluate( 33 );
@@ -520,7 +522,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 1, 'no further calls' );
+			assert.ok( Mock.calls.length === 1, "no further calls" );
 
 			// Check operation resumes normally and intervalChanged gets called
 			Mock.calls = [];
@@ -540,7 +542,7 @@ export default QUnit.module( 'Maths', () => {
 			};
 			assert.deepEqual( actual, expect, JSON.stringify( expect ) );
 
-			assert.ok( Mock.calls.length === 2, 'no further calls' );
+			assert.ok( Mock.calls.length === 2, "no further calls" );
 
 		} );
 

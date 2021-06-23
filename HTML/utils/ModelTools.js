@@ -28,7 +28,12 @@ let modelDictByPath = {}
 let mostRecentModelPathDict = {}
 // -----------------------------------------------------------------------------
 
+// Constants
+// -----------------------------------------------------------------------------
 
+// The maximum number of game model textures to be loaded. Is imprecise, getting texture dimensions/sizes would be more useful...
+const TEXTURE_CAP = 5000
+// -----------------------------------------------------------------------------
 
 
 
@@ -114,13 +119,13 @@ function loadModel(actorName, modelPath) {
       modelDict[actorName] = modelDictByPath[modelPath]
       resolve()
     }
-    global.colladaLoader.load(modelPath, (collada) => {colladaOnLoad(collada, actorName, modelPath, resolve, modelNumDict[actorName])}, (collada) => {colladaOnProgress(collada, actorName)}, (error) => {colladaOnError(error, actorName, resolve)})
+    global.colladaLoader.load(modelPath, (collada) => {colladaOnLoad(collada, actorName, modelPath, resolve, modelNumDict[actorName])}, (collada) => {colladaOnProgress(collada, actorName)}, (error) => {colladaOnError(error, actorName, modelPath, resolve)})
   })
 }
 
 
 
-
+let loadedTextures = 0
 const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum) {
 	// General logic for when the collada file is loaded.
 	// This includes model manipulation in order to serve our purposes.
@@ -136,6 +141,122 @@ const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum
 			let colladaGeometry = item.geometry
 
 			let colladaMaterial = item.material
+
+      let diffuseMap = colladaMaterial.map
+      let normalMap = colladaMaterial.normalMap
+      let envMap = colladaMaterial.envMap
+      let alphaMap = colladaMaterial.alphaMap
+      let aoMap = colladaMaterial.aoMap
+      let bumpMap = colladaMaterial.bumpMap
+      let displacementMap = colladaMaterial.displacementMap
+      let emissiveMap = colladaMaterial.emissiveMap
+      let lightMap = colladaMaterial.lightMap
+      let metalnessMap = colladaMaterial.metalnessMap
+      let roughnessMap = colladaMaterial.roughnessMap
+      if (loadedTextures > TEXTURE_CAP) {
+        if (diffuseMap !== null) {
+          diffuseMap.dispose()
+          colladaMaterial.map = null
+        }
+        if (normalMap !== null) {
+          normalMap.dispose()
+          colladaMaterial.normalMap = null
+        }
+        if (envMap !== null) {
+          envMap.dispose()
+          colladaMaterial.envMap = null
+        }
+        if (alphaMap !== null) {
+          alphaMap.dispose()
+          colladaMaterial.alphaMap = null
+        }
+        if (aoMap !== null) {
+          aoMap.dispose()
+          colladaMaterial.aoMap = null
+        }
+        if (bumpMap !== null) {
+          bumpMap.dispose()
+          colladaMaterial.bumpMap = null
+        }
+        if (displacementMap !== null) {
+          displacementMap.dispose()
+          colladaMaterial.displacementMap = null
+        }
+        if (emissiveMap !== null) {
+          emissiveMap.dispose()
+          colladaMaterial.emissiveMap = null
+        }
+        if (lightMap !== null) {
+          lightMap.dispose()
+          colladaMaterial.lightMap = null
+        }
+        if (metalnessMap !== undefined) {
+          metalnessMap.dispose()
+          colladaMaterial.metalnessMap = null
+        }
+        if (roughnessMap !== undefined) {
+          roughnessMap.dispose()
+          colladaMaterial.roughnessMap = null
+        }
+      }
+      else {
+        if (diffuseMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          diffuseMap.minFilter = global.THREE.LinearFilter
+        }
+        if (normalMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          normalMap.minFilter = global.THREE.LinearFilter
+        }
+        if (envMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          envMap.minFilter = global.THREE.LinearFilter
+        }
+        if (alphaMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          alphaMap.minFilter = global.THREE.LinearFilter
+        }
+        if (aoMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          aoMap.minFilter = global.THREE.LinearFilter
+        }
+        if (bumpMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          bumpMap.minFilter = global.THREE.LinearFilter
+        }
+        if (displacementMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          displacementMap.minFilter = global.THREE.LinearFilter
+        }
+        if (emissiveMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          emissiveMap.minFilter = global.THREE.LinearFilter
+        }
+        if (lightMap !== null) {
+          loadedTextures = loadedTextures + 1
+
+          lightMap.minFilter = global.THREE.LinearFilter
+        }
+        if (metalnessMap !== undefined) {
+          loadedTextures = loadedTextures + 1
+
+          metalnessMap.minFilter = global.THREE.LinearFilter
+        }
+        if (roughnessMap !== undefined) {
+          loadedTextures = loadedTextures + 1
+
+          roughnessMap.minFilter = global.THREE.LinearFilter
+        }
+      }
+
 
 			let colladaInstancedMesh = new THREE.InstancedMesh(colladaGeometry, colladaMaterial, modelNum + 999)
 			colladaInstancedMesh.userData.actorList = []
@@ -162,9 +283,11 @@ const colladaOnProgress = function (collada, actorName) {
 	console.log(`progress for ${actorName}`)
 }
 
-const colladaOnError = function (error, actorName, resolve) {
+const colladaOnError = function (error, actorName, modelPath, resolve) {
 	console.log(`error for ${actorName} when loading models.`)
 	console.error(error)
+  console.error(modelPath)
+  console.error(actorName)
 	resolve()
 }
 

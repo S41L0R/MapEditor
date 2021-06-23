@@ -150,7 +150,18 @@ class mapFile:
         # Also, I have no idea how this worked without this line:
         global currentSection
 
-        if (currentSection.startswith("TestSection_")):
+        #Okay, so the first thing we need to do is check if this section is already saved.
+
+        currentProject = LoadSettings.LoadSettings().get("ProjectName")
+        projectPath = projectHandling.Project(currentProject).getProject()
+        print(os.path.join(projectPath, currentSection))
+        if (os.path.exists(os.path.join(projectPath, currentSection))):
+            pathStrStatic = (f'{projectPath}/{currentSection}/{currentSection}_Static.smubin')
+            pathStrDy = (f'{projectPath}/{currentSection}/{currentSection}_Dynamic.smubin')
+            # We still have this because we can't edit terra tree files yet:
+            pathStrTeraTree = (f'{self.settings["GameDump"]}/{self.aoc}/Map/Mainfield/{currentSection}/{currentSection}_TeraTree.sblwp')
+
+        elif (currentSection.startswith("TestSection_")):
             currentSection = currentSection.replace("TestSection_", "")
             pathStrStatic = (f'./Test/{currentSection}/{currentSection}_Static.smubin')
             pathStrDy = (f'./Test/{currentSection}/{currentSection}_Dynamic.smubin')

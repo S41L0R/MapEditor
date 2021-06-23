@@ -16,7 +16,7 @@ const importObject = {
 
 	}
 
-};
+}
 
 /**
  * ZSTD (Zstandard) decoder.
@@ -36,7 +36,7 @@ const importObject = {
  */
 export class ZSTDDecoder {
 
-	init() {
+	init () {
 
 		if ( ! init ) {
 
@@ -49,7 +49,7 @@ export class ZSTDDecoder {
 
 					importObject.env.emscripten_notify_memory_growth( 0 ); // initialize heap.
 
-				} );
+				});
 
 		}
 
@@ -57,7 +57,7 @@ export class ZSTDDecoder {
 
 	}
 
-	decode( array, uncompressedSize = 0 ) {
+	decode ( array, uncompressedSize = 0 ) {
 
 		// Write compressed data into WASM memory.
 		const compressedSize = array.byteLength;

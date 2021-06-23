@@ -28,6 +28,9 @@ def cacheModels(modelList, modelPath):
                 os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(f'Cache/TitleBG/Model', str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
             else:
                 print("The following path does not exist:\n"+os.path.join(f'{modelPath}\\..\\TitleBG\\Model', str(i['bfres'])+'.sbfres'))
+                if (os.path.exists(os.path.join(modelPath, str(i['bfres'])+'-00'+'.sbfres'))):
+                    print("Trying in case of -00 support...")
+                    os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(modelPath, str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
 
             print(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(modelPath, str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
             print(os.getcwd())

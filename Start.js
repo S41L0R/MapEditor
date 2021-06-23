@@ -6,6 +6,7 @@ const ipc = require('electron').ipcMain
 
 
 
+
 const template = [
   // These menu names are beginning to physically hurt
   // { role: 'appMenu' }
