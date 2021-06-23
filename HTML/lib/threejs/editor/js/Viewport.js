@@ -347,7 +347,7 @@ function Viewport( editor ) {
 
 	} );
 
-	signals.rendererChanged.add( function ( newRenderer ) {
+	signals.rendererCreated.add( function ( newRenderer ) {
 
 		if ( renderer !== null ) {
 
@@ -573,13 +573,9 @@ function Viewport( editor ) {
 
 					var renderTarget = new THREE.WebGLCubeRenderTarget( 512 );
 					renderTarget.fromEquirectangularTexture( renderer, backgroundEquirectangularTexture );
-					renderTarget.toJSON = function () {
+					renderTarget.toJSON = function () { return null }; // TODO Remove hack
 
-						return null;
-
-					}; // TODO Remove hack
-
-					scene.background = renderTarget;
+					scene.background = renderTarget.texture;
 
 				}
 

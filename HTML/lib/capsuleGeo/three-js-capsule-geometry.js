@@ -10,7 +10,6 @@
 	 * @author maximequiblier
 	 */
 	function CapsuleBufferGeometry( radiusTop, radiusBottom, height, radialSegments, heightSegments, capsTopSegments, capsBottomSegments, thetaStart, thetaLength ) {
-
 		Three_cjs.BufferGeometry.call( this );
 
 		this.type = "CapsuleBufferGeometry";

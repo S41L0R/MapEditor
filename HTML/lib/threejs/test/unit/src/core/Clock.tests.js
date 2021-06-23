@@ -8,7 +8,9 @@ export default QUnit.module( 'Core', () => {
 
 		function mockPerformance() {
 
-			self.performance = {
+			const reference = ( typeof global !== 'undefined' ) ? global : self;
+
+			reference.performance = {
 				deltaTime: 0,
 
 				next: function ( delta ) {
@@ -75,15 +77,15 @@ export default QUnit.module( 'Core', () => {
 
 			clock.start();
 
-			self.performance.next( 123 );
+			performance.next( 123 );
 			assert.numEqual( clock.getElapsedTime(), 0.123, 'okay' );
 
-			self.performance.next( 100 );
+			performance.next( 100 );
 			assert.numEqual( clock.getElapsedTime(), 0.223, 'okay' );
 
 			clock.stop();
 
-			self.performance.next( 1000 );
+			performance.next( 1000 );
 			assert.numEqual( clock.getElapsedTime(), 0.223, 'don\'t update time if the clock was stopped' );
 
 		} );
