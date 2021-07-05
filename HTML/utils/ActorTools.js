@@ -91,6 +91,25 @@ function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
 	SceneTools.addActorToScene(actor, scenelike, intersectables, currentIndex)
 }
 */
+
+const removeObjectActor = async function (actor) {
+	let dummy = (function () {
+		for (const dummy of SelectionTools.objectDummys) {
+			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
+				return dummy
+			}
+		}
+	})();
+	if (dummy !== undefined) {
+		let isObjectSelected = false
+		if (SelectionTools.selectedDummys.includes(dummy)) {
+			isObjectSelected = true
+			await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+		}
+		await removeObjectActorByDummy(dummy)
+	}
+}
+
 const reloadObjectActor = async function (actor) {
 	let dummy = (function () {
 		for (const dummy of SelectionTools.objectDummys) {
@@ -153,7 +172,7 @@ const setupObjectActor = async function(actor) {
 						}
 					}
 					else {
-						actorModelData = await setupBasicMeshActor(actor, "areaBox")
+						actorModelData = await setupBasicMeshActor(actor, "areaBox",)
 						return(actorModelData)
 					}
 					break
@@ -225,68 +244,73 @@ const setupObjectActor = async function(actor) {
 }
 
 async function setupBasicMeshActor(actor, basicMeshKey) {
-	return new Promise((resolve) => {
-		createActorMatrix(actor).then(async (actorMatrix) => {
-			// First up, we need to check on whether there are already too many instanced
-			// mesh indices.
-			if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey][0].instanceMatrix.count) {
-				// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+	return new Promise(async (resolve) => {
+		let actorMatrix = await createActorMatrix(actor)
+		// First up, we need to check on whether there are already too many instanced
+		// mesh indices.
+		if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey][0].instanceMatrix.count) {
+			// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+			console.error(`TOO MANY INSTANCED MESH INDICES!! BasicMeshKey: ${basicMeshKey}`)
+			return
+		}
+		else {
+			// Okay, we're good.
+			console.warn(ModelTools.basicMeshDict[basicMeshKey])
+			let actorModelArray = ModelTools.basicMeshDict[basicMeshKey]
+			// With basicMeshes, there is only one element. It is an array for other reasons.
+			let actorModel = actorModelArray[0]
+			let index = actorModel.count
+			actorModel.count = actorModel.count + 1
+			actorModel.setMatrixAt(index, actorMatrix)
+			actorModel.instanceMatrix.needsUpdate = true
 
-				return
-			}
-			else {
-				// Okay, we're good.
-				console.warn(ModelTools.basicMeshDict[basicMeshKey])
-				let actorModelArray = ModelTools.basicMeshDict[basicMeshKey]
-				// With basicMeshes, there is only one element. It is an array for other reasons.
-				let actorModel = actorModelArray[0]
-				let index = actorModel.count
-				actorModel.count = actorModel.count + 1
-				actorModel.setMatrixAt(index, actorMatrix)
-				actorModel.instanceMatrix.needsUpdate = true
+			actorModel.userData.actorList[index] = actor
 
-				actorModel.userData.actorList[index] = actor
+			let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
 
-				let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
-
-				resolve([actorModelArray, index, dummy])
-			}
-		})
+			resolve([actorModelArray, index, dummy])
+		}
 	})
 }
 
 
 async function setupModelDictActor(actor) {
-	return new Promise((resolve) => {
-		createActorMatrix(actor).then(async (actorMatrix) => {
-			// Get the actor name and store it as the key we'll be using to access the model:
-			let modelDictKey = actor.UnitConfigName.value
-			// Eh.. all instancedMeshes of the same type should have the same index.. I think?
-			let index = ModelTools.modelDict[modelDictKey][0].count
+	return new Promise(async (resolve) => {
+		let actorMatrix = await createActorMatrix(actor)
+		// Just in case the actorMatrix is invalid...
+		if (actorMatrix.determinant() <= 0) {
+			console.error("ACTORMATRIX INVALID!!")
+			console.error(actorMatrix)
+			console.error(actor)
+		}
 
-			for (const actorModel of ModelTools.modelDict[modelDictKey]) {
-				// First up, we need to check on whether there are already too many instanced
-				// mesh indices.
-				if (actorModel.count === actorModel.instanceMatrix.count) {
-					// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+		// Get the actor name and store it as the key we'll be using to access the model:
+		let modelDictKey = actor.UnitConfigName.value
+		// Eh.. all instancedMeshes of the same type should have the same index.. I think?
+		let index = ModelTools.modelDict[modelDictKey][0].count
 
-					// Right now we'll just return
-					return
-				}
-				else {
-					// Okay, we're good.
-					actorModel.count = actorModel.count + 1
-
-					actorModel.setMatrixAt(index, actorMatrix)
-					//actorModel.instanceMatrix.needsUpdate = true
-
-					actorModel.userData.actorList[index] = actor
-
-				}
+		for (const actorModel of ModelTools.modelDict[modelDictKey]) {
+			// First up, we need to check on whether there are already too many instanced
+			// mesh indices.
+			if (actorModel.count === actorModel.instanceMatrix.count) {
+				// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
+				console.error(`TOO MANY INSTANCED MESH INDICES!! ModelDictKey: ${modelDictKey}`)
+				// Right now we'll just return
+				return
 			}
-			let dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
-			resolve([ModelTools.modelDict[modelDictKey], index, dummy])
-		})
+			else {
+				// Okay, we're good.
+				actorModel.count = actorModel.count + 1
+
+				actorModel.setMatrixAt(index, actorMatrix)
+				actorModel.instanceMatrix.needsUpdate = true
+
+				actorModel.userData.actorList[index] = actor
+
+			}
+		}
+		let dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
+		resolve([ModelTools.modelDict[modelDictKey], index, dummy])
 	})
 }
 
@@ -435,6 +459,7 @@ const removeObjectActorByDummy = async function(dummy) {
 
 
 		instancedMesh.userData.actorList.splice(index, 1, instancedMesh.userData.actorList.splice(lastIndex, 1, instancedMesh.userData.actorList[index])[0]);
+		instancedMesh.userData.actorList.length = lastIndex
 	}
 
 	const lastIndexDummy = findDummyFromInstancedMeshesAndIndex(dummy.userData.instancedMeshes, lastIndex)
@@ -446,7 +471,7 @@ const removeObjectActorByDummy = async function(dummy) {
 			instancedMesh.count = instancedMesh.count - 1
 		}
 	}
-	await SelectionTools.removeDummy(dummy)
+	SelectionTools.removeDummy(dummy)
 }
 
 
@@ -639,5 +664,6 @@ module.exports = {
 	setupObjectActor: setupObjectActor,
 	reloadObjectActor: reloadObjectActor,
 	getActorFromHashID: getActorFromHashID,
-	reloadObjectActorByName: reloadObjectActorByName
+	reloadObjectActorByName: reloadObjectActorByName,
+	removeObjectActor: removeObjectActor
 }

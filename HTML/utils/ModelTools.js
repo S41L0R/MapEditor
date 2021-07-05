@@ -32,7 +32,7 @@ let mostRecentModelPathDict = {}
 // -----------------------------------------------------------------------------
 
 // The maximum number of game model textures to be loaded. Is imprecise, getting texture dimensions/sizes would be more useful...
-const TEXTURE_CAP = 5000
+const TEXTURE_CAP = 3000
 // -----------------------------------------------------------------------------
 
 
@@ -297,7 +297,6 @@ const colladaOnError = function (error, actorName, modelPath, resolve) {
 
 // Function to apply cached models by extracted sbfres path:
 const loadNewCachedModels = function(modelsPath, callback) {
-  console.error(modelsPath)
   let modelPaths = []
   fs.readdir(modelsPath, (err, files) => {
     for (const file of files) {

@@ -41,6 +41,8 @@ const addActorToSelectedActorsList = async function(actor, document) {
 		selectedActor = actor
 		displayActor(actor, document)
 	})
+
+	
 }
 
 

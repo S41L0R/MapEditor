@@ -1,5 +1,6 @@
 const SelectionTools = require("./SelectionTools.js")
 const DataEditorTools = require("./DataEditorTools.js")
+const LODTools = require("./LODTools.js")
 
 // TO DO:
 
@@ -36,6 +37,12 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 								SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
 
 								DataEditorTools.addActorToSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
+
+								// Just in case we're selecting an LOD or an actor with an LOD:
+								relatedLODActor = LODTools.getLODRelatedActor(selectedObject.object.userData.actorList[selectedObject.instanceId])
+								if (relatedLODActor !== undefined) {
+									DataEditorTools.addActorToSelectedActorsList(relatedLODActor, document)
+								}
 							}
 							else {
 								SelectionTools.selectRail(selectedObject.object)
@@ -66,6 +73,11 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 							SelectionTools.deselectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
 
 							DataEditorTools.removeActorFromSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
+
+							relatedLODActor = LODTools.getLODRelatedActor(selectedObject.object.userData.actorList[selectedObject.instanceId])
+							if (relatedLODActor !== undefined) {
+								DataEditorTools.removeActorFromSelectedActorsList(relatedLODActor, document)
+							}
 						}
 						// Otherwise, deselect everything:
 						else {

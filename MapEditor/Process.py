@@ -166,6 +166,21 @@ class mapFile:
             pathStrDy = (f'./Test/{currentSection}/{currentSection}_Dynamic.smubin')
             pathStrTeraTree = (f'./Test/{currentSection}/{currentSection}_TeraTree.sblwp')
 
+        elif (currentSection.startswith("Shrine_")):
+            # WORK IN PROGRESS - AKA DOESN'T WORK
+            # ------------------------------------
+            currentSection = currentSection.replace("Shrine_", "")
+
+            # Time to cache the shrine!
+            sarc.sarc_extract(f'{settings["GameDump"]}/{content}/Pack/{currentSection}.pack', 'Cache/TitleBG')
+
+
+            # We're gonna read it directly out of cache, where the sarc is extracted.
+            pathStrStatic = (f'{projectPath}/{currentSection}/{currentSection}_Static.smubin')
+            pathStrDy = (f'{projectPath}/{currentSection}/{currentSection}_Dynamic.smubin')
+            pathStrTeraTree = (f'./Test/{currentSection}/{currentSection}_TeraTree.sblwp')
+            # ------------------------------------
+
         else:
             pathStrStatic = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Static.smubin')
             pathStrDy = (f'{self.settings["GameDump"]}/{self.aoc}/Map/MainField/{currentSection}/{currentSection}_Dynamic.smubin')

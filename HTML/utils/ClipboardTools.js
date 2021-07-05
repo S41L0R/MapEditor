@@ -2,6 +2,7 @@ const MapTools = require("./MapTools.js")
 const ActorTools = require("./ActorTools.js")
 const SelectionTools = require("./SelectionTools.js")
 const DataEditorTools = require("./DataEditorTools.js")
+const LODTools = require("./LODTools.js")
 
 let actorClipboard = {}
 
@@ -35,6 +36,12 @@ const pasteActors = function() {
           SelectionTools.selectObject(actorModelData[0][0], actorModelData[1], global.transformControl, global.THREE)
         })
         DataEditorTools.addActorToSelectedActorsList(actor, global.document)
+
+        // Just in case we're selecting an LOD or an actor with an LOD:
+        relatedLODActor = LODTools.getLODRelatedActor(actor)
+        if (relatedLODActor !== undefined) {
+          DataEditorTools.addActorToSelectedActorsList(relatedLODActor, global.document)
+        }
       }
       for (const refActor of actorClipboard.Dynamic) {
         // UGGGH I JUYSYT RELIAIZED THATRY I NEED TO MAKRE COPYT OF OBJECTE AND NTOT REFERERENCE OR ENLSE MESS UP.
@@ -49,6 +56,12 @@ const pasteActors = function() {
           SelectionTools.selectObject(actorModelData[0][0], actorModelData[1], global.transformControl, global.THREE)
         })
         DataEditorTools.addActorToSelectedActorsList(actor, global.document)
+
+        // Just in case we're selecting an LOD or an actor with an LOD:
+        relatedLODActor = LODTools.getLODRelatedActor(actor)
+        if (relatedLODActor !== undefined) {
+          DataEditorTools.addActorToSelectedActorsList(relatedLODActor, global.document)
+        }
       }
     })
   })
