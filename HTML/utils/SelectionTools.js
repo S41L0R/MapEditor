@@ -272,7 +272,7 @@ const displaySelection = async function(dummy, THREE) {
 		instancedMesh.getMatrixAt(dummy.userData.index, wireframe.matrix)
 		wireframe.matrixAutoUpdate = false
 
-		instancedMesh.add(wireframe)
+		dummy.attach(wireframe)
 
 	}
 }

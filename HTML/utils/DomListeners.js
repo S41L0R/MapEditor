@@ -7,6 +7,7 @@ const RailHelperTools = require("./RailHelperTools.js")
 const ClipboardTools = require("./ClipboardTools.js")
 const VisibilityTools = require("./VisibilityTools.js")
 const LinkTools = require("./LinkTools.js")
+const LODTools = require("./LODTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -25,6 +26,8 @@ const initListeners = async function(document, editorControls, transformControl)
 	initShowSideMenu(document)
 	initSideMenuControls(document)
 	initTransformSnappingControls(document)
+	initLODThresholdControls(document)
+	initLODToggleControls(document)
 }
 
 
@@ -498,11 +501,13 @@ async function initSideMenuControls(document) {
 					// If this is the panel the tab is for, make it visible.
 					panel.style["flex-grow"] = 1
 					panel.style["opacity"] = 1
+					panel.style["pointer-events"] = "auto"
 				}
 				else {
 					// Otherwise, make it invisible.
 					panel.style["flex-grow"] = 0.00001
 					panel.style["opacity"] = 0
+					panel.style["pointer-events"] = "none"
 				}
 			}
 		})
@@ -511,7 +516,7 @@ async function initSideMenuControls(document) {
 
 async function initTransformSnappingControls(document) {
 	const translateSnappingSlider = document.getElementById("translateSnappingSlider")
-	const translateSnappingText = document.getElementById("translateSnappingSliderText")
+	const translateSnappingValue = document.getElementById("translateSnappingSliderValue")
 
 	translateSnappingSlider.oninput = function () {
 		if (Math.round(this.value) === 0) {
@@ -554,6 +559,27 @@ async function initTransformSnappingControls(document) {
 			scaleSnappingSliderValue.innerHTML = this.value
 			global.transformControl.scaleSnap = this.value
 		}
+	}
+}
+
+function initLODThresholdControls(document) {
+	const LODThresholdSlider = document.getElementById("LODThresholdSlider")
+	const LODThresholdSliderValue = document.getElementById("LODThresholdSliderValue")
+
+	LODThresholdSlider.oninput = function () {
+		LODTools.setLOD_THRESHOLD(LODThresholdSlider.value)
+
+		LODThresholdSliderValue.innerHTML = LODThresholdSlider.value
+
+		// We'll force an LOD update...
+		LODTools.applyLODs()
+	}
+}
+
+function initLODToggleControls(document) {
+	const computeLODsCheckbox = document.getElementById("computeLODsCheckbox")
+	computeLODsCheckbox.oninput = function () {
+		global.computeLODs = computeLODsCheckbox.checked
 	}
 }
 

@@ -17,7 +17,7 @@
     "eslint": "^7.24.0"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "electron --js-flags=--max-old-space-size=4096 .",
     "oldBuild": "electron-packager ./ SilentPrincess --platform=win32 --arch=x64 --out=build --icon=./Assets/UI/Icon/MapEditorIconDarkMode-Alt.ico --ignore='^/Cache$'",
     "build": "electron-builder",
     "lint": "eslint ./HTML -c .eslintrc.json --ignore-path .eslintignore",

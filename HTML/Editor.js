@@ -42,6 +42,7 @@ const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
 const LinkTools = require("./HTML/utils/LinkTools.js")
 const ModelTools = require("./HTML/utils/ModelTools.js")
 const ActorTools = require("./HTML/utils/ActorTools.js")
+const LODTools = require("./HTML/utils/LODTools.js")
 
 const DomListners = require("./HTML/utils/DomListeners.js")
 
@@ -61,6 +62,9 @@ const defaultCameraLookSpeed = 0.1
 
 const colladaLoader = new ColladaLoader()
 global.colladaLoader = colladaLoader
+
+// Amout of frames between lod creation
+const LOD_FRAMES = 60
 // -----------------------------------------------------------------------------
 
 // Renderer initialization
@@ -199,9 +203,11 @@ global.transformControl = transformControl
 RayCastTools.initRaycaster(viewport, document, TransformControls, transformControl, camera)
 // -----------------------------------------------------------------------------
 
+global.computeLODs = false
 
 // Renderer
 // -----------------------------------------------------------------------------
+let currentFrame = 0
 
 function render() {
 	resizeCanvasToDisplaySize()
@@ -229,6 +235,16 @@ function render() {
 	if (transformControl.dragging) {
 		TransformControlTools.onTransformControlDrag(transformControl)
 	}
+
+	// Don't always apply LODs, only do it every few frames
+	// Though it doesn't have that much of a performance impact anyway...
+	if (currentFrame % LOD_FRAMES === 0) {
+		if (global.computeLODs) {
+			LODTools.applyLODs()
+		}
+	}
+
+	currentFrame = currentFrame + 1
 }
 render()
 
@@ -253,6 +269,115 @@ darkModeToggle.addEventListener("click", function () {
 // -----------------------------------------------------------------------------
 
 
+// Don't use this, it is buggy and broken..
+// ----------------------------------------
+const sections = [
+	"A-1",
+	"B-1",
+	"C-1",
+	"D-1",
+	"E-1",
+	"F-1",
+	"G-1",
+	"H-1",
+	"I-1",
+	"J-1",
+
+	"A-2",
+	"B-2",
+	"C-2",
+	"D-2",
+	"E-2",
+	"F-2",
+	"G-2",
+	"H-2",
+	"I-2",
+	"J-2",
+
+	"A-3",
+	"B-3",
+	"C-3",
+	"D-3",
+	"E-3",
+	"F-3",
+	"G-3",
+	"H-3",
+	"I-3",
+	"J-3",
+
+	"A-4",
+	"B-4",
+	"C-4",
+	"D-4",
+	"E-4",
+	"F-4",
+	"G-4",
+	"H-4",
+	"I-4",
+	"J-4",
+
+	"A-5",
+	"B-5",
+	"C-5",
+	"D-5",
+	"E-5",
+	"F-5",
+	"G-5",
+	"H-5",
+	"I-5",
+	"J-5",
+
+	"A-6",
+	"B-6",
+	"C-6",
+	"D-6",
+	"E-6",
+	"F-6",
+	"G-6",
+	"H-6",
+	"I-6",
+	"J-6",
+
+	"A-7",
+	"B-7",
+	"C-7",
+	"D-7",
+	"E-7",
+	"F-7",
+	"G-7",
+	"H-7",
+	"I-7",
+	"J-7",
+
+	"A-8",
+	"B-8",
+	"C-8",
+	"D-8",
+	"E-8",
+	"F-8",
+	"G-8",
+	"H-8",
+	"I-8",
+	"J-8",
+]
+async function loadAll() {
+	let sectionData = {}
+	let promises = []
+	for (const section of sections) {
+		promises.push(PythonTools.loadPython("main", section, onPythonData).then((thisSectionData) => {
+			sectionData = {
+				...thisSectionData,
+				...sectionData
+			}
+		}))
+	}
+
+	await Promise.all(promises)
+	return sectionData
+}
+// ---------------------------------------
+
+
 async function loadSection(sectionName) {
 	// Just in case we hit reload and want to see something
 	if (sectionName === undefined) {
@@ -274,8 +399,11 @@ async function loadSection(sectionName) {
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"
 	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
 				document.getElementById("loadingDisplay").style.opacity = 0
+				LinkTools.createLinks().then(() => {
+					LODTools.initLODs()
+				})
 			})
-			LinkTools.createLinks()
+
 
 
 	  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)

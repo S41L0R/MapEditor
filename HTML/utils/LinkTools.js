@@ -99,19 +99,11 @@ const addLinksToScene = async function() {
       addLinkToScene(actor, linkData.LinkedRail)
     }
   }
+  linkObject.visible = true
 }
 
 const removeLinksFromScene = async function() {
-  let linkObjectsToRemove = []
-  for (const linkObject of linkObjects) {
-    global.scene.remove(linkObject)
-
-    // schedule for removal from linkObjects
-    linkObjectsToRemove.push(linkObject)
-  }
-  for (const linkObject of linkObjectsToRemove) {
-    linkObjects.splice(linkObjects.indexOf(linkObject), 1)
-  }
+  linkObject.visible = false
 }
 
 
@@ -353,5 +345,7 @@ module.exports = {
   reloadRelevantLinkObjects: reloadRelevantLinkObjects,
   removeLinkObjectsFromSceneByIncludedActor: removeLinkObjectsFromSceneByIncludedActor,
   addRelevantLinkObjectsByIncludedActor: addRelevantLinkObjectsByIncludedActor,
-  reloadLinkObjectResolution: reloadLinkObjectResolution
+  reloadLinkObjectResolution: reloadLinkObjectResolution,
+  forwardLinks: forwardLinks,
+  backwardLinks: backwardLinks
 }
