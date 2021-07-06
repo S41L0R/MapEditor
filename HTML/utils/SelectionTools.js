@@ -12,6 +12,7 @@ const createObjectDummy = async function (instancedMeshes, index, THREE, sceneli
 	const dummyObject = new THREE.Group()
 	dummyObject.userData.instancedMeshes = instancedMeshes
 	dummyObject.userData.index = index
+	dummyObject.userData.actor = instancedMeshes[0].userData.actorList[index]
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrix)
 	instancedMeshes[0].getMatrixAt(index, dummyObject.matrixWorld)
 	dummyObject.matrixAutoUpdate = false

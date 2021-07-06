@@ -274,8 +274,8 @@ var FirstPersonControls = function ( object, domElement ) {
 					var euler = new Euler( 0, 0, 0, 'YXZ' );
 					euler.setFromQuaternion( this.object.quaternion );
 					var PI_2 = Math.PI / 2;
-					euler.y -= this.movementX / frameTime * this.lookSpeed;
-					euler.x -= this.movementY / frameTime * this.lookSpeed;
+					euler.y -= this.movementX * frameTime * this.lookSpeed/100;
+					euler.x -= this.movementY * frameTime * this.lookSpeed/100;
 
 					euler.x = Math.max( PI_2 - maxPolarAngle, Math.min( PI_2 - minPolarAngle, euler.x ) );
 

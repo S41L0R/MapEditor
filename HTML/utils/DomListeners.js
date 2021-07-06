@@ -579,6 +579,12 @@ function initLODThresholdControls(document) {
 function initLODToggleControls(document) {
 	const computeLODsCheckbox = document.getElementById("computeLODsCheckbox")
 	computeLODsCheckbox.oninput = function () {
+		if (computeLODsCheckbox.checked) {
+			LODTools.enableLODs()
+		}
+		else {
+			LODTools.disableLODs()
+		}
 		global.computeLODs = computeLODsCheckbox.checked
 	}
 }
