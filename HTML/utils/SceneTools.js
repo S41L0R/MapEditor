@@ -35,8 +35,6 @@ let intersectables = RayCastTools.intersectables
 
 async function addInstancedMeshes () {
 	for (let key in ModelTools.modelDict) {
-		console.error(key)
-
 		for (actorModel of ModelTools.modelDict[key]) {
 			RayCastTools.intersectables.push(actorModel)
 			global.scene.add(actorModel)

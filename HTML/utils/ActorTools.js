@@ -92,7 +92,7 @@ function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
 }
 */
 
-const removeObjectActor = async function (actor) {
+const removeObjectActor = async function (actor, removeDummy=true, deselectObject=true) {
 	let dummy = (function () {
 		for (const dummy of SelectionTools.objectDummys) {
 			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
@@ -104,9 +104,11 @@ const removeObjectActor = async function (actor) {
 		let isObjectSelected = false
 		if (SelectionTools.selectedDummys.includes(dummy)) {
 			isObjectSelected = true
-			await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+			if (deselectObject) {
+				await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+			}
 		}
-		await removeObjectActorByDummy(dummy)
+		await removeObjectActorByDummy(dummy, removeDummy)
 	}
 }
 
@@ -266,7 +268,17 @@ async function setupBasicMeshActor(actor, basicMeshKey) {
 
 			actorModel.userData.actorList[index] = actor
 
-			let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
+			// Of course, we want to avoid any duplicate dummys...
+			let createDummy = true
+			for (dummy of SelectionTools.objectDummys) {
+				if (dummy.userData.actor === actorModelArray[0].userData.actorList[index]) {
+					createDummy = false
+					break
+				}
+			}
+			if (createDummy) {
+				let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
+			}
 
 			resolve([actorModelArray, index, dummy])
 		}
@@ -309,7 +321,18 @@ async function setupModelDictActor(actor) {
 
 			}
 		}
-		let dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
+
+		// Of course, we want to avoid any duplicate dummys...
+		let createDummy = true
+		for (dummy of SelectionTools.objectDummys) {
+			if (dummy.userData.actor === ModelTools.modelDict[modelDictKey][0].userData.actorList[index]) {
+				createDummy = false
+				break
+			}
+		}
+		if (createDummy) {
+			let dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
+		}
 		resolve([ModelTools.modelDict[modelDictKey], index, dummy])
 	})
 }
@@ -430,7 +453,7 @@ const removeDataActors = async function(hashIDList, maplike) {
 const removeDataActorByDummy = async function(dummy) {
 	removeDataActors([dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index]], global.sectionData)
 }
-const removeObjectActorByDummy = async function(dummy) {
+const removeObjectActorByDummy = async function(dummy, removeDummy=true) {
 	// Okay, so this is how this function will work:
 	// We get the data in the InstanceMatrix for this instance,
 	// Then we find the last used "slot" in the instanceMatrix.
@@ -471,7 +494,9 @@ const removeObjectActorByDummy = async function(dummy) {
 			instancedMesh.count = instancedMesh.count - 1
 		}
 	}
-	SelectionTools.removeDummy(dummy)
+	if (removeDummy) {
+		SelectionTools.removeDummy(dummy)
+	}
 }
 
 

@@ -30,91 +30,111 @@ const initLODs = function() {
         // If so, add it to the LOD maps
         forwardLODMap.set(actor, linkData.LinkedActor)
         backwardLODMap.set(linkData.LinkedActor, actor)
-
-        ActorTools.removeObjectActor(actor)
-        ActorTools.removeObjectActor(linkData.LinkedActor)
       }
     }
+  }
+}
+
+const enableLODs = function() {
+  for (const [actor, linkedActor] of forwardLODMap.entries()) {
+    //try {
+      ActorTools.removeObjectActor(actor)
+    //}
+    //catch {}
+    //try {
+      ActorTools.removeObjectActor(linkedActor)
+    //}
+    //catch {}
+  }
+  applyLODs()
+}
+
+const disableLODs = function() {
+  for (const [actor, linkedActor] of forwardLODMap.entries()) {
+    //try {
+      ActorTools.removeObjectActor(actor)
+    //}
+    //catch {}
+    //try {
+      ActorTools.removeObjectActor(linkedActor)
+    //}
+    //catch {}
+    ActorTools.setupObjectActor(actor)
+    ActorTools.setupObjectActor(linkedActor)
   }
 }
 
 
 const applyLODs = async function() {
   for (const [actor, actorLOD] of forwardLODMap.entries()) {
-    // Check if there even *is* a status for the actor...
-    if (!forwardLODTracking.has(actor)) {
-      forwardLODTracking.set(actor, true)
-      backwardLODTracking.set(true, actor)
-    }
     // Whelp... distance formula I guess.
     if (Math.abs(Math.sqrt(Math.pow((global.camera.position.x - actor.Translate[0].value), 2) + Math.pow((global.camera.position.y - actor.Translate[1].value), 2) + Math.pow((global.camera.position.z - actor.Translate[2].value), 2))) > LOD_THRESHOLD) {
       // Check if LOD has already been applied..
-      if (!forwardLODTracking.get(actor)) {
+      if (!forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
         forwardLODTracking.set(actor, true)
 
-        // We need to account for if the user had already selected the actor...
-        // Some of this code will be after the dummy has been generated.
-
-        let actorDummy = (function () {
-      		for (const dummy of SelectionTools.selectedDummys) {
-      			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
-      				return dummy
-      			}
-      		}
-      	})();
-
         // Swap out the actor and its LOD
-        await ActorTools.removeObjectActor(actor)
+        // We pass in false so the actual actor dummy isn't removed.
+        // False again in order to not deselect the object... yet
+        await ActorTools.removeObjectActor(actor, false, false)
 
         await ActorTools.setupObjectActor(actorLOD)
 
-        let actorLODDummy = (function () {
-      		for (const dummy of SelectionTools.objectDummys) {
-      			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actorLOD) {
-      				return dummy
-      			}
-      		}
-      	})();
-
-        if (actorDummy !== undefined) {
-          SelectionTools.selectObjectByDummy(actorLODDummy)
-        }
       }
     }
     else {
       // Check if LOD has already been applied..
-      if (forwardLODTracking.get(actor)) {
+      if (forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
         forwardLODTracking.set(actor, false)
 
-        // We need to account for if the user had already selected the LOD..
-        // Some of this code will be after the dummy has been generated.
-        let dummyLOD = (function () {
-      		for (const dummy of SelectionTools.selectedDummys) {
-      			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actorLOD) {
-      				return dummy
-      			}
-      		}
-      	})();
-
-
         // Swap the actor and its LOD
-        await ActorTools.removeObjectActor(actorLOD)
+        // We pass in false so the actual actorLOD dummy isn't removed.
+        // False again in order to not deselect the object... yet
+        await ActorTools.removeObjectActor(actorLOD, false, false)
 
         await ActorTools.setupObjectActor(actor)
 
-        let actorDummy = (function () {
+      }
+    }
+  }
+  for (const relDummy of SelectionTools.selectedDummys) {
+    const selectedActor = relDummy.userData.actor
+    if (forwardLODMap.get(selectedActor) !== undefined) {
+      // This means that this is not an LOD actor, but has an LOD.
+      if (forwardLODTracking.get(selectedActor)) {
+        // This means that the LOD is the one rendered
+        // We need to swap out the selection in favor of the LOD.
+
+        let actorLODDummy = (function () {
       		for (const dummy of SelectionTools.objectDummys) {
-      			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
+      			if (dummy.userData.actor === forwardLODMap.get(selectedActor)) {
       				return dummy
       			}
       		}
       	})();
 
-        if (dummyLOD !== undefined) {
-          SelectionTools.selectObjectByDummy(actorDummy)
-        }
+        SelectionTools.deselectObjectByDummy(relDummy, global.transformControl, global.THREE)
+        SelectionTools.removeDummy(relDummy)
+        SelectionTools.selectObjectByDummy(actorLODDummy, global.transformControl, global.THREE)
+      }
+    }
+    if (backwardLODMap.get(selectedActor) !== undefined) {
+      // This means that this is an LOD actor.
+      if (!forwardLODTracking.get(backwardLODMap.get(selectedActor))) {
+        // This means that the non-LOD is the one rendered
+        // We need to swap out the selection in favor of the non-LOD.
 
+        let actorDummy = (function () {
+      		for (const dummy of SelectionTools.objectDummys) {
+      			if (dummy.userData.actor === backwardLODMap.get(selectedActor)) {
+      				return dummy
+      			}
+      		}
+      	})();
 
+        SelectionTools.deselectObjectByDummy(relDummy, global.transformControl, global.THREE)
+        SelectionTools.removeDummy(relDummy)
+        SelectionTools.selectObjectByDummy(actorDummy, global.transformControl, global.THREE)
       }
     }
   }
@@ -132,6 +152,8 @@ const getLODRelatedActor = function(actor) {
 
 module.exports = {
   initLODs: initLODs,
+  enableLODs: enableLODs,
+  disableLODs: disableLODs,
   applyLODs: applyLODs,
   getLODRelatedActor: getLODRelatedActor,
 
