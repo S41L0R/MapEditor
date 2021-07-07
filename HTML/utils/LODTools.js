@@ -98,17 +98,15 @@ const applyLODs = async function() {
       if (!forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
         forwardLODTracking.set(actor, true)
 
+
         // Swap out the actor and its LOD - And the selection
-        let dummyLOD = {}
-        for (const dummy of SelectionTools.selectedDummys) {
-          if (dummy.userData.actor === actor) {
-            dummyLOD = findLODPairDummy(dummy)
-          }
-        }
-        await ActorTools.removeObjectActor(actor, dummyLOD, incorrectSelectedActorsList.includes(actor))
 
-        await ActorTools.setupObjectActor(actorLOD)
+        await ActorTools.setupObjectActor(actorLOD).then(async (modelData) => {
 
+          let dummyLOD = modelData[2]
+          await ActorTools.removeObjectActor(actor, dummyLOD, incorrectSelectedActorsList.includes(actor))
+        
+        })
       }
     }
     else {
@@ -117,16 +115,15 @@ const applyLODs = async function() {
         forwardLODTracking.set(actor, false)
 
         // Swap the actor and its LOD - And the selection
-        let dummyActor = {}
-        for (const dummy of SelectionTools.selectedDummys) {
-          if (dummy.userData.actor === actor) {
-            dummyActor = findLODPairDummy(dummy)
-          }
-        }
-        await ActorTools.removeObjectActor(actorLOD, dummyActor, incorrectSelectedActorsList.includes(actorLOD))
 
-        await ActorTools.setupObjectActor(actor)
+        
 
+        await ActorTools.setupObjectActor(actor).then(async (modelData) => {
+
+          let dummyActor = modelData[2]
+          await ActorTools.removeObjectActor(actorLOD, dummyActor, incorrectSelectedActorsList.includes(actorLOD))
+        
+        })
       }
     }
   }

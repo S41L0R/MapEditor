@@ -62,7 +62,6 @@ const initSelectionTools = async function (THREE, scenelike) {
 
 
 const removeDummy = function (dummy) {
-	console.error("test")
 	deselectObjectByDummy(dummy, global.transformControl, global.THREE)
 	const selectedDummysDummyIndex = selectedDummys.indexOf(dummy)
 	if (selectedDummysDummyIndex !== -1) {
