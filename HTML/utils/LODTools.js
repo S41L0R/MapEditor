@@ -66,6 +66,31 @@ const disableLODs = function() {
 
 
 const applyLODs = async function() {
+  let incorrectSelectedActorsList = []
+  for (const [actor, actorLOD] of forwardLODMap.entries()) {
+    if (Math.abs(Math.sqrt(Math.pow((global.camera.position.x - actor.Translate[0].value), 2) + Math.pow((global.camera.position.y - actor.Translate[1].value), 2) + Math.pow((global.camera.position.z - actor.Translate[2].value), 2))) > LOD_THRESHOLD) {
+      if (!forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
+
+        for (const dummy of SelectionTools.selectedDummys) {
+          if (dummy.userData.actor === actor) {
+            incorrectSelectedActorsList.push(actor)
+          }
+        }
+
+      }
+    }
+    else {
+      if (forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
+
+        for (const dummy of SelectionTools.selectedDummys) {
+          if (dummy.userData.actor === actorLOD) {
+            incorrectSelectedActorsList.push(actorLOD)
+          }
+        }
+
+      }
+    }
+  }
   for (const [actor, actorLOD] of forwardLODMap.entries()) {
     // Whelp... distance formula I guess.
     if (Math.abs(Math.sqrt(Math.pow((global.camera.position.x - actor.Translate[0].value), 2) + Math.pow((global.camera.position.y - actor.Translate[1].value), 2) + Math.pow((global.camera.position.z - actor.Translate[2].value), 2))) > LOD_THRESHOLD) {
@@ -73,10 +98,14 @@ const applyLODs = async function() {
       if (!forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
         forwardLODTracking.set(actor, true)
 
-        // Swap out the actor and its LOD
-        // We pass in false so the actual actor dummy isn't removed.
-        // False again in order to not deselect the object... yet
-        await ActorTools.removeObjectActor(actor, false, false)
+        // Swap out the actor and its LOD - And the selection
+        let dummyLOD = {}
+        for (const dummy of SelectionTools.selectedDummys) {
+          if (dummy.userData.actor === actor) {
+            dummyLOD = findLODPairDummy(dummy)
+          }
+        }
+        await ActorTools.removeObjectActor(actor, dummyLOD, incorrectSelectedActorsList.includes(actor))
 
         await ActorTools.setupObjectActor(actorLOD)
 
@@ -87,56 +116,50 @@ const applyLODs = async function() {
       if (forwardLODTracking.get(actor) || !forwardLODTracking.has(actor)) {
         forwardLODTracking.set(actor, false)
 
-        // Swap the actor and its LOD
-        // We pass in false so the actual actorLOD dummy isn't removed.
-        // False again in order to not deselect the object... yet
-        await ActorTools.removeObjectActor(actorLOD, false, false)
+        // Swap the actor and its LOD - And the selection
+        let dummyActor = {}
+        for (const dummy of SelectionTools.selectedDummys) {
+          if (dummy.userData.actor === actor) {
+            dummyActor = findLODPairDummy(dummy)
+          }
+        }
+        await ActorTools.removeObjectActor(actorLOD, dummyActor, incorrectSelectedActorsList.includes(actorLOD))
 
         await ActorTools.setupObjectActor(actor)
 
       }
     }
   }
-  for (const relDummy of SelectionTools.selectedDummys) {
-    const selectedActor = relDummy.userData.actor
-    if (forwardLODMap.get(selectedActor) !== undefined) {
-      // This means that this is not an LOD actor, but has an LOD.
-      if (forwardLODTracking.get(selectedActor)) {
-        // This means that the LOD is the one rendered
-        // We need to swap out the selection in favor of the LOD.
+}
 
-        let actorLODDummy = (function () {
-      		for (const dummy of SelectionTools.objectDummys) {
-      			if (dummy.userData.actor === forwardLODMap.get(selectedActor)) {
-      				return dummy
-      			}
-      		}
-      	})();
-
-        SelectionTools.deselectObjectByDummy(relDummy, global.transformControl, global.THREE)
-        SelectionTools.removeDummy(relDummy)
-        SelectionTools.selectObjectByDummy(actorLODDummy, global.transformControl, global.THREE)
+function findLODPairDummy(dummy) {
+  if (forwardLODMap.has(dummy.userData.actor)) {
+    // Return the LOD dummy
+    let relDummy = (function () {
+      for (const dummy of SelectionTools.objectDummys) {
+        if (dummy.userData.actor === forwardLODMap.get(dummy.userData.actor)) {
+          return dummy
+        }
       }
-    }
-    if (backwardLODMap.get(selectedActor) !== undefined) {
-      // This means that this is an LOD actor.
-      if (!forwardLODTracking.get(backwardLODMap.get(selectedActor))) {
-        // This means that the non-LOD is the one rendered
-        // We need to swap out the selection in favor of the non-LOD.
+    })();
 
-        let actorDummy = (function () {
-      		for (const dummy of SelectionTools.objectDummys) {
-      			if (dummy.userData.actor === backwardLODMap.get(selectedActor)) {
-      				return dummy
-      			}
-      		}
-      	})();
+    return(relDummy)
 
-        SelectionTools.deselectObjectByDummy(relDummy, global.transformControl, global.THREE)
-        SelectionTools.removeDummy(relDummy)
-        SelectionTools.selectObjectByDummy(actorDummy, global.transformControl, global.THREE)
+  }
+  else if (backwardLODMap.has(dummy.userData.actor)) {
+    // Return the linking actor dummy
+    let relDummy = (function () {
+      for (const dummy of SelectionTools.objectDummys) {
+        if (dummy.userData.actor === backwardLODMap.get(dummy.userData.actor)) {
+          return dummy
+        }
       }
-    }
+    })();
+
+    return(relDummy)
+  }
+  else {
+    return(undefined)
   }
 }
 

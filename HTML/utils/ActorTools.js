@@ -92,7 +92,7 @@ function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
 }
 */
 
-const removeObjectActor = async function (actor, removeDummy=true, deselectObject=true) {
+const removeObjectActor = async function (actor, selectionRedirectDummy, forceRedirect) {
 	let dummy = (function () {
 		for (const dummy of SelectionTools.objectDummys) {
 			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
@@ -104,18 +104,24 @@ const removeObjectActor = async function (actor, removeDummy=true, deselectObjec
 		let isObjectSelected = false
 		if (SelectionTools.selectedDummys.includes(dummy)) {
 			isObjectSelected = true
-			if (deselectObject) {
-				await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+			await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+			if (selectionRedirectDummy !== undefined) {
+				SelectionTools.selectObjectByDummy(selectionRedirectDummy, global.transformControl, global.THREE)
 			}
 		}
-		await removeObjectActorByDummy(dummy, removeDummy)
+		else if (forceRedirect) {
+			if (selectionRedirectDummy !== undefined) {
+				SelectionTools.selectObjectByDummy(selectionRedirectDummy, global.transformControl, global.THREE)
+			}
+		}
+		await removeObjectActorByDummy(dummy)
 	}
 }
 
 const reloadObjectActor = async function (actor) {
 	let dummy = (function () {
 		for (const dummy of SelectionTools.objectDummys) {
-			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
+			if (dummy.userData.actor === actor) {
 				return dummy
 			}
 		}
@@ -271,7 +277,7 @@ async function setupBasicMeshActor(actor, basicMeshKey) {
 			// Of course, we want to avoid any duplicate dummys...
 			let createDummy = true
 			for (dummy of SelectionTools.objectDummys) {
-				if (dummy.userData.actor === actorModelArray[0].userData.actorList[index]) {
+				if (dummy.userData.actor === actor) {
 					createDummy = false
 					break
 				}
@@ -323,15 +329,17 @@ async function setupModelDictActor(actor) {
 		}
 
 		// Of course, we want to avoid any duplicate dummys...
+		let dummy = {}
 		let createDummy = true
-		for (dummy of SelectionTools.objectDummys) {
-			if (dummy.userData.actor === ModelTools.modelDict[modelDictKey][0].userData.actorList[index]) {
+		for (existingDummy of SelectionTools.objectDummys) {
+			if (existingDummy.userData.actor === actor) {
+				dummy = existingDummy
 				createDummy = false
 				break
 			}
 		}
 		if (createDummy) {
-			let dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
+			dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
 		}
 		resolve([ModelTools.modelDict[modelDictKey], index, dummy])
 	})
@@ -453,7 +461,7 @@ const removeDataActors = async function(hashIDList, maplike) {
 const removeDataActorByDummy = async function(dummy) {
 	removeDataActors([dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index]], global.sectionData)
 }
-const removeObjectActorByDummy = async function(dummy, removeDummy=true) {
+const removeObjectActorByDummy = async function(dummy) {
 	// Okay, so this is how this function will work:
 	// We get the data in the InstanceMatrix for this instance,
 	// Then we find the last used "slot" in the instanceMatrix.
@@ -494,9 +502,7 @@ const removeObjectActorByDummy = async function(dummy, removeDummy=true) {
 			instancedMesh.count = instancedMesh.count - 1
 		}
 	}
-	if (removeDummy) {
-		SelectionTools.removeDummy(dummy)
-	}
+	await SelectionTools.removeDummy(dummy)
 }
 
 
