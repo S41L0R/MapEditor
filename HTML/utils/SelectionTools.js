@@ -62,16 +62,18 @@ const initSelectionTools = async function (THREE, scenelike) {
 
 
 const removeDummy = function (dummy) {
+	console.error("test")
+	deselectObjectByDummy(dummy, global.transformControl, global.THREE)
 	const selectedDummysDummyIndex = selectedDummys.indexOf(dummy)
-	selectedDummys.splice(selectedDummysDummyIndex, 1)
+	if (selectedDummysDummyIndex !== -1) {
+		selectedDummys.splice(selectedDummysDummyIndex, 1)
+	}
 	const objectDummysDummyIndex = objectDummys.indexOf(dummy)
-	objectDummys.splice(objectDummysDummyIndex, 1)
+	if (objectDummysDummyIndex !== -1) {
+		objectDummys.splice(objectDummysDummyIndex, 1)
+	}
 	groupSelector.remove(dummy)
-	global.scene.remove(dummy)
 	updateGroupSelectorPos(THREE, transformControl)
-
-	// Don't know if this does anything but we'll do it anyway:
-	delete dummy
 }
 
 const selectObject = async function (instancedMesh, index, transformControl, THREE) {
@@ -114,7 +116,7 @@ const deselectObject = async function (instancedMesh, index, transformControl, T
 					groupSelector.remove(dummy)
 					updateGroupSelectorPos(THREE, transformControl)
 					updateSelectedDummys(THREE)
-					undisplaySelection(dummy, THREE)
+					undisplaySelection(dummy)
 					transformControl.attach(groupSelector)
 				}
 			}
@@ -129,7 +131,7 @@ const deselectObjectByDummy = async function (dummy, transformControl, THREE) {
 		updateGroupSelectorPos(THREE, transformControl)
 		updateSelectedDummys(THREE)
 		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint")) {
-			undisplaySelection(dummy, THREE)
+			undisplaySelection(dummy)
 		}
 		transformControl.attach(groupSelector)
 	}
@@ -140,7 +142,7 @@ const deselectAll = async function (transformControl, THREE) {
 	for (const dummy of selectedDummys) {
 		groupSelector.remove(dummy)
 		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint")) {
-			undisplaySelection(dummy, global.THREE)
+			undisplaySelection(dummy)
 		}
 		else {
 			// We need to make sure that the matrixWorld also carries over to the pos and the normal matrix
@@ -278,15 +280,11 @@ const displaySelection = async function(dummy, THREE) {
 	}
 }
 
-const undisplaySelection = async function(dummy, THREE) {
-	for (instancedMesh of dummy.userData.instancedMeshes) {
-		for (wireframe of instancedMesh.children) {
-			if (wireframe.userData.index === dummy.userData.index) {
-				instancedMesh.remove(wireframe)
-				wireframe.material.dispose()
-				wireframe.geometry.dispose()
-			}
-		}
+const undisplaySelection = async function(dummy) {
+	for (wireframe of dummy.children) {
+		dummy.remove(wireframe)
+		wireframe.material.dispose()
+		wireframe.geometry.dispose()
 	}
 }
 
