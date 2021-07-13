@@ -133,13 +133,8 @@ const applyLODs = async function() {
         await global.ActorTools.setupObjectActor(actorLOD).then(async (modelData) => {
 
           let dummyLOD = modelData[2]
-<<<<<<< Updated upstream
-          await ActorTools.removeObjectActor(actor, dummyLOD, incorrectSelectedActorsList.includes(actor))
-
-=======
           await global.ActorTools.removeObjectActor(actor, dummyLOD, incorrectSelectedActorsList.includes(actor))
         
->>>>>>> Stashed changes
         })
       }
     }
@@ -155,13 +150,8 @@ const applyLODs = async function() {
         await global.ActorTools.setupObjectActor(actor).then(async (modelData) => {
 
           let dummyActor = modelData[2]
-<<<<<<< Updated upstream
-          await ActorTools.removeObjectActor(actorLOD, dummyActor, incorrectSelectedActorsList.includes(actorLOD))
-
-=======
           await global.ActorTools.removeObjectActor(actorLOD, dummyActor, incorrectSelectedActorsList.includes(actorLOD))
         
->>>>>>> Stashed changes
         })
       }
     }

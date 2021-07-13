@@ -62,7 +62,7 @@ const createObjectDummy = function(instancedMeshes, index) {
 	dummy.scale.y = actorPos.Scale[1].value
 	dummy.scale.z = actorPos.Scale[2].value
 
-
+	/*
 	const material = new global.THREE.LineBasicMaterial({
 		color: 0x00ff00
 	})
@@ -73,7 +73,7 @@ const createObjectDummy = function(instancedMeshes, index) {
 	const groupSelectorVisualizer = new global.THREE.Line(geometry, material)
 
 	dummy.add(groupSelectorVisualizer)
-
+	*/
 	objectDummys.push(dummy)
 	global.scene.add(dummy)
 
