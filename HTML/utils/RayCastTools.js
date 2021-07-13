@@ -1,6 +1,3 @@
-const SelectionTools = require("./SelectionTools.js")
-const DataEditorTools = require("./DataEditorTools.js")
-const LODTools = require("./LODTools.js")
 
 // TO DO:
 
@@ -34,25 +31,25 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 						let selectedObject = raycast(TransformControls, camera)
 						if (selectedObject !== undefined) {
 							if (selectedObject.object.relevantType !== "RailPoint" && selectedObject.object.relevantType !== "ControlPoint") {
-								SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
+								global.SelectionTools.selectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
 
-								DataEditorTools.addActorToSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
+								global.DataEditorTools.addActorToSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
 
 								// Just in case we're selecting an LOD or an actor with an LOD:
-								relatedLODActor = LODTools.getLODRelatedActor(selectedObject.object.userData.actorList[selectedObject.instanceId])
+								relatedLODActor = global.LODTools.getLODRelatedActor(selectedObject.object.userData.actorList[selectedObject.instanceId])
 								if (relatedLODActor !== undefined) {
-									DataEditorTools.addActorToSelectedActorsList(relatedLODActor, document)
+									global.DataEditorTools.addActorToSelectedActorsList(relatedLODActor, document)
 								}
 							}
 							else {
-								SelectionTools.selectRail(selectedObject.object)
+								global.SelectionTools.selectRail(selectedObject.object)
 
 								// Okay, so now what we want to do is set things up so that the rail appears in the selected items list.
 
 								// First thing that we'll need to do right now is find the actual rail.
 								for (const rail of global.sectionData.Static.Rails) {
 									if (rail.HashId.value === selectedObject.object.CorrespondingRailHashID) {
-										DataEditorTools.addActorToSelectedActorsList(rail, global.document) // Yes, I know that this is currently called "AddActorToSelectedActorsList". Maybe later we can split actor and rail lists?
+										global.DataEditorTools.addActorToSelectedActorsList(rail, global.document) // Yes, I know that this is currently called "AddActorToSelectedActorsList". Maybe later we can split actor and rail lists?
 									}
 								}
 							}
@@ -70,20 +67,20 @@ const initRaycaster = async function (viewport, document, TransformControls, tra
 
 						// If we clicked something, deselect just it:
 						if (selectedObject !== undefined) {
-							SelectionTools.deselectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
+							global.SelectionTools.deselectObject(selectedObject.object, selectedObject.instanceId, transformControl, THREE)
 
-							DataEditorTools.removeActorFromSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
+							global.DataEditorTools.removeActorFromSelectedActorsList(selectedObject.object.userData.actorList[selectedObject.instanceId], document)
 
-							relatedLODActor = LODTools.getLODRelatedActor(selectedObject.object.userData.actorList[selectedObject.instanceId])
+							relatedLODActor = global.LODTools.getLODRelatedActor(selectedObject.object.userData.actorList[selectedObject.instanceId])
 							if (relatedLODActor !== undefined) {
-								DataEditorTools.removeActorFromSelectedActorsList(relatedLODActor, document)
+								global.DataEditorTools.removeActorFromSelectedActorsList(relatedLODActor, document)
 							}
 						}
 						// Otherwise, deselect everything:
 						else {
-							SelectionTools.deselectAll(transformControl, THREE)
+							global.SelectionTools.deselectAll(transformControl, THREE)
 
-							DataEditorTools.removeAllActorsFromSelectedActorsList(document)
+							global.DataEditorTools.removeAllActorsFromSelectedActorsList(document)
 						}
 					}
 				}

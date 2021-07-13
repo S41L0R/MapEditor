@@ -1,18 +1,12 @@
-// Requires
-// -----------------------------------------------------------------------------
-const RayCastTools = require("./RayCastTools.js")
-const ModelTools = require("./ModelTools.js")
-const SelectionTools = require("./SelectionTools.js")
-const ActorTools = require("./ActorTools.js")
 
 
 const addActorsToScene = async function() {
 let sectionData = global.sectionData
-let intersectables = RayCastTools.intersectables
-	return ModelTools.loadGameModelsBySection(global.sectionName).then(() => {
+let intersectables = global.RayCastTools.intersectables
+	return global.ModelTools.loadGameModelsBySection(global.sectionName).then(() => {
 		addInstancedMeshes()
 		sectionData.Static.Objs.forEach((actor) => {
-			ActorTools.setupObjectActor(actor).then((actorModelData) => {
+			global.ActorTools.setupObjectActor(actor).then((actorModelData) => {
 				if (actorModelData !== undefined) {
 					[instancedMeshes, index] = actorModelData
 
@@ -20,7 +14,7 @@ let intersectables = RayCastTools.intersectables
 			})
 		})
 		sectionData.Dynamic.Objs.forEach((actor) => {
-			ActorTools.setupObjectActor(actor).then((actorModelData) => {
+			global.ActorTools.setupObjectActor(actor).then((actorModelData) => {
 				if (actorModelData !== undefined) {
 					[instancedMeshes, index] = actorModelData
 
@@ -34,15 +28,15 @@ let intersectables = RayCastTools.intersectables
 
 
 async function addInstancedMeshes () {
-	for (let key in ModelTools.modelDict) {
-		for (actorModel of ModelTools.modelDict[key]) {
-			RayCastTools.intersectables.push(actorModel)
+	for (let key in global.ModelTools.modelDict) {
+		for (actorModel of global.ModelTools.modelDict[key]) {
+			global.RayCastTools.intersectables.push(actorModel)
 			global.scene.add(actorModel)
 		}
 	}
-	for (let key in ModelTools.basicMeshDict) {
-		RayCastTools.intersectables.push(ModelTools.basicMeshDict[key][0])
-		global.scene.add(ModelTools.basicMeshDict[key][0])
+	for (let key in global.ModelTools.basicMeshDict) {
+		global.RayCastTools.intersectables.push(global.ModelTools.basicMeshDict[key][0])
+		global.scene.add(global.ModelTools.basicMeshDict[key][0])
 	}
 }
 

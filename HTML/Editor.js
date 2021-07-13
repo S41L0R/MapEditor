@@ -32,19 +32,51 @@ global.LineSegments2 = LineSegments2
 // Requires
 // -----------------------------------------------------------------------------
 const PythonTools = require("./HTML/utils/PythonTools.js")
+global.PythonTools = PythonTools
 const SceneTools = require("./HTML/utils/SceneTools.js")
+global.SceneTools = SceneTools
 const RayCastTools = require("./HTML/utils/RayCastTools.js")
+global.RayCastTools = RayCastTools
 const RailTools = require("./HTML/utils/RailTools.js")
+global.RailTools = RailTools
 const SelectionTools = require("./HTML/utils/SelectionTools.js")
+global.SelectionTools = SelectionTools
 const ActorEditorTools = require("./HTML/utils/ActorEditorTools.js")
+global.ActorEditorTools = ActorEditorTools
 const SaveTools = require('./HTML/utils/SaveTools.js')
+global.SaveTools = SaveTools
 const TransformControlTools = require("./HTML/utils/TransformControlTools.js")
+global.TransformControlTools = TransformControlTools
 const LinkTools = require("./HTML/utils/LinkTools.js")
+global.LinkTools = LinkTools
 const ModelTools = require("./HTML/utils/ModelTools.js")
+global.ModelTools = ModelTools
 const ActorTools = require("./HTML/utils/ActorTools.js")
+global.ActorTools = ActorTools
 const LODTools = require("./HTML/utils/LODTools.js")
-
-const DomListners = require("./HTML/utils/DomListeners.js")
+global.LODTools = LODTools
+const BasicMeshModelSetup = require("./HTML/utils/BasicMeshModelSetup.js")
+global.BasicMeshModelSetup = BasicMeshModelSetup
+const CacheTools = require("./HTML/utils/CacheTools.js")
+global.CacheTools = CacheTools
+const ClipboardTools = require("./HTML/utils/ClipboardTools.js")
+global.ClipboardTools = ClipboardTools
+const DataEditorTools = require("./HTML/utils/DataEditorTools.js")
+global.DataEditorTools = DataEditorTools
+const GeneralModelTools = require("./HTML/utils/GeneralModelTools.js")
+global.GeneralModelTools = GeneralModelTools
+const GeneralRailTools = require("./HTML/utils/GeneralRailTools.js")
+global.GeneralRailTools = GeneralRailTools
+const MapTools = require("./HTML/utils/MapTools.js")
+global.MapTools = MapTools
+const RailHelperTools = require("./HTML/utils/RailHelperTools.js")
+global.RailHelperTools = RailHelperTools
+const VariableDomListeners = require("./HTML/utils/VariableDomListeners.js")
+global.VariableDomListeners = VariableDomListeners
+const VisibilityTools = require("./HTML/utils/VisibilityTools.js")
+global.VisibilityTools = VisibilityTools
+const DomListeners = require("./HTML/utils/DomListeners.js")
+global.DomListeners = DomListeners
 
 const ipc = require("electron").ipcRenderer
 
@@ -388,7 +420,7 @@ async function loadSection(sectionName) {
 	PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
-		DomListners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName)
+		DomListeners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName)
 		// Setup ActorEditor
 		// -----------------------------------------------------------------------------
 		ActorEditorTools.initActorEditorTools(sectionData)
@@ -424,7 +456,7 @@ async function loadDarkMode() {
 	}
 }
 
-DomListners.initListeners(document, editorControls, transformControl)
+DomListeners.initListeners(document, editorControls, transformControl)
 
 ipc.on('projectName', async(event, project) => {
 	global.projectName = project

@@ -2,12 +2,6 @@
 
 // Requires
 // -----------------------------------------------------------------------------
-const CacheTools = require("./CacheTools.js")
-const PythonTools = require("./PythonTools.js")
-const GeneralModelTools = require("./GeneralModelTools.js")
-const BasicMeshModelSetup = require("./BasicMeshModelSetup.js")
-const RayCastTools = require("./RayCastTools.js")
-
 const path = require('path')
 const fs = require('fs')
 // -----------------------------------------------------------------------------
@@ -45,23 +39,23 @@ const TEXTURE_CAP = 3000
 const setupBasicMeshModels = function() {
   let promises = []
 
-  promises.push(BasicMeshModelSetup.setupCubeMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupBoxAreaMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupSphereAreaMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupCapsuleAreaMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupCubeMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupBoxAreaMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupSphereAreaMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupCapsuleAreaMesh(THREE, basicMeshDict))
 
   //linktags
-  promises.push(BasicMeshModelSetup.setupLinkTagAndMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagOrMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagCountMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagPulseMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagNoneMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagNAndMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagNOrMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagXOrMesh(THREE, basicMeshDict))
-  promises.push(BasicMeshModelSetup.setupLinkTagDefaultMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagAndMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagOrMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagCountMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagPulseMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagNoneMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagNAndMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagNOrMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagXOrMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupLinkTagDefaultMesh(THREE, basicMeshDict))
 
-  promises.push(BasicMeshModelSetup.setupWaterMesh(THREE, basicMeshDict))
+  promises.push(global.BasicMeshModelSetup.setupWaterMesh(THREE, basicMeshDict))
 
   return Promise.all(promises)
 }
@@ -70,7 +64,7 @@ const setupBasicMeshModels = function() {
 
 const loadModelByActorName = function (actorName) {
   return new Promise((resolve) => {
-    PythonTools.loadPython("getActorModelPath", actorName).then(() => {
+    global.PythonTools.loadPython("getActorModelPath", actorName).then(() => {
       loadModel(actorName, modelPath).then(() => {
         resolve()
       })
@@ -81,7 +75,7 @@ const loadModelByActorName = function (actorName) {
 
 const loadGameModelsBySection = function(sectionName) {
   return new Promise ((resolve) => {
-    PythonTools.loadPython("newGetActorModelPaths", sectionName).then((modelPathDict) => {
+    global.PythonTools.loadPython("newGetActorModelPaths", sectionName).then((modelPathDict) => {
 
       mostRecentModelPathDict = modelPathDict
 
@@ -131,7 +125,7 @@ const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum
 	// This includes model manipulation in order to serve our purposes.
 	colladaModel = collada.scene
   // This is only needed on the old version of ModelExporter:
-	//GeneralModelTools.bakeSkeleton(colladaModel)
+	//global.GeneralModelTools.bakeSkeleton(colladaModel)
 
 	let colladaMeshArray = []
 	colladaModel.traverse((item) => {
@@ -313,7 +307,7 @@ const loadNewCachedModels = function(modelsPath, callback) {
           loadModel(actorName, modelPath).then(() => {
             for (const model of modelDict[actorName]) {
               global.scene.add(model)
-              RayCastTools.intersectables.push(model)
+              global.RayCastTools.intersectables.push(model)
             }
             callback(actorName)
           })

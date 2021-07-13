@@ -1,9 +1,3 @@
-const ActorTools = require("./ActorTools.js")
-const RailTools = require("./RailTools.js")
-const RailHelperTools = require("./RailHelperTools.js")
-const RayCastTools = require("./RayCastTools.js")
-const SelectionTools = require("./SelectionTools.js")
-const LinkTools = require("./LinkTools.js")
 
 const ipc = require("electron").ipcRenderer
 const initActorEditorTools = async function (sectionData) {
@@ -12,10 +6,10 @@ const initActorEditorTools = async function (sectionData) {
 			if (actor.HashId.value == HashId) {
 				// Set the actor data to the returned data:
 				Object.assign(sectionData.Static.Objs[index], message)
-				ActorTools.reloadObjectActor(actor)
+				global.ActorTools.reloadObjectActor(actor)
 				// A reminder that only static actors can be linked.
-				LinkTools.storeLink(actor)
-				LinkTools.reloadRelevantLinkObjects(actor)
+				global.LinkTools.storeLink(actor)
+				global.LinkTools.reloadRelevantLinkObjects(actor)
 				return
 			}
 		}
@@ -23,7 +17,7 @@ const initActorEditorTools = async function (sectionData) {
 			if (actor.HashId.value == HashId) {
 				// Set the actor data to the returned data:
 				Object.assign(sectionData.Dynamic.Objs[index], message)
-				ActorTools.reloadObjectActor(actor)
+				global.ActorTools.reloadObjectActor(actor)
 				return
 			}
 		}
@@ -36,17 +30,17 @@ const initActorEditorTools = async function (sectionData) {
 
 				for (const helper of global.scene.children) {
 					if (helper.CorrespondingRailHashID === HashId) {
-						await SelectionTools.deselectObjectByDummy(helper, global.transformControl, global.THREE)
+						await global.SelectionTools.deselectObjectByDummy(helper, global.transformControl, global.THREE)
 					}
 				}
 
 
-				await SelectionTools.deselectAll(global.transformControl, global.THREE)
-				await RailTools.reloadRail(HashId, global.sectionData, global.scene)
+				await global.SelectionTools.deselectAll(global.transformControl, global.THREE)
+				await global.RailTools.reloadRail(HashId, global.sectionData, global.scene)
 				if (rail.RailType.value === "Bezier") {
-					await RailHelperTools.reloadControlPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
+					await global.RailHelperTools.reloadControlPointHelpersByRailHashID(HashId, global.scene, global.sectionData, global.RayCastTools.intersectables)
 				}
-				await RailHelperTools.reloadRailPointHelpersByRailHashID(HashId, global.scene, global.sectionData, RayCastTools.intersectables)
+				await global.RailHelperTools.reloadRailPointHelpersByRailHashID(HashId, global.scene, global.sectionData, global.RayCastTools.intersectables)
 
 				return
 			}

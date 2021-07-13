@@ -38,12 +38,6 @@ const actorGroups = {
 }
 
 
-const SelectionTools = require("./SelectionTools.js")
-const ActorTools = require("./ActorTools.js")
-const LinkTools = require("./LinkTools.js")
-const RailTools = require("./RailTools.js")
-const RailHelperTools = require("./RailHelperTools.js")
-const RayCastTools = require("./RayCastTools.js")
 
 
 // A function that takes a type of actor (string) and sets its visibility based on the passed bool value
@@ -51,19 +45,19 @@ const changeActorGroupVisibility = async function(type, visibility) {
   // Links aren't actors so we have special logic for that
   if (type === "links") {
     if (visibility) {
-      LinkTools.addLinksToScene()
+      global.LinkTools.addLinksToScene()
     }
     else {
-      LinkTools.removeLinksFromScene()
+      global.LinkTools.removeLinksFromScene()
     }
   }
   // Same with rails
   else if (type === "rails") {
     if (visibility) {
-      RailTools.createRails(global.sectionData, global.scene, RayCastTools.intersectables)
+      global.RailTools.createRails(global.sectionData, global.scene, global.RayCastTools.intersectables)
     }
     else {
-      RailTools.removeRails(global.sectionData, global.scene, RayCastTools.intersectables)
+      global.RailTools.removeRails(global.sectionData, global.scene, global.RayCastTools.intersectables)
     }
   }
   else {
@@ -80,14 +74,14 @@ const changeActorGroupVisibility = async function(type, visibility) {
 const changeActorVisibility = async function(actor, visibility) {
   if (visibility) {
     // We could check here if the actor is already in the scene, but for the sake of speed we're gonna trust the rest of the code.
-    ActorTools.setupObjectActor(actor)
+    global.ActorTools.setupObjectActor(actor)
   }
   else {
     // Okay, based on the actor we'll first have to find the dummy.
-    for (const dummy of SelectionTools.objectDummys) {
+    for (const dummy of global.SelectionTools.objectDummys) {
       if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
-        SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE).then(() => {
-          ActorTools.removeObjectActorByDummy(dummy)
+        global.SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE).then(() => {
+          global.ActorTools.removeObjectActorByDummy(dummy)
         })
       }
     }

@@ -71,18 +71,20 @@ namespace ModelExporter
                         var Suffix = 0;
                         while (Exists)
                         {
+                            if (!File.Exists(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00"))))
+                            {
+                                // We want to give suffix 1 a chance - sometimes 0 is left out
+                                if (Suffix != 0) {
+                                    Exists = false;
+                                    break;
+                                }
+                                else {
+                                    Suffix = Suffix + 1;
+                                }
+                            }
                             file = STFileLoader.OpenFileFormat(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00")));
                             ExportModel(file, args);
                             Suffix = Suffix + 1;
-                            if (!File.Exists(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00"))))
-                            {
-                                Exists = false;
-
-                                if (Suffix == 0)
-                                {
-                                    break;
-                                }
-                            }
                         }
                     }
                 }

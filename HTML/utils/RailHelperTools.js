@@ -1,5 +1,3 @@
-// Get Friends
-const GeneralRailTools = require("./GeneralRailTools.js");
 
 
 let controlPointObjects = []
@@ -88,6 +86,10 @@ async function drawRailPointHelpers(rail, scenelike, intersectables) {
 
 		// And hack on a rail index in order to find the railPoint later:
 		helperObject.railPointIndex = index;
+		
+		// Some stuff I should have been doing from the start:
+		helperObject.userData.rail = rail
+		helperObject.userData.railPoint = rail.RailPoints[index]
 
 		// Just hack on an identifying label:
 		helperObject.relevantType = "RailPoint";
@@ -150,7 +152,7 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 			let controlPoint1 = new THREE.Vector3(controlPoint[0].value, controlPoint[1].value, controlPoint[2].value);
 
 
-			GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
+			global.GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
 				object.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z);
 			});
 		}
@@ -165,7 +167,7 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 
 
 
-			GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
+			global.GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
 
 				//object.position = worldSpaceControlPointPositions[1];
 				object.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z);
@@ -183,7 +185,7 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 
 
 
-			GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
+			global.GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
 
 				//object.position = worldSpaceControlPointPositions[1];
 				object.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z);
@@ -198,7 +200,7 @@ function moveControlPointHelper(object, controlPoint, rail, railPointIndex, cont
 
 
 
-			GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
+			global.GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0).then((worldSpaceControlPointPositions) => {
 
 				//object.position = worldSpaceControlPointPositions[1];
 				object.position.set(worldSpaceControlPointPositions[1].x, worldSpaceControlPointPositions[1].y, worldSpaceControlPointPositions[1].z);
@@ -335,7 +337,7 @@ function drawControlPointHelpers(point1, point2, controlPoint1, railPointIndex, 
 
 	// Since we're doing controlPoints one at a time, we'll just feed 0 in for the second controlPoint:
 	// (And make sure to pass in the indexes so we can remember where we were)
-	GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0, [railPointIndex, controlPointIndex]).then((worldSpaceControlPointPositions) => {
+	global.GeneralRailTools.getWorldSpaceControlPoints(point1, point2,  controlPoint1, 0, [railPointIndex, controlPointIndex]).then((worldSpaceControlPointPositions) => {
 		// Set up the basic geometry:
 		const geometry = new THREE.BufferGeometry()
 		geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0.0, 0.0, 0.0]), 3))
@@ -364,6 +366,11 @@ function drawControlPointHelpers(point1, point2, controlPoint1, railPointIndex, 
 
 		// Just hack on an identifying label:
 		helperObject.relevantType = "ControlPoint"
+
+		// Again, stuff I should have done earlier:
+		helperObject.userData.rail = rail
+		helperObject.userData.railPoint = rail.RailPoints[railPointIndex]
+		helperObject.userData.controlPoint = rail.RailPoints[railPointIndex].ControlPoints[controlPointIndex]
 
 		// And add it to the scene
 		scenelike.add(helperObject)

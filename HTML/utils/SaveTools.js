@@ -1,4 +1,3 @@
-const pythonTools = require('./PythonTools.js')
 const fs = require('fs')
 
 function saveData(sectionData, currentSection){
@@ -24,7 +23,7 @@ function saveData(sectionData, currentSection){
             return
         }
     })
-    pythonTools.loadPython('save', sectionPath)
+    global.PythonTools.loadPython('save', sectionPath)
 }
 
 module.exports = {

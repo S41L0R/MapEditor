@@ -6,12 +6,13 @@ const process = require('process')
 const PythonTools = require("../../utils/PythonTools")
 
 
-var setup = await PythonTools.loadPython('checkSetupPy')
-var projectPath;
-console.log(setup)
-if (setup['NeedsRestart'] == true) {
-  ipc.send('runSetup')
-}
+PythonTools.loadPython('checkSetupPy').then((setup) => {
+	var projectPath;
+	console.log(setup)
+	if (setup['NeedsRestart'] == true) {
+  	ipc.send('runSetup')
+	}
+})
 
 document.getElementById("MapEditorButton").addEventListener("click", function() {
   console.log("hi")
@@ -39,7 +40,7 @@ document.getElementById("MapEditorButton").addEventListener("click", function() 
           }
         }
 
-        setTimeout(() => {ipc.send("loadHTML", ["./HTML/UI/SectionSelection/SectionSelection.html", null])}, 3500);
+        setTimeout(() => {ipc.send("loadHTML", ["./HTML/UI/SectionSelection/SectionSelection.html", null])}, 1250);
 
       }, 500);
     }

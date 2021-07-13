@@ -1,9 +1,3 @@
-const SelectionTools = require("./SelectionTools.js")
-const ActorTools = require("./ActorTools.js")
-const RailTools = require("./RailTools.js")
-const RailHelperTools = require("./RailHelperTools.js")
-const RayCastTools = require("./RayCastTools.js")
-const LinkTools = require("./LinkTools.js")
 
 
 const initTransformControlListeners = async function (transformControl) {
@@ -15,7 +9,7 @@ async function initDraggingChanged(transformControl) {
 	transformControl.addEventListener("dragging-changed", async function(event) {
 		console.warn("HI")
 
-		for (const selectedObject of SelectionTools.selectedDummys) {
+		for (const selectedObject of global.SelectionTools.selectedDummys) {
 
 			if (selectedObject.type === "Points") {
 				if (selectedObject.relevantType === "RailPoint") {
@@ -54,12 +48,12 @@ async function initDraggingChanged(transformControl) {
 									]
 								}
 							}
-							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
+							global.RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, global.RayCastTools.intersectables)
 							if (rail.RailType.value === "Bezier") {
-								RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+								global.RailHelperTools.reloadControlPointHelpersByRailHashID(selectedObject.CorrespondingRailHashID, global.scene, global.sectionData, global.RayCastTools.intersectables)
 							}
 							// We also gotta calc NextDistance and PrevDistance for proper game function:
-							RailTools.reloadNextAndPrevDistance(rail)
+							global.RailTools.reloadNextAndPrevDistance(rail)
 						}
 					}
 				}
@@ -67,8 +61,8 @@ async function initDraggingChanged(transformControl) {
 					for (const rail of global.sectionData.Static.Rails) {
 						if (rail.HashId.value === selectedObject.CorrespondingRailHashID) {
 							const pos = new global.THREE.Vector3().setFromMatrixPosition(selectedObject.matrixWorld)
-							RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, pos)
-							RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, RayCastTools.intersectables)
+							global.RailTools.setControlPointPos(rail, selectedObject.railPointIndex, selectedObject.controlPointIndex, pos)
+							global.RailTools.reloadRail(selectedObject.CorrespondingRailHashID, global.sectionData, global.scene, global.RayCastTools.intersectables)
 						}
 					}
 				}
@@ -78,13 +72,20 @@ async function initDraggingChanged(transformControl) {
 }
 
 const onTransformControlDrag = async function (transformControl) {
-	SelectionTools.updateSelectedObjs()
+	global.SelectionTools.updateSelectedObjs()
 
 	let groupSelector = transformControl.object
-	for (dummy of groupSelector.children) {
-		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint")) {
-			ActorTools.updateDataActor(dummy)
-			LinkTools.reloadRelevantLinkObjects(dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index])
+	for (const dummy of groupSelector.children) {
+		if (!(dummy.relevantType === "RailPoint" || dummy.relevantType === "ControlPoint" || dummy.type === "Line")) {
+			console.warn(dummy)
+			global.ActorTools.updateDataActor(dummy)
+			global.LinkTools.reloadRelevantLinkObjects(dummy.userData.actor)
+			// Make sure that the LOD data and linked LOD object are updated properly
+			global.LODTools.updateActorLODData(dummy.userData.actor)
+			
+			if (global.computeLODs) {
+				global.LODTools.applyTransformToLODPair(dummy.userData.actor)
+			}
 		}
 
 		else {
@@ -102,9 +103,9 @@ const onTransformControlDrag = async function (transformControl) {
 
 
 
-						RailTools.reloadRail(dummy.CorrespondingRailHashID, sectionData, scene, RayCastTools.intersectables)
+						global.RailTools.reloadRail(dummy.CorrespondingRailHashID, sectionData, scene, global.RayCastTools.intersectables)
 						if (rail.RailType === "Bezier") {
-							RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, scene, sectionData, RayCastTools.intersectables)
+							global.RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, scene, sectionData, global.RayCastTools.intersectables)
 						}
 					}
 				}
@@ -113,11 +114,11 @@ const onTransformControlDrag = async function (transformControl) {
 				for (const rail of sectionData.Static.Rails) {
 					if (rail.HashId.value == dummy.CorrespondingRailHashID) {
 						let pos = new global.THREE.Vector3().setFromMatrixPosition(dummy.matrixWorld)
-						RailTools.setControlPointPos(rail, dummy.railPointIndex, dummy.controlPointIndex, pos)
+						global.RailTools.setControlPointPos(rail, dummy.railPointIndex, dummy.controlPointIndex, pos)
 						//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][0].value = selectedObject.position.x;
 						//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][1].value = selectedObject.position.y;
 						//rail.RailPoints[selectedObject.railPointIndex].ControlPoints[selectedObject.controlPointIndex][2].value = selectedObject.position.z;
-						RailTools.reloadRail(dummy.CorrespondingRailHashID, sectionData, scene, RayCastTools.intersectables)
+						global.RailTools.reloadRail(dummy.CorrespondingRailHashID, sectionData, scene, global.RayCastTools.intersectables)
 
 					}
 				}

@@ -1,5 +1,3 @@
-const ActorTools = require("./ActorTools.js")
-const RailTools = require("./RailTools.js")
 
 // These are simply object-like vars indexed by actor objects.
 // forwardLinks stores links by actors
@@ -277,7 +275,7 @@ const storeLinks = function() {
 const storeLink = function(actor) {
   if ("LinksToObj" in actor) {
     for (const link of actor.LinksToObj) {
-      const linkedActor = ActorTools.getActorFromHashID(link.DestUnitHashId.value)
+      const linkedActor = global.ActorTools.getActorFromHashID(link.DestUnitHashId.value)
 
       // Store the link for this actor.
       const actorLinkData = {
@@ -309,7 +307,7 @@ const storeLink = function(actor) {
     for (const link of actor.LinksToRail) {
       const actorRailLinkData = {
         "DefinitionName": link.DefinitionName.value,
-        "LinkedRail": RailTools.getRailFromHashID(link.DestUnitHashId.value)
+        "LinkedRail": global.RailTools.getRailFromHashID(link.DestUnitHashId.value)
       }
       if (forwardRailLinks.get(actor) !== undefined) {
         forwardRailLinks.get(actor).push(actorRailLinkData)

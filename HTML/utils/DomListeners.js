@@ -1,13 +1,3 @@
-const SelectionTools = require("./SelectionTools.js")
-const ActorTools = require("./ActorTools.js")
-const DataEditorTools = require("./DataEditorTools.js")
-const RayCastTools = require("./RayCastTools.js")
-const RailTools = require("./RailTools.js")
-const RailHelperTools = require("./RailHelperTools.js")
-const ClipboardTools = require("./ClipboardTools.js")
-const VisibilityTools = require("./VisibilityTools.js")
-const LinkTools = require("./LinkTools.js")
-const LODTools = require("./LODTools.js")
 
 const initListeners = async function(document, editorControls, transformControl) {
 	initCameraSpeedControls(document, editorControls)
@@ -148,14 +138,14 @@ async function initAddActorOfTypeDialog(document) {
 	let dynamicButton = document.getElementById("StaticOrDynamicPrompt_DynamicButton")
 
 	staticButton.addEventListener("click", () => {
-		const actor = ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		const actor = global.ActorTools.addStaticActor("ExampleActor", global.camera.position, global.scene, global.sectionData, global.RayCastTools.intersectables)
 		// A reminder that only static actors can be linked.
-		LinkTools.storeLink(actor)
-		LinkTools.addRelevantLinkObjectsByIncludedActor(actor)
+		global.LinkTools.storeLink(actor)
+		global.LinkTools.addRelevantLinkObjectsByIncludedActor(actor)
 	})
 
 	dynamicButton.addEventListener("click", () => {
-		ActorTools.addDynamicActor("ExampleActor", global.camera.position, global.scene, global.sectionData, RayCastTools.intersectables)
+		global.ActorTools.addDynamicActor("ExampleActor", global.camera.position, global.scene, global.sectionData, global.RayCastTools.intersectables)
 	})
 }
 
@@ -206,11 +196,11 @@ async function initAddRailDialog(document) {
 	let bezierButton = document.getElementById("AddRailPrompt_BezierButton")
 
 	linearButton.addEventListener("click", () => {
-		RailTools.createNewLinearRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, RayCastTools.intersectables)
+		global.RailTools.createNewLinearRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, global.RayCastTools.intersectables)
 	})
 
 	bezierButton.addEventListener("click", () => {
-		RailTools.createNewBezierRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, RayCastTools.intersectables)
+		global.RailTools.createNewBezierRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, global.RayCastTools.intersectables)
 	})
 }
 
@@ -233,28 +223,28 @@ async function initRailPointSlider(document) {
 async function initDeleteActorEvent(document) {
 	document.addEventListener("keydown", (e) => {
 		if (e.keyCode === 46 || e.keyCode === 8) {
-			//let selectedDummys = SelectionTools.getSelectedDummys()
-			let selectedDummys = [ ...SelectionTools.selectedDummys ]
-			SelectionTools.deselectAll()
-			DataEditorTools.removeAllActorsFromSelectedActorsList(document)
+			//let selectedDummys = global.SelectionTools.getSelectedDummys()
+			let selectedDummys = [ ...global.SelectionTools.selectedDummys ]
+			global.SelectionTools.deselectAll()
+			global.DataEditorTools.removeAllActorsFromSelectedActorsList(document)
 			for (const dummy of selectedDummys) {
 				if (dummy.relevantType === "RailPoint") {
-					let rail = RailTools.getRailFromHashID(dummy.CorrespondingRailHashID)
+					let rail = global.RailTools.getRailFromHashID(dummy.CorrespondingRailHashID)
 					rail.RailPoints.splice(dummy.railPointIndex, 1)
 
-					SelectionTools.deselectAll(global.transformControl, global.THREE)
-					RailTools.reloadRail(dummy.CorrespondingRailHashID, global.sectionData, global.scene)
+					global.SelectionTools.deselectAll(global.transformControl, global.THREE)
+					global.RailTools.reloadRail(dummy.CorrespondingRailHashID, global.sectionData, global.scene)
 					if (rail.RailType.value === "Bezier") {
-						RailHelperTools.removeUnusedControlPointHelpers(rail, global.scene, RayCastTools.intersectables).then(() => {
-							RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+						global.RailHelperTools.removeUnusedControlPointHelpers(rail, global.scene, global.RayCastTools.intersectables).then(() => {
+							global.RailHelperTools.reloadControlPointHelpersByRailHashID(dummy.CorrespondingRailHashID, global.scene, global.sectionData, global.RayCastTools.intersectables)
 						})
 					}
-					RailHelperTools.reloadRailPointHelpersByRailHashID(dummy.CorrespondingRailHashID, global.scene, global.sectionData, RayCastTools.intersectables)
+					global.RailHelperTools.reloadRailPointHelpersByRailHashID(dummy.CorrespondingRailHashID, global.scene, global.sectionData, global.RayCastTools.intersectables)
 				}
 				else {
-					ActorTools.removeObjectActorByDummy(dummy)
-					ActorTools.removeDataActorByDummy(dummy)
-					LinkTools.removeLinkObjectsFromSceneByIncludedActor(dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index])
+					global.ActorTools.removeObjectActorByDummy(dummy)
+					global.ActorTools.removeDataActorByDummy(dummy)
+					global.LinkTools.removeLinkObjectsFromSceneByIncludedActor(dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index])
 				}
 			}
 		}
@@ -281,7 +271,7 @@ async function initCopyPasteActorEvent(document) {
 			if (ctrlDown) {
 				// Copy the actors
 				let actorDict = {"Static": [], "Dynamic": []}
-				for (const dummy of SelectionTools.selectedDummys) {
+				for (const dummy of global.SelectionTools.selectedDummys) {
 					if (dummy.relevantType !== "ControlPoint" && dummy.relevantType !== "RailPoint") {
 						// We know that this dummy refers to an actor.
 						const actor = dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index]
@@ -301,7 +291,7 @@ async function initCopyPasteActorEvent(document) {
 
 					}
 				}
-				ClipboardTools.copyActors(actorDict)
+				global.ClipboardTools.copyActors(actorDict)
 			}
 		}
 	})
@@ -309,7 +299,7 @@ async function initCopyPasteActorEvent(document) {
 		if (e.keyCode === 86) {
 			if (ctrlDown) {
 				// Paste the actors
-				ClipboardTools.pasteActors()
+				global.ClipboardTools.pasteActors()
 			}
 		}
 	})
@@ -342,7 +332,7 @@ async function initVisibilityDisplayControls(document) {
 	invisActorsToggle.addEventListener("change", (e) => {
 		if (invisActorsToggle.checked) {
 			// Okay, we'll make all in-game invis actors visible
-			VisibilityTools.changeActorGroupVisibility("invis", true)
+			global.VisibilityTools.changeActorGroupVisibility("invis", true)
 
 			// Also, we know that this has child checkbox elements, so we'll make sure those aren't greyed out.
 			const parentContainer = document.getElementById("VisibilityDisplay_InvActorsCollectionToggleContainer")
@@ -350,7 +340,7 @@ async function initVisibilityDisplayControls(document) {
 		}
 		else {
 			// Okay, we'll make all in-game invis actors actually invisible
-			VisibilityTools.changeActorGroupVisibility("invis", false)
+			global.VisibilityTools.changeActorGroupVisibility("invis", false)
 
 			// Also, we know that this has child checkbox elements, so we'll grey those out.
 			const parentContainer = document.getElementById("VisibilityDisplay_InvActorsCollectionToggleContainer")
@@ -362,11 +352,11 @@ async function initVisibilityDisplayControls(document) {
 	areaActorsToggle.addEventListener("change", (e) => {
 		if (areaActorsToggle.checked) {
 			// Okay, we'll make all in-game invis actors visible
-			VisibilityTools.changeActorGroupVisibility("areas", true)
+			global.VisibilityTools.changeActorGroupVisibility("areas", true)
 		}
 		else {
 			// Okay, we'll make all in-game invis actors actually invisible
-			VisibilityTools.changeActorGroupVisibility("areas", false)
+			global.VisibilityTools.changeActorGroupVisibility("areas", false)
 		}
 	})
 
@@ -374,11 +364,11 @@ async function initVisibilityDisplayControls(document) {
 	linkTagActorsToggle.addEventListener("change", (e) => {
 		if (linkTagActorsToggle.checked) {
 			// Okay, we'll make all in-game invis actors visible
-			VisibilityTools.changeActorGroupVisibility("linktags", true)
+			global.VisibilityTools.changeActorGroupVisibility("linktags", true)
 		}
 		else {
 			// Okay, we'll make all in-game invis actors actually invisible
-			VisibilityTools.changeActorGroupVisibility("linktags", false)
+			global.VisibilityTools.changeActorGroupVisibility("linktags", false)
 		}
 	})
 
@@ -386,11 +376,11 @@ async function initVisibilityDisplayControls(document) {
 	otherInvActorsToggle.addEventListener("change", (e) => {
 		if (otherInvActorsToggle.checked) {
 			// Okay, we'll make all in-game invis actors visible
-			VisibilityTools.changeActorGroupVisibility("otherInvis", true)
+			global.VisibilityTools.changeActorGroupVisibility("otherInvis", true)
 		}
 		else {
 			// Okay, we'll make all in-game invis actors actually invisible
-			VisibilityTools.changeActorGroupVisibility("otherInvis", false)
+			global.VisibilityTools.changeActorGroupVisibility("otherInvis", false)
 		}
 	})
 
@@ -398,18 +388,18 @@ async function initVisibilityDisplayControls(document) {
 	staticActorsToggle.addEventListener("change", (e) => {
 		if (staticActorsToggle.checked) {
 			// Okay, we'll make all in-game invis actors visible
-			VisibilityTools.changeActorGroupVisibility("static", true)
+			global.VisibilityTools.changeActorGroupVisibility("static", true)
 		}
 		else {
 			// Okay, we'll make all in-game invis actors actually invisible
-			VisibilityTools.changeActorGroupVisibility("static", false)
+			global.VisibilityTools.changeActorGroupVisibility("static", false)
 		}
 	})
 
 	const dynamicActorsToggle = document.getElementById("VisibilityDisplay_DynamicActorsToggle")
 	dynamicActorsToggle.addEventListener("change", (e) => {
 		// Okay, we'll set the visibility
-		VisibilityTools.changeActorGroupVisibility("dynamic", dynamicActorsToggle.checked)
+		global.VisibilityTools.changeActorGroupVisibility("dynamic", dynamicActorsToggle.checked)
 	})
 
 	const linkObjectsToggle = document.getElementById("VisibilityDisplay_LinkObjectsToggle")
@@ -417,7 +407,7 @@ async function initVisibilityDisplayControls(document) {
 		// Okay, we'll make all in-game invis actors visible
 
 		// I really need to rename this function
-		VisibilityTools.changeActorGroupVisibility("links", linkObjectsToggle.checked)
+		global.VisibilityTools.changeActorGroupVisibility("links", linkObjectsToggle.checked)
 	})
 
 	const railObjectsToggle = document.getElementById("VisibilityDisplay_RailObjectsToggle")
@@ -425,7 +415,7 @@ async function initVisibilityDisplayControls(document) {
 		// Okay, we'll make all in-game invis actors visible
 
 		// I really need to rename this function
-		VisibilityTools.changeActorGroupVisibility("rails", railObjectsToggle.checked)
+		global.VisibilityTools.changeActorGroupVisibility("rails", railObjectsToggle.checked)
 	})
 }
 
@@ -567,12 +557,12 @@ function initLODThresholdControls(document) {
 	const LODThresholdSliderValue = document.getElementById("LODThresholdSliderValue")
 
 	LODThresholdSlider.oninput = function () {
-		LODTools.setLOD_THRESHOLD(LODThresholdSlider.value)
+		global.LODTools.setLOD_THRESHOLD(LODThresholdSlider.value)
 
 		LODThresholdSliderValue.innerHTML = LODThresholdSlider.value
 
 		// We'll force an LOD update...
-		LODTools.applyLODs()
+		global.LODTools.applyLODs()
 	}
 }
 
@@ -580,10 +570,10 @@ function initLODToggleControls(document) {
 	const computeLODsCheckbox = document.getElementById("computeLODsCheckbox")
 	computeLODsCheckbox.oninput = function () {
 		if (computeLODsCheckbox.checked) {
-			LODTools.enableLODs()
+			global.LODTools.enableLODs()
 		}
 		else {
-			LODTools.disableLODs()
+			global.LODTools.disableLODs()
 		}
 		global.computeLODs = computeLODsCheckbox.checked
 	}

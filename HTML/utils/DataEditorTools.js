@@ -1,4 +1,3 @@
-const VariableDomListeners = require("./VariableDomListeners.js")
 
 
 let selectedActor
@@ -10,7 +9,7 @@ async function displayActor(actor, document) {
     <button class="button" id="ActorEditButton">Edit BYML</button>
   `
 
-	VariableDomListeners.initDataEditorButton(document, selectedActor)
+	global.VariableDomListeners.initDataEditorButton(document, selectedActor)
 }
 
 const addActorToSelectedActorsList = async function(actor, document) {

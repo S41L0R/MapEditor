@@ -34,9 +34,6 @@
 
 // =============================================================================
 
-const SelectionTools = require("./SelectionTools.js")
-const ModelTools = require("./ModelTools.js")
-const MapTools = require("./MapTools.js")
 
 
 
@@ -79,13 +76,13 @@ const addStaticActor = async function(unitConfigName, position, scenelike, mapli
 /*
 function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
 	let currentIndex
-	if (ModelTools.modelDict[unitConfigName] !== undefined) {
-		currentIndex = ModelTools.modelDict[unitConfigName].count + 1
-		ModelTools.modelDict[unitConfigName].count = ModelTools.modelDict[unitConfigName].count + 1
+	if (global.ModelTools.modelDict[unitConfigName] !== undefined) {
+		currentIndex = global.ModelTools.modelDict[unitConfigName].count + 1
+		global.ModelTools.modelDict[unitConfigName].count = global.ModelTools.modelDict[unitConfigName].count + 1
 	}
 	else {
-		currentIndex = ModelTools.basicMeshDict["basicCube"].count + 1
-		ModelTools.basicMeshDict["basicCube"].count = ModelTools.basicMeshDict["basicCube"].count + 1
+		currentIndex = global.ModelTools.basicMeshDict["basicCube"].count + 1
+		global.ModelTools.basicMeshDict["basicCube"].count = global.ModelTools.basicMeshDict["basicCube"].count + 1
 	}
 
 	SceneTools.addActorToScene(actor, scenelike, intersectables, currentIndex)
@@ -94,7 +91,7 @@ function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
 
 const removeObjectActor = async function (actor, selectionRedirectDummy, forceRedirect) {
 	let dummy = (function () {
-		for (const dummy of SelectionTools.objectDummys) {
+		for (const dummy of global.SelectionTools.objectDummys) {
 			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
 				return dummy
 			}
@@ -102,16 +99,16 @@ const removeObjectActor = async function (actor, selectionRedirectDummy, forceRe
 	})();
 	if (dummy !== undefined) {
 		let isObjectSelected = false
-		if (SelectionTools.selectedDummys.includes(dummy)) {
+		if (global.SelectionTools.selectedDummys.includes(dummy)) {
 			isObjectSelected = true
-			await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+			await global.SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
 			if (selectionRedirectDummy !== undefined) {
-				SelectionTools.selectObjectByDummy(selectionRedirectDummy, global.transformControl, global.THREE)
+				await global.SelectionTools.selectObjectByDummy(selectionRedirectDummy, global.transformControl, global.THREE)
 			}
 		}
 		else if (forceRedirect) {
 			if (selectionRedirectDummy !== undefined) {
-				SelectionTools.selectObjectByDummy(selectionRedirectDummy, global.transformControl, global.THREE)
+				await global.SelectionTools.selectObjectByDummy(selectionRedirectDummy, global.transformControl, global.THREE)
 			}
 		}
 		await removeObjectActorByDummy(dummy)
@@ -120,22 +117,22 @@ const removeObjectActor = async function (actor, selectionRedirectDummy, forceRe
 
 const reloadObjectActor = async function (actor) {
 	let dummy = (function () {
-		for (const dummy of SelectionTools.objectDummys) {
+		for (const dummy of global.SelectionTools.objectDummys) {
 			if (dummy.userData.actor === actor) {
 				return dummy
 			}
 		}
 	})();
 	let isObjectSelected = false
-	if (SelectionTools.selectedDummys.includes(dummy)) {
+	if (global.SelectionTools.selectedDummys.includes(dummy)) {
 		isObjectSelected = true
-		await SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+		await global.SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
 	}
 	await removeObjectActorByDummy(dummy)
 	setupObjectActor(actor).then((modelData) => {
 		let dummy = modelData[2]
 		if (isObjectSelected) {
-			SelectionTools.selectObjectByDummy(dummy, global.transformControl, global.THREE)
+			global.SelectionTools.selectObjectByDummy(dummy, global.transformControl, global.THREE)
 		}
 	})
 
@@ -156,7 +153,7 @@ const reloadObjectActorByName = async function(actorName) {
 
 const setupObjectActor = async function(actor) {
 	let actorModelData
-	switch (ModelTools.modelDict[actor.UnitConfigName.value]) {
+	switch (global.ModelTools.modelDict[actor.UnitConfigName.value]) {
 		case undefined:
 			switch (actor.UnitConfigName.value) {
 				case "Area":
@@ -232,6 +229,7 @@ const setupObjectActor = async function(actor) {
 				default:
 					// Just give it a basic cube model.
 					actorModelData = await setupBasicMeshActor(actor, "basicCube")
+					console.error(actorModelData)
 					return(actorModelData)
 					/*
 					setupBasicMeshActor(actor, "basicCube").then((actorModelData) => {
@@ -242,6 +240,7 @@ const setupObjectActor = async function(actor) {
 			break
 		default:
 			actorModelData = await setupModelDictActor(actor)
+			console.error(actorModelData)
 			return(actorModelData)
 			/*
 			setupModelDictActor(actor).then((actorModelData) => {
@@ -256,15 +255,15 @@ async function setupBasicMeshActor(actor, basicMeshKey) {
 		let actorMatrix = await createActorMatrix(actor)
 		// First up, we need to check on whether there are already too many instanced
 		// mesh indices.
-		if (ModelTools.basicMeshDict[basicMeshKey].count === ModelTools.basicMeshDict[basicMeshKey][0].instanceMatrix.count) {
+		if (global.ModelTools.basicMeshDict[basicMeshKey].count === global.ModelTools.basicMeshDict[basicMeshKey][0].instanceMatrix.count) {
 			// We have too many actors! We'll need to figure out what to do in this case. (Probably re-create the instancedMesh)
 			console.error(`TOO MANY INSTANCED MESH INDICES!! BasicMeshKey: ${basicMeshKey}`)
 			return
 		}
 		else {
 			// Okay, we're good.
-			console.warn(ModelTools.basicMeshDict[basicMeshKey])
-			let actorModelArray = ModelTools.basicMeshDict[basicMeshKey]
+			console.warn(global.ModelTools.basicMeshDict[basicMeshKey])
+			let actorModelArray = global.ModelTools.basicMeshDict[basicMeshKey]
 			// With basicMeshes, there is only one element. It is an array for other reasons.
 			let actorModel = actorModelArray[0]
 			let index = actorModel.count
@@ -275,16 +274,18 @@ async function setupBasicMeshActor(actor, basicMeshKey) {
 			actorModel.userData.actorList[index] = actor
 
 			// Of course, we want to avoid any duplicate dummys...
+			let dummy = {}
 			let createDummy = true
-			for (dummy of SelectionTools.objectDummys) {
+			for (dummy of global.SelectionTools.objectDummys) {
 				if (dummy.userData.actor === actor) {
 					createDummy = false
 					break
 				}
 			}
 			if (createDummy) {
-				let dummy = await SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
+				dummy = global.SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
 			}
+			console.error(dummy)
 
 			resolve([actorModelArray, index, dummy])
 		}
@@ -305,9 +306,9 @@ async function setupModelDictActor(actor) {
 		// Get the actor name and store it as the key we'll be using to access the model:
 		let modelDictKey = actor.UnitConfigName.value
 		// Eh.. all instancedMeshes of the same type should have the same index.. I think?
-		let index = ModelTools.modelDict[modelDictKey][0].count
+		let index = global.ModelTools.modelDict[modelDictKey][0].count
 
-		for (const actorModel of ModelTools.modelDict[modelDictKey]) {
+		for (const actorModel of global.ModelTools.modelDict[modelDictKey]) {
 			// First up, we need to check on whether there are already too many instanced
 			// mesh indices.
 			if (actorModel.count === actorModel.instanceMatrix.count) {
@@ -331,7 +332,7 @@ async function setupModelDictActor(actor) {
 		// Of course, we want to avoid any duplicate dummys...
 		let dummy = {}
 		let createDummy = true
-		for (existingDummy of SelectionTools.objectDummys) {
+		for (existingDummy of global.SelectionTools.objectDummys) {
 			if (existingDummy.userData.actor === actor) {
 				dummy = existingDummy
 				createDummy = false
@@ -339,9 +340,9 @@ async function setupModelDictActor(actor) {
 			}
 		}
 		if (createDummy) {
-			dummy = await SelectionTools.createObjectDummy(ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
+			dummy = global.SelectionTools.createObjectDummy(global.ModelTools.modelDict[modelDictKey], index, global.THREE, global.scene)
 		}
-		resolve([ModelTools.modelDict[modelDictKey], index, dummy])
+		resolve([global.ModelTools.modelDict[modelDictKey], index, dummy])
 	})
 }
 
@@ -411,7 +412,7 @@ function addDynamicDataActor(unitConfigName, position) {
 	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
 	actor.Translate[2].type = 300
-	actor.HashId.value = MapTools.generateHashID()
+	actor.HashId.value = global.MapTools.generateHashID()
 	actor.HashId.type = 102
 	global.sectionData.Dynamic.Objs.push(actor)
 	return actor
@@ -434,7 +435,7 @@ function addStaticDataActor(unitConfigName, position) {
 	actor.Translate[1].type = 300
 	actor.Translate[2].value = position.z
 	actor.Translate[2].type = 300
-	actor.HashId.value = MapTools.generateHashID()
+	actor.HashId.value = global.MapTools.generateHashID()
 	actor.HashId.type = 102
 	global.sectionData.Static.Objs.push(actor)
 	return actor
@@ -502,14 +503,14 @@ const removeObjectActorByDummy = async function(dummy) {
 			instancedMesh.count = instancedMesh.count - 1
 		}
 	}
-	await SelectionTools.removeDummy(dummy)
+	await global.SelectionTools.removeDummy(dummy)
 }
 
 
 
 
 function findDummyFromInstancedMeshesAndIndex(instancedMeshArray, index) {
-	for (let dummy of SelectionTools.objectDummys) {
+	for (let dummy of global.SelectionTools.objectDummys) {
 		if (dummy.userData.instancedMeshes === instancedMeshArray) {
 			if (dummy.userData.index === index) {
 				return(dummy)
@@ -550,18 +551,16 @@ function swapInstancedMeshIndicesInInstanceMatrix(InstancedMesh, index1, index2)
 
 // Updates the actor in the map file
 const updateDataActor = async function(dummy) {
-	let firstInstancedMesh = dummy.userData.instancedMeshes[0]
-	let instancedMeshIndex = dummy.userData.index
-	let actor = firstInstancedMesh.userData.actorList[instancedMeshIndex]
+	let actor = dummy.userData.actor
 	let actorMatrix = dummy.matrixWorld
 	let position = new global.THREE.Vector3()
 	let rotationQ = new global.THREE.Quaternion()
-	let rotationE = new global.THREE.Euler()
+	let rotationE = new global.THREE.Euler("ZYX")
 	let scale = new global.THREE.Vector3()
 
 	actorMatrix.decompose(position, rotationQ, scale)
 
-	rotationE.setFromQuaternion(rotationQ)
+	rotationE.setFromQuaternion(rotationQ, "ZYX")
 
 	actor.Translate[0].value = position.x
 	actor.Translate[1].value = position.y

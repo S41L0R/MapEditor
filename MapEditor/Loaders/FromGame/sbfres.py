@@ -31,6 +31,9 @@ def cacheModels(modelList, modelPath):
                 if (os.path.exists(os.path.join(modelPath, str(i['bfres'])+'-00'+'.sbfres'))):
                     print("Trying in case of -00 support...")
                     os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(modelPath, str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
+                if (os.path.exists(os.path.join(modelPath, str(i['bfres'])+'-01'+'.sbfres'))):
+                    print("Trying in case of -01 support...")
+                    os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(modelPath, str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
 
             print(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{os.path.join(modelPath, str(i['bfres'])+'.sbfres')}\" Cache/Model/{str(i['bfres'])}/")
             print(os.getcwd())

@@ -9,7 +9,6 @@
 //
 // We only need to do it if we're moving a railPoint.
 
-const MapTools = require("./MapTools.js")
 
 
 const RAIL_RES = 50;
@@ -57,7 +56,7 @@ const createNewBezierRail = async function(pos, pointNum, XZMultiplier, scenelik
 	let rail = {
 		"HashId": {
 			"type": 102,
-			"value": MapTools.generateHashID()
+			"value": global.MapTools.generateHashID()
 		},
 		"IsClosed": {
 			"type": 500,
@@ -196,7 +195,7 @@ const createNewLinearRail = async function(pos, pointNum, XZMultiplier, scenelik
 	let rail = {
 		"HashId": {
 			"type": 102,
-			"value": MapTools.generateHashID()
+			"value": global.MapTools.generateHashID()
 		},
 		"IsClosed": {
 			"type": 500,
