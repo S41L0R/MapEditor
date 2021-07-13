@@ -105,7 +105,7 @@ const applyLODs = async function() {
 
           let dummyLOD = modelData[2]
           await ActorTools.removeObjectActor(actor, dummyLOD, incorrectSelectedActorsList.includes(actor))
-        
+
         })
       }
     }
@@ -116,13 +116,13 @@ const applyLODs = async function() {
 
         // Swap the actor and its LOD - And the selection
 
-        
+
 
         await ActorTools.setupObjectActor(actor).then(async (modelData) => {
 
           let dummyActor = modelData[2]
           await ActorTools.removeObjectActor(actorLOD, dummyActor, incorrectSelectedActorsList.includes(actorLOD))
-        
+
         })
       }
     }
