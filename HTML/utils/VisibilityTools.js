@@ -80,9 +80,8 @@ const changeActorVisibility = async function(actor, visibility) {
     // Okay, based on the actor we'll first have to find the dummy.
     for (const dummy of global.SelectionTools.objectDummys) {
       if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
-        global.SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE).then(() => {
-          global.ActorTools.removeObjectActorByDummy(dummy)
-        })
+        global.SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+        global.ActorTools.removeObjectActorByDummy(dummy)
       }
     }
   }
