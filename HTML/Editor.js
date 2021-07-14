@@ -415,6 +415,9 @@ async function loadSection(sectionName) {
 	if (sectionName === undefined) {
 		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
 	}
+	else {
+		PythonTools.loadPython("setSetting", `TestingMapSection, ${sectionName}`)
+	}
 	global.sectionName = sectionName
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
 	PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {

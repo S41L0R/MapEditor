@@ -92,6 +92,13 @@ def setSettings(newSettings):
     WriteSettings.WriteSettings(json.loads(newSettings.replace("'", '"') ))
     print("Created and poulated json file.")
 
+def setSetting(settingData):
+    settingName = settingData.split(", ")[0]
+    value = settingData.split(", ")[1]
+    settings, content, aoc = getSettings
+    settings[settingName] = value
+    WriteSettings.WriteSettings(settings)
+
 
 # this exists so js can not be stupid
 def getCurrentSection():
@@ -153,6 +160,8 @@ class mapFile:
 
         currentProject = LoadSettings.LoadSettings().get("ProjectName")
         projectPath = projectHandling.Project(currentProject).getProject()
+        print(projectPath)
+        print(currentSection)
         print(os.path.join(projectPath, currentSection))
         if (os.path.exists(os.path.join(projectPath, currentSection))):
             pathStrStatic = (f'{projectPath}/{currentSection}/{currentSection}_Static.smubin')
