@@ -95,7 +95,7 @@ def setSettings(newSettings):
 def setSetting(settingData):
     settingName = settingData.split(", ")[0]
     value = settingData.split(", ")[1]
-    settings, content, aoc = getSettings
+    settings, content, aoc = getSettings()
     settings[settingName] = value
     WriteSettings.WriteSettings(settings)
 
@@ -156,9 +156,11 @@ class mapFile:
         # Also, I have no idea how this worked without this line:
         global currentSection
 
+        global currentProject
+
         #Okay, so the first thing we need to do is check if this section is already saved.
 
-        currentProject = LoadSettings.LoadSettings().get("ProjectName")
+        currentProject = projectHandling.getCurrentProject()
         projectPath = projectHandling.Project(currentProject).getProject()
         print(projectPath)
         print(currentSection)
