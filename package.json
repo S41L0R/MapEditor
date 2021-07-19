@@ -13,7 +13,7 @@
   "devDependencies": {
     "electron": "^13.1.5",
     "electron-builder": "^22.11.7",
-    "electron-packager": "^15.2.0",
+    "electron-packager": "^15.3.0",
     "eslint": "^7.30.0"
   },
   "scripts": {
