@@ -8,7 +8,7 @@
     "esm": "^3.2.25",
     "owoify-js": "^1.0.7",
     "python-shell": "^3.0.0",
-    "three": "^0.127.0"
+    "three": "^0.131.3"
   },
   "devDependencies": {
     "electron": "^13.1.5",
