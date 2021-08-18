@@ -77,6 +77,8 @@ const VisibilityTools = require("./HTML/utils/VisibilityTools.js")
 global.VisibilityTools = VisibilityTools
 const DomListeners = require("./HTML/utils/DomListeners.js")
 global.DomListeners = DomListeners
+const HeightMapTools = require("./HTML/utils/HeightMapTools.js")
+global.HeightMapTools = HeightMapTools
 
 const ipc = require("electron").ipcRenderer
 
@@ -84,7 +86,8 @@ const ipc = require("electron").ipcRenderer
 // Constants
 // -----------------------------------------------------------------------------
 const customSkyColor = new THREE.Color("skyblue")
-const customDarkSkyColor = new THREE.Color("#2b2b31")
+//const customDarkSkyColor = new THREE.Color("#2b2b31")
+const customDarkSkyColor = new THREE.Color("#000000")
 
 const clock = new THREE.Clock()
 
@@ -196,6 +199,7 @@ function resizeCanvasToDisplaySize () {
 		camera.updateProjectionMatrix()
 
 		LinkTools.reloadLinkObjectResolution()
+		RailTools.reloadRailObjectResolution()
 	}
 }
 
@@ -411,6 +415,7 @@ async function loadAll() {
 
 
 async function loadSection(sectionName) {
+	HeightMapTools.loadHGHT("test")
 	// Just in case we hit reload and want to see something
 	if (sectionName === undefined) {
 		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
@@ -420,6 +425,7 @@ async function loadSection(sectionName) {
 	}
 	global.sectionName = sectionName
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
+	HeightMapTools.loadSectionHeightMap(sectionName)
 	PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
@@ -429,6 +435,7 @@ async function loadSection(sectionName) {
 		ActorEditorTools.initActorEditorTools(sectionData)
 		// -----------------------------------------------------------------------------
 		document.getElementById("loadingStatus").innerHTML = "Creating Rails"
+		RailTools.initRailObject()
 		RailTools.createRails(sectionData, scene, RayCastTools.intersectables)
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"
@@ -448,7 +455,6 @@ async function loadSection(sectionName) {
 async function loadDarkMode() {
 	// Sets dark mode/light mode based on settings
 	let darkMode = await PythonTools.loadPython('getDarkMode', null)
-	console.error(darkMode)
 	if (darkMode == true){
 		styleSheet.href = "HTML/Dark-Mode.css";
 		scene.background = customDarkSkyColor;

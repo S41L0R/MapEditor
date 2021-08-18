@@ -4,6 +4,7 @@
 // -----------------------------------------------------------------------------
 const path = require('path')
 const fs = require('fs')
+const { Console } = require('console')
 // -----------------------------------------------------------------------------
 
 // Usables
@@ -130,6 +131,28 @@ const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum
 	let colladaMeshArray = []
 	colladaModel.traverse((item) => {
 		if (item.isMesh) {
+
+      item.material.transparent = true
+      item.material.alphaTest = 0.5
+
+      // Lets get the extra model data loaded
+      let extraModelRawData = fs.readFileSync(modelPath.replace(".dae", ".json"))
+      let extraModelData = JSON.parse(extraModelRawData)
+      let materialName = item.name.split("_").slice(item.name.split("_").lastIndexOf("Mt"), item.name.split("_").length).join("_")
+      if (materialName in extraModelData["Materials"]) {
+        let mskTexPath = modelPath.split("/").slice(0, modelPath.split("/").length - 1).join("/") + "/" + extraModelData["Materials"][materialName]["MskTex"] + ".png"
+        if (fs.existsSync(mskTexPath)) {
+          console.error(materialName)
+          console.error(mskTexPath)
+          item.material.alphaMap = new global.THREE.TextureLoader().load(mskTexPath)
+          item.material.alphaMap.wrapS = global.THREE.RepeatWrapping
+          item.material.alphaMap.wrapT = global.THREE.RepeatWrapping
+
+          item.material.alphaTest = 0.5
+          
+          item.material.side = global.THREE.DoubleSide
+        }
+      }
 
 			// We get the geometry and the material
 			let colladaGeometry = item.geometry

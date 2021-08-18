@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Toolbox.Core;
 using Toolbox.Core.Collada;
 using Toolbox.Core.IO;
+using CafeLibrary;
+using System.Text.Json;
+using System.Collections.Generic;
+using BfresLibrary;
+using Collada141;
 
 namespace ModelExporter
 {
@@ -58,10 +59,10 @@ namespace ModelExporter
                                 });
                         }
                     }
-                    IFileFormat file;
+                    BFRES file;
                     if (File.Exists(arg))
                     {
-                        file = STFileLoader.OpenFileFormat(arg);
+                        file = (BFRES)STFileLoader.OpenFileFormat(arg);
                         ExportModel(file, args);
                     }
                     else
@@ -82,7 +83,7 @@ namespace ModelExporter
                                     Suffix = Suffix + 1;
                                 }
                             }
-                            file = STFileLoader.OpenFileFormat(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00")));
+                            file = (BFRES)STFileLoader.OpenFileFormat(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00")));
                             ExportModel(file, args);
                             Suffix = Suffix + 1;
                         }
@@ -90,11 +91,30 @@ namespace ModelExporter
                 }
             }
         }
-        static void ExportModel(Toolbox.Core.IFileFormat file, String[] args)
+        static void ExportModel(BFRES file, String[] args)
         {
             var scene = ((IModelSceneFormat)file).ToGeneric();
+            
             foreach (var model in scene.Models)
             {
+                Dictionary<String, Dictionary<String, Dictionary<String, String>>> extraModelData = new Dictionary<String, Dictionary<String, Dictionary<String, String>>>();
+                extraModelData["Materials"] = new Dictionary<String, Dictionary<String, String>>();
+                for (int matIndex = 0; matIndex < file.ResFile.Models[model.Name].Materials.Count; matIndex++)
+                {
+                    extraModelData["Materials"][file.ResFile.Models[model.Name].Materials[matIndex].Name] = new Dictionary<String, String>();
+                    for (int samplerIndex = 0; samplerIndex < file.ResFile.Models[model.Name].Materials[matIndex].Samplers.Count; samplerIndex++)
+                    {
+                        string samplerName = file.ResFile.Models[model.Name].Materials[matIndex].Samplers[samplerIndex].Name;
+                        if (samplerName == "_ms0")
+                        {
+                            extraModelData["Materials"][file.ResFile.Models[model.Name].Materials[matIndex].Name]["MskTex"] = file.ResFile.Models[model.Name].Materials[matIndex].TextureRefs[samplerIndex].Name;
+                        }
+                        
+                    }
+                }
+                String ExtraDataJsonData = JsonSerializer.Serialize(extraModelData);
+                File.WriteAllText($"{args[args.Length - 1]}{model.Name}.json", ExtraDataJsonData);
+                
                 DAE.Export($"{args[args.Length - 1]}{model.Name}.dae", new DAE.ExportSettings()
                 {
                     ExportTextures = true,

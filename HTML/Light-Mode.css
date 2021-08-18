@@ -27,7 +27,7 @@
   background: #005773;
 }
 
-.selectedActorListItem {
+.selectionListItem {
   background-color: #008CBA;
 }
 
@@ -46,17 +46,17 @@
 
 
 
-#selectedActorsList {
+.selectionList {
   /*background-color: black;*/
   background-color: #00000038;
 }
 
-.selectedActorListItem {
+.selectionListItem {
   color: white;
 }
 
 
-.selectedActorListItem:hover {
+.selectionListItem:hover {
   background-color: #002836;
 }
 /*#Scale {
