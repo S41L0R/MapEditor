@@ -133,6 +133,7 @@ const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum
 		if (item.isMesh) {
 
       item.material.transparent = true
+      item.material.alphaTest = 0.5
 
       // Lets get the extra model data loaded
       let extraModelRawData = fs.readFileSync(modelPath.replace(".dae", ".json"))
@@ -150,9 +151,6 @@ const colladaOnLoad = function (collada, actorName, modelPath, resolve, modelNum
           item.material.alphaTest = 0.5
           
           item.material.side = global.THREE.DoubleSide
-        }
-        if (mskTexPath === "Cache/Model/Obj_TreeConiferous/Tree_TreeConiferousLeaf_A_Msk.png") {
-          console.error(item)
         }
       }
 
