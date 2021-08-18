@@ -80,6 +80,77 @@ const createObjectDummy = function(instancedMeshes, index) {
 	return(dummy)
 }
 
+const createRailPointDummy = function(railPoint) {
+	let dummy = new global.THREE.Group()
+	dummy.userData.type = "Dummy"
+
+	dummy.userData.railPoint = railPoint
+
+	dummy.userData.relevantType = "RailPoint"
+
+	railPointPos = global.MapTools.getConsistentTransform(railPoint)
+	dummy.rotation.order = "ZYX"
+	dummy.position.x = railPointPos.Translate[0].value
+	dummy.position.y = railPointPos.Translate[1].value
+	dummy.position.z = railPointPos.Translate[2].value
+	dummy.rotation.x = railPointPos.Rotate[0].value
+	dummy.rotation.y = railPointPos.Rotate[1].value
+	dummy.rotation.z = railPointPos.Rotate[2].value
+	
+	const material = new global.THREE.LineBasicMaterial({
+		color: 0x00ff00
+	})
+	const points = []
+	points.push(new global.THREE.Vector3(0, 0, 0))
+	points.push(new global.THREE.Vector3(0, -5, 0))
+	const geometry = new global.THREE.BufferGeometry().setFromPoints(points)
+	const groupSelectorVisualizer = new global.THREE.Line(geometry, material)
+
+	dummy.add(groupSelectorVisualizer)
+	
+	objectDummys.push(dummy)
+	global.scene.add(dummy)
+
+	return(dummy)
+}
+
+const createControlPointDummy = function(controlPoint) {
+	const railPoint = global.RailHelperTools.controlPointRailPointMap.get(controlPoint)
+	let dummy = new global.THREE.Group()
+	dummy.userData.type = "Dummy"
+
+	dummy.userData.controlPoint = controlPoint
+
+	dummy.userData.relevantType = "ControlPoint"
+
+	const railPointConsistentTransform = global.MapTools.getConsistentTransform(railPoint)
+	railPointPos = new global.THREE.Vector3(railPointConsistentTransform.Translate[0].value, railPointConsistentTransform.Translate[1].value, railPointConsistentTransform.Translate[2].value)
+	const controlPointPos = global.GeneralRailTools.getWorldSpaceControlPoint(railPointPos, new global.THREE.Vector3(controlPoint[0].value, controlPoint[1].value, controlPoint[2].value))
+	
+	dummy.position = controlPointPos
+
+	dummy.position.x = controlPointPos.x
+	dummy.position.y = controlPointPos.y
+	dummy.position.z = controlPointPos.z
+	
+	const material = new global.THREE.LineBasicMaterial({
+		color: 0x00ff00
+	})
+	const points = []
+	points.push(new global.THREE.Vector3(0, 0, 0))
+	points.push(new global.THREE.Vector3(0, -5, 0))
+	const geometry = new global.THREE.BufferGeometry().setFromPoints(points)
+	const groupSelectorVisualizer = new global.THREE.Line(geometry, material)
+
+	dummy.add(groupSelectorVisualizer)
+	
+	objectDummys.push(dummy)
+	global.scene.add(dummy)
+
+	return(dummy)
+}
+
+
 const removeDummy = function(dummy) {
 	if (selectedDummys.includes(dummy)) {
 		deselectObjectByDummy(dummy)
@@ -90,9 +161,11 @@ const removeDummy = function(dummy) {
 
 const selectObject = function(instancedMesh, index) {
 	for (const dummy of objectDummys) {
-		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
-			if (dummy.userData.index === index) {
-				selectObjectByDummy(dummy)
+		if ("instancedMeshes" in dummy.userData) {
+			if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
+				if (dummy.userData.index === index) {
+					selectObjectByDummy(dummy)
+				}
 			}
 		}
 	}
@@ -109,21 +182,29 @@ const selectObjectByDummy = function(dummy) {
 	for (const dummy of selectedDummys) {
 		groupSelector.attach(dummy)
 	}
-	//groupSelector.add(dummy)
-	//updateSelectedDummys()
 	displaySelection(dummy)
 	global.transformControl.attach(groupSelector)
 
 	console.error(dummy)
 }
 
-const selectRail = function(helper) {
-	if (!groupSelector.children.includes(helper)) {
-		groupSelector.add(helper)
-		global.transformControl.attach(groupSelector)
-		selectedDummys.push(helper)
+const selectRailHelper = function(helperIndex) {
+	const helper = global.RailHelperTools.helperIndexBackwardMap.get(helperIndex)
+	const dummy = global.RailHelperTools.helperDummyMap.get(helper)
+
+	if (selectedDummys.indexOf(dummy) == -1) {
+
+		for (const selectedDummy of selectedDummys) {
+			selectedDummy.updateMatrixWorld()
+			groupSelector.remove(selectedDummy)
+			selectedDummy.matrixWorld.decompose(selectedDummy.position, selectedDummy.quaternion, selectedDummy.scale)
+		}
+		selectedDummys.push(dummy)
 		updateGroupSelectorPos()
-		updateSelectedDummys()
+		for (const dummy of selectedDummys) {
+			groupSelector.attach(dummy)
+		}
+		global.transformControl.attach(groupSelector)
 	}
 }
 
@@ -140,9 +221,11 @@ const deselectAll = function() {
 
 const deselectObject = function(instancedMesh, index) {
 	for (const dummy of objectDummys) {
-		if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
-			if (dummy.userData.index === index) {
-				deselectObjectByDummy(dummy)
+		if ("instancedMeshes" in dummy.userData) {
+			if (dummy.userData.instancedMeshes.includes(instancedMesh)) {
+				if (dummy.userData.index === index) {
+					deselectObjectByDummy(dummy)
+				}
 			}
 		}
 	}
@@ -283,19 +366,20 @@ const updateGroupSelectorPos = function() {
 
 	for (const dummy of selectedDummys) {
 		let actorTransform = {}
-		if (dummy.relevantType === "RailPoint") {
-			actorTransform = global.MapTools.getConsistentTransform(dummy.userData.railPoint)
-		}
 		// This is more of a hacky solution, but this makes no sense to have in getConsistentTransform
 		// Well it actually kinda does.. but not really
-		else if (dummy.relevantType === "ControlPoint") {
+		if (dummy.userData.relevantType === "ControlPoint") {
+			const railPoint = global.RailHelperTools.controlPointRailPointMap.get(dummy.userData.controlPoint)
 			actorTransform = {
 				"Translate": [
-					{"value": dummy.userData.controlPoint[0].value},
-					{"value": dummy.userData.controlPoint[1].value},
-					{"value": dummy.userData.controlPoint[2].value}
+					{"value": railPoint.Translate[0].value + dummy.userData.controlPoint[0].value},
+					{"value": railPoint.Translate[1].value + dummy.userData.controlPoint[1].value},
+					{"value": railPoint.Translate[2].value + dummy.userData.controlPoint[2].value}
 				]
 			}
+		}
+		else if (dummy.userData.relevantType === "RailPoint") {
+			actorTransform = global.MapTools.getConsistentTransform(dummy.userData.railPoint)
 		}
 		else {
 			actorTransform = global.MapTools.getConsistentTransform(dummy.userData.actor)
@@ -349,11 +433,13 @@ const updateSelectedObjectByDummy = function(dummy) {
 module.exports = {
 	selectObject: selectObject,
 	selectObjectByDummy: selectObjectByDummy,
-	selectRail: selectRail,
+	selectRailHelper: selectRailHelper,
 	deselectObject: deselectObject,
 	deselectObjectByDummy: deselectObjectByDummy,
 	deselectAll: deselectAll,
 	createObjectDummy: createObjectDummy,
+	createRailPointDummy: createRailPointDummy,
+	createControlPointDummy: createControlPointDummy,
 	updateSelectedObjs: updateSelectedObjs,
 	displaySelection: displaySelection,
 	undisplaySelection: undisplaySelection,

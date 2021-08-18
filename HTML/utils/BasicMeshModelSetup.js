@@ -23,10 +23,12 @@ const setupCubeMesh = async function (THREE, basicMeshDict) {
 		const cubeTexLoader = new THREE.TextureLoader()
 		const texture = cubeTexLoader.load(basicCubeTexturePath)
 		const material = new THREE.MeshStandardMaterial({
-    	emissiveMap: texture,
-    	emissive: new THREE.Color("#FFFFFF"),
-    	transparent: true,
-    	opacity: 0.75,
+			//emissiveMap: texture,
+			//emissive: new THREE.Color("#FFFFFF"),
+			map: texture,
+			transparent: true,
+			//opacity: 0.75,
+			//alphaTest: 0.5,
 			side: THREE.DoubleSide
 		})
 		basicCubeMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
@@ -49,16 +51,71 @@ const setupBoxAreaMesh = async function (THREE, basicMeshDict) {
 		const cubeTexLoader = new THREE.TextureLoader()
 		const texture = cubeTexLoader.load(areaTexturePath_Box)
 		texture.magFilter = THREE.NearestFilter
-		const material = new THREE.MeshStandardMaterial({
-			emissiveMap: texture,
-			map: texture,
-			emissive: new THREE.Color("#FFFFFF"),
-			transparent: true,
-			alphaTest: 0.35,
-			opacity: 0.5,
-			side: THREE.DoubleSide
-		})
-		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, material, 9999)
+		texture.minFilter = THREE.NearestFilter
+		//texture.wrapS = THREE.RepeatWrapping
+		//texture.wrapT = THREE.RepeatWrapping
+		//texture.repeat.set(0.5, 0.5)
+
+		const materials = [
+			new THREE.MeshStandardMaterial({
+				emissiveMap: texture,
+				map: texture,
+				color: new THREE.Color("#FF8080"),
+				transparent: true,
+				alphaTest: 0.5,
+				//opacity: 0.5,
+				side: THREE.DoubleSide
+			}),
+			new THREE.MeshStandardMaterial({
+				emissiveMap: texture,
+				map: texture,
+				color: new THREE.Color("#00FF80"),
+				transparent: true,
+				alphaTest: 0.5,
+				//opacity: 0.5,
+				side: THREE.DoubleSide
+			}),
+			new THREE.MeshStandardMaterial({
+				emissiveMap: texture,
+				map: texture,
+				color: new THREE.Color("#0080FF"),
+				transparent: true,
+				alphaTest: 0.5,
+				//opacity: 0.5,
+				side: THREE.DoubleSide
+			}),
+			new THREE.MeshStandardMaterial({
+				emissiveMap: texture,
+				map: texture,
+				color: new THREE.Color("#00FFFF"),
+				transparent: true,
+				alphaTest: 0.5,
+				//opacity: 0.5,
+				side: THREE.DoubleSide
+			}),
+			new THREE.MeshStandardMaterial({
+				emissiveMap: texture,
+				map: texture,
+				color: new THREE.Color("#FFFF80"),
+				transparent: true,
+				alphaTest: 0.5,
+				//opacity: 0.5,
+				side: THREE.DoubleSide
+			}),
+			new THREE.MeshStandardMaterial({
+				emissiveMap: texture,
+				map: texture,
+				color: new THREE.Color("#FF80FF"),
+				transparent: true,
+				alphaTest: 0.5,
+				//opacity: 0.5,
+				side: THREE.DoubleSide
+			})
+		]
+
+
+
+		boxAreaMesh = new THREE.InstancedMesh(cubeGeometry, materials, 9999)
 		boxAreaMesh.userData.actorList = []
 		// This is stored as an array for consistency and ref comparison later.
 		basicMeshDict["areaBox"] = [boxAreaMesh]
@@ -79,16 +136,17 @@ const setupSphereAreaMesh = async function (THREE, basicMeshDict) {
 		const texture = cubeTexLoader.load(areaTexturePath_Sphere)
 		texture.wrapS = THREE.RepeatWrapping
 		texture.wrapT = THREE.RepeatWrapping
-		texture.repeat.set(15, 15)
+		texture.repeat.set(10, 10)
 		texture.magFilter = THREE.NearestFilter
+		texture.minFilter = THREE.NearestFilter
 		const material = new THREE.MeshStandardMaterial({
-			emissiveMap: texture,
+			//emissiveMap: texture,
 			map: texture,
-			emissive: new THREE.Color("#FFFFFF"),
+			//emissive: new THREE.Color("#FFFFFF"),
 			transparent: true,
-			alphaTest: 0.35,
-			opacity: 1,
-			side: THREE.DoubleSide
+			alphaTest: 0.5,
+			side: THREE.DoubleSide,
+			//wireframe: true
 		})
 		sphereAreaMesh = new THREE.InstancedMesh(sphereGeometry, material, 9999)
 		sphereAreaMesh.userData.actorList = []
@@ -110,14 +168,19 @@ const setupCapsuleAreaMesh = async function (THREE, basicMeshDict) {
 		const capsuleGeometry = new THREE.CapsuleBufferGeometry()
 		const cubeTexLoader = new THREE.TextureLoader()
 		const texture = cubeTexLoader.load(areaTexturePath_Sphere)
+		texture.wrapS = THREE.RepeatWrapping
+		texture.wrapT = THREE.RepeatWrapping
+		texture.repeat.set(10, 10)
+		texture.magFilter = THREE.NearestFilter
+		texture.minFilter = THREE.NearestFilter
 		const material = new THREE.MeshStandardMaterial({
-			emissiveMap: texture,
+			//emissiveMap: texture,
 			map: texture,
-			emissive: new THREE.Color("#FFFFFF"),
+			//emissive: new THREE.Color("#FFFFFF"),
 			transparent: true,
-			alphaTest: 0.35,
-			opacity: 0.5,
-			side: THREE.DoubleSide
+			alphaTest: 0.5,
+			side: THREE.DoubleSide,
+			//wireframe: true
 		})
 		capsuleAreaMesh = new THREE.InstancedMesh(capsuleGeometry, material, 9999)
 		capsuleAreaMesh.userData.actorList = []

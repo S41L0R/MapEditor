@@ -3,7 +3,7 @@ const fs = require('fs')
 const isMac = process.platform === 'darwin'
 const { exec } = require('child_process')
 const ipc = require('electron').ipcMain
-
+const path = require("path")
 
 const template = [
   // These menu names are beginning to physically hurt

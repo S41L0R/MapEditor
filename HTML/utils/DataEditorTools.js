@@ -1,6 +1,6 @@
 
 
-let selectedActor
+let selectedObj
 
 async function displayActor(actor, document) {
 	document.getElementById("DataEditorTextWindow").innerHTML = `
@@ -9,7 +9,17 @@ async function displayActor(actor, document) {
     <button class="button" id="ActorEditButton">Edit BYML</button>
   `
 
-	global.VariableDomListeners.initDataEditorButton(document, selectedActor)
+	global.VariableDomListeners.initDataEditorButton(document, selectedObj)
+}
+
+async function displayRail(rail, document) {
+	document.getElementById("DataEditorTextWindow").innerHTML = `
+    <p id="SelectedActorName"><strong>${rail.UnitConfigName.value}</strong></p>
+    <p>${rail.HashId.value}</p>
+    <button class="button" id="ActorEditButton">Edit BYML</button>
+  `
+
+	global.VariableDomListeners.initDataEditorButton(document, selectedObj)
 }
 
 const addActorToSelectedActorsList = async function(actor, document) {
@@ -25,7 +35,7 @@ const addActorToSelectedActorsList = async function(actor, document) {
 	newElement.innerHTML = `
     <strong>${actor.UnitConfigName.value}</strong><br>${actor.HashId.value}
   `
-	newElement.className = "selectedActorListItem"
+	newElement.className = "selectionListItem"
 	newElement.id = `selectedActor_${actor.HashId.value}`
 	if (selectedActorsList.childNodes.length > 0) {
 		selectedActorsList.insertBefore(newElement, selectedActorsList.childNodes[0])
@@ -37,11 +47,41 @@ const addActorToSelectedActorsList = async function(actor, document) {
 
 
 	newElement.addEventListener("click", () => {
-		selectedActor = actor
+		selectedObj = actor
 		displayActor(actor, document)
 	})
 
 	
+}
+
+const addRailBitToSelectedRailsList = async function(railBit, document) {
+	let rail = global.RailHelperTools.getRailFromRailBit(railBit)
+	let selectedRailsList = document.getElementById("selectedRailsList")
+	for (const element of selectedActorsList.childNodes) {
+		if (element.id === `selectedRail_${rail.HashId.value}`) {
+			return
+		}
+	}
+
+	let newElement = document.createElement("div")
+	newElement.innerHTML = `
+		${rail.RailType.value} <strong>${rail.UnitConfigName.value}</strong>
+		<br>
+		${rail.HashId.value}
+	`
+	newElement.className = "selectionListItem"
+	newElement.id = `selectedRail_${rail.HashId.value}`
+	if (selectedRailsList.childNodes.length > 0) {
+		selectedRailsList.insertBefore(newElement, selectedRailsList.childNodes[0])
+	}
+	else {
+		selectedRailsList.appendChild(newElement)
+	}
+
+	newElement.addEventListener("click", () => {
+		selectedObj = rail
+		displayRail(rail, document)
+	})
 }
 
 
@@ -70,11 +110,20 @@ const removeAllActorsFromSelectedActorsList = async function(document) {
 	}
 }
 
+const removeAllRailsFromSelectedRailsList = async function() {
+	let selectedRailsList = document.getElementById("selectedRailsList")
+	while (selectedRailsList.firstChild) {
+		selectedRailsList.removeChild(selectedRailsList.firstChild)
+	}
+}
+
 
 module.exports = {
 	addActorToSelectedActorsList: addActorToSelectedActorsList,
+	addRailBitToSelectedRailsList: addRailBitToSelectedRailsList,
 	removeActorFromSelectedActorsList: removeActorFromSelectedActorsList,
 	removeAllActorsFromSelectedActorsList: removeAllActorsFromSelectedActorsList,
+	removeAllRailsFromSelectedRailsList, removeAllRailsFromSelectedRailsList,
 
-	selectedActor: selectedActor
+	selectedActor: selectedObj
 }

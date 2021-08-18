@@ -92,8 +92,10 @@ function addObjectActor(actor, scenelike, intersectables, unitConfigName) {
 const removeObjectActor = async function (actor, selectionRedirectDummy, forceRedirect) {
 	let dummy = (function () {
 		for (const dummy of global.SelectionTools.objectDummys) {
-			if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
-				return dummy
+			if ("instancedMeshes" in dummy.userData) {
+				if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
+					return dummy
+				}
 			}
 		}
 	})();
@@ -229,7 +231,6 @@ const setupObjectActor = async function(actor) {
 				default:
 					// Just give it a basic cube model.
 					actorModelData = await setupBasicMeshActor(actor, "basicCube")
-					console.error(actorModelData)
 					return(actorModelData)
 					/*
 					setupBasicMeshActor(actor, "basicCube").then((actorModelData) => {
@@ -240,7 +241,6 @@ const setupObjectActor = async function(actor) {
 			break
 		default:
 			actorModelData = await setupModelDictActor(actor)
-			console.error(actorModelData)
 			return(actorModelData)
 			/*
 			setupModelDictActor(actor).then((actorModelData) => {
@@ -285,7 +285,6 @@ async function setupBasicMeshActor(actor, basicMeshKey) {
 			if (createDummy) {
 				dummy = global.SelectionTools.createObjectDummy(actorModelArray, index, global.THREE, global.scene)
 			}
-			console.error(dummy)
 
 			resolve([actorModelArray, index, dummy])
 		}

@@ -11,6 +11,7 @@
     box-shadow: -10px 10px 5px #00000040;
 
     user-select: none;
+    overflow-y: auto;
   }
   #sidebar h1 {
     font-weight: 100 !important;
@@ -482,7 +483,7 @@
     color: white;
   }
 
-  #selectedActorsList {
+  .selectionList {
     width: 90%;
     height: 25%;
     margin-top: 10%;
@@ -492,11 +493,11 @@
     border-radius: 3px;
   }
 
-  .selectedActorListItem {
+  .selectionListItem {
     width: 100%;
     height: 3em;
   }
 
-  .selectedActorListItem:hover {
+  .selectionListItem:hover {
     font-weight: bold;
   }
