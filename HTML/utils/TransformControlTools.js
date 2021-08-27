@@ -31,7 +31,7 @@ async function initDraggingChanged(transformControl) {
 	
 	
 					global.RailTools.reloadRail(rail)
-					global.RailHelperTools.reloadRailHelpers(rail)
+					global.RailHelperTools.reloadRailHelpers(rail, true)
 				}
 				else if (dummy.userData.relevantType == "ControlPoint") {
 					let rail = global.RailHelperTools.getRailFromRailBit(dummy.userData.controlPoint)
@@ -76,7 +76,7 @@ const onTransformControlDrag = async function (transformControl) {
 
 
 				global.RailTools.reloadRail(rail)
-				global.RailHelperTools.reloadRailHelpers(rail)
+				global.RailHelperTools.reloadRailHelpers(rail, true)
 			}
 			else if (dummy.userData.relevantType == "ControlPoint") {
 				let rail = global.RailHelperTools.getRailFromRailBit(dummy.userData.controlPoint)

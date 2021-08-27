@@ -88,7 +88,7 @@ const reloadPointsObject = function() {
     initPointsObject()
 }
 
-const generateRailHelpers = function(rail) {
+const generateRailHelpers = function(rail, updateControlPointDummys) {
     initControlPointConnectorObject()
     for (const railPoint of rail.RailPoints) {
         // Set the maps up properly
@@ -142,6 +142,11 @@ const generateRailHelpers = function(rail) {
                 if (!helperDummyMap.has(controlPoint)) {
                     const controlPointDummy = global.SelectionTools.createControlPointDummy(controlPoint)
                     helperDummyMap.set(controlPoint, controlPointDummy)
+                }
+                else {
+                    if (updateControlPointDummys) {
+                        helperDummyMap.get(controlPoint).position.set(worldSpaceControlPointPos.x, worldSpaceControlPointPos.y, worldSpaceControlPointPos.z)
+                    }
                 }
 
                 const controlPointConnectorIndex = addControlPointConnector(worldSpaceControlPointPos, railPointPos)
@@ -240,9 +245,9 @@ const removeRailHelpers = function(rail, removeDummys=true) {
     reloadPointsObject()
 }
 
-const reloadRailHelpers = function(rail) {
+const reloadRailHelpers = function(rail, railPointSelected=false) {
     removeRailHelpers(rail, false)
-    generateRailHelpers(rail)
+    generateRailHelpers(rail, railPointSelected)
 }
 
 const getRailFromRailBit = function(railBit) {

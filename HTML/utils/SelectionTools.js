@@ -21,7 +21,7 @@ const initSelectionTools = function() {
 	const groupSelectorVisualizer = new global.THREE.Points(groupSelectorVisualizerGeo, groupSelectorVisualizerMat);
 	*/
 
-
+	/*
 	const material = new global.THREE.LineBasicMaterial({
 		color: 0x0000ff
 	})
@@ -35,7 +35,7 @@ const initSelectionTools = function() {
 
 
 	groupSelector.add(groupSelectorVisualizer)
-	
+	*/
 
 	global.scene.add(groupSelector)
 }
@@ -96,7 +96,7 @@ const createRailPointDummy = function(railPoint) {
 	dummy.rotation.x = railPointPos.Rotate[0].value
 	dummy.rotation.y = railPointPos.Rotate[1].value
 	dummy.rotation.z = railPointPos.Rotate[2].value
-	
+	/*
 	const material = new global.THREE.LineBasicMaterial({
 		color: 0x00ff00
 	})
@@ -107,7 +107,7 @@ const createRailPointDummy = function(railPoint) {
 	const groupSelectorVisualizer = new global.THREE.Line(geometry, material)
 
 	dummy.add(groupSelectorVisualizer)
-	
+	*/
 	objectDummys.push(dummy)
 	global.scene.add(dummy)
 
@@ -132,7 +132,7 @@ const createControlPointDummy = function(controlPoint) {
 	dummy.position.x = controlPointPos.x
 	dummy.position.y = controlPointPos.y
 	dummy.position.z = controlPointPos.z
-	
+	/*
 	const material = new global.THREE.LineBasicMaterial({
 		color: 0x00ff00
 	})
@@ -143,7 +143,7 @@ const createControlPointDummy = function(controlPoint) {
 	const groupSelectorVisualizer = new global.THREE.Line(geometry, material)
 
 	dummy.add(groupSelectorVisualizer)
-	
+	*/
 	objectDummys.push(dummy)
 	global.scene.add(dummy)
 
@@ -212,7 +212,6 @@ const deselectAll = function() {
 	let dummysToDeselect = []
 	for (const dummy of selectedDummys) {
 		dummysToDeselect.push(dummy)
-		
 	}
 	for (const dummy of dummysToDeselect) {
 		deselectObjectByDummy(dummy)
@@ -232,12 +231,12 @@ const deselectObject = function(instancedMesh, index) {
 }
 
 const deselectObjectByDummy = function(dummy) {
-	selectedDummys.splice(selectedDummys.indexOf(dummy), 1)
 	for (const selectedDummy of selectedDummys) {
 		selectedDummy.updateMatrixWorld()
 		groupSelector.remove(selectedDummy)
 		selectedDummy.matrixWorld.decompose(selectedDummy.position, selectedDummy.quaternion, selectedDummy.scale)
 	}
+	selectedDummys.splice(selectedDummys.indexOf(dummy), 1)
 	updateGroupSelectorPos()
 	for (const selectedDummy of selectedDummys) {
 		groupSelector.attach(selectedDummy)
