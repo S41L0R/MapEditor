@@ -1,7 +1,3 @@
-// So, problem is that when I assign stuff to a rail all objects in the rail
-// gets a new identity. This messes up the maps. Maybe I should remove stuff
-// before reloading data, then re-create after?
-
 // Some maps to help us find stuff
 let railPointMap = new Map()
 let controlPointMap = new Map()
