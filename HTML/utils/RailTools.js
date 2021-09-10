@@ -86,6 +86,7 @@ const removeRailObject = function() {
 
 const reloadRailObject = function() {
 	removeRailObject()
+	railGeometry = new global.LineSegmentsGeometry()
 	initRailObject()
 }
 
@@ -332,6 +333,258 @@ const updateNextAndPrevDistance = function(rail) {
 	}
 }
 
+// This function creates a basic circular rail with bezier points & adds it to sectionData. It also adds it to the scene.
+// It takes in the position (THREE.Vector3) for all the rail points to be centered on.
+// It takes in a number (int) of points to be in the circle.
+// The other thing it takes in is the scale (float), to scale up the rail by.
+const createNewBezierRail = async function(pos, pointNum, XZMultiplier) {
+	// First thing we have to do is make the actual rail data.
+
+	// To start off, we'll calculate all of the positions
+	let positionArray = []
+	const angleIncrement = (2 * Math.PI)/pointNum
+	for (let index = 0; index < pointNum; index++) {
+		const angle = angleIncrement * index
+		const posX = Math.sin(angle)
+		const posZ = Math.cos(angle)
+		const pointPos = new global.THREE.Vector3((XZMultiplier * posX) + pos.x, pos.y, (XZMultiplier * posZ) + pos.z)
+		positionArray.push(pointPos)
+	}
+
+	// Phew, the complicated math is done. Now we get the pleasure of putting that data in a template.
+
+	let rail = {
+		"HashId": {
+			"type": 102,
+			"value": global.MapTools.generateHashID()
+		},
+		"IsClosed": {
+			"type": 500,
+			"value": (positionArray.length > 2)
+		},
+		"RailPoints": [
+		],
+		"RailType": {
+			"type": 400,
+			"value": "Bezier"
+		},
+		"Translate": [
+			{
+				"type": 300,
+				"value": pos.x
+			},
+			{
+				"type": 300,
+				"value": pos.y
+			},
+			{
+				"type": 300,
+				"value": pos.z
+			}
+		],
+		"UnitConfigName": {
+			"type": 400,
+			"value": "Guide"
+		}
+	}
+
+	for (const position of positionArray) {
+		let railPointJSON = {
+			"!Parameters": {
+				"IsAdjustPosAndDirToPoint": {
+					"type": 500,
+					"value": false
+				},
+				"WaitFrame": {
+					"type": 300,
+					"value": 60.00000
+				}
+			},
+			"ControlPoints": [
+				[
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": 1
+					},
+					{
+						"type": 300,
+						"value": 0
+					}
+				],
+				[
+					{
+						"type": 300,
+						"value": 0
+					},
+					{
+						"type": 300,
+						"value": -1
+					},
+					{
+						"type": 300,
+						"value": 0
+					}
+				]
+			],
+			"NextDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"PrevDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"Translate": [
+				{
+					"type": 300,
+					"value": position.x
+				},
+				{
+					"type": 300,
+					"value": position.y
+				},
+				{
+					"type": 300,
+					"value": position.z
+				}
+			],
+			"UnitConfigName": {
+				"type": 400,
+				"value": "GuidePoint"
+			}
+		}
+
+
+
+		rail.RailPoints.push(railPointJSON)
+
+	}
+
+	global.sectionData.Static.Rails.push(rail)
+
+	updateNextAndPrevDistance(rail)
+	addRail(rail)
+	global.RailHelperTools.generateRailHelpers(rail)
+	reloadRailObject()
+}
+
+// This function creates a basic circular rail without bezier points & adds it to sectionData. It also adds it to the scene.
+// It takes in the position (THREE.Vector3) for all the rail points to be centered on.
+// It takes in a number (int) of points to be in the circle.
+// The other thing it takes in is the scale (float), to scale up the rail by.
+const createNewLinearRail = async function(pos, pointNum, XZMultiplier) {
+	// First thing we have to do is make the actual rail data.
+
+	// To start off, we'll calculate all of the positions
+	let positionArray = []
+	const angleIncrement = (2 * Math.PI)/pointNum
+	for (let index = 0; index < pointNum; index++) {
+		const angle = angleIncrement * index
+		const posX = Math.sin(angle)
+		const posZ = Math.cos(angle)
+		const pointPos = new global.THREE.Vector3((XZMultiplier * posX) + pos.x, pos.y, (XZMultiplier * posZ) + pos.z)
+		positionArray.push(pointPos)
+	}
+
+	// Phew, the complicated math is done. Now we get the pleasure of putting that data in a template.
+
+	let rail = {
+		"HashId": {
+			"type": 102,
+			"value": global.MapTools.generateHashID()
+		},
+		"IsClosed": {
+			"type": 500,
+			"value": (positionArray.length > 2)
+		},
+		"RailPoints": [
+		],
+		"RailType": {
+			"type": 400,
+			"value": "Linear"
+		},
+		"Translate": [
+			{
+				"type": 300,
+				"value": pos.x
+			},
+			{
+				"type": 300,
+				"value": pos.y
+			},
+			{
+				"type": 300,
+				"value": pos.z
+			}
+		],
+		"UnitConfigName": {
+			"type": 400,
+			"value": "Guide"
+		}
+	}
+
+	for (const position of positionArray) {
+		let railPointJSON = {
+			"!Parameters": {
+				"IsAdjustPosAndDirToPoint": {
+					"type": 500,
+					"value": false
+				},
+				"WaitFrame": {
+					"type": 300,
+					"value": 60.00000
+				}
+			},
+			"NextDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"PrevDistance": {
+				"type": 300,
+				"value": 0.00000
+			},
+			"Translate": [
+				{
+					"type": 300,
+					"value": position.x
+				},
+				{
+					"type": 300,
+					"value": position.y
+				},
+				{
+					"type": 300,
+					"value": position.z
+				}
+			],
+			"UnitConfigName": {
+				"type": 400,
+				"value": "GuidePoint"
+			}
+		}
+
+
+
+		rail.RailPoints.push(railPointJSON)
+
+	}
+
+	global.sectionData.Static.Rails.push(rail)
+
+	updateNextAndPrevDistance(rail)
+
+	addRail(rail)
+	
+	global.RailHelperTools.generateRailHelpers(rail)
+	reloadRailObject()
+	
+	
+}
+
 
 module.exports = {
 	initRailObject: initRailObject,
@@ -343,5 +596,9 @@ module.exports = {
 
 	// Rail-related tools
 	getRailFromHashID: getRailFromHashID,
-	updateNextAndPrevDistance: updateNextAndPrevDistance
+	updateNextAndPrevDistance: updateNextAndPrevDistance,
+
+	// Rail Creation
+	createNewBezierRail: createNewBezierRail,
+	createNewLinearRail: createNewLinearRail
 }

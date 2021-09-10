@@ -1,3 +1,7 @@
+// So, problem is that when I assign stuff to a rail all objects in the rail
+// gets a new identity. This messes up the maps. Maybe I should remove stuff
+// before reloading data, then re-create after?
+
 // Some maps to help us find stuff
 let railPointMap = new Map()
 let controlPointMap = new Map()
@@ -88,8 +92,8 @@ const reloadPointsObject = function() {
     initPointsObject()
 }
 
-const generateRailHelpers = function(rail, updateControlPointDummys) {
-    initControlPointConnectorObject()
+const generateRailHelpers = function(rail, updateControlPointDummys=true) {
+    initControlPointConnectorObject() // This is a bad place for this as it only needs to run once...
     for (const railPoint of rail.RailPoints) {
         // Set the maps up properly
         helperIndexForwardMap.set(railPoint, helperPoints.length)
@@ -161,7 +165,10 @@ const generateRailHelpers = function(rail, updateControlPointDummys) {
 
 const removeRailHelpers = function(rail, removeDummys=true) {
     for (const railPoint of rail.RailPoints) {
+        console.error(railPoint)
+        console.error(helperIndexForwardMap)
         if (helperIndexForwardMap.has(railPoint)) {
+            console.error("has")
             const railPointIndex = helperIndexForwardMap.get(railPoint)
             helperIndexForwardMap.delete(railPoint)
             helperIndexBackwardMap.delete(railPointIndex)
@@ -191,6 +198,7 @@ const removeRailHelpers = function(rail, removeDummys=true) {
 
             // Okay, go through the ControlPoints
             for (const controlPoint of railPointControlPointsMap.get(railPoint)) {
+                console.error(controlPoint)
                 const controlPointIndex = helperIndexForwardMap.get(controlPoint)
                 helperIndexForwardMap.delete(controlPoint)
                 helperIndexBackwardMap.delete(controlPointIndex)

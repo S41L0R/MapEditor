@@ -196,11 +196,11 @@ async function initAddRailDialog(document) {
 	let bezierButton = document.getElementById("AddRailPrompt_BezierButton")
 
 	linearButton.addEventListener("click", () => {
-		global.RailTools.createNewLinearRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, global.RayCastTools.intersectables)
+		global.RailTools.createNewLinearRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15)
 	})
 
 	bezierButton.addEventListener("click", () => {
-		global.RailTools.createNewBezierRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15, global.scene, global.sectionData, global.RayCastTools.intersectables)
+		global.RailTools.createNewBezierRail(global.camera.position, document.getElementById("AddRailPrompt_PointSlider").value, 15)
 	})
 }
 
