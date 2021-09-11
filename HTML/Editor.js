@@ -107,8 +107,6 @@ const LOD_FRAMES = 60
 const viewport = document.getElementById("viewport")
 const renderer = new THREE.WebGLRenderer({ canvas: viewport, powerPreference: "high-performance" })
 renderer.setSize( renderer.domElement.clientWidth, renderer.domElement, false )
-renderer.toneMapping = THREE.ReinhardToneMapping
-renderer.toneMappingExposure = 6
 //renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement)
 
@@ -415,6 +413,8 @@ async function loadAll() {
 
 
 async function loadSection(sectionName) {
+	renderer.toneMapping = THREE.ReinhardToneMapping // Make it brighter because you're outside.
+	renderer.toneMappingExposure = 6
 	// Just in case we hit reload and want to see something
 	if (sectionName === undefined) {
 		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
