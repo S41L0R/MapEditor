@@ -4,7 +4,7 @@ import threading
 import pathlib
 
 def cacheModels(modelList, modelPath):
-    cachedModels = [];
+    cachedModels = []
     cachedModelsNum = 0
     for i in modelList:
         os.system(f"cd")

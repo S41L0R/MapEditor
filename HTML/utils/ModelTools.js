@@ -95,6 +95,27 @@ const loadGameModelsBySection = function(sectionName) {
   })
 }
 
+const loadGameModelsByDungeon = function(dungeonPath) {
+  return new Promise ((resolve) => {
+    global.PythonTools.loadPython("dungeonGetActorModelPaths", dungeonPath).then((modelPathDict) => {
+
+      mostRecentModelPathDict = modelPathDict
+
+      let promises = []
+
+      for (const [actorName, modelPath] of Object.entries(modelPathDict)) {
+  			promises.push(loadModel(actorName, modelPath))
+  		}
+
+      promises.push(setupBasicMeshModels())
+
+      Promise.all(promises).then(() => {
+        resolve()
+      })
+    })
+  })
+}
+
 function loadModel(actorName, modelPath) {
   return new Promise((resolve) => {
     modelNumDict[actorName] = 0
@@ -363,6 +384,7 @@ const loadNewCachedModels = function(modelsPath, callback) {
 module.exports = {
   setupBasicMeshModels: setupBasicMeshModels,
   loadGameModelsBySection: loadGameModelsBySection,
+  loadGameModelsByDungeon: loadGameModelsByDungeon,
   loadNewCachedModels: loadNewCachedModels,
 
   modelDict: modelDict,

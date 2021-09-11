@@ -29,6 +29,7 @@ if "HTML" in os.getcwd():
     os.chdir("../")
 
 currentSection = ''
+currentDungeonPath = ''
 
 # Load Settings
 def getSettings():
@@ -206,7 +207,6 @@ class mapFile:
         self.loadMapActors()
         self.formattedMapJson = self.createJSON()
 
-    # CREATE CODE HERE: FROM MAP FILES FIND ACTORS TO LOAD
     def loadMapActors(self):
         with open(self.pathStatic, 'rb') as dataStatic:
             readFileStatic = oead.byml.from_binary(utils.checkCompression(dataStatic.read()))
@@ -231,6 +231,83 @@ class mapFile:
         return jsonData
 
 
+
+class dungeonMapFile:
+    def __init__(self):
+        self.settings, self.content, self.aoc = getSettings()
+
+        # I'm gonna implement something to load a test section.
+        # I'm sick of loading more data than I need to and waiting for it.
+        # I don't feel like inserting my test section into my game save,
+        # So I'm gonna make some custom logic to have it seperate.
+
+
+        # Also, I have no idea how this worked without this line:
+        global currentSection
+        global currentDungeonPath
+
+        global currentProject
+
+        #Okay, so the first thing we need to do is check if this section is already saved.
+
+        currentProject = projectHandling.getCurrentProject()
+        projectPath = projectHandling.Project(currentProject).getProject()
+
+        if (os.path.exists(os.path.join(projectPath, currentSection))):
+            pathStrStatic = (f'{projectPath}/{currentSection}/Map/CDungeon/{currentSection}/{currentSection}_Static.smubin')
+            pathStrDy = (f'{projectPath}/{currentSection}/Map/CDungeon/{currentSection}/{currentSection}_Dynamic.smubin')
+            pathStrTeraTree = (f'{projectPath}/{currentSection}/Map/CDungeon/{currentSection}/{currentSection}_TeraTree.sblwp')
+
+        else:
+            currentSection = currentSection.replace("Shrine_", "")
+
+            # Time to cache the shrine!
+            sarc.sarc_extract(currentDungeonPath, f'{projectPath}/{currentSection}/')
+
+            # Manual model caching
+            os.mkdir(f"Cache/Model/DgnMrgPrt_{currentSection}/")
+            os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{projectPath}/{currentSection}/Model/DgnMrgPrt_{currentSection}.sbfres\" Cache/Model/DgnMrgPrt_{currentSection}/")
+
+            # The texture is stored in the main install sometimes, so we gotta check there. Bit of a workaround, but it works to just get the texture.
+            os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{self.settings['GameDump']}/content/Model/DgnMrgPrt_{currentSection}.sbfres\" Cache/Model/DgnMrgPrt_{currentSection}/")
+
+
+            # We're gonna read it directly out of cache, where the sarc is extracted.
+            pathStrStatic = (f'{projectPath}/{currentSection}/Map/CDungeon/{currentSection}/{currentSection}_Static.smubin')
+            pathStrDy = (f'{projectPath}/{currentSection}/Map/CDungeon/{currentSection}/{currentSection}_Dynamic.smubin')
+            pathStrTeraTree = (f'{projectPath}/{currentSection}/Map/CDungeon/{currentSection}/{currentSection}_TeraTree.sblwp')
+
+        self.pathStatic = pathlib.Path(pathStrStatic)
+        self.pathDy = pathlib.Path(pathStrDy)
+        self.pathTeraTree = pathlib.Path(pathStrTeraTree)
+
+        smubinLoader.validateMapFile(self.pathStatic)
+        smubinLoader.validateMapFile(self.pathDy)
+        self.loadMapActors()
+        self.formattedMapJson = self.createJSON()
+
+    def loadMapActors(self):
+        with open(self.pathStatic, 'rb') as dataStatic:
+            readFileStatic = oead.byml.from_binary(utils.checkCompression(dataStatic.read()))
+        with open(self.pathDy, 'rb') as dataDy:
+            readFileDy = oead.byml.from_binary(utils.checkCompression(dataDy.read()))
+
+        self.staticDictOut = utils.expandByml(readFileStatic)
+        self.dyDictOut = utils.expandByml(readFileDy)
+        staticDictOut = self.staticDictOut
+        dyDictOut = self.dyDictOut
+        self.jsonStaticOut = staticDictOut.jsonData
+        self.jsonDyOut = dyDictOut.jsonData
+        uniqueActors = utils.findUniqueActors(staticDictOut.extractedByml)
+        self.fullUniqueActors = utils.findUniqueActors(dyDictOut.extractedByml, uniqueActors)
+        self.jsonActors = json.dumps(self.fullUniqueActors, indent=2)
+
+    # Generates formatted json data from dictionaries
+    def createJSON(self):
+        DataJSON = {}
+        DataJSON.update({"Dynamic": self.dyDictOut.extractedByml, "Static": self.staticDictOut.extractedByml})
+        jsonData = json.dumps(DataJSON)
+        return jsonData
 
 
 
@@ -279,8 +356,6 @@ def cacheModels(sectionData):
         actorModelData = json.loads(readActorCache.read())
     modelList = []
     for i in sectionData.fullUniqueActors:
-      if (i['value'] == "Animal_Cow_A"):
-          print(i['value'])
       if actorModelData.get(i['value']) not in cachedModels:
           modelList.append(actorModelData[i['value']])
           print(actorModelData[i['value']])
@@ -373,6 +448,58 @@ def newGetActorModelPaths(sectionName):
     print("!startData"+json.dumps(outputDict)+"!endData")
     sys.stdout.flush()
 
+def dungeonGetActorModelPaths(dungeonPath):
+    global currentSection
+    currentSection = (dungeonPath.replace("/", "\\").split("\\")[-1]).split(".")[0]
+
+    mapFileData = dungeonMapFile()
+    fullUniqueActors = mapFileData.fullUniqueActors
+
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
+    actorinfoCache = cacheActorInfo(actorinfoPath)
+    with open(actorinfoCache, 'rt') as readActorCache:
+        actorModelData = json.loads(readActorCache.read())
+
+    outputDict = {}
+    print(actorModelData)
+
+    for i in fullUniqueActors:
+        try:
+            outputDict[i["value"]] = f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae'
+        except:
+            print("Could not find model path for actor... moving on.")
+        #
+        #    "path": f'Cache/Model/{actorModelData[i["value"]]["bfres"]}/{actorModelData[i["value"]]["mainmodel"]}.dae',
+        #    "name": i["value"]
+        #}
+
+
+
+    #for i in actorModelData:
+        #print(i)
+        #outputDict[i] = f'Cache/Model/{actorModelData[i]["bfres"]}/{actorModelData[i]["mainmodel"]}.dae'
+    print("!startData"+json.dumps(outputDict)+"!endData")
+    sys.stdout.flush()
+
+
+def dungeonGetBaseModelPath(dungeonPath):
+    global currentSection
+    currentSection = (dungeonPath.replace("/", "\\").split("\\")[-1]).split(".")[0]
+
+    settings, content, aoc = getSettings()
+    actorinfoPath = f'{settings["GameDump"]}/{content}/Actor/ActorInfo.product.sbyml'
+    actorinfoCache = cacheActorInfo(actorinfoPath)
+    with open(actorinfoCache, 'rt') as readActorCache:
+        actorModelData = json.loads(readActorCache.read())
+
+    try:
+        output = f'Cache/Model/{actorModelData[f"DgnMrgPrt_{currentSection}"]["bfres"]}/Base.dae'
+    except:
+        print("Could not find model path for actor... moving on.")
+
+    print("!startData"+json.dumps(output)+"!endData")
+    sys.stdout.flush()
 
 
 def getActorModelPath(actorName):
@@ -464,7 +591,18 @@ def main(sectionName):
     currentSection = sectionName
     mapFileData = mapFile()
     print(f"!startData{mapFileData.formattedMapJson}!endData")
-    #save(mapFileData.formattedMapJson)
+    sys.stdout.flush()
+    cacheModels(mapFileData)
+    cacheMapTex()
+
+def mainDungeon(dungeonPath):
+    global currentSection
+    global currentDungeonPath
+    utils.findMKDir('./Cache')
+    currentSection = (dungeonPath.replace("/", "\\").split("\\")[-1]).split(".")[0]
+    currentDungeonPath = dungeonPath
+    mapFileData = dungeonMapFile()
+    print(f"!startData{mapFileData.formattedMapJson}!endData")
     sys.stdout.flush()
     cacheModels(mapFileData)
     cacheMapTex()

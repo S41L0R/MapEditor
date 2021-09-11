@@ -183,5 +183,8 @@ document.getElementById("saveButton").addEventListener("click", () => {
 		console.warn("hello?")
 		ipc.send("loadHTML", ["./HTML/UI/Launcher/Launcher.html", null])
 	})
+	settingsChildPython.stdio[2].on("data", (dataBuffer) => {
+		console.error(dataBuffer.toString())
+	})
 	//setTimeout(() => {ipc.send("loadHTML", ["./HTML/UI/SectionSelection/SectionSelection.html", null])}, 3500);
 })

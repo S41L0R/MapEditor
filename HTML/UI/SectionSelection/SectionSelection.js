@@ -56,15 +56,27 @@ function selectSection(sectionName) {
 
 }
 
+function openDungeon() {
+	ipc.send('select-files')
+	//ipc.send("loadHTML", ["./Editor.html", selectedSection])
+	console.log("loading")
+
+	ipc.on('selectedFile', async(event, dir) => {
+		ipc.send("loadDungeon", ["./Editor.html", dir])
+		console.error("test")
+		console.error(dir)
+	})
+}
+
 function openSection() {
-	ipc.send("loadHTML", ["./Editor.html", selectedSection])
+	ipc.send("loadSection", ["./Editor.html", selectedSection])
 	console.log("loading")
 }
 
 function openTestSection() {
 	selectedSection = `TestSection_${document.getElementById("TestSectionInput").value}`
 	console.warn(selectedSection)
-	ipc.send("loadHTML", ["./Editor.html", selectedSection])
+	ipc.send("loadSection", ["./Editor.html", selectedSection])
 	console.log("loading")
 }
 

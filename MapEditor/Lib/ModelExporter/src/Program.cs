@@ -83,7 +83,14 @@ namespace ModelExporter
                                     Suffix = Suffix + 1;
                                 }
                             }
-                            file = (BFRES)STFileLoader.OpenFileFormat(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00")));
+                            if (File.Exists(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00"))))
+                            {
+                                file = (BFRES)STFileLoader.OpenFileFormat(arg.Insert(arg.Length - 7, "-" + Suffix.ToString("00")));
+                            }
+                            else
+                            {
+                                break;
+                            }
                             ExportModel(file, args);
                             Suffix = Suffix + 1;
                         }

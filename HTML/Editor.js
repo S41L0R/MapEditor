@@ -415,7 +415,6 @@ async function loadAll() {
 
 
 async function loadSection(sectionName) {
-	HeightMapTools.loadHGHT("test")
 	// Just in case we hit reload and want to see something
 	if (sectionName === undefined) {
 		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
@@ -426,6 +425,7 @@ async function loadSection(sectionName) {
 	global.sectionName = sectionName
 	document.getElementById("loadingStatus").innerHTML = "Loading Python"
 	HeightMapTools.loadSectionHeightMap(sectionName)
+	//PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {
 	PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {
 		// Found it made things a lot easier to have a few global vars that I use a lot.
 		global.sectionData = sectionData
@@ -439,7 +439,46 @@ async function loadSection(sectionName) {
 		RailTools.createRails(sectionData, scene, RayCastTools.intersectables)
 		// First place actors in scene (Will be dummy if there is no model):
 			document.getElementById("loadingStatus").innerHTML = "Loading Models"
-	    SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
+	    	SceneTools.addActorsToScene(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
+				document.getElementById("loadingDisplay").style.opacity = 0
+				LinkTools.createLinks().then(() => {
+					LODTools.initLODs()
+				})
+			})
+
+
+
+	  camera.position.set(sectionData.Static.LocationPosX.value, 100, sectionData.Static.LocationPosZ.value)
+	});
+}
+
+async function loadDungeon(sectionName) {
+	global.isDungeon = true
+	// Just in case we hit reload and want to see something
+	if (sectionName === undefined) {
+		sectionName = await PythonTools.loadPython('shareSettings', 'TestingMapSection')
+	}
+	else {
+		PythonTools.loadPython("setSetting", `TestingMapSection, ${sectionName.replace("\\", "\\\\")}`)
+	}
+	global.sectionName = sectionName
+	document.getElementById("loadingStatus").innerHTML = "Loading Python"
+	HeightMapTools.loadSectionHeightMap(sectionName)
+	//PythonTools.loadPython("main", sectionName, onPythonData).then((sectionData) => {
+	PythonTools.loadPython("mainDungeon", sectionName, onPythonData).then((sectionData) => {
+		// Found it made things a lot easier to have a few global vars that I use a lot.
+		global.sectionData = sectionData
+		DomListeners.initSaveButton(document, SaveTools.saveData, sectionData, sectionName)
+		// Setup ActorEditor
+		// -----------------------------------------------------------------------------
+		ActorEditorTools.initActorEditorTools(sectionData)
+		// -----------------------------------------------------------------------------
+		document.getElementById("loadingStatus").innerHTML = "Creating Rails"
+		RailTools.initRailObject()
+		RailTools.createRails(sectionData, scene, RayCastTools.intersectables)
+		// First place actors in scene (Will be dummy if there is no model):
+			document.getElementById("loadingStatus").innerHTML = "Loading Models"
+	    	SceneTools.addActorsToSceneDungeon(scene, sectionData, RayCastTools.intersectables, BufferGeometryUtils, colladaLoader, sectionName, THREE).then(()=>{
 				document.getElementById("loadingDisplay").style.opacity = 0
 				LinkTools.createLinks().then(() => {
 					LODTools.initLODs()
@@ -475,6 +514,11 @@ ipc.on('projectName', async(event, project) => {
 ipc.on("loadSection", async (event, sectionName) => {
 	loadDarkMode()
 	loadSection(sectionName)
+});
+
+ipc.on("loadDungeon", async (event, sectionName) => {
+	loadDarkMode()
+	loadDungeon(sectionName)
 });
 
 var perfEntries = performance.getEntriesByType('navigation')

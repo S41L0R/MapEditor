@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, Menu, dialog} = require('electron')
 const fs = require('fs')
 const isMac = process.platform === 'darwin'
 const { exec } = require('child_process')
@@ -183,13 +183,31 @@ ipc.on('getCurrentProject', (event) => {
 })
 
 ipc.on('loadHTML', (event, message) => {
+   win.loadFile(message[0]);
+})
+
+ipc.on('loadSection', (event, message) => {
   if (message[1] == null) {
-    win.loadFile(message[0]);
+    console.error("nothing to load!")
   }
   else {
     win.loadFile(message[0]);
     win.webContents.once('dom-ready', () => {
       win.webContents.send('loadSection', message[1]);
+      win.webContents.send('appDataPath', app.getPath('userData'));
+    });
+
+  }
+})
+
+ipc.on('loadDungeon', (event, message) => {
+  if (message[1] == null) {
+    console.error("nothing to load!")
+  }
+  else {
+    win.loadFile(message[0]);
+    win.webContents.once('dom-ready', () => {
+      win.webContents.send('loadDungeon', message[1]);
       win.webContents.send('appDataPath', app.getPath('userData'));
     });
 
@@ -231,5 +249,12 @@ ipc.on('runSetup', (event) => {
     }
     console.log(`Stdout: ${stdout}`)
   })
+})
+
+ipc.on('select-files', async (event) => {
+  const result = await dialog.showOpenDialog(win, {
+    properties: ['openFile']
+  })
+  win.webContents.send('selectedFile', result.filePaths[0])
 })
 
