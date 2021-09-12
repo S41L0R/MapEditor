@@ -265,7 +265,7 @@ class dungeonMapFile:
             sarc.sarc_extract(currentDungeonPath, f'{projectPath}/{currentSection}/')
 
             # Manual model caching
-            os.mkdir(f"Cache/Model/DgnMrgPrt_{currentSection}/")
+            utils.findMKDir(f"Cache/Model/DgnMrgPrt_{currentSection}/")
             os.system(f"MapEditor\\Lib\\ModelExporter\\ModelExporter.exe \"{projectPath}/{currentSection}/Model/DgnMrgPrt_{currentSection}.sbfres\" Cache/Model/DgnMrgPrt_{currentSection}/")
 
             # The texture is stored in the main install sometimes, so we gotta check there. Bit of a workaround, but it works to just get the texture.
@@ -563,6 +563,19 @@ def save(sectionPath):
     print(currentProject)
     print(projectPath)
     smubinWriter.writeMapFile(loadedData, projectPath)
+    print('File saved successfully! :)')
+    return
+
+def saveDungeon(sectionPath):
+    with open(sectionPath, 'rt') as readSectionJSON:
+        dataToSave = readSectionJSON.read()
+        #print(dataToSave)
+    loadedData = json.loads(dataToSave)
+    currentProject = projectHandling.getCurrentProject()
+    projectPath = projectHandling.Project(currentProject).getProject()
+    print(currentProject)
+    print(projectPath)
+    smubinWriter.writeMapFileDungeon(loadedData, projectPath)
     print('File saved successfully! :)')
     return
 

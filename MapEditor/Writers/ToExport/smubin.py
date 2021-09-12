@@ -18,20 +18,40 @@ def findBigEndian():
 
 validMapFileExts = ['smubin', 'mubin']
 
-# Opens and reads a map file; returns a dict containing the map file data.
+# Writes a map file
 def writeMapFile(jsonData, saveDir):
     sectionName = jsonData.get('Section')
-    #sectionName = 'J-8'
+
     staticMapData = util.compressByml(dict(jsonData.get('Static'))).compressedData
     dynamicMapData = util.compressByml(dict(jsonData.get('Dynamic'))).compressedData
     bigEndian = bool(findBigEndian())
     filePath = util.findMKDir(f'{saveDir}/{sectionName}')
-    #print(staticMapData)
-    #print(type(staticMapData))
+
     with open(pathlib.Path(f'{filePath}/{sectionName}_Static.smubin'), 'wb') as writeStatic:
         writeStatic.write(oead.yaz0.compress(oead.byml.to_binary(staticMapData, big_endian=bigEndian)))
         print('saved Static')
     with open(pathlib.Path(f'{filePath}/{sectionName}_Dynamic.smubin'), 'wb') as writeDynamic:
         writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(dynamicMapData, big_endian=bigEndian)))
         print('saved Dynamic')
-    #return
+    
+
+
+# Writes a map file to the correct location for dungeons then pack it up
+def writeMapFileDungeon(jsonData, saveDir):
+    sectionName = jsonData.get('Section')
+
+    staticMapData = util.compressByml(dict(jsonData.get('Static'))).compressedData
+    dynamicMapData = util.compressByml(dict(jsonData.get('Dynamic'))).compressedData
+    bigEndian = bool(findBigEndian())
+    filePath = util.findMKDir(f'{saveDir}/{sectionName}/Map/CDungeon/{sectionName}')
+
+    with open(pathlib.Path(f'{filePath}/{sectionName}_Static.smubin'), 'wb') as writeStatic:
+        writeStatic.write(oead.yaz0.compress(oead.byml.to_binary(staticMapData, big_endian=bigEndian)))
+        print('saved Static')
+    with open(pathlib.Path(f'{filePath}/{sectionName}_Dynamic.smubin'), 'wb') as writeDynamic:
+        writeDynamic.write(oead.yaz0.compress(oead.byml.to_binary(dynamicMapData, big_endian=bigEndian)))
+        print('saved Dynamic')
+    
+
+    # Pack up the .pack
+    
