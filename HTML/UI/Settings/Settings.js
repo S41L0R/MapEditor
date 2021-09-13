@@ -122,6 +122,18 @@ function updateTextSetting(key) {
 	console.error(settings)
 }
 
+function getDir(key) {
+	ipc.send('select-folders')
+
+	ipc.on('selectedFolders', async(event, dirs) => {
+		let element = document.getElementById(key)
+		element.children[1].value = dirs[0]
+		console.error(dirs[0])
+		settings[key] = dirs[0].replaceAll("\\", "\\\\")
+		console.error(settings)
+	})
+}
+
 
 function openTab(tabName) {
 	console.error(settings)
@@ -140,9 +152,9 @@ function openTab(tabName) {
 			toggleBooleanSetting(key)
 			toggleBooleanSetting(key)
 		}
-		else if (typeof value === "string") {
+		else if (typeof value === "string") { // Probably a path so we'll treat it as such
 			document.getElementById("settingsContainer").innerHTML = document.getElementById("settingsContainer").innerHTML + `
-        <div class="settingsModuleString" id="${key}"><p>${key}</p><input value = "${value}"></input></div>
+        <div class="settingsModuleString" id="${key}"><p>${key}</p><input value = "${value}"></input><button>Choose Directory</button></div>
       `
 		}
 		else if (typeof value === "number") {
@@ -160,17 +172,19 @@ function openTab(tabName) {
 	}
 	Array.from(document.getElementById("settingsContainer").children).forEach((element) => {
 		if (element.className == "settingsModuleBoolean") {
-			element.addEventListener("click", () => {toggleBooleanSetting(event.target.parentElement.id)})
+			element.addEventListener("click", (event) => {toggleBooleanSetting(event.target.parentElement.id)})
 		}
 		else if (element.className == "settingsModuleString") {
-			element.addEventListener("keyup", () => {updateTextSetting(event.target.parentElement.id)})
-			console.warn("hi2")
+			element.addEventListener("keyup", (event) => {updateTextSetting(event.target.parentElement.id)})
+			element.children[2].addEventListener("click", (event) => {
+				getDir(event.target.parentElement.id)
+			})
 		}
 		else if (element.className == "settingsModuleInt") {
-			element.addEventListener("keyup", () => {updateTextSetting(event.target.id)})
+			element.addEventListener("keyup", (event) => {updateTextSetting(event.target.id)})
 		}
 		else if (element.className == "settingsModuleFloat") {
-			element.addEventListener("keyup", () => {updateTextSetting(event.target.parentElement.id)})
+			element.addEventListener("keyup", (event) => {updateTextSetting(event.target.parentElement.id)})
 		}
 	})
 }

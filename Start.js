@@ -255,6 +255,13 @@ ipc.on('select-files', async (event) => {
   const result = await dialog.showOpenDialog(win, {
     properties: ['openFile']
   })
-  win.webContents.send('selectedFile', result.filePaths[0])
+  win.webContents.send('selectedFiles', result.filePaths)
+})
+
+ipc.on('select-folders', async (event) => {
+  const result = await dialog.showOpenDialog(win, {
+    properties: ['openDirectory']
+  })
+  win.webContents.send('selectedFolders', result.filePaths)
 })
 

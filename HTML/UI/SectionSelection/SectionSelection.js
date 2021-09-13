@@ -61,10 +61,8 @@ function openDungeon() {
 	//ipc.send("loadHTML", ["./Editor.html", selectedSection])
 	console.log("loading")
 
-	ipc.on('selectedFile', async(event, dir) => {
-		ipc.send("loadDungeon", ["./Editor.html", dir])
-		console.error("test")
-		console.error(dir)
+	ipc.on('selectedFiles', async(event, files) => {
+		ipc.send("loadDungeon", ["./Editor.html", files[0]])
 	})
 }
 
