@@ -127,6 +127,14 @@ body {
   margin: 1%;
   border-radius: 5px;
   color: black;
+  transition-duration: 2s;
+}
+
+.FloatingButton:hover {
+  width: 12%;
+  height: 32%;
+  box-shadow: 10px 5px 5px black;
+  transform: translateY(-2px) translateX(-2px);
 }
 
 .FloatingButton p {
