@@ -357,3 +357,13 @@ def bfresToDAE(bfresName):
     #ModelExporter('e')
     print('bfres To DAE called')
 """
+
+def getNestedFilePaths(startDir: pathlib.Path):
+    pathList = []
+    for path in startDir.iterdir():
+        if path.is_file():
+            pathList.append(path.absolute())
+            continue
+        else:
+            pathList.extend(getNestedFilePaths(path))
+    return(pathList)
