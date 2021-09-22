@@ -11,7 +11,7 @@
     "three": "^0.127.0"
   },
   "devDependencies": {
-    "electron": "^13.2.1",
+    "electron": "^15.0.0",
     "electron-builder": "^22.11.7",
     "electron-packager": "^15.2.0",
     "eslint": "^7.32.0"
