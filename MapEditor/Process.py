@@ -60,6 +60,7 @@ def getSettings():
             settings = LoadSettings.LoadSettings()
             return(settings)
         except:
+            raise Exception("Issue reading settings!")
             WriteSettings.WriteSettings(defaultSettings)
             print("Created and poulated json file.")
             checkSettings()
@@ -90,7 +91,7 @@ def shareSettings(setting):
 # To set settings:
 def setSettings(newSettings):
     #raise NameError(newSettings)
-    WriteSettings.WriteSettings(json.loads(newSettings.replace("'", '"') ))
+    WriteSettings.WriteSettings(json.loads(newSettings.replace("'", '"').replace("\\", "\\\\")))
     print("Created and poulated json file.")
 
 def setSetting(settingData):
@@ -493,10 +494,7 @@ def dungeonGetBaseModelPath(dungeonPath):
     with open(actorinfoCache, 'rt') as readActorCache:
         actorModelData = json.loads(readActorCache.read())
 
-    try:
-        output = f'Cache/Model/{actorModelData[f"DgnMrgPrt_{currentSection}"]["bfres"]}/Base.dae'
-    except:
-        print("Could not find model path for actor... moving on.")
+    output = f'Cache/Model/DgnMrgPrt_{currentSection}/Base.dae'
 
     print("!startData"+json.dumps(output)+"!endData")
     sys.stdout.flush()
