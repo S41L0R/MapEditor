@@ -13,11 +13,15 @@ async function initDraggingChanged(transformControl) {
 			if (!(dummy.userData.relevantType === "RailPoint" || dummy.userData.relevantType === "ControlPoint" || dummy.type === "Line")) {
 				global.ActorTools.updateDataActor(dummy)
 				global.LinkTools.reloadRelevantLinkObjects(dummy.userData.actor)
-				// Make sure that the LOD data and linked LOD object are updated properly
-				global.LODTools.updateActorLODData(dummy.userData.actor)
+				
 				
 				if (global.computeLODs) {
 					global.LODTools.applyTransformToLODPair(dummy.userData.actor)
+				}
+				else {
+					// Make sure that the LOD data and linked LOD object are updated properly
+					// We only do this when LODs aren't being calculated because that's when the user should be able to move actors separately
+					global.LODTools.updateActorLODData(dummy.userData.actor) 
 				}
 			}
 			else {
@@ -58,11 +62,14 @@ const onTransformControlDrag = async function (transformControl) {
 		if (!(dummy.userData.relevantType === "RailPoint" || dummy.userData.relevantType === "ControlPoint" || dummy.type === "Line")) {
 			global.ActorTools.updateDataActor(dummy)
 			global.LinkTools.reloadRelevantLinkObjects(dummy.userData.actor)
-			// Make sure that the LOD data and linked LOD object are updated properly
-			global.LODTools.updateActorLODData(dummy.userData.actor)
 			
 			if (global.computeLODs) {
 				global.LODTools.applyTransformToLODPair(dummy.userData.actor)
+			}
+			else {
+				// Make sure that the LOD data and linked LOD object are updated properly
+				// We only do this when LODs aren't being calculated because that's when the user should be able to move actors separately
+				global.LODTools.updateActorLODData(dummy.userData.actor) 
 			}
 		}
 		else {

@@ -61,6 +61,8 @@ const calcActorOffset = function(actor, offsettingActor) {
 	offset.Scale[1].value = actorTransform.Scale[1].value - offsettingActorTransform.Scale[1].value
 	offset.Scale[2].value = actorTransform.Scale[2].value - offsettingActorTransform.Scale[2].value
 
+	console.error(offset)
+
 	return(offset)
 }
 
@@ -70,12 +72,11 @@ const applyActorOffset = function(actor, offset, offsettingActor) {
 
 	// We'll also need to make sure that we get a consistent offsettingActor transform
 	const offsettingActorTransform = getConsistentTransform(offsettingActor)
-
 	if (actor.Translate !== undefined) {
 		if (Array.isArray(actor.Translate)) {
-			actor.Translate[0].value = offset.Translate[0].value + offsettingActorTransform.Translate[0].value
-    		actor.Translate[1].value = offset.Translate[1].value + offsettingActorTransform.Translate[1].value
-    		actor.Translate[2].value = offset.Translate[2].value + offsettingActorTransform.Translate[2].value
+			actor.Translate[0].value = offset.Translate[0].value + offsettingActor.Translate[0].value
+    		actor.Translate[1].value = offset.Translate[1].value + offsettingActor.Translate[1].value
+    		actor.Translate[2].value = offset.Translate[2].value + offsettingActor.Translate[2].value
 		}
 		else {
 			// This should not happen, the translation isn't 3D, and that isn't normal.

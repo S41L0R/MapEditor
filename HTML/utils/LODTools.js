@@ -49,7 +49,6 @@ const initLODs = function() {
 }
 
 const updateActorLODData = function(actor) {
-
   // Check if this actor is a linking actor or not...
   if (global.LinkTools.forwardLinks.has(actor)) {
     const linkDataList = global.LinkTools.forwardLinks.get(actor)
@@ -66,11 +65,12 @@ const updateActorLODData = function(actor) {
       }
     }
   }
-
   // If not, check if it's linked to.
   else if (global.LinkTools.backwardLinks.has(actor)) {
-    // And if it's liked to, run this function with the linking actor
-    updateActorLODData(global.LinkTools.backwardLinks.get(actor))
+    // And if it's linked to, run this function with the linking actors
+    for (const link of global.LinkTools.backwardLinks.get(actor)) {
+        updateActorLODData(link.LinkedActor)
+    }
   }
 }
 
@@ -91,6 +91,8 @@ const disableLODs = function() {
     global.ActorTools.setupObjectActor(actor)
     global.ActorTools.setupObjectActor(linkedActor)
   }
+  forwardLODTracking.clear()
+  backwardLODTracking.clear()
 }
 
 
