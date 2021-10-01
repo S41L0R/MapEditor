@@ -54,10 +54,14 @@ const changeActorGroupVisibility = async function(type, visibility) {
   // Same with rails
   else if (type === "rails") {
     if (visibility) {
-      global.RailTools.createRails(global.sectionData, global.scene, global.RayCastTools.intersectables)
+      global.RailTools.initRailObject()
+      global.RailHelperTools.initPointsObject()
+      global.RailHelperTools.initControlPointConnectorObject()
     }
     else {
-      global.RailTools.removeRails(global.sectionData, global.scene, global.RayCastTools.intersectables)
+      global.RailTools.removeRailObject()
+      global.RailHelperTools.removePointsObject()
+      global.RailHelperTools.removeControlPointConnectorObject()
     }
   }
   else {

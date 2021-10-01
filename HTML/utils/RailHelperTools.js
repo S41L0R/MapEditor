@@ -267,6 +267,8 @@ const getRailFromRailBit = function(railBit) {
 module.exports = {
     initPointsObject: initPointsObject,
     removePointsObject: removePointsObject,
+    initControlPointConnectorObject: initControlPointConnectorObject,
+    removeControlPointConnectorObject: removeControlPointConnectorObject,
     generateRailHelpers: generateRailHelpers,
     removeRailHelpers: removeRailHelpers,
     reloadRailHelpers: reloadRailHelpers,

@@ -588,6 +588,7 @@ const createNewLinearRail = async function(pos, pointNum, XZMultiplier) {
 
 module.exports = {
 	initRailObject: initRailObject,
+	removeRailObject: removeRailObject,
 	reloadRailObjectResolution: reloadRailObjectResolution,
 	createRails: createRails,
 	addRail: addRail,
