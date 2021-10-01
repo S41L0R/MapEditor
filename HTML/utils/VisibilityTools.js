@@ -32,7 +32,11 @@ const actorGroups = {
       "AirWallHorse",
       "FarModelCullingArea",
       "Obj_SweepCollision",
-      "AirWallForE3"
+      "AirWallForE3",
+      "LocationTag",
+      "AnchorAction1",
+      "DragonDropItemTarget",
+      "NPC_HiddenKorokFly"
     ]
   }
 }
@@ -83,8 +87,8 @@ const changeActorVisibility = async function(actor, visibility) {
   else {
     // Okay, based on the actor we'll first have to find the dummy.
     for (const dummy of global.SelectionTools.objectDummys) {
-      if (dummy.userData.instancedMeshes[0].userData.actorList[dummy.userData.index] === actor) {
-        global.SelectionTools.deselectObjectByDummy(dummy, global.transformControl, global.THREE)
+      if (dummy.userData.actor === actor) {
+        global.SelectionTools.deselectObjectByDummy(dummy)
         global.ActorTools.removeObjectActorByDummy(dummy)
       }
     }
