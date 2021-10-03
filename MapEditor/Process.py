@@ -4,6 +4,7 @@ import pathlib
 import oead
 import json
 import blwp
+from sarc.sarc import SARCWriter
 import webview
 from flask import Flask
 import sys
@@ -16,6 +17,7 @@ import Writers.ToSettings.WriteSettings as WriteSettings
 import Loaders.FromGame.smubin as smubinLoader
 import Loaders.FromGame.actor as actor
 import Writers.ToExport.smubin as smubinWriter
+import Writers.ToExport.sarc as sarcWriter
 import Lib.Utils.Util as utils
 import Loaders.FromGame.sbfres as sbfres
 import Loaders.FromGame.actorinfo as ActorInfo
@@ -569,11 +571,18 @@ def saveDungeon(sectionPath):
         dataToSave = readSectionJSON.read()
         #print(dataToSave)
     loadedData = json.loads(dataToSave)
+    sectionName = loadedData.get("Section")
     currentProject = projectHandling.getCurrentProject()
     projectPath = projectHandling.Project(currentProject).getProject()
     print(currentProject)
     print(projectPath)
     smubinWriter.writeMapFileDungeon(loadedData, projectPath)
+    sarcData = sarcWriter.dirToSarc(f"{projectPath}/{sectionName}")
+
+    print(sarcData)
+    with open(f"{projectPath}/{sectionName}.pack", 'wb+') as sarcFile:
+        sarcFile.seek(0)
+        sarcFile.write(oead.yaz0.compress(sarcData[1]))
     print('File saved successfully! :)')
     return
 

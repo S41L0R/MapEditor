@@ -23,7 +23,7 @@ def dirToSarc(dirPath, sarcPath=None):
 
     for path in pathList:
         with open(path, 'rb') as readData:
-            sarcName = str(path).replace(str(dirPath.absolute()) + '\\', '')
+            sarcName = str(path).replace(str(dirPath.absolute()) + '\\', '').replace("\\", "/")
             print(sarcName)
             sarcFiles[sarcName] = readData.read()
 
