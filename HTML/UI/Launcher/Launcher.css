@@ -1,9 +1,52 @@
+body {
+  margin: 0;
+}
+
+div {
+  background-color: #2d2929;
+}
+
+input, button {
+  transition: 0.1s ease;
+  background-color: #6f6666;
+  border: none;
+  color: white;
+  font-family: Trebuchet MS
+}
+
+input:focus {
+  background-color: #635c5c;
+  outline: none;
+}
+
+input:hover, button:hover {
+  transition: 0.1s ease;
+  background-color: #635c5c;
+  border: none;
+  color: white;
+  font-family: Trebuchet MS;
+  cursor: pointer;
+}
 
 
+::placeholder {
+  color: white;
+  font-family: Trebuchet MS
+}
+
+p {
+  margin: 0;
+  padding: 10px;
+  transition-duration: 0.3s;
+}
+
+p:hover {
+  background-color: #404040;
+}
 
 .LauncherButton {
-  background-color: skyblue;
-  /*height:100%;*/
+  background-color: rgb(131 68 255);
+  /* height:100%; */
   text-align:center;
   font-weight:bold;
   font-family: "Noto Sans TC", "sans-serif";
@@ -11,23 +54,18 @@
   font-size: 4vh;
   vertical-align: middle;
   /*position: absolute;*/
-
   display:flex;
   flex-direction:column;
   justify-content:space-around;
-
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-
-
   animation-fill-mode: forwards;
-
   align-items: center;
-
+  width: 15px;
 }
 
 .LauncherButton p {
@@ -36,6 +74,8 @@
     flex-direction: column;
     /*height: 100%;*/
     vertical-align: middle;
+    color: white;
+    /* outline-color: black; */
 }
 
 .LauncherButton:hover {
@@ -43,9 +83,9 @@
 }
 
 .LauncherButtonIcon {
-  width: 50%;
+  width: 200px;
   height: auto;
-
+  filter: invert(1);
 }
 
 #Title {
@@ -53,6 +93,10 @@
   margin-bottom: 0px;
   height: fit-content;
   display: block;
+  margin: 10px;
+  font-family: Trebuchet MS;
+  color: white;
+  text-decoration: underline;
 }
 
 #projectManagement {
@@ -65,10 +109,13 @@
 
 .projectButton {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  height: 20%;
+  margin-left: 10px;
   font-size: 25px;
+  font-family: Trebuchet MS;
+  color: white;
+  background-color: #3a3535;
+  border-radius: 3px;
+  margin-top: 10px;
 }
 
 .projectButton:hover {
@@ -77,8 +124,8 @@
 }
 
 .popup {
-  --popup-width: 20vw;
-  --popup-height: 20vw;
+  /* --popup-width: 20vw; */
+  /* --popup-height: 20vw; */
   --horizontal_margin: calc(50vw - calc(var(--popup-width) / 2));
   --vertical_margin: calc(50vh - calc(var(--popup-height) / 2));
   display: none;
@@ -91,8 +138,8 @@
   right: var(--horizontal_margin);
   top: var(--vertical_margin);
   bottom: var(--vertical_margin);
-  border-radius: 10px;
-  background-color: black;
+  border-radius: 0px 2px;
+  background-color: #4f4848;
   color: white;
 }
 
@@ -105,42 +152,28 @@
 
 #container {
   display: flex;
-  /*flex-flow: column;*/
+  /* flex-flow: column; */
   height: 100%;
 }
 
 #SettingsButton {
-  background-color: slategrey;
+  background-color: #404040;
   flex-grow: 1;
   flex-basis: 0;
 
   /*Specify Animations*/
-
-
-
   /*
   animation-name: ShrinkDiv;
   animation-duration: 4s;
   */
-
   transition: all 1s ease;
+}
 
-
+#SettingsButton img {
+  filter: invert(1);
 }
 
 
-
-#SettingsButton:hover {
-
-  /*
-  animation-name: GrowDiv;
-  animation-duration: 4s;
-
-  */
-
-  flex-grow: 3;
-
-}
 
 /*
 #SettingsButton:active + #MapEditorButton {
@@ -155,10 +188,10 @@
 */
 
 #MapEditorButton {
-  background-color: skyblue;
+  background-color: #3a3535;
   flex-grow: 2;
-  flex-basis: 0;
-  transition: all 1s ease;
+  /* flex-basis: 0; */
+  transition: all 0.1s ease;
 }
 
 #LauncherButtonContainer {
@@ -172,14 +205,14 @@
 
 
 
-/*
+
 #MapEditorButton:active + #SettingsButton > p, #MapEditorButton:active + #SettingsButton > img {
   animation-name: FadeButtonElements;
   animation-duration: 1s;
 }
 */
 
-#SettingsButton > p, #SettingsButton > img {
+/*#SettingsButton > p, #SettingsButton > img {
   animation-name: FadeButtonElements;
   animation-duration: 0.6s;
   animation-play-state: paused;
@@ -189,6 +222,14 @@
   animation-name: FadeButtonElements;
   animation-duration: 0.6s;
   animation-play-state: paused;
+}
+
+#MapEditorButton > img {
+  animation-name: FadeButtonElements;
+  animation-duration: 0.6s;
+  animation-play-state: paused;
+  filter: invert(1);
+  width: 76.41px;
 }
 
 
