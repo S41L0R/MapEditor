@@ -70,8 +70,10 @@
     z-index: 10;
     width: 84.95%;
   }
-
-  .cardButton {
+.cardButton#saveButton { 
+    margin-right: 10px;
+  }
+  .cardButton { 
     border: none;
     padding: 8px 16px;
     text-align: center;
@@ -83,23 +85,25 @@
     cursor: pointer;
     min-width: 1px;
     height: 35;
-    border-radius: 5px;
-    box-shadow: -10px 10px 5px #0000001f;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px #000000;
+    margin-top: 10px;
+    font-family: Trebuchet MS;
+  }
+
+  .cardButton:first-child {
+    margin-left: 10px;
+
   }
 
 
-  .cardButton:hover {
-    height: auto;
-  }
+
 
 
   .cardButtonsImg {
     opacity: 0;
   }
 
-  .cardButton:hover > .cardButtonsImg {
-    opacity: 100;
-  }
 
 .cardButton:focus {
     outline: 0;
@@ -126,6 +130,10 @@
     height: 15px;
     border-radius:  100%;
   }
+ .button#darkModeToggle {
+    margin-top: 0px;
+    margin-bottom: 15px;
+  }
 
   .button {
     border-style: none;
@@ -135,8 +143,12 @@
     /*width: 95%;*/
     /*height: 5%;*/
     padding: 5px;
-
     box-shadow: 0px 10px 5px #00000038;
+    font-weight: bold;
+    font-family: Trebuchet MS;
+    text-transform: uppercase;
+    margin-top: 15px;
+    transition-duration: 0.4s;
   }
 
   .button:hover {
@@ -155,7 +167,6 @@
   #ProgressContainerDiv {
     background-color: transparent;
     width: 90%;
-
     left: 0;
     right: 0;
     margin-left: auto;
@@ -435,7 +446,7 @@
   }
 
   #devDisplay {
-    background-color: black;
+    background-color: #00000012;
     width: 15%;
     flex-grow: 1;
     flex-basis: 0;
@@ -452,7 +463,7 @@
   }
 
   #VisibilityDisplay {
-    background-color: black;
+    background-color: #00000000;
     flex-grow: 0.0000000001;
     flex-basis: 0;
     min-height: 0;

@@ -14,3 +14,5 @@ def WriteSettings(settings):
             print('shrug')
     with open(configPath / 'Config.json', 'wt') as config:
         config.write(json.dumps(settings, indent=2))
+        config.flush()
+        config.close()

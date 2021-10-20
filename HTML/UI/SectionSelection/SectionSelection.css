@@ -119,22 +119,21 @@ body {
 }
 .FloatingButton {
   display: block;
-  background-color: slategrey;
-  width:10%;
-  height: 30%;
+  background-color: #313539;
   vertical-align: middle;
   display: table;
   margin: 1%;
   border-radius: 5px;
-  color: black;
-  transition-duration: 2s;
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 1px 1px 3px black;
+  text-transform: uppercase;
 }
 
 .FloatingButton:hover {
-  width: 12%;
-  height: 32%;
-  box-shadow: 10px 5px 5px black;
-  transform: translateY(-2px) translateX(-2px);
+  box-shadow: 1px 1px 3px black;
+  background-color: #2a2e31;
+  cursor: pointer;
 }
 
 .FloatingButton p {
