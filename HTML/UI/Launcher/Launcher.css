@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  overflow: hidden;
 }
 
 div {
@@ -40,8 +41,8 @@ p {
   transition-duration: 0.3s;
 }
 
-p:hover {
-  background-color: #404040;
+.LauncherButton:hover > .LauncherButtonText {
+  background-color: #505050;
 }
 
 .LauncherButton {
